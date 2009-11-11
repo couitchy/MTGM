@@ -1,0 +1,219 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>WinExe</OutputType>
+    <MyType>WindowsForms</MyType>
+    <RootNamespace>Magic_The_Gathering_Manager</RootNamespace>
+    <AssemblyName>Magic The Gathering Manager</AssemblyName>
+    <ApplicationIcon>Ressources\MTG.ico</ApplicationIcon>
+    <StartupObject>Magic_The_Gathering_Manager.clsModule</StartupObject>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>Off</OptionStrict>
+    <OptionCompare>Binary</OptionCompare>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\LS215701\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <OptionInfer>Off</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <DefineConstants>DEBUG=1,TRACE=1</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <DefineConstants>TRACE=1</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.Targets" />
+  <ItemGroup>
+    <Reference Include="ChartFX.Lite">
+      <HintPath>..\ChartFX.Lite.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NPlot">
+      <HintPath>..\NPlot.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="SandBar">
+      <HintPath>..\SandBar.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="SourceGrid2">
+      <HintPath>..\SourceGrid2.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="SourceLibrary">
+      <HintPath>..\SourceLibrary.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TreeViewMS">
+      <HintPath>..\TreeViewMS.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+    <Compile Include="About.Designer.vb">
+      <DependentUpon>About.vb</DependentUpon>
+    </Compile>
+    <Compile Include="About.vb" />
+    <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="clsModule.vb" />
+    <Compile Include="frmAddCards.Designer.vb">
+      <DependentUpon>frmAddCards.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddCards.vb" />
+    <Compile Include="frmBuyMV.Designer.vb">
+      <DependentUpon>frmBuyMV.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmBuyMV.vb" />
+    <Compile Include="frmCalendar.Designer.vb">
+      <DependentUpon>frmCalendar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmCalendar.vb" />
+    <Compile Include="frmDeleteEdition.Designer.vb">
+      <DependentUpon>frmDeleteEdition.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDeleteEdition.vb" />
+    <Compile Include="frmExceptionBox.Designer.vb">
+      <DependentUpon>frmExceptionBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmExceptionBox.vb" />
+    <Compile Include="frmExport.Designer.vb">
+      <DependentUpon>frmExport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmExport.vb" />
+    <Compile Include="frmGestDecks.Designer.vb">
+      <DependentUpon>frmGestDecks.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmGestDecks.vb" />
+    <Compile Include="frmGrapher.Designer.vb">
+      <DependentUpon>frmGrapher.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmGrapher.vb" />
+    <Compile Include="frmNewEdition.Designer.vb">
+      <DependentUpon>frmNewEdition.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmNewEdition.vb" />
+    <Compile Include="frmPerfs.Designer.vb">
+      <DependentUpon>frmPerfs.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPerfs.vb" />
+    <Compile Include="frmSearch.Designer.vb">
+      <DependentUpon>frmSearch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSearch.vb" />
+    <Compile Include="frmSimu.Designer.vb">
+      <DependentUpon>frmSimu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSimu.vb" />
+    <Compile Include="frmSpecialCardUse.Designer.vb">
+      <DependentUpon>frmSpecialCardUse.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSpecialCardUse.vb" />
+    <Compile Include="frmStats.Designer.vb">
+      <DependentUpon>frmStats.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmStats.vb" />
+    <Compile Include="frmTransfert.Designer.vb">
+      <DependentUpon>frmTransfert.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTransfert.vb" />
+    <Compile Include="frmTranslate.Designer.vb">
+      <DependentUpon>frmTranslate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTranslate.vb" />
+    <Compile Include="MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.vb" />
+    <Compile Include="Options.Designer.vb">
+      <DependentUpon>Options.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Options.vb" />
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddCards.resx">
+      <DependentUpon>frmAddCards.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBuyMV.resx">
+      <DependentUpon>frmBuyMV.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCalendar.resx">
+      <DependentUpon>frmCalendar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDeleteEdition.resx">
+      <DependentUpon>frmDeleteEdition.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExceptionBox.resx">
+      <DependentUpon>frmExceptionBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExport.resx">
+      <DependentUpon>frmExport.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGestDecks.resx">
+      <DependentUpon>frmGestDecks.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGrapher.resx">
+      <DependentUpon>frmGrapher.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNewEdition.resx">
+      <DependentUpon>frmNewEdition.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPerfs.resx">
+      <DependentUpon>frmPerfs.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSearch.resx">
+      <DependentUpon>frmSearch.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSimu.resx">
+      <DependentUpon>frmSimu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSpecialCardUse.resx">
+      <DependentUpon>frmSpecialCardUse.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmStats.resx">
+      <DependentUpon>frmStats.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTransfert.resx">
+      <DependentUpon>frmTransfert.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTranslate.resx">
+      <DependentUpon>frmTranslate.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options.resx">
+      <DependentUpon>Options.vb</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Licenses.licx" />
+  </ItemGroup>
+</Project>

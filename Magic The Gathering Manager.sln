@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+# SharpDevelop 2.2.1.2717
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Magic The Gathering Manager", "Magic The Gathering Manager.vbproj", "{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Updater", "Updater\Updater.vbproj", "{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+EndGlobal

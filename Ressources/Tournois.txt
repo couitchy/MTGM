@@ -1,0 +1,160 @@
+Type 1: Les decks en T1 peuvent être composés de n'importe quelle carte appartenant à n'importe quelle édition ou extension de Magic. Seules quelques cartes sont interdites ou restreintes à une seul exemplaire par deck.
+
+Nom anglais / Nom français
+
+Cartes interdites en T1:
+Amulet of Quoz / Amulette saugrenue
+Bronze Tablet / Tablette de bronze
+Chaos Orb
+Contract from Below / Contrat avec les enfers
+Darkpact / Pacte ténébreux
+Demonic Attorney / Avocat diabolique
+Falling Star
+Jeweled Bird
+Rebirth / Renouveau
+Shahrazad
+Tempest Efreet / Éfrit de la tourmente
+Timmerian Fiends / Fielleux timmériens
+
+
+Cartes restreintes en T1:
+Ancestral Recall
+Balance / Balance
+Black Lotus
+Brainstorm / Remue-méninges
+Burning Wish/ souhait brulant
+Channel / Transfert
+Chrome mox/ Mox de chrome
+Crop Rotation / Assolement
+Demonic Consultation / Consultation démoniaque
+Demonic Tutor / Précepteur diabolique
+Dream Halls / Salle du rêve
+Enlightened Tutor / Préceptrice éclairée
+Entomb / Ensevelissement
+Fact of Fiction / Fait ou fiction
+Fastbond / Enchaînements
+Flash / Flash
+Frantic Search / Recherche effrénée
+Grim Monolith / Monolithe sinistre
+Gush / Flot soudain
+Imperial Seal
+Library of Alexandria
+Lion eye's diamond/ Diamant de l'oeil du lion
+Lotus Petal / Pétale de lotus
+Mana Crypt / Crypte de mana
+Mana Vault / Arche de mana
+Memory Jar / Jarre-mémoire
+Merchant Scroll / Parchemin du marchand
+Mind's Desire / À mon seul désir
+Mox Diamond / Mox de diamant
+Mox Emerald
+Mox Jet
+Mox Pearl
+Mox Ruby
+Mox Sapphire
+Mystical Tutor / Préceptrice mystique
+Necropotence / Nécropuissance
+Personal Tutor
+Ponder / Contemplation
+Regrowth / Réapparition
+Sol Ring / Anneau solaire
+Strip Mine / Mine des morts-terrains
+Time Spiral / Spirale temporelle
+Time Walk
+Timetwister
+Tinker / Bricolage
+Tolarian Academy / Académie tolarianne
+Trinisphere / Trinisphère
+Vampiric Tutor / Précepteur vampirique
+Wheel of Fortune / Roue de la fortune
+Windfall / Aubaine
+Yawgmoth's Bargain / Marché selon Yaugzebul
+Yawgmoth's Will / Volonté de Yaugzebul
+
+
+Type 1.5: Ce format s'appelle maintenant officiellement "Legacy"/"Héritage", les cartes interdites sont:
+Amulet of Quoz / Amulette saugrenue
+Ancestral Recall
+Balance /balance
+Bazaar of Baghdad
+Black Lotus
+Black Vise / Étau de supplice
+Bronze Tablet / Tablette de bronze
+Channel / Transfert
+Chaos Orb
+Contract from Below / Contrat avec les enfers
+Darkpact / Pacte ténébreux
+Demonic Attorney / Avocat diabolique
+Demonic Consultation / Consultation démoniaque
+Demonic Tutor / Précepteur diabolique
+Dream Halls / Salle du rêve
+Earthcraft / Habilité chtonienne
+Entomb / Ensevelissement
+Falling Star
+Fastbond / Enchaînements
+Flash / Flash
+Frantic Search / Recherche effrénée
+Goblin Recruiter / Recruteur gobelin
+Grim Monolith / Monolithe sinistre
+Gush / Flot soudain
+Hermit Druid / Druide hermite
+Illusionary Mask
+Imperial seal
+Jeweled Bird
+Land Tax / Contribution foncière
+Library of Alexandria
+Mana Crypt / Crypte de mana
+Mana Drain
+Mana Vault / Arche de mana
+Memory Jar / Jarre mémoire
+Metalworker / Ouvrier métallurgiste
+Mind Twist / Convulsion cérébrale
+Mind's Desire / A mon seul désir
+Mishra's Workshop
+Mox Emerald
+Mox Jet
+Mox Pearl
+Mox Ruby
+Mox Sapphire
+Necropotence / Nécropuissance
+Oath of Druids / Serment des druides
+Rebirth / Renouveau
+Shahrazad
+Skullclamp / Pincecrane
+Sol Ring / Anneau solaire
+Strip Mine / Mine des morts-terrains
+Tempest Efreet / Éfrit de la tourmente
+Time Spiral / Spirale temporelle
+Time Walk
+Timetwister
+Timmerian Fiends / Fielleux timmériens
+Tinker / Bricolage
+Tolarian Academy / Académie tolarianne
+Vampiric Tutor / Précepteur vampirique
+Wheel of Fortune / Roue de la fortune
+Windfall / Aubaine
+Worldgorger Dragon / Dragon Avaleur de mondes
+Yawgmoth's Bargain / Marché de Yaugzebul
+Yawgmoth's Will / Volonté de Yaugzebul
+
+
+
+Type 1.x: Le format étendu, qui comporte toutes les éditions depuis la 7ème édition et toutes les extensions depuis Invasion.
+Par ordre chronologique: Invasion, Planeshift, Apocalypse, Odyssée, Tourment, Jugement, Carnage, Légions, Fléau, Mirrodin, Sombracier, 5ème Aube et Guerriers de Kamigawa, Traitres de kamigawa, Sauveurs de Kamigawa, Ravnica, Pacte des guildes, Discorde, Spirale temporelle, Chaos planaire, Vision de l'avenir, Lorwynn, Lèveciel, Sombrelande, Coucheciel, 7ème édition, 8ème édition, 9ème édition, 10ème édition
+Il n'y a pas de cartes restreintes dans ce format.
+
+Cartes interdites en étendu:
+Aether vial / Fiole d'aether
+Disciple of the vault / Disciple du caveau
+Entomb / Ensevelissement
+Skullclamp / Pincecrane
+
+
+Type 2: Les decks en T2 peuvent être composés avec les cartes de l'édition en cours et des 2 Blocs d'extensions les plus récents.
+Actuellement, le T2 se compose de la 10ème et des extensions suivantes: Souffle glaciaire, Spirale temporelle, Chaos planaire, Vision de l'avenir, Lorwynn, Lèveciel, Sombrelande, Coucheciel
+
+
+Type 3: Format limité, qui se décompose en paquet scellé (on fournit aux joueurs un starter et 2 ou 3 boosters)
+Différentes sortes de booster draft, ou chaque joueur recoit 3 boosters pour faire son jeu.
+
+Les decks doivent contenir 40 cartes minimum. La réserve est constituée par toutes les cartes non-utilisées pour constituer le deck de départ.
