@@ -37,9 +37,9 @@ Partial Class frmAddCards
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAddCards))
 		Me.CBarAjout = New TD.SandBar.ContainerBar
 		Me.pnlAjout = New TD.SandBar.ContainerBarClientPanel
+		Me.imgAdd = New System.Windows.Forms.PictureBox
 		Me.cmdDestination = New System.Windows.Forms.Button
 		Me.cmdAdd = New System.Windows.Forms.Button
-		Me.cmdFin = New System.Windows.Forms.Button
 		Me.grpQuantite = New System.Windows.Forms.GroupBox
 		Me.lblNbItems = New System.Windows.Forms.Label
 		Me.txtNbItems = New System.Windows.Forms.TextBox
@@ -49,24 +49,26 @@ Partial Class frmAddCards
 		Me.lblEncNbr = New System.Windows.Forms.Label
 		Me.cboSerie = New System.Windows.Forms.ComboBox
 		Me.grpId = New System.Windows.Forms.GroupBox
-		Me.lblVO = New System.Windows.Forms.Label
-		Me.lblVF = New System.Windows.Forms.Label
+		Me.pictureBox2 = New System.Windows.Forms.PictureBox
+		Me.imgVF = New System.Windows.Forms.PictureBox
 		Me.cboTitleEN = New System.Windows.Forms.ComboBox
 		Me.cboTitleFR = New System.Windows.Forms.ComboBox
 		Me.cmnuDestination = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.mnuDropToCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.CBarAjout.SuspendLayout
 		Me.pnlAjout.SuspendLayout
+		CType(Me.imgAdd,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.grpQuantite.SuspendLayout
 		Me.grpEdition.SuspendLayout
 		CType(Me.imgEdition,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.grpId.SuspendLayout
+		CType(Me.pictureBox2,System.ComponentModel.ISupportInitialize).BeginInit
+		CType(Me.imgVF,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cmnuDestination.SuspendLayout
 		Me.SuspendLayout
 		'
 		'CBarAjout
 		'
-		Me.CBarAjout.Closable = false
 		Me.CBarAjout.Controls.Add(Me.pnlAjout)
 		Me.CBarAjout.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.CBarAjout.DrawActionsButton = false
@@ -75,29 +77,41 @@ Partial Class frmAddCards
 		Me.CBarAjout.Location = New System.Drawing.Point(0, 0)
 		Me.CBarAjout.Movable = false
 		Me.CBarAjout.Name = "CBarAjout"
-		Me.CBarAjout.Size = New System.Drawing.Size(365, 348)
+		Me.CBarAjout.Size = New System.Drawing.Size(365, 328)
 		Me.CBarAjout.TabIndex = 1
 		Me.CBarAjout.Text = "Ajout de cartes"
-		AddHandler Me.CBarAjout.MouseDown, AddressOf Me.CBarAjoutMouseDown
+		AddHandler Me.CBarAjout.VisibleChanged, AddressOf Me.CBarAjoutVisibleChanged
 		AddHandler Me.CBarAjout.MouseMove, AddressOf Me.CBarAjoutMouseMove
+		AddHandler Me.CBarAjout.MouseDown, AddressOf Me.CBarAjoutMouseDown
 		AddHandler Me.CBarAjout.MouseUp, AddressOf Me.CBarAjoutMouseUp
 		'
 		'pnlAjout
 		'
+		Me.pnlAjout.Controls.Add(Me.imgAdd)
 		Me.pnlAjout.Controls.Add(Me.cmdDestination)
 		Me.pnlAjout.Controls.Add(Me.cmdAdd)
-		Me.pnlAjout.Controls.Add(Me.cmdFin)
 		Me.pnlAjout.Controls.Add(Me.grpQuantite)
 		Me.pnlAjout.Controls.Add(Me.grpEdition)
 		Me.pnlAjout.Controls.Add(Me.grpId)
 		Me.pnlAjout.Location = New System.Drawing.Point(2, 27)
 		Me.pnlAjout.Name = "pnlAjout"
-		Me.pnlAjout.Size = New System.Drawing.Size(361, 319)
+		Me.pnlAjout.Size = New System.Drawing.Size(361, 299)
 		Me.pnlAjout.TabIndex = 0
+		'
+		'imgAdd
+		'
+		Me.imgAdd.BackColor = System.Drawing.Color.Transparent
+		Me.imgAdd.Image = CType(resources.GetObject("imgAdd.Image"),System.Drawing.Image)
+		Me.imgAdd.Location = New System.Drawing.Point(209, 226)
+		Me.imgAdd.Name = "imgAdd"
+		Me.imgAdd.Size = New System.Drawing.Size(32, 32)
+		Me.imgAdd.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		Me.imgAdd.TabIndex = 15
+		Me.imgAdd.TabStop = false
 		'
 		'cmdDestination
 		'
-		Me.cmdDestination.Location = New System.Drawing.Point(268, 221)
+		Me.cmdDestination.Location = New System.Drawing.Point(187, 264)
 		Me.cmdDestination.Name = "cmdDestination"
 		Me.cmdDestination.Size = New System.Drawing.Size(75, 23)
 		Me.cmdDestination.TabIndex = 8
@@ -107,7 +121,7 @@ Partial Class frmAddCards
 		'
 		'cmdAdd
 		'
-		Me.cmdAdd.Location = New System.Drawing.Point(268, 250)
+		Me.cmdAdd.Location = New System.Drawing.Point(268, 263)
 		Me.cmdAdd.Name = "cmdAdd"
 		Me.cmdAdd.Size = New System.Drawing.Size(75, 23)
 		Me.cmdAdd.TabIndex = 4
@@ -115,24 +129,14 @@ Partial Class frmAddCards
 		Me.cmdAdd.UseVisualStyleBackColor = true
 		AddHandler Me.cmdAdd.Click, AddressOf Me.CmdAddClick
 		'
-		'cmdFin
-		'
-		Me.cmdFin.Location = New System.Drawing.Point(268, 279)
-		Me.cmdFin.Name = "cmdFin"
-		Me.cmdFin.Size = New System.Drawing.Size(75, 23)
-		Me.cmdFin.TabIndex = 5
-		Me.cmdFin.Text = "Fermer"
-		Me.cmdFin.UseVisualStyleBackColor = true
-		AddHandler Me.cmdFin.Click, AddressOf Me.CmdFinClick
-		'
 		'grpQuantite
 		'
 		Me.grpQuantite.BackColor = System.Drawing.Color.Transparent
 		Me.grpQuantite.Controls.Add(Me.lblNbItems)
 		Me.grpQuantite.Controls.Add(Me.txtNbItems)
-		Me.grpQuantite.Location = New System.Drawing.Point(10, 213)
+		Me.grpQuantite.Location = New System.Drawing.Point(10, 217)
 		Me.grpQuantite.Name = "grpQuantite"
-		Me.grpQuantite.Size = New System.Drawing.Size(189, 89)
+		Me.grpQuantite.Size = New System.Drawing.Size(165, 69)
 		Me.grpQuantite.TabIndex = 7
 		Me.grpQuantite.TabStop = false
 		Me.grpQuantite.Text = "Quantité"
@@ -140,7 +144,7 @@ Partial Class frmAddCards
 		'lblNbItems
 		'
 		Me.lblNbItems.AutoSize = true
-		Me.lblNbItems.Location = New System.Drawing.Point(28, 62)
+		Me.lblNbItems.Location = New System.Drawing.Point(28, 43)
 		Me.lblNbItems.Name = "lblNbItems"
 		Me.lblNbItems.Size = New System.Drawing.Size(111, 13)
 		Me.lblNbItems.TabIndex = 1
@@ -148,7 +152,7 @@ Partial Class frmAddCards
 		'
 		'txtNbItems
 		'
-		Me.txtNbItems.Location = New System.Drawing.Point(28, 29)
+		Me.txtNbItems.Location = New System.Drawing.Point(28, 19)
 		Me.txtNbItems.Name = "txtNbItems"
 		Me.txtNbItems.Size = New System.Drawing.Size(61, 20)
 		Me.txtNbItems.TabIndex = 3
@@ -164,14 +168,14 @@ Partial Class frmAddCards
 		Me.grpEdition.Controls.Add(Me.cboSerie)
 		Me.grpEdition.Location = New System.Drawing.Point(10, 118)
 		Me.grpEdition.Name = "grpEdition"
-		Me.grpEdition.Size = New System.Drawing.Size(333, 89)
+		Me.grpEdition.Size = New System.Drawing.Size(333, 93)
 		Me.grpEdition.TabIndex = 6
 		Me.grpEdition.TabStop = false
 		Me.grpEdition.Text = "Edition"
 		'
 		'imgEdition
 		'
-		Me.imgEdition.Location = New System.Drawing.Point(231, 65)
+		Me.imgEdition.Location = New System.Drawing.Point(236, 66)
 		Me.imgEdition.Name = "imgEdition"
 		Me.imgEdition.Size = New System.Drawing.Size(16, 16)
 		Me.imgEdition.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -181,7 +185,7 @@ Partial Class frmAddCards
 		'lblYear
 		'
 		Me.lblYear.AutoSize = true
-		Me.lblYear.Location = New System.Drawing.Point(272, 65)
+		Me.lblYear.Location = New System.Drawing.Point(269, 69)
 		Me.lblYear.Name = "lblYear"
 		Me.lblYear.Size = New System.Drawing.Size(38, 13)
 		Me.lblYear.TabIndex = 2
@@ -191,7 +195,7 @@ Partial Class frmAddCards
 		'lblEncNbr
 		'
 		Me.lblEncNbr.AutoSize = true
-		Me.lblEncNbr.Location = New System.Drawing.Point(28, 65)
+		Me.lblEncNbr.Location = New System.Drawing.Point(28, 66)
 		Me.lblEncNbr.Name = "lblEncNbr"
 		Me.lblEncNbr.Size = New System.Drawing.Size(85, 13)
 		Me.lblEncNbr.TabIndex = 1
@@ -211,8 +215,8 @@ Partial Class frmAddCards
 		'grpId
 		'
 		Me.grpId.BackColor = System.Drawing.Color.Transparent
-		Me.grpId.Controls.Add(Me.lblVO)
-		Me.grpId.Controls.Add(Me.lblVF)
+		Me.grpId.Controls.Add(Me.pictureBox2)
+		Me.grpId.Controls.Add(Me.imgVF)
 		Me.grpId.Controls.Add(Me.cboTitleEN)
 		Me.grpId.Controls.Add(Me.cboTitleFR)
 		Me.grpId.Location = New System.Drawing.Point(10, 12)
@@ -222,23 +226,25 @@ Partial Class frmAddCards
 		Me.grpId.TabStop = false
 		Me.grpId.Text = "Identification"
 		'
-		'lblVO
+		'pictureBox2
 		'
-		Me.lblVO.AutoSize = true
-		Me.lblVO.Location = New System.Drawing.Point(6, 59)
-		Me.lblVO.Name = "lblVO"
-		Me.lblVO.Size = New System.Drawing.Size(28, 13)
-		Me.lblVO.TabIndex = 3
-		Me.lblVO.Text = "(VO)"
+		Me.pictureBox2.Image = CType(resources.GetObject("pictureBox2.Image"),System.Drawing.Image)
+		Me.pictureBox2.Location = New System.Drawing.Point(16, 58)
+		Me.pictureBox2.Name = "pictureBox2"
+		Me.pictureBox2.Size = New System.Drawing.Size(16, 16)
+		Me.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		Me.pictureBox2.TabIndex = 5
+		Me.pictureBox2.TabStop = false
 		'
-		'lblVF
+		'imgVF
 		'
-		Me.lblVF.AutoSize = true
-		Me.lblVF.Location = New System.Drawing.Point(6, 32)
-		Me.lblVF.Name = "lblVF"
-		Me.lblVF.Size = New System.Drawing.Size(26, 13)
-		Me.lblVF.TabIndex = 2
-		Me.lblVF.Text = "(VF)"
+		Me.imgVF.Image = CType(resources.GetObject("imgVF.Image"),System.Drawing.Image)
+		Me.imgVF.Location = New System.Drawing.Point(16, 31)
+		Me.imgVF.Name = "imgVF"
+		Me.imgVF.Size = New System.Drawing.Size(16, 16)
+		Me.imgVF.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		Me.imgVF.TabIndex = 4
+		Me.imgVF.TabStop = false
 		'
 		'cboTitleEN
 		'
@@ -268,12 +274,12 @@ Partial Class frmAddCards
 		'
 		Me.cmnuDestination.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDropToCollection})
 		Me.cmnuDestination.Name = "cmnuDestination"
-		Me.cmnuDestination.Size = New System.Drawing.Size(132, 26)
+		Me.cmnuDestination.Size = New System.Drawing.Size(129, 26)
 		'
 		'mnuDropToCollection
 		'
 		Me.mnuDropToCollection.Name = "mnuDropToCollection"
-		Me.mnuDropToCollection.Size = New System.Drawing.Size(131, 22)
+		Me.mnuDropToCollection.Size = New System.Drawing.Size(128, 22)
 		Me.mnuDropToCollection.Text = "Collection"
 		AddHandler Me.mnuDropToCollection.Click, AddressOf Me.DropTo
 		'
@@ -282,36 +288,41 @@ Partial Class frmAddCards
 		Me.AcceptButton = Me.cmdAdd
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(365, 348)
+		Me.ClientSize = New System.Drawing.Size(365, 328)
 		Me.Controls.Add(Me.CBarAjout)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmAddCards"
 		Me.ShowInTaskbar = false
+		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Ajouter des cartes"
+		AddHandler Load, AddressOf Me.FrmAddCardsLoad
+		AddHandler FormClosing, AddressOf Me.FrmAddCardsFormClosing
 		Me.CBarAjout.ResumeLayout(false)
 		Me.pnlAjout.ResumeLayout(false)
+		CType(Me.imgAdd,System.ComponentModel.ISupportInitialize).EndInit
 		Me.grpQuantite.ResumeLayout(false)
 		Me.grpQuantite.PerformLayout
 		Me.grpEdition.ResumeLayout(false)
 		Me.grpEdition.PerformLayout
 		CType(Me.imgEdition,System.ComponentModel.ISupportInitialize).EndInit
 		Me.grpId.ResumeLayout(false)
-		Me.grpId.PerformLayout
+		CType(Me.pictureBox2,System.ComponentModel.ISupportInitialize).EndInit
+		CType(Me.imgVF,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cmnuDestination.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private imgAdd As System.Windows.Forms.PictureBox
+	Private imgVF As System.Windows.Forms.PictureBox
+	Private pictureBox2 As System.Windows.Forms.PictureBox
 	Private mnuDropToCollection As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuDestination As System.Windows.Forms.ContextMenuStrip
-	Private lblVF As System.Windows.Forms.Label
-	Private lblVO As System.Windows.Forms.Label
 	Private cmdDestination As System.Windows.Forms.Button
 	Private imgEdition As System.Windows.Forms.PictureBox
 	Private lblYear As System.Windows.Forms.Label
 	Private CBarAjout As TD.SandBar.ContainerBar
 	Private pnlAjout As TD.SandBar.ContainerBarClientPanel
 	Private lblNbItems As System.Windows.Forms.Label
-	Private cmdFin As System.Windows.Forms.Button
 	Private cmdAdd As System.Windows.Forms.Button
 	Private txtNbItems As System.Windows.Forms.TextBox
 	Private lblEncNbr As System.Windows.Forms.Label

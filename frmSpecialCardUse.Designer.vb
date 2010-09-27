@@ -37,6 +37,7 @@ Partial Class frmSpecialCardUse
 		Me.cbarSpecialCard = New TD.SandBar.ContainerBar
 		Me.pnlSpecialCard = New TD.SandBar.ContainerBarClientPanel
 		Me.grpUse = New System.Windows.Forms.GroupBox
+		Me.cmdCancel = New System.Windows.Forms.Button
 		Me.chkDoesntUntap = New System.Windows.Forms.CheckBox
 		Me.chkInvocTapped = New System.Windows.Forms.CheckBox
 		Me.txtEffet = New System.Windows.Forms.TextBox
@@ -73,8 +74,8 @@ Partial Class frmSpecialCardUse
 		Me.cbarSpecialCard.TabIndex = 0
 		Me.cbarSpecialCard.Text = "Utilisation spéciale d'une carte"
 		AddHandler Me.cbarSpecialCard.VisibleChanged, AddressOf Me.CbarSpecialCardVisibleChanged
-		AddHandler Me.cbarSpecialCard.MouseDown, AddressOf Me.CbarSpecialCardMouseDown
 		AddHandler Me.cbarSpecialCard.MouseMove, AddressOf Me.CbarSpecialCardMouseMove
+		AddHandler Me.cbarSpecialCard.MouseDown, AddressOf Me.CbarSpecialCardMouseDown
 		AddHandler Me.cbarSpecialCard.MouseUp, AddressOf Me.CbarSpecialCardMouseUp
 		'
 		'pnlSpecialCard
@@ -88,6 +89,7 @@ Partial Class frmSpecialCardUse
 		'
 		'grpUse
 		'
+		Me.grpUse.Controls.Add(Me.cmdCancel)
 		Me.grpUse.Controls.Add(Me.chkDoesntUntap)
 		Me.grpUse.Controls.Add(Me.chkInvocTapped)
 		Me.grpUse.Controls.Add(Me.txtEffet)
@@ -107,6 +109,16 @@ Partial Class frmSpecialCardUse
 		Me.grpUse.TabIndex = 1
 		Me.grpUse.TabStop = false
 		'
+		'cmdCancel
+		'
+		Me.cmdCancel.Location = New System.Drawing.Point(208, 192)
+		Me.cmdCancel.Name = "cmdCancel"
+		Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
+		Me.cmdCancel.TabIndex = 12
+		Me.cmdCancel.Text = "Fermer"
+		Me.cmdCancel.UseVisualStyleBackColor = true
+		AddHandler Me.cmdCancel.Click, AddressOf Me.CmdCancelClick
+		'
 		'chkDoesntUntap
 		'
 		Me.chkDoesntUntap.AutoSize = true
@@ -124,7 +136,7 @@ Partial Class frmSpecialCardUse
 		Me.chkInvocTapped.Enabled = false
 		Me.chkInvocTapped.Location = New System.Drawing.Point(20, 143)
 		Me.chkInvocTapped.Name = "chkInvocTapped"
-		Me.chkInvocTapped.Size = New System.Drawing.Size(171, 17)
+		Me.chkInvocTapped.Size = New System.Drawing.Size(271, 17)
 		Me.chkInvocTapped.TabIndex = 10
 		Me.chkInvocTapped.Text = "La carte arrive en jeu engagée (ou mal d'invocation)"
 		Me.chkInvocTapped.UseVisualStyleBackColor = true
@@ -137,8 +149,8 @@ Partial Class frmSpecialCardUse
 		Me.txtEffet.Size = New System.Drawing.Size(218, 20)
 		Me.txtEffet.TabIndex = 9
 		Me.txtEffet.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-		AddHandler Me.txtEffet.Enter, AddressOf Me.TxtEffetEnter
 		AddHandler Me.txtEffet.Leave, AddressOf Me.TxtEffetLeave
+		AddHandler Me.txtEffet.Enter, AddressOf Me.TxtEffetEnter
 		'
 		'txtEffort
 		'
@@ -148,8 +160,8 @@ Partial Class frmSpecialCardUse
 		Me.txtEffort.Size = New System.Drawing.Size(259, 20)
 		Me.txtEffort.TabIndex = 8
 		Me.txtEffort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-		AddHandler Me.txtEffort.Enter, AddressOf Me.TxtEffortEnter
 		AddHandler Me.txtEffort.Leave, AddressOf Me.TxtEffortLeave
+		AddHandler Me.txtEffort.Enter, AddressOf Me.TxtEffortEnter
 		'
 		'lbl21
 		'
@@ -271,6 +283,7 @@ Partial Class frmSpecialCardUse
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmSpecialCardUse"
 		Me.Text = "Utilisation spéciale d'une carte"
+		AddHandler Load, AddressOf Me.FrmSpecialCardUseLoad
 		Me.cbarSpecialCard.ResumeLayout(false)
 		Me.pnlSpecialCard.ResumeLayout(false)
 		Me.grpUse.ResumeLayout(false)
@@ -278,6 +291,7 @@ Partial Class frmSpecialCardUse
 		Me.grpCard.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private cmdCancel As System.Windows.Forms.Button
 	Private lbl0 As System.Windows.Forms.Label
 	Private chkInvocTapped As System.Windows.Forms.CheckBox
 	Private chkDoesntUntap As System.Windows.Forms.CheckBox

@@ -6,9 +6,13 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - traduction des options				   03/04/2010 |
 '------------------------------------------------------
 #Region "Importations"
 Imports System.Data
@@ -17,29 +21,29 @@ Imports System.ComponentModel
 Imports System.Reflection
 Imports System.Text
 #End Region
-Public Partial Class Options	
+Public Partial Class Options
 	Public VgSettings As New clsSettings
 	Private VmIsInitializing As Boolean
-	Public Sub New()		
+	Public Sub New()
 		Me.InitializeComponent()
-	End Sub	
-	Private Sub OptionsLoad(sender As Object, e As System.EventArgs)		
+	End Sub
+	Private Sub OptionsLoad(sender As Object, e As System.EventArgs)
 		Me.propOptions.SelectedObject = VgSettings
-	End Sub	
+	End Sub
 	Private Sub OptionsFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
 		Call SaveSettings
-	End Sub	
+	End Sub
 	Public Sub SaveSettings
 	'------------------------------------------------------------------------------------------------------------
 	'Sauvegarde les propriétés actuelles du PropertyGrid dans le fichier INI avant de fermer la boîte de dialogue
 	'------------------------------------------------------------------------------------------------------------
 	Dim VpSettingsType As Type = GetType(clsSettings)
 		'Parcourt les membres de la classe clsSettings
-		For Each VpProperty As MemberInfo In VpSettingsType.GetMembers				
+		For Each VpProperty As MemberInfo In VpSettingsType.GetMembers
 			'Si on tombe sur une propriété
 			If VpProperty.MemberType = MemberTypes.Property Then
 				'On la sauvegarde dans le fichier INI
-				Call clsModule.WritePrivateProfileString("Properties", VpProperty.Name, VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.GetProperty, Nothing, VgSettings, Nothing).ToString, Application.StartupPath + clsModule.CgINIFile)					
+				Call clsModule.WritePrivateProfileString("Properties", VpProperty.Name, VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.GetProperty, Nothing, VgSettings, Nothing).ToString, Application.StartupPath + clsModule.CgINIFile)
 			End If
 		Next VpProperty
 	End Sub
@@ -48,7 +52,7 @@ Public Partial Class Options
 	'Restaure les propriétés sauvegardées du PropertyGrid à partir du fichier INI à l'ouverture de la boîte de dialogue
 	'------------------------------------------------------------------------------------------------------------------
 	Dim VpSettingsType As Type = GetType(clsSettings)
-	Dim VpStr As New StringBuilder(512)		
+	Dim VpStr As New StringBuilder(512)
 		VmIsInitializing = True
 		For Each VpProperty As MemberInfo In VpSettingsType.GetMembers
 			If VpProperty.MemberType = MemberTypes.Property Then
@@ -58,52 +62,21 @@ Public Partial Class Options
 					VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.SetProperty, Nothing, VgSettings, New Object() {clsModule.Matching(VpStr.ToString)})
 				End If
 			End If
-		Next VpProperty	
+		Next VpProperty
 		VmIsInitializing = False
-	End Sub		
+	End Sub
 	Public Function GetDeckName_INI(VpI As Integer) As String
 	'-----------------------------------------------------
 	'Retourne le nom du deck d'index spécifié en paramètre
 	'				/!\ OBSOLETE /!\
 	'-----------------------------------------------------
 	Dim VpNames() As String
-		Try 
+		Try
 			VpNames = VgSettings.NomsJeux.Split("#")
 			Return VpNames(VpI - 1)
 		Catch
 			Return "Jeu n°" + VpI.ToString
 		End Try
-	End Function
-	Public Function GetDeckName(VpI As Integer) As String
-	'-----------------------------------------------------
-	'Retourne le nom du deck d'index spécifié en paramètre
-	'-----------------------------------------------------
-		VgDBCommand.CommandText = "Select Last(GameName) From (Select Top " + VpI.ToString + " GameName From MyGamesID);"
-		Try
-			Return VgDBCommand.ExecuteScalar
-		Catch
-			Return "Jeu n°" + VpI.ToString
-		End Try
-	End Function	
-	Public Function GetDeckIndex(VpStr As String) As String
-	'-----------------------------------------------------
-	'Retourne l'index du deck de nom spécifié en paramètre
-	'-----------------------------------------------------
-	Dim VpO As Object
-		VgDBCommand.CommandText = "Select GameID From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
-		VpO = VgDBCommand.ExecuteScalar
-		If Not VpO Is Nothing Then
-			Return VpO.ToString
-		Else
-			Return ""
-		End If
-	End Function
-	Public Function GetDeckCount As Integer
-	'----------------------------------------------
-	'Retourne le nombre de decks en base de données
-	'----------------------------------------------
-		VgDBCommand.CommandText = "Select Count(*) From MyGamesID;"		
-		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public ReadOnly Property IsInitializing As Boolean
 		Get
@@ -111,22 +84,46 @@ Public Partial Class Options
 		End Get
 	End Property
 End Class
-Public Class clsSettings		
+Public Class clsSettings
 	Private VmNJeux As Integer = 1
 	Private VmNomsJeux As String = ""
 	Private VmDefaultBase As String = ".\Cartes\Magic DB.mdb"
 	Private VmPicturesFile As String = ".\Cartes\Images DB.dat"
+	Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
 	Private VmPreferredSellers As String = ""
-	Private VmDefaultCriteria As String = "1#2#7"
+	Private VmDefaultActivatedCriteria As String = "2#7"
+	Private VmDefaultCriteriaOrder As String = "Decks#Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
+	Private VmRestoreCriteria As Boolean = True
+	Private VmDefaultSearchCriterion As clsModule.eSearchCriterion = clsModule.eSearchCriterion.NomVF
 	Private VmCheckForUpdate As Boolean = True
 	Private VmAutoRefresh As Boolean = True
 	Private VmImageMode As PictureBoxSizeMode = PictureBoxSizeMode.CenterImage
 	Private VmAutoHideImage As Boolean = False
+	Private VmAutoHideAutorisations As Boolean = False
 	Private VmRestoreSize As Boolean = False
-	Private VmRestoredWidth As Integer = 757
-	Private VmRestoredHeight As Integer = 372
-	Private VmFormWindowState As FormWindowState = FormWindowState.Normal	
-	<Category("Général"), Description("Mémoriser la taille de la fenêtre principale à la fermeture")> _
+	Private VmRestoredWidth As Integer = 773
+	Private VmRestoredHeight As Integer = 435
+	Private VmRestoredSplitterDistance As Integer = 68
+	Private VmFormWindowState As FormWindowState = FormWindowState.Normal
+	Private VmForceSingleSource As Boolean = False
+	Private VmLastUpdateAut As String = ""
+	Private VmLastUpdateSimu As String = ""
+	Private VmLastUpdateTxtVF As String = ""
+	Private VmLastUpdatePictPatch As String = ""
+	Private VmLastUpdateTradPatch As String = ""
+	Private VmShowUpdateMenus As Boolean = False
+	Private VmPrevSearches As String = ""
+	Private VmVFDefault As Boolean = True
+	<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
+	Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
+		Get
+			Return VmDefaultSearchCriterion
+		End Get
+		Set (VpDefaultSearchCriterion As clsModule.eSearchCriterion)
+			VmDefaultSearchCriterion = VpDefaultSearchCriterion
+		End Set
+	End Property
+	<DisplayName("Restaurer le fenêtrage"), Category("Général"), DefaultValue(False), Description("Mémoriser la taille de la fenêtre principale à la fermeture")> _
 	Public Property RestoreSize As Boolean
 		Get
 			Return VmRestoreSize
@@ -134,7 +131,7 @@ Public Class clsSettings
 		Set (VpRestoreSize As Boolean)
 			VmRestoreSize = VpRestoreSize
 		End Set
-	End Property	
+	End Property
 	<Browsable(False), Category("Général"), Description("Mémorisation largeur")> _
 	Public Property RestoredWidth As Integer
 		Get
@@ -143,7 +140,7 @@ Public Class clsSettings
 		Set (VpRestoredWidth As Integer)
 			VmRestoredWidth = VpRestoredWidth
 		End Set
-	End Property	
+	End Property
 	<Browsable(False), Category("Général"), Description("Mémorisation hauteur")> _
 	Public Property RestoredHeight As Integer
 		Get
@@ -152,7 +149,16 @@ Public Class clsSettings
 		Set (VpRestoredHeight As Integer)
 			VmRestoredHeight = VpRestoredHeight
 		End Set
-	End Property	
+	End Property
+	<Browsable(False), Category("Général"), Description("Mémorisation distance splitter")> _
+	Public Property RestoredSplitterDistance As Integer
+		Get
+			Return VmRestoredSplitterDistance
+		End Get
+		Set (VpRestoredSplitterDistance As Integer)
+			VmRestoredSplitterDistance = VpRestoredSplitterDistance
+		End Set
+	End Property
 	<Browsable(False), Category("Général"), Description("Mémorisation fenêtrage")> _
 	Public Property RestoredState As FormWindowState
 		Get
@@ -161,16 +167,16 @@ Public Class clsSettings
 		Set (VpFormWindowState As FormWindowState)
 			VmFormWindowState = VpFormWindowState
 		End Set
-	End Property	
-	<Category("Général"), Description("Vérifier régulièrement si une mise à jour existe pour l'application")> _	
+	End Property
+	<DisplayName("Vérifier les mises à jour"), Category("Général"), DefaultValue(True), Description("Vérifier régulièrement si une mise à jour existe pour l'application")> _
 	Public Property CheckForUpdate As Boolean
 		Get
 			Return VmCheckForUpdate
 		End Get
-		Set(VpCheckForUpdate As Boolean)
+		Set (VpCheckForUpdate As Boolean)
 			VmCheckForUpdate = VpCheckForUpdate
 		End Set
-	End Property	
+	End Property
 	<Browsable(False), Category("Général"), Description("Nombre de decks")> _
 	Public Property NJeux As Integer
 		Get
@@ -188,7 +194,7 @@ Public Class clsSettings
 		Set (VpNomsJeux As String)
 			VmNomsJeux = VpNomsJeux
 		End Set
-	End Property	
+	End Property
 	<Browsable(False), Category("Général"), Description("Noms des vendeurs préférés (à séparer par un dièse)")> _
 	Public Property PreferredSellers As String
 		Get
@@ -197,59 +203,180 @@ Public Class clsSettings
 		Set (VpPreferredSellers As String)
 			VmPreferredSellers = VpPreferredSellers
 		End Set
-	End Property	
-	<Category("Général"), Description("Base de données à ouvrir par défaut"), Editor(GetType(System.Windows.Forms.Design.FileNameEditor), GetType(System.Drawing.Design.UITypeEditor))> _
+	End Property
+	<DisplayName("Base par défaut"), Category("Général"), DefaultValue(".\Cartes\Magic DB.mdb"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
 	Public Property DefaultBase As String
 		Get
 			Return VmDefaultBase
 		End Get
-		Set(VpDefaultBase As String)
+		Set (VpDefaultBase As String)
 			VmDefaultBase = VpDefaultBase
 		End Set
-	End Property		
-	<Category("Explorateur"), Description("Critères par défaut (à séparer par un dièse, Type = 1, Couleur = 2, Edition = 3, Coût d'invocation = 4 etc.)")> _
-	Public Property DefaultCriteria As String
+	End Property
+	<DisplayName("Restaurer les filtres"), Category("Explorateur"), DefaultValue(True), Description("Mémoriser l'état des critères de classement à la fermeture")> _
+	Public Property RestoreCriteria As Boolean
 		Get
-			Return VmDefaultCriteria
+			Return VmRestoreCriteria
 		End Get
-		Set(VpDefaultCriteria As String)
-			VmDefaultCriteria = VpDefaultCriteria
+		Set (VpRestoreCriteria As Boolean)
+			VmRestoreCriteria = VpRestoreCriteria
 		End Set
 	End Property
-	<Category("Explorateur"), Description("Rafraîchir automatiquement l'arborescence après avoir ajouté ou supprimé des cartes.")> _
+	<Browsable(False), Category("Explorateur"), Description("Critères activés par défaut (à séparer par un dièse, Type = 1, Couleur = 2, Edition = 3, Coût d'invocation = 4 etc.)")> _
+	Public Property DefaultActivatedCriteria As String
+		Get
+			If VmRestoreCriteria Then
+				Return VmDefaultActivatedCriteria
+			Else
+				Return "2#7"
+			End If
+		End Get
+		Set (VpDefaultActivatedCriteria As String)
+			VmDefaultActivatedCriteria = VpDefaultActivatedCriteria
+		End Set
+	End Property
+	<Browsable(False), Category("Explorateur"), Description("Ordre par défaut des critères (à séparer par un dièse)")> _
+	Public Property DefaultCriteriaOrder As String
+		Get
+			Return VmDefaultCriteriaOrder
+		End Get
+		Set (VpDefaultCriteriaOrder As String)
+			VmDefaultCriteriaOrder = VpDefaultCriteriaOrder
+		End Set
+	End Property
+	<DisplayName("Rafraîchissement automatique"), Category("Explorateur"), DefaultValue(True), Description("Rafraîchir automatiquement l'arborescence après avoir ajouté ou supprimé des cartes.")> _
 	Public Property AutoRefresh As Boolean
 		Get
 			Return VmAutoRefresh
 		End Get
-		Set(VpAutoRefresh As Boolean)
+		Set (VpAutoRefresh As Boolean)
 			VmAutoRefresh = VpAutoRefresh
 		End Set
-	End Property	
-	<Category("Explorateur"), Description("Toujours fermer le panneau image au démarrage.")> _
+	End Property
+	<DisplayName("Cartes en français par défaut"), Category("Explorateur"), DefaultValue(True), Description("Toujours considérer le français comme la langue par défaut pour le titre et le texte des cartes.")> _
+	Public Property VFDefault As Boolean
+		Get
+			Return VmVFDefault
+		End Get
+		Set (VpVFDefault As Boolean)
+			VmVFDefault = VpVFDefault
+		End Set
+	End Property
+	<DisplayName("Masquer les images"), Category("Explorateur"), DefaultValue(False), Description("Toujours fermer le panneau image au démarrage.")> _
 	Public Property AutoHideImage As Boolean
 		Get
 			Return VmAutoHideImage
 		End Get
-		Set(VpAutoHideImage As Boolean)
+		Set (VpAutoHideImage As Boolean)
 			VmAutoHideImage = VpAutoHideImage
 		End Set
-	End Property	
-	<Category("Explorateur"), Description("Fichier des images numérisées des cartes."), Editor(GetType(System.Windows.Forms.Design.FileNameEditor), GetType(System.Drawing.Design.UITypeEditor))> _
+	End Property
+	<DisplayName("Masquer les autorisations"), Category("Explorateur"), DefaultValue(False), Description("Toujours fermer le panneau des autorisations en tournois.")> _
+	Public Property AutoHideAutorisations As Boolean
+		Get
+			Return VmAutoHideAutorisations
+		End Get
+		Set (VpAutoHideAutorisations As Boolean)
+			VmAutoHideAutorisations = VpAutoHideAutorisations
+		End Set
+	End Property
+	<DisplayName("Base des images"), Category("Explorateur"), DefaultValue(".\Cartes\Images DB.dat"), Description("Fichier des images numérisées des cartes."), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
 	Public Property PicturesFile As String
 		Get
 			Return VmPicturesFile
 		End Get
-		Set(VpPicturesFile As String)
+		Set (VpPicturesFile As String)
 			VmPicturesFile = VpPicturesFile
 		End Set
-	End Property	
-	<Category("Explorateur"), Description("Mode d'affichage des images des cartes.")> _
+	End Property
+	<DisplayName("Image de fond"), Category("Explorateur"), Description("Image de fond à afficher par défaut dans le panneau latéral."), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Images JPEG (*.jpg)|*.jpg")> _
+	Public Property MagicBack As String
+		Get
+			Return VmMagicBack
+		End Get
+		Set (VpMagicBack As String)
+			VmMagicBack = VpMagicBack
+		End Set
+	End Property
+	<DisplayName("Format des images"), Category("Explorateur"), DefaultValue(PictureBoxSizeMode.CenterImage), Description("Mode d'affichage des images des cartes.")> _
 	Public Property ImageMode As PictureBoxSizeMode
 		Get
 			Return VmImageMode
 		End Get
-		Set(VpImageMode As PictureBoxSizeMode)
+		Set (VpImageMode As PictureBoxSizeMode)
 			VmImageMode = VpImageMode
 		End Set
-	End Property	
+	End Property
+	<DisplayName("Forcer source unique"), Category("Explorateur"), DefaultValue(False), Description("Limitation à une source unique sélectionnée dans le menu affichage (un seul deck ou collection).")> _
+	Public Property ForceSingleSource As Boolean
+		Get
+			Return VmForceSingleSource
+		End Get
+		Set (VpForceSingleSource As Boolean)
+			VmForceSingleSource = VpForceSingleSource
+		End Set
+	End Property
+	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour des autorisations de tournoi")> _
+	Public Property LastUpdateAut As String
+		Get
+			Return VmLastUpdateAut
+		End Get
+		Set (VpLastUpdateAut As String)
+			VmLastUpdateAut = VpLastUpdateAut
+		End Set
+	End Property
+	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour des modèles de simulations / historiques")> _
+	Public Property LastUpdateSimu As String
+		Get
+			Return VmLastUpdateSimu
+		End Get
+		Set (VpLastUpdateSimu As String)
+			VmLastUpdateSimu = VpLastUpdateSimu
+		End Set
+	End Property
+	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour des textes des cartes en VF")> _
+	Public Property LastUpdateTxtVF As String
+		Get
+			Return VmLastUpdateTxtVF
+		End Get
+		Set (VpLastUpdateTxtVF As String)
+			VmLastUpdateTxtVF = VpLastUpdateTxtVF
+		End Set
+	End Property
+	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour du correctif des images")> _
+	Public Property LastUpdatePictPatch As String
+		Get
+			Return VmLastUpdatePictPatch
+		End Get
+		Set (VpLastUpdatePictPatch As String)
+			VmLastUpdatePictPatch = VpLastUpdatePictPatch
+		End Set
+	End Property
+	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour du correctif des titres des cartes en VF")> _
+	Public Property LastUpdateTradPatch As String
+		Get
+			Return VmLastUpdateTradPatch
+		End Get
+		Set (VpLastUpdateTradPatch As String)
+			VmLastUpdateTradPatch = VpLastUpdateTradPatch
+		End Set
+	End Property
+	<Browsable(False), Category("Général"), Description("Liste des dernières recherches effectuées")> _
+	Public Property PrevSearches As String
+		Get
+			Return VmPrevSearches
+		End Get
+		Set (VpPrevSearches As String)
+			VmPrevSearches = VpPrevSearches
+		End Set
+	End Property
+	<DisplayName("Afficher les menus détaillés des mises à jour"), Category("Général"), DefaultValue(False), Description("Permet d'afficher l'ensemble des menus des mises à jour (obsolète)")> _
+	Public Property ShowUpdateMenus As Boolean
+		Get
+			Return VmShowUpdateMenus
+		End Get
+		Set (VpShowUpdateMenus As Boolean)
+			VmShowUpdateMenus = VpShowUpdateMenus
+		End Set
+	End Property
 End Class

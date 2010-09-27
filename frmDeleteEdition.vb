@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -53,10 +56,12 @@ Public Partial Class frmDeleteEdition
 		Me.chkCards.Text = "Supprimer aussi les cartes saisies dans cette édition (" + VpCount.ToString + " cartes distinctes concernées)"
 	End Sub
 	Sub CmdGoClick(ByVal sender As Object, ByVal e As EventArgs)
-		If Me.cboSerie.Text <> "" Then
+		If Me.cboSerie.Text.Trim <> "" Then
 			Call Me.GoDelete
 			VmOwner.LoadTvw
 			Call clsModule.ShowInformation("Suppression effectuée avec succès !")
+			Call clsModule.LoadEditions(Me.cboSerie)
+			Me.picSerie.Image = Nothing
 		End If
 	End Sub
 End Class

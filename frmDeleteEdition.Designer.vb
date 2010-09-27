@@ -33,6 +33,7 @@ Partial Class frmDeleteEdition
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
+		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDeleteEdition))
 		Me.grpSerie = New System.Windows.Forms.GroupBox
 		Me.cmdGo = New System.Windows.Forms.Button
 		Me.lblSerie = New System.Windows.Forms.Label
@@ -110,6 +111,8 @@ Partial Class frmDeleteEdition
 		'chkHeader
 		'
 		Me.chkHeader.AutoSize = true
+		Me.chkHeader.Checked = true
+		Me.chkHeader.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkHeader.Location = New System.Drawing.Point(12, 55)
 		Me.chkHeader.Name = "chkHeader"
 		Me.chkHeader.Size = New System.Drawing.Size(191, 17)
@@ -137,6 +140,7 @@ Partial Class frmDeleteEdition
 		Me.Controls.Add(Me.grpAdvance)
 		Me.Controls.Add(Me.grpSerie)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmDeleteEdition"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Suppression d'une série"

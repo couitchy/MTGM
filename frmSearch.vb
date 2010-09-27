@@ -6,21 +6,31 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - affichage de la carte numérisée       23/09/2008 |
 '| - nouveaux critères de recherches	   15/08/2009 |
+'| - nouveaux critères de recherches	   20/12/2009 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmSearch
 	Private VmOwner As MainForm				'Formulaire parent
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
-	Private VmCanClose As Boolean = False   'Formulaire peut être fermé	
+	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
+	Private VmSource As String
+	Private VmRestriction As String
+	Private VmPrevSearchs As New ArrayList
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
+		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmRestriction = VpOwner.Restriction
 		VmOwner = VpOwner
+		Me.cboSearchType.SelectedIndex = CInt(VgOptions.VgSettings.DefaultSearchCriterion)
 	End Sub
 	#Region "Méthodes"
 	Private Function BuildSplitSearch(VpField As String, VpValue As String) As String
@@ -34,7 +44,7 @@ Public Partial Class frmSearch
 		Else
 			VpValues = VpValue.Split(" ")
 			For Each VpStr As String In VpValues
-				VpQuery = "InStr(" + VpField + ", " + VpStr + ") > 0 And " + VpQuery 
+				VpQuery = "InStr(" + VpField + ", " + VpStr + ") > 0 And " + VpQuery
 			Next VpStr
 			Return VpQuery.Substring(0, VpQuery.Length - 4)
 		End If
@@ -51,25 +61,25 @@ Public Partial Class frmSearch
 			VpCriteria = "Val(" + VpField + ") = " + VpValue
 		Else
 			If Not VpValue.Contains(" ") Then
-				VpCriteria = "InStr(" + VpField + ", " + VpValue + ") > 0"			
+				VpCriteria = "InStr(" + VpField + ", " + VpValue + ") > 0"
 			Else
 				VpCriteria = Me.BuildSplitSearch(VpField, VpValue)
 			End If
 		End If
 		'Recherche restreinte aux cartes présentes dans l'arborescence
 		If Me.chkRestriction.Checked Then
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + IIf(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
-			VpSQL = VpSQL + VmOwner.Restriction
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + IIf(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
+			VpSQL = VpSQL + VmRestriction
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche étendue (toutes les cartes de la base de données)
-		Else		
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) " + IIf(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
+		Else
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + IIf(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
 		End If
 		Try
 			'Requête effective
 			VgDBCommand.CommandText = VpSQL
-			VgDBReader = VgDBCommand.ExecuteReader	
-			With VgDBReader			
+			VgDBReader = VgDBCommand.ExecuteReader
+			With VgDBReader
 				'Parcourt la liste des résultats en évitant les doublons
 				While .Read
 					VpEntry = .GetString(1) + " (" + .GetString(0) + ")"
@@ -78,12 +88,12 @@ Public Partial Class frmSearch
 					End If
 				End While
 				.Close
-			End With	
+			End With
 		Catch
 			Call clsModule.ShowWarning("Une erreur s'est produite lors de la recherche..." + vbCrLf + "Vérifier les informations saisies et recommencer.")
 		End Try
 		'Retourne le résultat de la requête en tant que sous-sélection (table virtuelle) pour une utilisation ultérieure éventuelle (chargement dans le treeview)
-		Return "(" + VpSQL.Substring(0, VpSQL.Length - 1) + ") As " + clsModule.CgSFromSearch
+		Return VpSQL.Substring(0, VpSQL.Length - 1)
 	End Function
 	Private Function FindCardNode(VpTitle As String, VpNode As TreeNode) As Boolean
 	'---------------------------------------------------------------------
@@ -99,45 +109,77 @@ Public Partial Class frmSearch
 					Return True
 				End If
 			Next VpChild
-		End If		
+		End If
 		Return False
+	End Function
+	Private Function GetSearchRequests(VpSQL As String) As String
+	'----------------------------------------------------------------------------------
+	'Retourne la requête globale (simple ou fusionnée) associée à la recherche courante
+	'----------------------------------------------------------------------------------
+	Dim VpSQLs As String = ""
+		If Not Me.chkMerge.Checked Then
+			VmPrevSearchs.Clear
+		End If
+		VmPrevSearchs.Add(VpSQL)
+		If VmPrevSearchs.Count = 1 Then
+			Me.cboFind.Tag = Me.cboFind.Text
+			Return "(" + VpSQL + ") As " + clsModule.CgSFromSearch
+		Else
+			Me.cboFind.Tag = Me.cboFind.Tag + ", " + Me.cboFind.Text
+			For Each VpSQLi As String In VmPrevSearchs
+				VpSQLs = VpSQLs + VpSQLi + " Union "
+			Next VpSQLi
+			Return "(" + VpSQLs.Substring(0, VpSQLs.Length - 7) + ") As " + clsModule.CgSFromSearch
+		End If
 	End Function
 	#End Region
 	#Region " Evènements "
 	Private Sub CmdGoClick(sender As System.Object, e As System.EventArgs)
-	Dim VpSource As String
 	Dim VpSQL As String = ""
-	Dim VpReq As String = Me.txtFind.Text.Replace("'", "''")
+	Dim VpReq As String = Me.cboFind.Text.Replace("'", "''")
 	Dim VpType As Integer = Me.cboSearchType.SelectedIndex
 		Me.lstResult.Items.Clear
 		If Me.chkRestriction.Checked And Not VmOwner.IsSourcePresent Then
 			Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
 			Exit Sub
 		End If
-		VpSource = IIf(VmOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		'Mémorisation requête
+		If Not Me.cboFind.Items.Contains(Me.cboFind.Text) AndAlso Me.cboFind.Text.Trim <> "" Then
+			Me.cboFind.Items.Add(Me.cboFind.Text)
+		End If
 		Select Case VpType
-			'Recherche type string
-			Case 0, 1, 2
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + VpReq.Replace(" ", "' '") + "'", VpSource)
+			'Recherche type string simple
+			Case 0, 1, 2, 3, 9
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + VpReq.Replace(" ", "' '") + "'", VmSource)
 			'Recherche type nombre / sur créatures
-			Case 3, 4
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VpSource, True)
+			Case 4, 5
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, True, True)
 			'Recherche type nombre / égalité
-			Case 5, 7
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VpSource, , True)
+			Case 6, 8
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, , True)
 			'Recherche type string / sur éditions
-			Case 6
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + clsModule.GetSerieCodeFromName(VpReq) + "'", VpSource)
+			Case 7
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + clsModule.GetSerieCodeFromName(VpReq, True) + "'", VmSource)
 			Case Else
 		End Select
 		'Nombre de réponses
-		Call clsModule.ShowInformation(Me.lstResult.Items.Count.ToString + " occurence(s) trouvée(s).")
+		Me.lblOccur.Text = Me.lstResult.Items.Count.ToString + " occurence(s) trouvée(s)"
 		'Chargement éventuel dans le treeview
 		If Me.chkShowExternal.Checked Then
-			Call VmOwner.LoadTvw(VpSQL)
+			Call VmOwner.LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, clsModule.CgFromSearch + " (" + Me.cboFind.Tag +")")
 		End If
-	End Sub		
-	Private Sub LstResultDoubleClick(sender As System.Object, e As System.EventArgs)			
+	End Sub
+	Private Function GetLastSearchNode As TreeNode
+	'----------------------------------------------------------------------------
+	'Retourne le noeud correspondant à la dernière recherche (ie. celle en cours)
+	'----------------------------------------------------------------------------
+	Dim VpNode As TreeNode = VmOwner.tvwExplore.Nodes.Item(0)
+		While Not VpNode.NextNode Is Nothing
+			VpNode = VpNode.NextNode
+		End While
+		Return VpNode
+	End Function
+	Private Sub LstResultDoubleClick(sender As System.Object, e As System.EventArgs)
 	'------------------------------------------------------------------------------------------------------------------------------------
 	'Affiche le détail de la carte sélectionnée après la recherche, soit dans l'arborescence principale, soit dans l'onglet des résultats
 	'------------------------------------------------------------------------------------------------------------------------------------
@@ -146,6 +188,9 @@ Public Partial Class frmSearch
 		If Me.lstResult.SelectedItem Is Nothing Then Exit Sub
 		VpTitle = Me.lstResult.SelectedItem.ToString
 		VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
+		If VpTitle.Contains("(") Then
+			VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
+		End If
 		VpTitle = VpTitle.Substring(0, VpTitle.Length - 1)
 		If Not Me.chkRestriction.Checked Then
 			VpSource = ""
@@ -154,27 +199,27 @@ Public Partial Class frmSearch
 		End If
 		Me.lstResult.Tag = VpTitle
 		Me.grpSerie.Tag = VpSource
-		If Me.chkShowExternal.Checked Then	
-			Call Me.FindCardNode(VpTitle, VmOwner.tvwExplore.Nodes.Item(0))
+		If Me.chkShowExternal.Checked Then
+			Call Me.FindCardNode(VpTitle, Me.GetLastSearchNode)
 			Me.btResult.Enabled = False
+			'VmOwner.tvwExplore.Focus
 		Else
 			Me.SuspendLayout
 			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, VpSource)
 			Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
 			Me.btResult.Enabled = True
 			Call Me.BtResultActivate(sender, e)
-			Me.ResumeLayout		
+			Me.ResumeLayout
 		End If
-	End Sub	
+	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 		'Astuce un peu crade : nom de la carte sauvé dans lstresult.tag et source dans grpserie.tag
 		Me.SuspendLayout
-		Call clsModule.LoadCarac(VmOwner, Me, Me.lstResult.Tag, Me.grpSerie.Tag, Me.cboEdition.Text)
+		Call clsModule.LoadCarac(VmOwner, Me, Me.lstResult.Tag, Me.grpSerie.Tag, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		Me.ResumeLayout
-	End Sub	
+	End Sub
 	Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
-		VmCanClose = True
 		VmMousePos = New Point(e.X, e.Y)
 	End Sub
 	Private Sub CbarSearchMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -184,25 +229,49 @@ Public Partial Class frmSearch
 	End Sub
 	Private Sub CbarSearchMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = False
-	End Sub		
+	End Sub
 	Private Sub CbarSearchVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
-		If VmCanClose Then
+		If VmCanClose AndAlso Not Me.cbarSearch.Visible Then
 			Me.Close
 		End If
-	End Sub			
+	End Sub
 	Sub BtSearchActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpSearch.Visible = True
 		Me.grpSerie.Visible = False
-	End Sub	
+	End Sub
 	Sub BtResultActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpSerie.Visible = True
 		Me.grpSearch.Visible = False
 	End Sub
 	Sub ChkRestrictionCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear
-	End Sub	
+	End Sub
 	Sub ChkShowExternalCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear
-	End Sub	
-	#End Region	
+		Me.chkClearPrev.Enabled = ( Me.chkShowExternal.Checked )
+		Me.chkMerge.Enabled = ( Me.chkShowExternal.Checked )
+	End Sub
+	Sub CmdClearSearchesClick(sender As Object, e As EventArgs)
+		Me.cboFind.Items.Clear
+	End Sub
+	Sub FrmSearchFormClosing(sender As Object, e As FormClosingEventArgs)
+	Dim VpSearches As String = ""
+		If Me.cboFind.Items.Count > 0 Then
+			For Each VpSearch As String In Me.cboFind.Items
+				VpSearches = VpSearches + VpSearch + "#"
+			Next VpSearch
+			VpSearches = VpSearches.Substring(0, VpSearches.Length - 1)
+		End If
+		VgOptions.VgSettings.PrevSearches = VpSearches
+		Call VgOptions.SaveSettings
+	End Sub
+	Sub FrmSearchLoad(sender As Object, e As EventArgs)
+		VmCanClose = True
+		For Each VpSearch As String In VgOptions.VgSettings.PrevSearches.Split("#")
+			If VpSearch.Trim <> "" Then
+				Me.cboFind.Items.Add(VpSearch)
+			End If
+		Next VpSearch
+	End Sub
+	#End Region
 End Class

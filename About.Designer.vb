@@ -53,19 +53,24 @@ Partial Class About
 		Me.tabPage1 = New System.Windows.Forms.TabPage
 		Me.tabPage4 = New System.Windows.Forms.TabPage
 		Me.txtVersions = New System.Windows.Forms.TextBox
+		Me.tabPage5 = New System.Windows.Forms.TabPage
+		Me.label6 = New System.Windows.Forms.Label
+		Me.picPaypal = New System.Windows.Forms.PictureBox
 		Me.groupBox1.SuspendLayout
 		Me.tabControl1.SuspendLayout
 		Me.tabPage2.SuspendLayout
 		Me.tabPage3.SuspendLayout
 		Me.tabPage1.SuspendLayout
 		Me.tabPage4.SuspendLayout
+		Me.tabPage5.SuspendLayout
+		CType(Me.picPaypal,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
 		'
 		'lnkMail
 		'
 		Me.lnkMail.BackColor = System.Drawing.Color.White
 		Me.lnkMail.LinkColor = System.Drawing.Color.FromArgb(CType(CType(255,Byte),Integer), CType(CType(128,Byte),Integer), CType(CType(128,Byte),Integer))
-		Me.lnkMail.Location = New System.Drawing.Point(238, 109)
+		Me.lnkMail.Location = New System.Drawing.Point(238, 115)
 		Me.lnkMail.Name = "lnkMail"
 		Me.lnkMail.Size = New System.Drawing.Size(100, 17)
 		Me.lnkMail.TabIndex = 15
@@ -96,7 +101,7 @@ Partial Class About
 		Me.label1.Name = "label1"
 		Me.label1.Size = New System.Drawing.Size(424, 22)
 		Me.label1.TabIndex = 13
-		Me.label1.Text = "Copyright 2005-2008 Couitchy Corporation. Tous droits réservés."
+		Me.label1.Text = "Copyright 2008-2010 Couitchy Corporation. Tous droits réservés."
 		Me.label1.UseCompatibleTextRendering = true
 		'
 		'button1
@@ -139,6 +144,7 @@ Partial Class About
 		Me.tabControl1.Controls.Add(Me.tabPage3)
 		Me.tabControl1.Controls.Add(Me.tabPage1)
 		Me.tabControl1.Controls.Add(Me.tabPage4)
+		Me.tabControl1.Controls.Add(Me.tabPage5)
 		Me.tabControl1.Location = New System.Drawing.Point(12, 91)
 		Me.tabControl1.Name = "tabControl1"
 		Me.tabControl1.SelectedIndex = 0
@@ -233,10 +239,10 @@ Partial Class About
 		Me.label5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
 		Me.label5.Font = New System.Drawing.Font("Tahoma", 11!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World, CType(0,Byte))
 		Me.label5.ForeColor = System.Drawing.Color.Black
-		Me.label5.Location = New System.Drawing.Point(6, 15)
+		Me.label5.Location = New System.Drawing.Point(6, 20)
 		Me.label5.Name = "label5"
 		Me.label5.RightToLeft = System.Windows.Forms.RightToLeft.No
-		Me.label5.Size = New System.Drawing.Size(424, 141)
+		Me.label5.Size = New System.Drawing.Size(424, 132)
 		Me.label5.TabIndex = 16
 		Me.label5.Text = resources.GetString("label5.Text")
 		Me.label5.UseCompatibleTextRendering = true
@@ -273,6 +279,36 @@ Partial Class About
 		Me.txtVersions.Size = New System.Drawing.Size(428, 156)
 		Me.txtVersions.TabIndex = 0
 		'
+		'tabPage5
+		'
+		Me.tabPage5.Controls.Add(Me.label6)
+		Me.tabPage5.Controls.Add(Me.picPaypal)
+		Me.tabPage5.Location = New System.Drawing.Point(4, 22)
+		Me.tabPage5.Name = "tabPage5"
+		Me.tabPage5.Size = New System.Drawing.Size(434, 162)
+		Me.tabPage5.TabIndex = 4
+		Me.tabPage5.Text = "Don"
+		Me.tabPage5.UseVisualStyleBackColor = true
+		'
+		'label6
+		'
+		Me.label6.Location = New System.Drawing.Point(22, 17)
+		Me.label6.Name = "label6"
+		Me.label6.Size = New System.Drawing.Size(395, 63)
+		Me.label6.TabIndex = 1
+		Me.label6.Text = resources.GetString("label6.Text")
+		'
+		'picPaypal
+		'
+		Me.picPaypal.Image = CType(resources.GetObject("picPaypal.Image"),System.Drawing.Image)
+		Me.picPaypal.Location = New System.Drawing.Point(141, 100)
+		Me.picPaypal.Name = "picPaypal"
+		Me.picPaypal.Size = New System.Drawing.Size(144, 47)
+		Me.picPaypal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
+		Me.picPaypal.TabIndex = 0
+		Me.picPaypal.TabStop = false
+		AddHandler Me.picPaypal.Click, AddressOf Me.PicPaypalClick
+		'
 		'About
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -298,8 +334,14 @@ Partial Class About
 		Me.tabPage1.ResumeLayout(false)
 		Me.tabPage4.ResumeLayout(false)
 		Me.tabPage4.PerformLayout
+		Me.tabPage5.ResumeLayout(false)
+		Me.tabPage5.PerformLayout
+		CType(Me.picPaypal,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private picPaypal As System.Windows.Forms.PictureBox
+	Private label6 As System.Windows.Forms.Label
+	Private tabPage5 As System.Windows.Forms.TabPage
 	Private txtVersions As System.Windows.Forms.TextBox
 	Private tabPage4 As System.Windows.Forms.TabPage
 	Private label5 As System.Windows.Forms.Label

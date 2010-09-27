@@ -30,10 +30,12 @@ Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Update
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Ressources\*.*"; DestDir: "{app}\Ressources"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Cartes\Magic DB.mdb"; DestDir: "{app}\Cartes"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\MTGM.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\MTGM.pdf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Historique.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\ChartFX.Lite.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\NPlot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\TreeViewMS.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Win7Taskbar.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SandBar.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SourceGrid2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SourceLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -41,14 +43,12 @@ Source: "D:\Programmation\VB .NET\_LIBRAIRIES\isxdl.dll"; Flags: dontcopy
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
+Type: filesandordirs; Name: "{code:GetVirtualPath}"
 
 [Icons]
 Name: "{group}\Magic The Gathering Manager"; Filename: "{app}\Magic The Gathering Manager.exe"; WorkingDir: "{app}"
 Name: "{group}\{cm:UninstallProgram,Magic The Gathering Manager}"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\Magic The Gathering Manager"; Filename: "{app}\Magic The Gathering Manager.exe"; WorkingDir: "{app}"; Tasks: desktopicon
-
-[Run]
-Filename: "{app}\Magic The Gathering Manager.exe"; Description: "{cm:LaunchProgram,Magic The Gathering Manager}"; Flags: nowait postinstall skipifsilent
 
 [_ISTool]
 EnableISX=true
@@ -140,4 +140,15 @@ begin
   if memoDependenciesNeeded <> '' then s := s + 'Module(s) complémentaire(s) :' + NewLine + memoDependenciesNeeded + NewLine;
   s := s + MemoDirInfo + NewLine + NewLine;
   Result := s
+end;
+
+function GetVirtualPath(Param: String) : String;
+var
+s: string;
+begin
+  s := ExpandConstant('{app}');
+  Delete(s, 1, 2);
+  s := ExpandConstant('{userappdata}') + '\Local\VirtualStore' + s;
+  StringChangeEx(s, '\Roaming', '', True);
+  Result := s;
 end;

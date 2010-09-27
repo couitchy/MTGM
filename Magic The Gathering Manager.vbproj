@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -15,8 +15,13 @@
     <OptionCompare>Binary</OptionCompare>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\LS215701\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <OptionInfer>Off</OptionInfer>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+    <SourceAnalysisOverrideSettingsFile>C:\Users\Couitchy\AppData\Roaming\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <NoWin32Manifest>True</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -32,32 +37,26 @@
     <Optimize>True</Optimize>
     <DefineConstants>TRACE=1</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.Targets" />
   <ItemGroup>
-    <Reference Include="ChartFX.Lite">
-      <HintPath>..\ChartFX.Lite.dll</HintPath>
+    <Reference Include="ChartFX.Lite, Version=6.0.839.0, Culture=neutral, PublicKeyToken=a1878e2052c08dce">
+      <HintPath>..\_LIBRAIRIES\ChartFX.Lite.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NPlot">
-      <HintPath>..\NPlot.dll</HintPath>
+      <HintPath>..\_LIBRAIRIES\NPlot.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SandBar">
-      <HintPath>..\SandBar.dll</HintPath>
+      <HintPath>..\_LIBRAIRIES\SandBar.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="SourceGrid2">
-      <HintPath>..\SourceGrid2.dll</HintPath>
+    <Reference Include="SourceGrid2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=ad929b4064585aea">
+      <HintPath>..\_LIBRAIRIES\SourceGrid2.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SourceLibrary">
-      <HintPath>..\SourceLibrary.dll</HintPath>
+      <HintPath>..\_LIBRAIRIES\SourceLibrary.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
@@ -67,7 +66,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TreeViewMS">
-      <HintPath>..\TreeViewMS.dll</HintPath>
+      <HintPath>..\_LIBRAIRIES\TreeViewMS.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
@@ -97,6 +96,10 @@
       <DependentUpon>frmCalendar.vb</DependentUpon>
     </Compile>
     <Compile Include="frmCalendar.vb" />
+    <Compile Include="frmCorrExpr.Designer.vb">
+      <DependentUpon>frmCorrExpr.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmCorrExpr.vb" />
     <Compile Include="frmDeleteEdition.Designer.vb">
       <DependentUpon>frmDeleteEdition.vb</DependentUpon>
     </Compile>
@@ -149,6 +152,14 @@
       <DependentUpon>frmTranslate.vb</DependentUpon>
     </Compile>
     <Compile Include="frmTranslate.vb" />
+    <Compile Include="frmUpdateContenu.Designer.vb">
+      <DependentUpon>frmUpdateContenu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmUpdateContenu.vb" />
+    <Compile Include="frmXL.Designer.vb">
+      <DependentUpon>frmXL.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmXL.vb" />
     <Compile Include="MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
@@ -157,6 +168,7 @@
       <DependentUpon>Options.vb</DependentUpon>
     </Compile>
     <Compile Include="Options.vb" />
+    <Compile Include="UIFilenameEditor.vb" />
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.vb</DependentUpon>
     </EmbeddedResource>
@@ -168,6 +180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmCalendar.resx">
       <DependentUpon>frmCalendar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCorrExpr.resx">
+      <DependentUpon>frmCorrExpr.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDeleteEdition.resx">
       <DependentUpon>frmDeleteEdition.vb</DependentUpon>
@@ -208,12 +223,18 @@
     <EmbeddedResource Include="frmTranslate.resx">
       <DependentUpon>frmTranslate.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmUpdateContenu.resx">
+      <DependentUpon>frmUpdateContenu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmXL.resx">
+      <DependentUpon>frmXL.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Options.resx">
       <DependentUpon>Options.vb</DependentUpon>
     </EmbeddedResource>
-    <None Include="Licenses.licx" />
+    <EmbeddedResource Include="Licenses.licx" />
   </ItemGroup>
 </Project>

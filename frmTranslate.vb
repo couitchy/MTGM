@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -62,6 +65,7 @@ Public Partial Class frmTranslate
 	'Parcours les cartes de la série passée en paramètre et demande leur traduction une par une
 	'------------------------------------------------------------------------------------------
 	Dim VpDBCommand As New OleDbCommand
+		MainForm.VgMe.IsMainReaderBusy = True
     	VpDBCommand.Connection = VgDB
     	VpDBCommand.CommandType = CommandType.Text	
 		VgDBCommand.CommandText = "Select Title, EncNbr From Card Where Series = '" + VpSerie + "';"
@@ -81,17 +85,21 @@ Public Partial Class frmTranslate
 				'Démonopolisation des ressources
 				Application.DoEvents
 				If .IsClosed Then
+					MainForm.VgMe.IsMainReaderBusy = False
 					Exit Sub
 				End If
 			End While
 			.Close
 		End With
+		MainForm.VgMe.IsMainReaderBusy = False
 		Call clsModule.ShowInformation("Traduction terminée !")
 	End Sub
 	Sub CmdGoClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Not Me.cboSerie.SelectedItem Is Nothing Then
 			Me.txtCount.Text = "0"
+			Me.cmdGo.Enabled = False
 			Call Me.Launch(Me.cboSerie.Text.Substring(1, 2))
+			Me.cmdGo.Enabled = True
 		Else
 			Call clsModule.ShowWarning("Aucune édition n'a été sélectionnée...")
 		End If

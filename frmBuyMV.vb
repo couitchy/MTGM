@@ -6,12 +6,17 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - watchdog sur la connexion Magic-Ville 20/02/2010 |
 '------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
+Imports System.IO
 Public Partial Class frmBuyMV
 	Private Const CmURL As String = "http://magic-ville.fr/fr/"
 	Private VmIsComplete As Boolean = False
@@ -21,20 +26,38 @@ Public Partial Class frmBuyMV
 		Me.InitializeComponent()
 	End Sub
 	Public Sub AddToBasket(VpName As String)
+	'------------------------------------------------------------------
+	'Incrémente la quantité du panier pour la carte passée en paramètre
+	'------------------------------------------------------------------
+		'Carte déjà mise au panier
 		For Each VpCard As clsLocalCard In Me.VmToBuy
 			If VpCard.Name = VpName Then
 				VpCard.Quantite = VpCard.Quantite + 1
 				Return
 			End If
 		Next
+		'Nouvelle carte
 		Me.VmToBuy.Add(New clsLocalCard(VpName))
 	End Sub
+	Public Sub AddToBasket(VpName As String, VpQuant As Integer)
+		For VpI As Integer = 1 To VpQuant
+			Call Me.AddToBasket(VpName)
+		Next VpI
+	End Sub	
 	Private Sub BrowseAndWait(Optional VpURL As String = "")
-		Me.VmIsComplete = False	
+	'---------------------------------------------------------------------------
+	'Navigue sur la page passée en paramètre en respectant le délai d'expiration
+	'---------------------------------------------------------------------------
+	Dim VpStart As Date = Now
+		Me.VmIsComplete = False
 		If VpURL <> "" Then
 			Me.wbMV.Navigate(VpURL)		
 		End If
 		While Not Me.VmIsComplete
+			If Now.Subtract(VpStart).TotalSeconds > clsModule.CgTimeOut Then
+				Me.wbMV.Stop
+				Me.VmIsComplete = True
+			End If
 			Application.DoEvents
 		End While
 	End Sub
@@ -102,7 +125,7 @@ Public Partial Class frmBuyMV
 					End If
 				End With
 			ElseIf VpElement.GetAttribute("color") = "#3333ff" Then
-				VpProposition.Prix = Val(VpElement.InnerText)
+				VpProposition.Prix = clsModule.MyVal(VpElement.InnerText)
 			End If
 		Next VpElement
 	End Sub
@@ -258,6 +281,29 @@ Public Partial Class frmBuyMV
 			End With			
 		End If
 	End Sub
+	Private Sub BasketSave(VpFile As String)
+	'--------------------
+	'Sauvegarde du panier
+	'--------------------
+	Dim VpBasket As New StreamWriter(VpFile)
+		For Each VpCard As clsLocalCard In Me.VmToBuy
+			VpBasket.WriteLine(VpCard.Name + "#" + VpCard.Quantite.ToString)
+		Next VpCard
+		VpBasket.Close
+	End Sub
+	Private Sub BasketLoad(VpFile As String)
+	'----------------------
+	'Chargement d'un panier
+	'----------------------
+	Dim VpBasket As New StreamReader(VpFile)
+	Dim VpItem(0 To 1) As String
+		While Not VpBasket.EndOfStream
+			VpItem = VpBasket.ReadLine.Split("#")
+			Call Me.AddToBasket(VpItem(0), Val(VpItem(1)))
+		End While
+		VpBasket.Close
+		Call Me.LoadGrid(eBasketMode.Local)
+	End Sub
 	Private Sub CellValidated(sender As Object, e As CellEventArgs)	
 	Static VpClearing As Boolean = False	'Crade mais évite une boucle infinie due au fait que la suppression d'un row déclenche l'évènement de validation de manière indiscernable par rapport à une fin d'édition de cellule
 	Dim VpQ As Short
@@ -282,11 +328,15 @@ Public Partial Class frmBuyMV
 		Call Me.LoadGrid(eBasketMode.MV)
 	End Sub
 	Sub CmdRefreshClick(ByVal sender As Object, ByVal e As EventArgs)
+		Me.cmdRefresh.Visible = False
+		Me.cmdCancelMV.Tag = False
+		Me.cmdCancelMV.Visible = True
 		Me.prgRefresh.Maximum = Me.VmToBuy.Count
 		Me.prgRefresh.Value = 0
 		'Récupère les informations pour chaque carte
 		Try
 			For Each VpCard As clsLocalCard In Me.VmToBuy
+				If Me.cmdCancelMV.Tag = True Then Exit For
 				Call Me.DownloadMVInfos(VpCard.Name)
 				Me.prgRefresh.Increment(1)
 			Next VpCard
@@ -295,6 +345,8 @@ Public Partial Class frmBuyMV
 		Catch
 			Call clsModule.ShowWarning(clsModule.CgDL3b) 
 		End Try
+		Me.cmdRefresh.Visible = True
+		Me.cmdCancelMV.Visible = False
 	End Sub	
 	Sub WbMVDocumentCompleted(ByVal sender As Object, ByVal e As WebBrowserDocumentCompletedEventArgs)
 		Me.VmIsComplete = True
@@ -354,6 +406,25 @@ Public Partial Class frmBuyMV
 			Me.lstSeller.Items.RemoveAt(Me.lstSeller.SelectedIndex)
 		End If
 	End Sub
+	Sub BtSaveBasketActivate(sender As Object, e As EventArgs)
+		Me.dlgSave.FileName = ""
+		Me.dlgSave.ShowDialog
+		If Me.dlgSave.FileName <> "" Then
+			Call Me.BasketSave(Me.dlgSave.FileName)
+		End If
+	End Sub
+	Sub BtLoadBasketActivate(sender As Object, e As EventArgs)
+		Me.dlgOpen.FileName = ""
+		Me.dlgOpen.ShowDialog
+		If Me.dlgOpen.FileName <> "" Then
+			Call Me.BasketLoad(Me.dlgOpen.FileName)
+		End If		
+	End Sub
+	Sub CmdCancelMVClick(sender As Object, e As EventArgs)
+		Me.cmdCancelMV.Tag = True
+		Me.cmdCancelMV.Visible = False
+		Me.cmdRefresh.Visible = True
+	End Sub
 End Class
 Public Class clsLocalCard
 	Private VmName As String
@@ -371,7 +442,7 @@ Public Class clsLocalCard
 		Get
 			Return VmQuant
 		End Get
-		Set(VpQuant As Integer)
+		Set (VpQuant As Integer)
 			VmQuant = VpQuant
 		End Set
 	End Property
@@ -400,7 +471,7 @@ Public Class clsMVCard
 		Get
 			Return VmVendeur
 		End Get
-		Set(VpVendeur As String)
+		Set (VpVendeur As String)
 			VmVendeur = VpVendeur
 		End Set
 	End Property
@@ -408,7 +479,7 @@ Public Class clsMVCard
 		Get
 			Return VmEdition
 		End Get
-		Set(VpEdition As String)
+		Set (VpEdition As String)
 			VmEdition = VpEdition
 		End Set
 	End Property
@@ -416,7 +487,7 @@ Public Class clsMVCard
 		Get
 			Return VmEtat
 		End Get
-		Set(VpEtat As clsModule.eQuality)
+		Set (VpEtat As clsModule.eQuality)
 			VmEtat = VpEtat
 		End Set
 	End Property
@@ -424,7 +495,7 @@ Public Class clsMVCard
 		Get
 			Return VmQuant
 		End Get
-		Set(VpQuant As Integer)
+		Set (VpQuant As Integer)
 			VmQuant = VpQuant
 		End Set
 	End Property
@@ -432,7 +503,7 @@ Public Class clsMVCard
 		Get
 			Return VmPrix
 		End Get
-		Set(VpPrix As Single)
+		Set (VpPrix As Single)
 			VmPrix = VpPrix
 		End Set
 	End Property	

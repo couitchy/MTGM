@@ -6,9 +6,14 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - mode automatique					   13/12/2009 |
+'| - mise à jour auto des headers		   21/04/2010 |
 '------------------------------------------------------
 Imports System.IO
 Imports System.ComponentModel
@@ -16,12 +21,151 @@ Public Partial Class frmNewEdition
 	Private VmEditionHeader As New clsEditionHeader
 	Public Sub New()
 		Me.InitializeComponent()
-		Me.picMagic.Image = Image.FromFile(Application.StartupPath + clsModule.CgMagicBack)
-	End Sub	
+		Me.picMagic.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
+	End Sub
+	Private Function InsertHeader As Boolean
+	'--------------------------------------------------------------
+	'Inscrit l'en-tête de la nouvelle série dans la base de données
+	'--------------------------------------------------------------
+		Try
+			With Me.VmEditionHeader
+				'(SeriesCD, SeriesNM, SeriesNM_MtG, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Nullx13, Notes)
+				VgDBCommand.CommandText = "Insert Into Series Values ('" + .SeriesCD + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', Null, Null, True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", Null, " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, '" + .NotesEdition.Replace("'", "''") + "');"
+				VgDBCommand.ExecuteNonQuery
+			End With
+		Catch
+			Call clsModule.ShowWarning("Impossible d'ajouter l'en-tête à la base de données..." + vbCrLf + "Peut-être ce nom d'édition existe-t-il déjà ? Vérifier les informations saisies et recommencer.")
+			Return False
+		End Try
+		Return True
+	End Function
+	Private Sub DLResource(VpCount As String, VpFrom As String, VpTo As String)
+	'------------------------------------------------------
+	'Télécharge un fichier nécessaire à l'ajout d'une série
+	'------------------------------------------------------
+		Me.lblStatus.Text = "Téléchargement des données en cours... " + VpCount
+		Application.DoEvents
+		Call clsModule.DownloadNow(New Uri(VpFrom), VpTo)
+	End Sub
+	Private Sub FillHeader(VpInfos() As String)
+	'-------------------------------------------------------------------------
+	'Remplit l'objet en-tête à partir du tableau de chaînes passé en paramètre
+	'-------------------------------------------------------------------------	
+		With Me.VmEditionHeader
+			.SeriesCD = VpInfos(1)
+			.SeriesNM = VpInfos(2)
+			.SeriesNM_MtG = VpInfos(3)
+			.Border = .SetBorder(VpInfos(8))
+			.Release = CDate(VpInfos(9))
+			.TotCards = Val(VpInfos(11))
+			.Rare = Val(VpInfos(13))
+			.Uncommon = Val(VpInfos(14))
+			.Common = Val(VpInfos(15))
+			.Land = Val(VpInfos(16))
+			.NotesEdition = VpInfos(30)
+		End With		
+	End Sub
+	Private Sub UpdateSerie(VpInfos() As String)
+	'------------------------------------------------------------------------------------
+	'Met à jour automatiquement l'édition dont les informations sont passées en paramètre
+	'------------------------------------------------------------------------------------
+	Dim VpChecker As String = "\" + VpInfos(0) + "_checklist_en.txt"
+	Dim VpSpoiler As String = "\" + VpInfos(0) + "_spoiler_en.txt"
+		'Téléchargement des fichiers nécessaires
+		Call Me.DLResource("(1/3)", clsModule.CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
+		Call Me.DLResource("(2/3)", clsModule.CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
+		Call Me.DLResource("(3/3)", clsModule.CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
+		'Inscription de l'en-tête
+		Me.lblStatus.Text = "Inscription de l'en-tête..."
+		Application.DoEvents
+		Call Me.FillHeader(VpInfos)
+		If Me.InsertHeader Then
+			Me.lblStatus.Text = "Ajout des cartes..."
+			Application.DoEvents
+			'La suite est comme en mode manuel
+			Me.txtCheckList.Text = Application.StartupPath + VpChecker
+			Me.txtSpoilerList.Text = Application.StartupPath + VpSpoiler
+			Me.chkNewEdition.Tag = VpInfos(2)
+			Call Me.AddNewEdition
+		End If
+		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
+		Call clsModule.SecureDelete(Application.StartupPath + VpChecker)
+		Call clsModule.SecureDelete(Application.StartupPath + VpSpoiler)
+	End Sub
+	Private Sub UpdateSeriesHeaders
+	'--------------------------------------------------------------
+	'Met à jour les en-têtes des séries (table Series) dans la base
+	'--------------------------------------------------------------
+	Dim VpSeriesInfos As StreamReader
+	Dim VpInfos() As String
+	Dim VpLine As String	
+		Call clsModule.DownloadNow(New Uri(clsModule.CgURL12), clsModule.CgUpSeries)
+		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then	
+			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
+			Do While Not VpSeriesInfos.EndOfStream
+				VpLine = VpSeriesInfos.ReadLine
+				If VpLine.Contains("#") Then
+					VpInfos = VpLine.Split("#")
+					Call Me.FillHeader(VpInfos)
+					Try
+						With Me.VmEditionHeader
+							VgDBCommand.CommandText = "Update Series Set SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+							VgDBCommand.ExecuteNonQuery
+						End With
+					Catch
+						Call clsModule.ShowWarning("Impossible de mettre à jour l'en-tête " + Me.VmEditionHeader.SeriesNM + " de la base de données...")
+					End Try	
+				End If
+			Loop
+			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
+			Call clsModule.ShowInformation("Terminé !")		
+		Else
+			Call clsModule.ShowWarning(clsModule.CgDL3b)
+		End If
+	End Sub
+	Private Function QuerySeries As ArrayList
+	'------------------------------------------
+	'Récupère la liste des éditions disponibles
+	'------------------------------------------
+	Dim VpSeriesInfos As StreamReader
+	Dim VpInfos() As String
+	Dim VpLine As String
+	Dim VpAlready As ArrayList
+	Dim VpNew As New ArrayList
+	Dim VpMustAdd As Boolean
+		Call clsModule.DownloadNow(New Uri(clsModule.CgURL12), clsModule.CgUpSeries)
+		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
+			VpAlready = Me.BuildList("Select UCase(SeriesNM) From Series;")
+			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
+			Do While Not VpSeriesInfos.EndOfStream
+				VpLine = VpSeriesInfos.ReadLine
+				If VpLine.Contains("#") Then
+					VpInfos = VpLine.Split("#")
+					VpMustAdd = True
+					For Each VpStr As String In VpAlready
+						If VpStr = VpInfos(2).ToUpper Then
+							VpMustAdd = False
+							Exit For
+						End If
+					Next VpStr
+					If VpMustAdd Then
+						VpNew.Add(VpLine)
+						Me.chkNewEditionAuto.Items.Add(VpInfos(2), False)
+					End If
+				End If
+			Loop
+			Me.cmdAutoPrevious.Enabled = True
+			Return VpNew
+		Else
+			Call clsModule.ShowWarning(clsModule.CgDL3b)
+			Me.cmdAutoPrevious.Enabled = True
+			Return Nothing
+		End If
+	End Function
 	Private Function AddNewCard(VpCarac() As String) As Boolean
 	'-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	'Ajoute à la base de données la carte donc les caractéristiques sont passées en paramètre en ayant au prélable complété celles manquantes grâce à la checklist
-	'-------------------------------------------------------------------------------------------------------------------------------------------------------------	
+	'-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	Dim VpFile As StreamReader
 	Dim VpLine As String
 	Dim VpFLine As String
@@ -38,10 +182,10 @@ Public Partial Class frmNewEdition
 		VpFile = New StreamReader(Me.txtCheckList.Text)
 		VpComplement = New ArrayList
 		'Code la nouvelle édition
-		VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.CheckedItems(0).ToString)
+		VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.Tag)
 		'Dernier numéro d'identification de carte utilisé
 		VgDBCommand.CommandText = "Select Max(EncNbr) From Card;"
-		VpEncNbr = CLng(VgDBCommand.ExecuteScalar) + 1 
+		VpEncNbr = CLng(VgDBCommand.ExecuteScalar) + 1
 		'Vérifie si la carte a déjà été éditée dans une édition précédente
 		VgDBCommand.CommandText = "Select LastPrint From Spell Where Title = '" + VpCarac(0).Replace("'", "''") + "';"
 		VpPrevious = Not ( VgDBCommand.ExecuteScalar Is Nothing )
@@ -57,7 +201,7 @@ Public Partial Class frmNewEdition
 			'(évite les erreurs dues au caractère apostrophe dans des charsets exotiques !)
 			ElseIf VpFLine.Contains(" " + VpCarac(0).Replace("'", "") + " ") Then
 				VpIndex = VpLine.IndexOf(VpCarac(0).Replace("'", ""))
-				VpLen = VpCarac(0).Length - 1			
+				VpLen = VpCarac(0).Length - 1
 				VpFound = True
 			Else
 				VpFound = False
@@ -78,7 +222,7 @@ Public Partial Class frmNewEdition
 		If VpComplement.Count = 0 Then
 			Call clsModule.ShowWarning("Impossible de trouver la correspondance pour la carte " + VpCarac(0) + "...")
 			Return False
-		Else		
+		Else
 			VpMyCard = New clsMyCard(VpCarac, VpComplement)
 			Try
 				'Insertion dans la table Card (Series, Title, EncNbr, 1, Null, Rarity, Type, SubType, 1, 0, Null, 'N', Null, Null, Author, False, 10, 10, CardText, Null)
@@ -86,7 +230,7 @@ Public Partial Class frmNewEdition
 				VgDBCommand.ExecuteNonQuery
 				'Insertion dans la table CardFR où par défaut le nom français sera le nom anglais jusqu'à mise à jour (EncNbr, TitleFR)
 				VgDBCommand.CommandText = "Insert Into CardFR Values (" + VpEncNbr.ToString + ", '" + VpMyCard.Title.Replace("'", "''") + "');"
-				VgDBCommand.ExecuteNonQuery			
+				VgDBCommand.ExecuteNonQuery
 				'Insertion (ou mise à jour) dans la table Spell (Title, LastPrint, Color, Null, Null, myCost, Cost, Nullx32)
 				If VpPrevious Then
 					VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "' Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
@@ -94,13 +238,16 @@ Public Partial Class frmNewEdition
 					VgDBCommand.CommandText = "Insert Into Spell Values ('" + VpMyCard.Title.Replace("'", "''") + "', '" + VpSerieCD + "', '" + VpMyCard.MyColor + "', Null, Null, '" + VpMyCard.GetMyCost + "', " + VpMyCard.Cost + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
 				End If
 				VgDBCommand.ExecuteNonQuery
-				'Si c'est une nouvelle créature (ou créature-artefact ou arpenteur), insertion dans la table Creature (Title, Power, Tough, Nullx37)
 				If Not VpPrevious Then
 					VpType = VpMyCard.MyType
+					'Si c'est une nouvelle créature (ou créature-artefact ou arpenteur), insertion dans la table Creature (Title, Power, Tough, Nullx37)
 					If VpType = "P" Or VpType = "U" Or VpType = "C" Or ( VpType = "A" And VpMyCard.SubType.Contains("Creature") ) Then
 						VgDBCommand.CommandText = "Insert Into Creature Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyPower + ", " + VpMyCard.MyTough + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
 						VgDBCommand.ExecuteNonQuery
 					End If
+					'Si c'est une nouvelle carte, insertion dans la table TextesFR où par défaut le texte français sera le texte anglais jusqu'à mise à jour (CardName, TexteFR)
+					VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyCardText + ");"
+					VgDBCommand.ExecuteNonQuery
 				End If
 			Catch
 				Call clsModule.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + "...")
@@ -114,7 +261,7 @@ Public Partial Class frmNewEdition
 	'Regarde à la position courante du flux si des informations sur une nouvelle carte s'y trouvent
 	'----------------------------------------------------------------------------------------------
 	Dim VpLine As String
-	Dim VpCarac(0 To clsModule.CgBalises.Length - 1) As String		
+	Dim VpCarac(0 To clsModule.CgBalises.Length - 1) As String
 		VpLine = VpFile.ReadLine.Trim
 		If VpLine.StartsWith(clsModule.CgBalises(0)) Or VpLine.StartsWith(clsModule.CgAlternateStart) Or VpLine.StartsWith(clsModule.CgAlternateStart2) Then
 			For VpI As Integer = 0 To clsModule.CgBalises.Length - 1
@@ -137,6 +284,7 @@ Public Partial Class frmNewEdition
 			End If
 		Loop
 		VpFile.Close
+		Me.lblStatus.Text = "Terminé."
 		Call clsModule.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
 		Me.txtCheckList.Text = ""
 		Me.txtSpoilerList.Text = ""
@@ -154,8 +302,8 @@ Public Partial Class frmNewEdition
 				VpList.Add(.GetString(0))
 			End While
 			.Close
-		End With		
-		Return VpList		
+		End With
+		Return VpList
 	End Function
 	Sub CheckLoad
 	'--------------------------------------------------------------------------------------------------------------------------------------
@@ -170,21 +318,22 @@ Public Partial Class frmNewEdition
 			If VpAlready.BinarySearch(VpItem) < 0 Then
 				Me.chkNewEdition.Items.Add(VpItem)
 			End If
-		Next VpItem		
+		Next VpItem
 	End Sub
 	Sub FrmNewEditionLoad(ByVal sender As Object, ByVal e As EventArgs)
 		Me.propEdition.SelectedObject = Me.VmEditionHeader
-	End Sub	
+	End Sub
 	Sub ChkNewEditionItemCheck(ByVal sender As Object, ByVal e As ItemCheckEventArgs)
 	'---------------------------------------------------------
 	'N'autorise la sélection que d'une unique nouvelle édition
 	'---------------------------------------------------------
-		For VpI As Integer = 0 To Me.chkNewEdition.Items.Count - 1
+		For VpI As Integer = 0 To sender.Items.Count - 1
 			If VpI <> e.Index Then
-				Me.chkNewEdition.SetItemChecked(VpI, False)
+				sender.SetItemChecked(VpI, False)
 			End If
 		Next VpI
-	End Sub	
+		Me.cmdAutoNext.Enabled = ( Me.chkNewEditionAuto.CheckedItems.Count = 0 )
+	End Sub
 	Sub CmdOKClick(ByVal sender As Object, ByVal e As EventArgs)
 	'-------------------------------------------------------------------------
 	'Vérifie la cohérence de la demande avant de lancer la procédure effective
@@ -193,68 +342,93 @@ Public Partial Class frmNewEdition
 			Call clsModule.ShowWarning("Au moins un des deux fichiers spécifiés n'existe pas...")
 		Else
 			If Me.chkNewEdition.CheckedItems.Count > 0 Then
+				Me.chkNewEdition.Tag = Me.chkNewEdition.CheckedItems(0).ToString
 				Call Me.AddNewEdition
 			Else
 				Call clsModule.ShowWarning("Aucune série n'a été sélectionnée dans la liste...")
 			End If
 		End If
-	End Sub	
+	End Sub
 	Sub CmdBrowseClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.dlgOpen.FileName = ""
 		Me.dlgOpen.ShowDialog
 		Me.Controls.Find(sender.Name.Replace("cmdBrowse", ""), True)(0).Text = Me.dlgOpen.FileName
-	End Sub	
+	End Sub
 	Sub CmdHeaderNextClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Not Me.chkHeaderAlready.Checked Then
-			With Me.VmEditionHeader
-				Try
-					'Insertion dans la table Series (SeriesCD, SeriesNM, SeriesNM_MtG, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Nullx14)
-					VgDBCommand.CommandText = "Insert Into Series Values ('" + .SeriesCD.Substring(0, 2) + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', Null, Null, True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", Null, " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString+ ", " + .Uncommon.ToString+ ", " + .Common.ToString+ ", " + .Land.ToString + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"			
-					VgDBCommand.ExecuteNonQuery
-				Catch
-					Call clsModule.ShowWarning("Impossible d'ajouter l'en-tête à la base de données..." + vbCrLf + "Peut-être ce nom d'édition existe-t-il déjà ? Vérifier les informations saisies et recommencer.")
-					Return
-				End Try
-				'Copie du fichier logo
-				If File.Exists(.LogoEdition) Then
-					Try
-						File.Copy(.LogoEdition, Application.StartupPath + clsModule.CgIcons + .LogoEdition.Substring(.LogoEdition.LastIndexOf("\")))
-					Catch
-					End Try
-				Else
-					Call clsModule.ShowWarning("Aucun logo d'édition n'a été spécifié...")
-				End If
-			End With
+			If Me.InsertHeader Then
+				With Me.VmEditionHeader
+					'Copie du fichier logo
+					If File.Exists(.LogoEdition) Then
+						Try
+							File.Copy(.LogoEdition, Application.StartupPath + clsModule.CgIcons + .LogoEdition.Substring(.LogoEdition.LastIndexOf("\")))
+						Catch
+						End Try
+					Else
+						Call clsModule.ShowWarning("Aucun logo d'édition n'a été spécifié...")
+					End If
+				End With
+			End If
 		End If
 		Call Me.CheckLoad
 		Me.grpData.Visible = True
 		Me.grpHeader.Visible = False
-	End Sub	
+	End Sub
 	Sub CmdHeaderPreviousClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpAssist.Visible = True
 		Me.grpHeader.Visible = False
-	End Sub	
+	End Sub
 	Sub CmdAssistCancelClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.Close
-	End Sub	
+	End Sub
 	Sub CmdAssistNextClick(ByVal sender As Object, ByVal e As EventArgs)
-		Me.grpHeader.Visible = True
-		Me.grpAssist.Visible = False
+		If Me.optUpdate.Checked Then
+			Call Me.UpdateSeriesHeaders	
+		Else
+			If Me.optAuto.Checked Then
+				Me.chkNewEditionAuto.Items.Clear
+				Me.cmdAutoPrevious.Enabled = False
+				Me.cmdAutoNext.Enabled = False
+				Me.grpAuto.Visible = True
+				Me.lblStatus.Text = "Récupération des en-têtes..."
+				Application.DoEvents
+				Me.chkNewEditionAuto.Tag = Me.QuerySeries
+				Me.lblStatus.Text = ""
+			Else
+				Me.grpHeader.Visible = True
+			End If
+			Me.grpAssist.Visible = False
+		End If
 	End Sub
-	Sub LnklblAssist1LinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL4)
-	End Sub
-	Sub LnklblAssist2LinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL6)		
-	End Sub
-	Sub LnklblAssist3LinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL5)
+	Sub LnklblAssistLinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
+		Diagnostics.Process.Start(clsModule.CgURL6)
 	End Sub
 	Sub ChkHeaderAlreadyCheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
-		Me.propEdition.Enabled = Not Me.chkHeaderAlready.Checked	
+		Me.propEdition.Enabled = Not Me.chkHeaderAlready.Checked
+	End Sub
+	Sub OptManualCheckedChanged(sender As Object, e As EventArgs)
+		Me.lnklblAssist.Enabled = Me.optManual.Checked
+	End Sub
+	Sub CmdAutoNextClick(sender As Object, e As EventArgs)
+	Dim VpInfos() As String
+		Me.cmdAutoNext.Enabled = False
+		For Each VpLine As String In Me.chkNewEditionAuto.Tag
+			VpInfos = VpLine.Split("#")
+			If VpInfos(2) = Me.chkNewEditionAuto.CheckedItems.Item(0).ToString Then
+				Call Me.UpdateSerie(VpInfos)
+				Exit For
+			End If
+		Next VpLine
+		Me.grpAssist.Visible = True
+		Me.grpAuto.Visible = False
+		Me.cmdAutoNext.Enabled = True
+	End Sub
+	Sub CmdAutoPreviousClick(sender As Object, e As EventArgs)
+		Me.grpAssist.Visible = True
+		Me.grpAuto.Visible = False
 	End Sub
 End Class
-Public Class clsMyCard	
+Public Class clsMyCard
 	Private VmTitle As String
 	Private VmCost As String
 	Private VmType As String
@@ -280,8 +454,8 @@ Public Class clsMyCard
 		End If
 		If VpCarac(3).Contains("/") Then
 			VpStrs = VpCarac(3).Split("/")
-			VmPower = VpStrs(0).Trim
-			VmTough = VpStrs(1).Trim
+			VmPower = VpStrs(0).Replace("(", "").Trim
+			VmTough = VpStrs(1).Replace(")", "").Trim
 		Else
 			VmPower = ""
 			VmTough = ""
@@ -312,11 +486,11 @@ Public Class clsMyCard
 			Else
 				Return "T"
 			End If
-		ElseIf VmType.Contains("Creature") Then
-			If VmType = "Creature" Then
-				Return "C"
+		ElseIf VmType.Contains("Creature") Or VmType.Contains("Summon") Then
+			If VmCardText.Trim = "" Then
+				Return "C"		'pas de texte : créature "classique"
 			Else
-				Return "U"
+				Return "U"		'texte descriptif : créature avec capacité
 			End If
 		ElseIf VmType.Contains("Land") Then
 			Return "L"
@@ -325,7 +499,7 @@ Public Class clsMyCard
 		ElseIf VmType.Contains("Interrupt") Then
 			Return "N"
 		ElseIf VmType.Contains("Planeswalker") Then
-			Return "P"			 
+			Return "P"
 		Else
 			Return ""
 		End If
@@ -334,7 +508,7 @@ Public Class clsMyCard
 		If VmSubType = "" Then
 			Return "Null"
 		ElseIf VmType.Contains("Artifact Creature") Then
-			Return "'Creature " + VmSubType.Replace("'", "''") + "'" 
+			Return "'Creature " + VmSubType.Replace("'", "''") + "'"
 		Else
 			Return "'" + VmSubType.Replace("'", "''") + "'"
 		End If
@@ -352,7 +526,7 @@ Public Class clsMyCard
 		Else
 			Return "'" + VmTough + "'"
 		End If
-	End Function	
+	End Function
 	Public Function MyCardText As String
 		If VmCardText = "" Then
 			Return "Null"
@@ -361,29 +535,33 @@ Public Class clsMyCard
 		End If
 	End Function
 	Public Function MyColor As String
-		Select Case VmColor
-			Case "Artifact", "A"
-				Return "A"
-			Case "Black", "B"
-				Return "B"
-			Case "Green", "G"
-				Return "G"
-			Case "Land", "L", ""
-				Return "L"
-			Case "Multicolor", "Z"
-				Return "M"
-			Case "Red", "R"
-				Return "R"
-			Case "Blue", "U"
-				Return "U"
-			Case "White", "W"
-				Return "W"	
-			'Cas mal géré des double cartes
-			Case "X"
-				Return "X"
-			Case Else
-				Return ""
-		End Select
+		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact ou d'un terrain
+			Return Me.MyType
+		Else
+			Select Case VmColor
+				Case "Colorless (Artifact)", "Colorless", "Artifact", "A"
+					Return "A"
+				Case "Black", "B"
+					Return "B"
+				Case "Green", "G"
+					Return "G"
+				Case "Colorless (Land)", "Land", "L"
+					Return "L"
+				Case "Multicolor", "Z"
+					Return "M"
+				Case "Red", "R"
+					Return "R"
+				Case "Blue", "U"
+					Return "U"
+				Case "White", "W"
+					Return "W"
+				'Cas mal géré des double cartes
+				Case "X"
+					Return "X"
+				Case Else
+					Return ""
+			End Select
+		End If
 	End Function
 	Public ReadOnly Property Title As String
 		Get
@@ -431,7 +609,7 @@ Public Class clsMyCard
 		End Get
 	End Property
 End Class
-Public Class clsEditionHeader		
+Public Class clsEditionHeader
 	Public Enum eBorder
 		White
 		Black
@@ -448,12 +626,13 @@ Public Class clsEditionHeader
 	Private VmCommon As Integer = 55
 	Private VmLand As Integer = 10
 	Private VmLogoEdition As String = ""
+	Private VmNotesEdition As String = ""
 	<Category("Identification"), Description("Code la série à 2 chiffres")> _
 	Public Property SeriesCD As String
 		Get
-			Return VmSeriesCD
+			Return VmSeriesCD.Substring(0, 2)
 		End Get
-		Set(VpSeriesCD As String)
+		Set (VpSeriesCD As String)
 			VmSeriesCD = VpSeriesCD
 		End Set
 	End Property
@@ -462,7 +641,7 @@ Public Class clsEditionHeader
 		Get
 			Return VmSeriesNM
 		End Get
-		Set(VpSeriesNM As String)
+		Set (VpSeriesNM As String)
 			VmSeriesNM = VpSeriesNM
 		End Set
 	End Property
@@ -471,7 +650,7 @@ Public Class clsEditionHeader
 		Get
 			Return VmSeriesNM_MtG
 		End Get
-		Set(VpSeriesNM_MtG As String)
+		Set (VpSeriesNM_MtG As String)
 			VmSeriesNM_MtG = VpSeriesNM_MtG
 		End Set
 	End Property
@@ -480,7 +659,7 @@ Public Class clsEditionHeader
 		Get
 			Return VmTotCards
 		End Get
-		Set(VpTotCards As Integer)
+		Set (VpTotCards As Integer)
 			VmTotCards = VpTotCards
 		End Set
 	End Property
@@ -489,16 +668,16 @@ Public Class clsEditionHeader
 		Get
 			Return VmRare
 		End Get
-		Set(VpRare As Integer)
+		Set (VpRare As Integer)
 			VmRare = VpRare
 		End Set
-	End Property	
+	End Property
 	<Category("Détails"), Description("Nombre de cartes peu communes")> _
 	Public Property Uncommon As Integer
 		Get
 			Return VmUncommon
 		End Get
-		Set(VpUncommon As Integer)
+		Set (VpUncommon As Integer)
 			VmUncommon = VpUncommon
 		End Set
 	End Property
@@ -507,7 +686,7 @@ Public Class clsEditionHeader
 		Get
 			Return VmCommon
 		End Get
-		Set(VpCommon As Integer)
+		Set (VpCommon As Integer)
 			VmCommon = VpCommon
 		End Set
 	End Property
@@ -516,25 +695,25 @@ Public Class clsEditionHeader
 		Get
 			Return VmLand
 		End Get
-		Set(VpLand As Integer)
+		Set (VpLand As Integer)
 			VmLand = VpLand
 		End Set
-	End Property	
+	End Property
 	<Category("Divers"), Description("Date de sortie")> _
 	Public Property Release As Date
 		Get
 			Return VmRelease
 		End Get
-		Set(VpRelease As Date)
+		Set (VpRelease As Date)
 			VmRelease = VpRelease
 		End Set
-	End Property	
+	End Property
 	<Category("Divers"), Description("Type de bordure")> _
 	Public Property Border As eBorder
 		Get
 			Return VmBorder
 		End Get
-		Set(VpBorder As eBorder)
+		Set (VpBorder As eBorder)
 			VmBorder = VpBorder
 		End Set
 	End Property
@@ -543,10 +722,23 @@ Public Class clsEditionHeader
 		Get
 			Return VmLogoEdition
 		End Get
-		Set(VpLogoEdition As String)
+		Set (VpLogoEdition As String)
 			VmLogoEdition = VpLogoEdition
 		End Set
-	End Property			
+	End Property
+	<Category("Divers"), Description("Notes diverses sur l'édition")> _
+	Public Property NotesEdition As String
+		Get
+			If VmNotesEdition = "" Then
+				Return "N/C"
+			Else
+				Return VmNotesEdition
+			End If
+		End Get
+		Set (VpNotesEdition As String)
+			VmNotesEdition = VpNotesEdition
+		End Set
+	End Property
 	Public Function GetBorder(VpBorder As eBorder) As String
 		Select Case VpBorder
 			Case eBorder.Black
@@ -557,6 +749,18 @@ Public Class clsEditionHeader
 				Return "'S'"
 			Case Else
 				Return "Null"
+		End Select
+	End Function
+	Public Function SetBorder(VpBorder As String) As eBorder
+		Select Case VpBorder
+			Case "B"
+				Return eBorder.Black
+			Case "W"
+				Return eBorder.White
+			Case "S"
+				Return eBorder.Silver
+			Case Else
+				Return eBorder.White
 		End Select
 	End Function
 End Class

@@ -57,9 +57,14 @@ Partial Class frmBuyMV
 		Me.wbMV = New System.Windows.Forms.WebBrowser
 		Me.btLocalBasket = New TD.SandBar.ButtonItem
 		Me.btMVBasket = New TD.SandBar.ButtonItem
+		Me.btSaveBasket = New TD.SandBar.ButtonItem
+		Me.btLoadBasket = New TD.SandBar.ButtonItem
 		Me.cmnuSeller = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.mnuAddSeller = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuRemoveSeller = New System.Windows.Forms.ToolStripMenuItem
+		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
+		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
+		Me.cmdCancelMV = New System.Windows.Forms.Button
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
 		Me.splitH.SuspendLayout
@@ -80,7 +85,6 @@ Partial Class frmBuyMV
 		'splitH
 		'
 		Me.splitH.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitH.IsSplitterFixed = true
 		Me.splitH.Location = New System.Drawing.Point(0, 0)
 		Me.splitH.Name = "splitH"
 		Me.splitH.Orientation = System.Windows.Forms.Orientation.Horizontal
@@ -123,7 +127,6 @@ Partial Class frmBuyMV
 		'
 		Me.splitV1.BackColor = System.Drawing.Color.Transparent
 		Me.splitV1.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitV1.IsSplitterFixed = true
 		Me.splitV1.Location = New System.Drawing.Point(0, 0)
 		Me.splitV1.Name = "splitV1"
 		'
@@ -193,7 +196,6 @@ Partial Class frmBuyMV
 		'splitV2
 		'
 		Me.splitV2.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitV2.IsSplitterFixed = true
 		Me.splitV2.Location = New System.Drawing.Point(0, 0)
 		Me.splitV2.Name = "splitV2"
 		'
@@ -204,6 +206,7 @@ Partial Class frmBuyMV
 		'
 		'splitV2.Panel2
 		'
+		Me.splitV2.Panel2.Controls.Add(Me.cmdCancelMV)
 		Me.splitV2.Panel2.Controls.Add(Me.cmdCalc)
 		Me.splitV2.Panel2.Controls.Add(Me.prgRefresh)
 		Me.splitV2.Panel2.Controls.Add(Me.cmdRefresh)
@@ -289,7 +292,7 @@ Partial Class frmBuyMV
 		Me.cbarBasket.DrawActionsButton = false
 		Me.cbarBasket.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarBasket.Guid = New System.Guid("0201851e-8b6d-4b50-81e7-8ea9ba9ea4d9")
-		Me.cbarBasket.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btLocalBasket, Me.btMVBasket})
+		Me.cbarBasket.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btLocalBasket, Me.btMVBasket, Me.btSaveBasket, Me.btLoadBasket})
 		Me.cbarBasket.Location = New System.Drawing.Point(0, 0)
 		Me.cbarBasket.Movable = false
 		Me.cbarBasket.Name = "cbarBasket"
@@ -357,25 +360,60 @@ Partial Class frmBuyMV
 		Me.btMVBasket.Text = "Résultat de la recherche"
 		AddHandler Me.btMVBasket.Activate, AddressOf Me.BtMVBasketActivate
 		'
+		'btSaveBasket
+		'
+		Me.btSaveBasket.Icon = CType(resources.GetObject("btSaveBasket.Icon"),System.Drawing.Icon)
+		Me.btSaveBasket.Text = "Sauvegarder le panier"
+		AddHandler Me.btSaveBasket.Activate, AddressOf Me.BtSaveBasketActivate
+		'
+		'btLoadBasket
+		'
+		Me.btLoadBasket.Icon = CType(resources.GetObject("btLoadBasket.Icon"),System.Drawing.Icon)
+		Me.btLoadBasket.Text = "Charger un panier"
+		AddHandler Me.btLoadBasket.Activate, AddressOf Me.BtLoadBasketActivate
+		'
 		'cmnuSeller
 		'
 		Me.cmnuSeller.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuAddSeller, Me.mnuRemoveSeller})
 		Me.cmnuSeller.Name = "cmnuSeller"
-		Me.cmnuSeller.Size = New System.Drawing.Size(134, 48)
+		Me.cmnuSeller.Size = New System.Drawing.Size(130, 48)
 		'
 		'mnuAddSeller
 		'
 		Me.mnuAddSeller.Name = "mnuAddSeller"
-		Me.mnuAddSeller.Size = New System.Drawing.Size(133, 22)
+		Me.mnuAddSeller.Size = New System.Drawing.Size(129, 22)
 		Me.mnuAddSeller.Text = "Ajouter"
 		AddHandler Me.mnuAddSeller.Click, AddressOf Me.MnuAddSellerClick
 		'
 		'mnuRemoveSeller
 		'
 		Me.mnuRemoveSeller.Name = "mnuRemoveSeller"
-		Me.mnuRemoveSeller.Size = New System.Drawing.Size(133, 22)
+		Me.mnuRemoveSeller.Size = New System.Drawing.Size(129, 22)
 		Me.mnuRemoveSeller.Text = "Supprimer"
 		AddHandler Me.mnuRemoveSeller.Click, AddressOf Me.MnuRemoveSellerClick
+		'
+		'dlgSave
+		'
+		Me.dlgSave.DefaultExt = "mvb"
+		Me.dlgSave.Filter = "Magic-Ville Baskets (*.mvb) | *.mvb"
+		Me.dlgSave.Title = "Enregistrement du panier Magic-Ville"
+		'
+		'dlgOpen
+		'
+		Me.dlgOpen.DefaultExt = "mvb"
+		Me.dlgOpen.Filter = "Magic-Ville Baskets (*.mvb) | *.mvb"
+		Me.dlgOpen.Title = "Chargement du panier Magic-Ville"
+		'
+		'cmdCancelMV
+		'
+		Me.cmdCancelMV.Location = New System.Drawing.Point(8, 26)
+		Me.cmdCancelMV.Name = "cmdCancelMV"
+		Me.cmdCancelMV.Size = New System.Drawing.Size(141, 23)
+		Me.cmdCancelMV.TabIndex = 3
+		Me.cmdCancelMV.Text = "Annuler"
+		Me.cmdCancelMV.UseVisualStyleBackColor = true
+		Me.cmdCancelMV.Visible = false
+		AddHandler Me.cmdCancelMV.Click, AddressOf Me.CmdCancelMVClick
 		'
 		'frmBuyMV
 		'
@@ -383,9 +421,7 @@ Partial Class frmBuyMV
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
 		Me.ClientSize = New System.Drawing.Size(588, 355)
 		Me.Controls.Add(Me.splitH)
-		Me.HelpButton = true
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
-		Me.MaximizeBox = false
 		Me.Name = "frmBuyMV"
 		Me.Text = "Achats de cartes à des Magic-Villois"
 		AddHandler Load, AddressOf Me.FrmBuyMVLoad
@@ -408,6 +444,11 @@ Partial Class frmBuyMV
 		Me.cmnuSeller.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private cmdCancelMV As System.Windows.Forms.Button
+	Private dlgOpen As System.Windows.Forms.OpenFileDialog
+	Private dlgSave As System.Windows.Forms.SaveFileDialog
+	Private btLoadBasket As TD.SandBar.ButtonItem
+	Private btSaveBasket As TD.SandBar.ButtonItem
 	Private mnuRemoveSeller As System.Windows.Forms.ToolStripMenuItem
 	Private mnuAddSeller As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuSeller As System.Windows.Forms.ContextMenuStrip

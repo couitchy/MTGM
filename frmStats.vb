@@ -6,22 +6,29 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - levée de l'ambiguité sur les sources  03/10/2009 |
+'| - gestion des autorisations tournois	   17/04/2010 |
 '------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports SoftwareFX.ChartFX.Lite
+Imports NPlot
 Public Partial Class frmStats
-	Private VmSource As String	
+	Private VmSource As String
 	Private VmRestriction As String
+	Private VmOwnerChildren As clsChildren
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)	
+		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
-		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)	
+		VmOwnerChildren = VpOwner.MyChildren
+		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)
 		AddHandler Me.cboCriterion.ComboBox.SelectedIndexChanged, AddressOf CboCriterionSelectedIndexChanged
 	End Sub
 	Private Sub LoadGrid
@@ -33,7 +40,7 @@ Public Partial Class frmStats
 		'Préparation de la grille
 		With Me.grdDetails
 			'Nettoyage
-			If .Rows.Count > 0 Then					
+			If .Rows.Count > 0 Then
 				.Rows.RemoveRange(0, .Rows.Count)
 			End If
 			'Nombre de colonnes et d'en-tête
@@ -50,7 +57,7 @@ Public Partial Class frmStats
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
-			While .Read		
+			While .Read
 				VpValues.Add(.GetString(0))
 			End While
 			.Close
@@ -70,30 +77,240 @@ Public Partial Class frmStats
 			.AutoSize
 		End With
 	End Sub
-	Private Sub LoadGraph
-	'--------------------------------------------------------------------------------------
-	'Dessine le diagramme de répartition correspondant aux données présentes dans la grille
-	'--------------------------------------------------------------------------------------
+	Private Sub LoadGraph(Optional VpDrawManaCurve As Boolean = False)
+	'-------------------------------------------------------------------------------------------------------
+	'Dessine le diagramme de répartition correspondant aux données présentes dans la grille ou la mana curve
+	'-------------------------------------------------------------------------------------------------------
 	Dim VpI As Integer
-		With Me.chartBreakDown
-			.Visible = False			
-			.ClearData(ClearDataFlag.Data)
-			.SerLeg.Clear
-			.OpenData(COD.Values, 1, Me.grdDetails.RowsCount - 1)
+	Dim VpManaCurve As HistogramPlot
+	Dim VpQuants() As Integer
+	Dim VpCosts() As Integer
+	Dim VpY() As Integer
+	Dim VpC As Integer = 0
+		If Not VpDrawManaCurve Then
+			Me.chartManaCurve.Visible = False
+			With Me.chartBreakDown
+				.Visible = False
+				.ClearData(ClearDataFlag.Data)
+				.SerLeg.Clear
+				.OpenData(COD.Values, 1, Me.grdDetails.RowsCount - 1)
+				For VpI = 1 To Me.grdDetails.RowsCount - 1
+					.Value(0, VpI - 1) = Me.grdDetails(VpI, 1).Value
+					.SerLeg(VpI - 1) = Me.grdDetails(VpI, 0).Value
+				Next VpI
+				.SerLegBox = True
+				.Chart3D = True
+				.Gallery = Gallery.Pie
+				.CloseData(COD.Values)
+				.Visible = True
+			End With
+		Else
+			Me.chartBreakDown.Visible = False
+			ReDim VpCosts(0 To Me.grdDetails.RowsCount - 2)
+			ReDim VpQuants(0 To Me.grdDetails.RowsCount - 2)
 			For VpI = 1 To Me.grdDetails.RowsCount - 1
-				.Value(0, VpI - 1) = Me.grdDetails(VpI, 1).Value
-				.SerLeg(VpI - 1) = Me.grdDetails(VpI, 0).Value
+				VpCosts(VpI - 1) = Me.grdDetails(VpI, 0).Value
+				VpQuants(VpI - 1) = Me.grdDetails(VpI, 1).Value
+				If VpCosts(VpI - 1) > VpC Then
+					VpC = VpCosts(VpI - 1)
+				End If
 			Next VpI
-			.SerLegBox = True
-			.Chart3D = True
-			.Gallery = Gallery.Pie
-			.CloseData(COD.Values)
-			.Visible = True
-		End With		
+			ReDim VpY(0 To VpC)
+			For VpI = 0 To VpCosts.Length - 1
+				VpY(VpCosts(VpI)) = VpQuants(VpI)
+			Next VpI
+			VpManaCurve = New HistogramPlot
+			VpManaCurve.DataSource = VpY
+			VpManaCurve.Color = Color.Blue
+			VpManaCurve.RectangleBrush = New RectangleBrushes.HorizontalCenterFade(Color.Blue, Color.White)
+			VpManaCurve.BaseWidth = 0.5
+			VpManaCurve.Filled = True
+			Me.chartManaCurve.Clear
+			Me.chartManaCurve.Add(VpManaCurve)
+			Me.chartManaCurve.Visible = True
+		End If
+	End Sub
+	Private Sub LoadAutorisations
+	'-------------------------------------------------------
+	'Chargement des autorisations tournois pour la sélection
+	'-------------------------------------------------------
+	Dim VpHas1ItemRestr As Boolean = False
+		'Autorisations T1
+		If Not Me.GetAutorisation("T1", VpHas1ItemRestr) Then
+			Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(3)
+		ElseIf VpHas1ItemRestr Then
+			Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(4)
+		Else
+			Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(2)
+		End If
+		'Autorisations T1.5
+		If Me.GetAutorisation("T15") Then
+			Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(9)
+		Else
+			Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(10)
+		End If
+		'Autorisations T1x
+		If Me.GetAutorisation("T1x") Then
+			Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(5)
+		Else
+			Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(6)
+		End If
+		'Autorisations T2
+		If Me.GetAutorisation("T2") Then
+			Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(7)
+		Else
+			Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(8)
+		End If
+		'Autorisations Bloc
+		If Me.GetAutorisation("Bloc") Then
+			Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(0)
+		Else
+			Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(1)
+		End If
+	End Sub
+	Private Function GetAutorisation(VpTournoiType As String, Optional ByRef VpHas1ItemRestr As Boolean = False) As Boolean
+	'------------------------------------------------------------------------------------------------------------------------
+	'Indique si la sélection de cartes courante est compatible avec les restrictions tournoi d'identifiant passé en paramètre
+	'------------------------------------------------------------------------------------------------------------------------
+	Dim VpGranted As Boolean = True
+	Dim VpSQL As String
+	Dim VpControl1Item As New ArrayList
+		VpSQL = "Select " + VpTournoiType + ", T1r, Items, Card.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where "
+		VpSQL = VpSQL + VmRestriction
+		VpSQL = clsModule.TrimQuery(VpSQL)
+		VgDBCommand.CommandText = VpSQL
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				If Not .GetBoolean(0) Then
+					VpGranted = False
+					Exit While
+				End If
+				'Vérification pour les cartes restreintes à un exemplaire
+				If .GetBoolean(1) Then
+					VpHas1ItemRestr = True
+					If .GetInt32(2) > 1 Or VpControl1Item.Contains(.GetString(3)) Then
+						VpGranted = False
+						Exit While
+					Else
+						VpControl1Item.Add(.GetString(3))
+					End If
+				End If
+			End While
+			.Close
+		End With
+		Return VpGranted
+	End Function
+	Private Sub LoadConflictingCards(VpTournoiType As String)
+	'-----------------------------------------------------------------------------
+	'Affiche les cartes non compatibles avec le type de tournoi passé en paramètre
+	'-----------------------------------------------------------------------------
+	Dim VpSQL As String
+		Me.lstTournoiForbid.Items.Clear
+		'Cas général
+		VpSQL = "Select Card.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where " + VpTournoiType + " = False And "
+		VpSQL = VpSQL + VmRestriction
+		VpSQL = clsModule.TrimQuery(VpSQL)
+		VgDBCommand.CommandText = VpSQL
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				If Not Me.lstTournoiForbid.Items.Contains(.GetString(0)) Then
+					Me.lstTournoiForbid.Items.Add(.GetString(0))
+				End If
+			End While
+			.Close
+		End With
+		'Cas des cartes restreintes à un exemplaire
+		If VpTournoiType = "T1" Then
+			VpSQL = "Select Card.Title, Sum(Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where T1r = True And "
+			VpSQL = VpSQL + VmRestriction
+			VpSQL = clsModule.TrimQuery(VpSQL, , " Group By Card.Title")
+			VgDBCommand.CommandText = VpSQL
+			VgDBReader = VgDBCommand.ExecuteReader
+			With VgDBReader
+				While .Read
+					If CInt(.GetValue(1)) > 1 And Not Me.lstTournoiForbid.Items.Contains(.GetString(0)) Then
+						Me.lstTournoiForbid.Items.Add(.GetString(0) + " (1 exemplaire max.)")
+					End If
+				End While
+				.Close
+			End With
+		End If
+		If Me.lstTournoiForbid.Items.Count = 0 Then
+			Me.lstTournoiForbid.Items.Add("N/C")
+		End If
+		Me.lstTournoiForbid.Sorted = True
+	End Sub
+	Private Function GetPriceHistory As SortedList
+	'---------------------------------------------------------
+	'Retourne l'historique des prix pour la sélection courante
+	'---------------------------------------------------------
+	Dim VpHist As New SortedList
+	Dim VpSQL As String
+		VpSQL = "Select PriceDate, Sum(Price * Items) From (SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr Where "
+		VpSQL = VpSQL + VmRestriction
+		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By PriceDate")
+		VgDBCommand.CommandText = VpSQL
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpHist.Add(.GetDateTime(0), Val(.GetValue(1)))
+			End While
+			.Close
+		End With
+		Return VpHist
+	End Function
+	Private Sub ShowCardsPrices(VpGrapher As frmGrapher, Optional VpMyPriceCriteria As String = "")
+	'--------------------------------------------------------------------------------------------
+	'Retourne l'historique des prix pour la sélection courante restreinte à la catégorie demandée
+	'--------------------------------------------------------------------------------------------
+	Dim VpHist As New SortedList
+	Dim VpSQL As String
+	Dim VpLastTitle As String = ""
+	Dim VpTitle As String
+		If clsModule.HasPriceHistory Then
+			VpSQL = "Select Card.Title, Card.Series, GlobalHisto.PriceDate, GlobalHisto.Price From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr) Inner Join Card On Card.EncNbr = " + VmSource + ".EncNbr Where "
+			If VpMyPriceCriteria <> "" Then
+				VpSQL = VpSQL + "Card.myPrice = '" + VpMyPriceCriteria + "' And "
+			End If
+			VpSQL = VpSQL + VmRestriction
+			VpSQL = clsModule.TrimQuery(VpSQL, , " Order By Card.EncNbr")
+			VgDBCommand.CommandText = VpSQL
+			VgDBReader = VgDBCommand.ExecuteReader
+			With VgDBReader
+				While .Read
+					VpTitle = .GetString(0) + " (" + .GetString(1) + ")"
+					If VpTitle <> VpLastTitle Then
+						If VpHist.Count > 0 Then
+							If VpGrapher.GraphsCount >= clsModule.CgMaxGraphs Then
+								Call clsModule.ShowWarning(clsModule.CgErr4)
+								.Close
+								Exit Sub
+							Else
+								VpGrapher.AddNewPlot(VpHist, VpLastTitle)
+								VpHist.Clear
+							End If
+						End If
+						VpLastTitle = VpTitle
+					End If
+					If Not VpHist.Contains(.GetDateTime(2)) Then
+						VpHist.Add(.GetDateTime(2), Val(.GetValue(3)))
+					End If
+				End While
+				.Close
+				If VpHist.Count > 0 Then	'dernier élément non traité
+					VpGrapher.AddNewPlot(VpHist, VpLastTitle)
+					VpHist.Clear
+				End If
+			End With
+		Else
+			Call clsModule.ShowWarning(clsModule.CgErr2)
+		End If
 	End Sub
 	Private Sub LoadInfos
 	'------------------------------------------------------------------------------------------------------------------------------------------------------------
-	'Récupère dans la base les informations : 
+	'Récupère dans la base les informations :
 	'- coûts d'invocations minimal, maximal et moyen
 	'- prix total, moyen et plus élevé
 	'- nombre de cartes, la plus vieille, la plus rare, créature la plus forte
@@ -102,31 +319,34 @@ Public Partial Class frmStats
 	Dim VpC As Double
 	Dim VpP As Double
 	Dim VpT As Double
-		VpC = Me.QueryInfo("Sum(Val(myCost) * Items) / Sum(Items)", VmSource, "Where ( Cost <> Null ) And ")
+		VpC = Me.QueryInfo("Sum(Val(myCost) * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")
 		'Trappe d'erreur si pas de créatures dans la sélection
 		Try
-			VpP = Me.QueryInfo("Sum(Val(Power) * Items) / Sum(Items)", VmSource, "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And Power <> '0' ) And ")
-			VpT = Me.QueryInfo("Sum(Val(Tough) * Items) / Sum(Items)", VmSource, "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Tough, '*') = 0 And Tough <> '0' ) And ")
+			VpP = Me.QueryInfo("Sum(Val(Power) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
+			VpT = Me.QueryInfo("Sum(Val(Tough) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
 		Catch
 		End Try
-		Me.txtMaxCost.Text = Me.QueryInfo("Max(Val(myCost))", VmSource).ToString
-		Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(Val(Price))", VmSource), "0.00") + " €"
-		Me.txtMeanCost.Text = Format(Me.QueryInfo("Sum(Val(myCost) * Items) / Sum(Items)", VmSource), "0.0")
-		Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(Val(Price) * Items) / Sum(Items)", VmSource), "0.00") + " €"
-		Me.txtMinCost.Text = Me.QueryInfo("Min(Val(myCost))", VmSource, "Where Type <> 'L' And ").ToString
-		Me.txtMostExpensive.Text = Format(Me.QueryInfo("Max(Val(Price))", VmSource), "0.00") + " €"
-		Me.txtNCartes.Text = Me.QueryInfo("Sum(Items)", VmSource).ToString
-		Me.txtOldest.Text = Me.QueryInfo("Card.Title", VmSource, , " Order By Release Asc;")
-		Me.txtRarest.Text = Me.QueryInfo("Card.Title", VmSource, "Where InStr(UCase(Rarity), 'R') > 0 And " , " Order By Val(Mid(Rarity, 2)) Desc;")
-		Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(Val(Price) * Items)", VmSource), "0.00") + " €"
-		Me.txtTougher.Text = Me.QueryInfo("Card.Title", VmSource, "Inner Join Creature On Card.Title = Creature.Title ", " Order By Val(Power) Desc;")
+		Me.txtMaxCost.Text = Me.QueryInfo("Card.Title", , " Order By Val(myCost) Desc;") + " : " + Me.QueryInfo("Max(Val(myCost))").ToString
+		Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(Val(Price))"), "0.00") + " €"
+		Me.txtMeanCost.Text = Format(Me.QueryInfo("Sum(Val(myCost) * Items) / Sum(Items)"), "0.0")
+		Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(Val(Price) * Items) / Sum(Items)"), "0.00") + " €"
+		Me.txtMinCost.Text = Me.QueryInfo("Card.Title", "Where Type <> 'L' And ", " Order By Val(myCost) Asc;") + " : " + Me.QueryInfo("Min(Val(myCost))", "Where Type <> 'L' And ").ToString
+		Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Val(Price) Desc;") + " : " + Format(Me.QueryInfo("Max(Val(Price))"), "0.00") + " €"
+		Me.txtNCartes.Text = Me.QueryInfo("Sum(Items)").ToString
+		Me.txtOldest.Text = Me.QueryInfo("Card.Title", , " Order By Release Asc;")
+		Me.txtRarest.Text = Me.QueryInfo("Card.Title", "Where InStr(UCase(Rarity), 'R') > 0 And " , " Order By Val(Mid(Rarity, 2)) Desc;")
+		Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(Val(Price) * Items)"), "0.00") + " €"
+		Me.txtTougher.Text = Me.QueryInfo("Card.Title", "Inner Join Creature On Card.Title = Creature.Title ", " Order By Val(Power) Desc;")
 		Me.txtMeanCost2.Text = Format(VpC, "0.0")
 		Me.txtMeanPower.Text = Format(VpP, "0.0")
 		Me.txtMeanTough.Text = Format(VpT, "0.0")
 		Me.txtRAD.Text = Format(VpP / VpT, "0.0")
 		Me.txtRAC.Text = Format(VpP / VpC, "0.0")
 	End Sub
-	Private Function QueryInfo(VpQuery As String, VmSource As String, Optional VpTblCreature As String = "", Optional VpSort As String = "") As Object
+	Private Function QueryInfo(VpQuery As String, Optional VpTblCreature As String = "", Optional VpSort As String = "") As Object
+	'------------------
+	'Requête ponctuelle
+	'------------------
 	Dim VpSQL As String
 		VpSQL = "Select " + VpQuery + " From (((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) " + VpTblCreature
 		VpSQL = VpSQL + IIf(VpSQL.EndsWith("And "), "", "Where ")
@@ -134,10 +354,22 @@ Public Partial Class frmStats
 		VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + VpSort
 		Return VgDBCommand.ExecuteScalar
 	End Function
+	Private Function GetGrapher As frmGrapher
+	Dim VpPricesHistory As frmGrapher
+		If VmOwnerChildren.DoesntExist(VmOwnerChildren.PricesHistory) Then
+			VpPricesHistory = New frmGrapher
+			VmOwnerChildren.PricesHistory = VpPricesHistory
+		Else
+			VpPricesHistory = VmOwnerChildren.PricesHistory
+		End If
+		VpPricesHistory.Show
+		VpPricesHistory.BringToFront
+		Application.DoEvents
+		Return VpPricesHistory
+	End Function
 	Sub CboCriterionSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.LoadGrid
 		Call Me.LoadGraph
-		Call Me.LoadInfos
 		Me.cmnuCurve.Enabled = ( Me.cboCriterion.ComboBox.SelectedIndex = 3 )
 		If Me.cmnuCurve.Enabled = False And Me.cmnuCurve.Checked = True Then
 			Me.cmnuCurve.Checked = False
@@ -145,32 +377,54 @@ Public Partial Class frmStats
 		End If
 	End Sub
 	Sub FrmStatsLoad(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.CboCriterionSelectedIndexChanged(sender, e)	
-	End Sub	
+		Call Me.CboCriterionSelectedIndexChanged(sender, e)
+		Call Me.LoadInfos
+		Call Me.LoadAutorisations
+	End Sub
 	Sub FrmStatsPaint(ByVal sender As Object, ByVal e As PaintEventArgs)
 		'Contourne un bug de rafraîchissement sur le graphique
-		Me.chartBreakDown.Visible = False
-		Me.chartBreakDown.Visible = True
-	End Sub	
+		If Me.chartBreakDown.Visible Then
+			Me.chartBreakDown.Visible = False
+			Me.chartBreakDown.Visible = True
+		End If
+	End Sub
 	Sub FrmStatsActivated(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.FrmStatsPaint(sender, Nothing)
 	End Sub
 	Sub CmnuBreakDownClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.cmnuBreakDown.Checked = True
 		Me.cmnuCurve.Checked = False
-		Me.chartBreakDown.Gallery = Gallery.Pie
-		Me.chartBreakDown.Chart3D = True
+		Me.chartManaCurve.Visible = False
+		Me.chartBreakDown.Visible = True
 	End Sub
 	Sub CmnuCurveClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.cmnuBreakDown.Checked = False
 		Me.cmnuCurve.Checked = True
-		Me.chartBreakDown.Chart3D = False
-		Me.chartBreakDown.Gallery = Gallery.Lines
+		Call Me.LoadGraph(True)
+	End Sub
+	Sub PicAutClick(sender As Object, e As EventArgs)
+		Call Me.LoadConflictingCards(sender.Tag)
+	End Sub
+	Sub CmnuHistDeckClick(sender As Object, e As EventArgs)
+		If clsModule.HasPriceHistory Then
+			Me.GetGrapher.AddNewPlot(Me.GetPriceHistory, Me.Text.Replace(clsModule.CgStats, ""))
+		Else
+			Call clsModule.ShowWarning(clsModule.CgErr2)
+		End If
+	End Sub
+	Sub CmdHistPricesMouseDown(sender As Object, e As MouseEventArgs)
+		Me.cmnuHisto.Show(sender, New Point(e.X, e.Y))
+	End Sub
+	Sub CmnuHistAllCardsClick(sender As Object, e As EventArgs)
+		Call Me.ShowCardsPrices(Me.GetGrapher)
+	End Sub
+	Sub CmnuHistCardsPriceClick(sender As Object, e As EventArgs)
+		Call Me.ShowCardsPrices(Me.GetGrapher, sender.Tag)
 	End Sub
 End Class
-Public Class clsNumComparer 
+Public Class clsNumComparer
 	Implements IComparer
 	Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
 		Return CInt(x) - CInt(y)
-	End Function	
+	End Function
 End Class

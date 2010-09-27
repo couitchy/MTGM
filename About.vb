@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -32,5 +35,8 @@ Public Partial Class About
 	End Sub
 	Sub LnkMailLinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
 		Diagnostics.Process.Start("mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici")
+	End Sub
+	Sub PicPaypalClick(ByVal sender As Object, ByVal e As EventArgs)
+		Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF")
 	End Sub
 End Class

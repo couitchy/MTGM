@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -31,7 +34,7 @@ Public Partial Class frmTransfert
 	'Charge la liste des éditions disponibles pour la carte courante sur la source courante
 	'--------------------------------------------------------------------------------------
 	Dim VpSQL As String
-		VpSQL = "Select Series From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
+		VpSQL = "Select SeriesNM From ((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
 		VpSQL = VpSQL + VmOwner.Restriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL		
@@ -53,27 +56,27 @@ Public Partial Class frmTransfert
 			'Si pas d'annulation utilisateur
 			If .NCartes <> 0 Then
 				'Nombre d'items déjà présents à la source
-				VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where EncNbr = " + .EncNbr.ToString + IIf(.SFrom = clsModule.CgSDecks, " And GameID = " + VgOptions.GetDeckIndex(.TFrom) + ";", ";")
+				VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where EncNbr = " + .EncNbr.ToString + IIf(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
 				VpNItemsAtSource = VgDBCommand.ExecuteScalar				
 				'-NCartes à la source
 				If VpNItemsAtSource - .NCartes > 0 Then
-					VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where EncNbr = " + .EncNbr.ToString + IIf(.SFrom = clsModule.CgSDecks, " And GameID = " + VgOptions.GetDeckIndex(.TFrom) + ";", ";")
+					VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where EncNbr = " + .EncNbr.ToString + IIf(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
 					VgDBCommand.ExecuteNonQuery									
 				Else
-					VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where EncNbr = " + .EncNbr.ToString + IIf(.SFrom = clsModule.CgSDecks, " And GameID = " + VgOptions.GetDeckIndex(.TFrom) + ";", ";")
+					VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where EncNbr = " + .EncNbr.ToString + IIf(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
 					VgDBCommand.ExecuteNonQuery				
 				End If
 				'Dans le cas d'un déplacement
 				If .TransfertType = clsTransfertResult.EgTransfertType.Move Then
 					'Nombre d'items déjà présents à la destination
-					VgDBCommand.CommandText = "Select Items From " + .STo + " Where EncNbr = " + .EncNbr.ToString + IIf(.STo = clsModule.CgSDecks, " And GameID = " + VgOptions.GetDeckIndex(.TTo) + ";", ";")
+					VgDBCommand.CommandText = "Select Items From " + .STo + " Where EncNbr = " + .EncNbr.ToString + IIf(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + ";", ";")
 					VpNItemsAtDest = VgDBCommand.ExecuteScalar
 					'+NCartes à la destination
 					If VpNItemsAtDest > 0 Then
-						VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where EncNbr = " + .EncNbr.ToString + IIf(.STo = clsModule.CgSDecks, " And GameID = " + VgOptions.GetDeckIndex(.TTo) + ";", ";")
+						VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where EncNbr = " + .EncNbr.ToString + IIf(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + ";", ";")
 						VgDBCommand.ExecuteNonQuery						
 					Else
-						VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + IIf(.STo = clsModule.CgSDecks, VgOptions.GetDeckIndex(.TTo) + ", ", "") + .EncNbr.ToString + ", " + .NCartes.ToString + ");"
+						VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + IIf(.STo = clsModule.CgSDecks, clsModule.GetDeckIndex(.TTo) + ", ", "") + .EncNbr.ToString + ", " + .NCartes.ToString + ");"
 						VgDBCommand.ExecuteNonQuery
 					End If
 				End If
@@ -84,7 +87,8 @@ Public Partial Class frmTransfert
 	'-----------------------------------------
 	'Affiche le logo de l'édition sélectionnée
 	'-----------------------------------------
-	Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + Me.cboSerie.Text + CgIconsExt)
+	Dim VpEdition As String = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
+	Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + VpEdition + CgIconsExt)
 	Dim VpSQL As String
 		If VpKey <> -1 Then
 			Me.picSerie.Image = clsModule.VgImgSeries.Images(VpKey)
@@ -92,7 +96,7 @@ Public Partial Class frmTransfert
 			Me.picSerie.Image = Nothing
 		End If		
 		'Réajuste le nombre de cartes disponibles dans l'édition sélectionnée
-		VpSQL = "Select " + VmSource + ".Items From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And Card.Series = '" + Me.cboSerie.Text + "' And "
+		VpSQL = "Select " + VmSource + ".Items From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And Card.Series = '" + VpEdition + "' And "
 		VpSQL = VpSQL + VmOwner.Restriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL		
@@ -105,7 +109,7 @@ Public Partial Class frmTransfert
 	Sub CmdOKClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Me.cboSerie.Items.Contains(Me.cboSerie.Text) Then
 			VmTransfertResult.NCartes = Me.sldQuant.Value
-			VmTransfertResult.IDSerie = Me.cboSerie.Text
+			VmTransfertResult.IDSerie = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
 		End If
 		Me.Close
 	End Sub

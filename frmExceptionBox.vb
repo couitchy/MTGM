@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -23,6 +26,6 @@ Public Partial Class frmExceptionBox
 		Application.Exit
 	End Sub
 	Sub CmdSendClick(ByVal sender As Object, ByVal e As EventArgs)
-		Diagnostics.Process.Start("mailto:couitchy@free.fr?subject=[Bug] Magic The Gathering Manager&body=" + VmException)
+		Diagnostics.Process.Start("mailto:couitchy@free.fr?subject=[Bug] Magic The Gathering Manager&body=MTGM " + Application.ProductVersion.ToString + " " + Environment.OSVersion.ToString + " " + VmException)
 	End Sub
 End Class

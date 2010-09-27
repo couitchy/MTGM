@@ -75,8 +75,8 @@ Partial Class frmExport
 		Me.cbarImpExp.TabIndex = 0
 		Me.cbarImpExp.Text = "Module d'importation / exportation"
 		AddHandler Me.cbarImpExp.VisibleChanged, AddressOf Me.CbarImpExpVisibleChanged
-		AddHandler Me.cbarImpExp.MouseDown, AddressOf Me.CbarImpExpMouseDown
 		AddHandler Me.cbarImpExp.MouseMove, AddressOf Me.CbarImpExpMouseMove
+		AddHandler Me.cbarImpExp.MouseDown, AddressOf Me.CbarImpExpMouseDown
 		AddHandler Me.cbarImpExp.MouseUp, AddressOf Me.CbarImpExpMouseUp
 		'
 		'pnlImpExp
@@ -247,13 +247,13 @@ Partial Class frmExport
 		'btExport
 		'
 		Me.btExport.Icon = CType(resources.GetObject("btExport.Icon"),System.Drawing.Icon)
-		Me.btExport.Text = "Exporter"
+		Me.btExport.Text = "Export"
 		AddHandler Me.btExport.Activate, AddressOf Me.BtExportActivate
 		'
 		'btImport
 		'
 		Me.btImport.Icon = CType(resources.GetObject("btImport.Icon"),System.Drawing.Icon)
-		Me.btImport.Text = "Importer"
+		Me.btImport.Text = "Import"
 		AddHandler Me.btImport.Activate, AddressOf Me.BtImportActivate
 		'
 		'dlgFileBrowser
@@ -268,10 +268,11 @@ Partial Class frmExport
 		Me.ClientSize = New System.Drawing.Size(328, 224)
 		Me.Controls.Add(Me.cbarImpExp)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmExport"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-		AddHandler FormClosing, AddressOf Me.FrmExportFormClosing
 		AddHandler Load, AddressOf Me.FrmExportLoad
+		AddHandler FormClosing, AddressOf Me.FrmExportFormClosing
 		Me.cbarImpExp.ResumeLayout(false)
 		Me.pnlImpExp.ResumeLayout(false)
 		Me.grpExport.ResumeLayout(false)

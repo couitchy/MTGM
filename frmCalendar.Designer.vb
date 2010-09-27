@@ -34,6 +34,7 @@ Partial Class frmCalendar
 	''' </summary>
 	Private Sub InitializeComponent()
 		Me.components = New System.ComponentModel.Container
+		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCalendar))
 		Me.cal = New System.Windows.Forms.MonthCalendar
 		Me.tmrAffiche = New System.Windows.Forms.Timer(Me.components)
 		Me.SuspendLayout
@@ -58,12 +59,13 @@ Partial Class frmCalendar
 		Me.ClientSize = New System.Drawing.Size(180, 154)
 		Me.Controls.Add(Me.cal)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.KeyPreview = true
 		Me.Name = "frmCalendar"
 		Me.Opacity = 0
-		Me.Text = "frmCalendar"
-		AddHandler KeyPress, AddressOf Me.FrmCalendarKeyPress
+		Me.Text = "Calendrier"
 		AddHandler Load, AddressOf Me.FrmCalendarLoad
+		AddHandler KeyPress, AddressOf Me.FrmCalendarKeyPress
 		Me.ResumeLayout(false)
 	End Sub
 	Private tmrAffiche As System.Windows.Forms.Timer

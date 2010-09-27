@@ -1,6 +1,6 @@
-Magic The Gathering Manager v.1.0.3602.
+Magic The Gathering Manager v.1.0.3862.
 
-Copyright 2005-2007 Couitchy Corporation. Tous droits réservés.
+Copyright 2008-2010 Couitchy Corporation. Tous droits réservés.
 
 Ce logiciel est protégé par la loi relative au droit d'auteur et par les conventions internationales. Toute modification, altération, partielle ou totale du logiciel, par quelque moyen que ce soit, est strictement interdite. Toute personne ne respectant pas ces dispositions se rendra coupable du délit de contrefaçon et sera passible des sanctions pénales prévues par la loi. 
 

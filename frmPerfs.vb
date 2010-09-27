@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -24,8 +27,8 @@ Public Partial Class frmPerfs
 	'------------	
 		Me.InitializeComponent()
 		VmOwner = VpOwner
-		For VpI As Integer = 1 To VgOptions.GetDeckCount
-			Me.dropAddLocal.DropDownItems.Add(VgOptions.GetDeckName(VpI), Nothing, AddressOf AddLocalGameClick)
+		For VpI As Integer = 1 To clsModule.GetDeckCount
+			Me.dropAddLocal.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf AddLocalGameClick)
 		Next VpI
 		Call AddKnownGames("JeuLocal", Me.cboJeuLocal)
 		Call AddKnownGames("JeuAdverse", Me.cboJeuAdv)
@@ -294,7 +297,7 @@ Public Partial Class frmPerfs
 	'Génère un rapport Excel sur l'efficacité des jeux saisis dans la base de données
 	'--------------------------------------------------------------------------------
 	Dim VpExcelApp As Object
-	Dim VpRow As Integer = 5
+	Dim VpRow As Integer = 3
 	Dim VpI As Integer = 0
 	Dim VpJ As Integer
 	Dim VpDecks() As String = clsPerformances.GetAllDecks
@@ -305,49 +308,65 @@ Public Partial Class frmPerfs
 		Try
 			VpExcelApp = CreateObject("Excel.Application")
 		Catch
-			Call clsModule.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système." + vbCrLf + "Impossible de continuer...")
+			Call clsModule.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système..." + vbCrLf + "Impossible de continuer.")
 			Exit Sub
 		End Try	
 		With VpExcelApp				
 			.Workbooks.Add
+			.Sheets(3).Delete
 			.Visible = True	
 			'Partie 1 : efficacité dans l'absolu
-			.Cells(1, 1) = "Efficacité mode global"
-			.Cells(3, 1) = "Nom du deck"
-			.Cells(3, 2) = "Prix du deck"
-			.Cells(3, 3) = "Performance (proportions de victoires)"
-			.Cells(3, 4) = "Espérance de prix compte-tenu de la performance"
-			.Cells(3, 5) = "Espérance de la performance compte-tenu du prix"
-			.Cells(3, 6) = "Facteur d'efficacité (meilleur si tend vers 0)"
-			.Rows(3).EntireRow.Font.Bold = True
-			For Each VpDeck As String In VpDecks
-				VpPrice = clsPerformances.GetPrice(VpDeck)
-				If VpPrice <> -1 Then
-					.Cells(VpRow, 1) = VpDeck
-					.Cells(VpRow, 2) = Format(VpPrice, "0.0") + " €"
-					.Cells(VpRow, 3) = Format(VpMatT(VpI), "0.0") + "%"
-					.Cells(VpRow, 4) = Format(VpRef * VpMatT(VpI), "0.0") + " €"
-					.Cells(VpRow, 5) = Format(Math.Min(VpPrice / VpRef, 100), "0.0") + "%"
-					.Cells(VpRow, 6) = Format((VpPrice / VpMatT(VpI)) / VpRef, "0.00")
-					VpRow = VpRow + 1
-				End If
-				VpI = VpI + 1
-			Next VpDeck
-			For VpI = 1 To 6
-				.Columns(VpI).EntireColumn.AutoFit
-			Next VpI			
+			With .Sheets(1)
+				.Name = "Mode global"
+				.Cells(1, 1) = "Nom du deck"
+				.Cells(1, 2) = "Prix du deck"
+				.Cells(1, 3) = "Performance (proportions de victoires)"
+				.Cells(1, 4) = "Espérance de prix compte-tenu de la performance"
+				.Cells(1, 5) = "Espérance de la performance compte-tenu du prix"
+				.Cells(1, 6) = "Facteur d'efficacité (meilleur si tend vers 0)"
+				.Rows(1).EntireRow.Font.Bold = True
+				For Each VpDeck As String In VpDecks
+					VpPrice = clsPerformances.GetPrice(VpDeck)
+					If VpPrice <> -1 Then
+						.Cells(VpRow, 1) = VpDeck
+						.Cells(VpRow, 2) = VpPrice 'Format(VpPrice, "0.0") + " €"
+						.Cells(VpRow, 3) = Format(VpMatT(VpI), "0.0") + "%"
+						.Cells(VpRow, 4) = VpRef * VpMatT(VpI) 'Format(VpRef * VpMatT(VpI), "0.0") + " €"
+						.Cells(VpRow, 5) = Format(Math.Min(VpPrice / VpRef, 100), "0.0") + "%"
+						.Cells(VpRow, 6) = Format((VpPrice / VpMatT(VpI)) / VpRef, "0.00")
+						VpRow = VpRow + 1
+					End If
+					VpI = VpI + 1
+				Next VpDeck
+				'Formatage particulier
+				For VpI = 1 To 6
+					.Columns(VpI).EntireColumn.AutoFit
+					If VpI = 2 Or VpI = 4 Then
+						.Columns(VpI).EntireColumn.NumberFormat = "0,00 €"
+					End If
+				Next VpI		
+			End With
+			VpRow = 1
 			'Partie 2 : facteur d'efficacité d'un jeu contre un autre (à lire sur ligne (et non sur colonne) après génération)
-			VpRow = VpRow + 1
-			.Cells(VpRow, 1) = "Efficacité mode versus"
-			For VpI = 0 To VpDecks.Length - 1
-				.Cells(VpI + VpRow + 1, 1) = VpDecks(VpI)
-				For VpJ = 0 To VpDecks.Length - 1
-					.Cells(VpRow, VpJ + 2) = VpDecks(VpJ)
-					.Cells(VpI + VpRow + 1, VpJ + 2) = Format(Me.GetEfficiency(New String() {VpDecks(VpI), VpDecks(VpJ)}, VpDecks(VpI)), "0.00").Replace("Non Numérique", "").Replace("-Infini", "").Replace("+Infini", "")
-				Next VpJ
-			Next VpI
+			With .Sheets(2)
+				.Name = "Mode versus"
+				For VpI = 0 To VpDecks.Length - 1
+					.Cells(VpI + VpRow + 1, 1) = VpDecks(VpI)
+					For VpJ = 0 To VpDecks.Length - 1
+						.Cells(VpRow, VpJ + 2) = VpDecks(VpJ)
+						.Cells(VpI + VpRow + 1, VpJ + 2) = Format(Me.GetEfficiency(New String() {VpDecks(VpI), VpDecks(VpJ)}, VpDecks(VpI)), "0.00").Replace("Non Numérique", "").Replace("-Infini", "").Replace("+Infini", "")
+					Next VpJ
+				Next VpI
+				'Formatage particulier
+				.Columns(1).EntireColumn.Font.Bold = True
+				.Rows(1).EntireRow.Font.Bold = True
+				For VpI = 1 To VpDecks.Length + 1
+					.Columns(VpI).EntireColumn.AutoFit
+					.Cells(VpI, VpI).Interior.ColorIndex = 48
+				Next VpI
+			End With
 		End With
-		Call clsModule.ShowInformation("Génération terminée." + vbCrLf + "NB. Ce calcul n'a de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix).")
+		Call clsModule.ShowInformation("Génération terminée." + vbCrLf + "NB. Ce calcul n'a de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix) et si suffisamment de parties entre tous les decks ont été disputées.")
 	End Sub	
 	Private Function GetEfficiency(VpDecks() As String, VpGame As String) As Single
 	'------------------------------------------------------------------------------------------------------------------------
@@ -771,7 +790,7 @@ Public Class clsPerformances
 	'Retourne le prix du jeu passé en paramètre
 	'------------------------------------------
 	Dim VpId As String
-		VpId = VgOptions.GetDeckIndex(VpGame)
+		VpId = clsModule.GetDeckIndex(VpGame)
 		If VpId <> "" Then
 			VgDBCommand.CommandText = "Select Sum(Val(Price) * Items) From Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where GameID = " + VpId + ";"
 			Return VgDBCommand.ExecuteScalar

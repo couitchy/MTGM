@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -28,7 +31,7 @@ Public Partial Class frmSpecialCardUse
 		Me.cboCard.SelectedIndex = 0
 	End Sub
 	Private Sub LoadSpecials
-		VgDBCommand.CommandText = "Select Description, IsEffort From SpecialUse;"
+		VgDBCommand.CommandText = "Select Description, IsEffort From SpecialUse Order By Description;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -43,7 +46,6 @@ Public Partial Class frmSpecialCardUse
 	End Sub
 	Private Sub CbarSpecialCardMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
-		VmCanClose = True
 		VmMousePos = New Point(e.X, e.Y)
 	End Sub
 	Private Sub CbarSpecialCardMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -55,7 +57,7 @@ Public Partial Class frmSpecialCardUse
 		VmFormMove = False
 	End Sub		
 	Private Sub CbarSpecialCardVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
-		If VmCanClose Then
+		If VmCanClose AndAlso Not Me.cbarSpecialCard.Visible Then
 			Me.Close
 		End If
 	End Sub		
@@ -113,6 +115,12 @@ Public Partial Class frmSpecialCardUse
 	End Sub
 	Sub TxtEffetLeave(ByVal sender As Object, ByVal e As EventArgs)
 		VmHelp.RemoveAll
+	End Sub
+	Sub CmdCancelClick(sender As Object, e As EventArgs)
+		Me.Close	
+	End Sub
+	Sub FrmSpecialCardUseLoad(sender As Object, e As EventArgs)
+		VmCanClose = True
 	End Sub
 End Class
 Public Class clsSpeciality

@@ -9,12 +9,12 @@ Imports System.Runtime.InteropServices
 ' you compile.
 
 <assembly: AssemblyTitle("Magic The Gathering Manager")>
-<assembly: AssemblyDescription("")>
-<assembly: AssemblyConfiguration("")>
-<assembly: AssemblyCompany("")>
+<assembly: AssemblyDescription("Manage your Magic cards the easy way.")>
+<assembly: AssemblyConfiguration(".NET Framework 2.0")>
+<assembly: AssemblyCompany("Couitchy Corp.")>
 <assembly: AssemblyProduct("Magic The Gathering Manager")>
-<assembly: AssemblyCopyright("")>
-<assembly: AssemblyTrademark("")>
+<assembly: AssemblyCopyright("Copyright (c) 2008-2010 Couitchy Corp.")>
+<assembly: AssemblyTrademark("MTGM")>
 <assembly: AssemblyCulture("")>
 
 ' This sets the default COM visibility of types in the assembly to invisible.

@@ -6,6 +6,9 @@
 '| Release 2      |                        30/08/2008 |
 '| Release 3      |                        08/11/2008 |
 '| Release 4      |                        29/08/2009 |
+'| Release 5      |                        21/03/2010 |
+'| Release 6      |                        17/04/2010 |
+'| Release 7      |                        29/07/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -31,7 +34,7 @@ Public Partial Class frmExport
 			VpOut.WriteLine("// CREATOR : " + Environment.UserName)
 			VpOut.WriteLine("// FORMAT :")
 		End If
-		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title From " + IIf(VpSource = clsModule.CgCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + VgOptions.GetDeckIndex(VpSource) + ";")
+		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title From " + IIf(VpSource = clsModule.CgCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -57,7 +60,7 @@ Public Partial Class frmExport
 	Dim VpO As Object
 		'S'il s'agit d'un nouveau deck, l'inscrit en BDD
 		If VpIsNew Then
-			VpId = VgOptions.GetDeckCount
+			VpId = clsModule.GetNewDeckId
 			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpSource.Replace("'", "''") + "');"
 			VgDBCommand.ExecuteNonQuery
 		End If
@@ -81,14 +84,14 @@ Public Partial Class frmExport
 					End If
 				'Cas 3 : complément ancien deck
 				Else
-					VgDBCommand.CommandText = "Select Items From MyGames Where EncNbr = " + VpStrs(0) + " And GameID = " + VgOptions.GetDeckIndex(VpSource) + ";"
+					VgDBCommand.CommandText = "Select Items From MyGames Where EncNbr = " + VpStrs(0) + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
 					VpO = VgDBCommand.ExecuteScalar	
 					'Cas 3.1 : la carte a ajouté existe déjà => mise à jour de la quantité somme
 					If Not VpO Is Nothing AndAlso CInt(VpO) > 0 Then
-						VpSQL = "Update MyGames Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + " And GameID = " + VgOptions.GetDeckIndex(VpSource) + ";"
+						VpSQL = "Update MyGames Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
 					'Cas 3.2 : nouvelle carte => insertion
 					Else
-						VpSQL = "Insert Into MyGames(EncNbr, Items, GameID) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VgOptions.GetDeckIndex(VpSource) + ");"	
+						VpSQL = "Insert Into MyGames(EncNbr, Items, GameID) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + clsModule.GetDeckIndex(VpSource) + ");"	
 					End If					
 				End If
 			End If			
@@ -99,6 +102,13 @@ Public Partial Class frmExport
 		'Information utilisateur
 		Call clsModule.ShowInformation("Importation terminée.")
 		VmMustReload = True
+	End Sub
+	Public Sub InitImport(VpFile As String)
+		Me.grpImport.Visible = True
+		Me.grpExport.Visible = False
+		Me.txtFileImp.Text = VpFile
+		Me.txtSourceImp.Text = Me.txtFileImp.Text.Substring(Me.txtFileImp.Text.LastIndexOf("\") + 1)
+		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "")
 	End Sub
 	Sub CmdExportClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.dlgBrowser.ShowDialog
@@ -120,7 +130,7 @@ Public Partial Class frmExport
 		Me.lstImp.Items.Clear
 		Me.lstchkSources.Items.Add(clsModule.CgCollection)
 		Me.lstImp.Items.Add(clsModule.CgCollection)
-		VgDBCommand.CommandText = "Select GameName From MyGamesID;"
+		VgDBCommand.CommandText = "Select GameName From MyGamesID Order By GameID;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -166,9 +176,7 @@ Public Partial Class frmExport
 	End Sub
 	Sub CmdBrowseClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.dlgFileBrowser.ShowDialog
-		Me.txtFileImp.Text = Me.dlgFileBrowser.FileName
-		Me.txtSourceImp.Text = Me.txtFileImp.Text.Substring(Me.txtFileImp.Text.LastIndexOf("\") + 1)
-		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "")
+		Call Me.InitImport(Me.dlgFileBrowser.FileName)
 	End Sub
 	Sub CmdImportClick(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpOK As Boolean
@@ -196,6 +204,7 @@ Public Partial Class frmExport
 	End Sub
 	Sub FrmExportFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
 		If VmMustReload Then
+			Me.Visible = False
 			Call VmOwner.LoadMnu
 			Call VmOwner.LoadTvw	
 		End If

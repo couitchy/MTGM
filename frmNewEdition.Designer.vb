@@ -43,14 +43,14 @@ Partial Class frmNewEdition
 		Me.txtCheckList = New System.Windows.Forms.TextBox
 		Me.lblSpoilerList = New System.Windows.Forms.Label
 		Me.lblCheckList = New System.Windows.Forms.Label
-		Me.lblInfo = New System.Windows.Forms.Label
+		Me.lblData = New System.Windows.Forms.Label
 		Me.chkNewEdition = New System.Windows.Forms.CheckedListBox
 		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
 		Me.grpAssist = New System.Windows.Forms.GroupBox
-		Me.lnklblAssist3 = New System.Windows.Forms.LinkLabel
-		Me.lblAssist4 = New System.Windows.Forms.Label
-		Me.lnklblAssist2 = New System.Windows.Forms.LinkLabel
-		Me.lnklblAssist1 = New System.Windows.Forms.LinkLabel
+		Me.optUpdate = New System.Windows.Forms.RadioButton
+		Me.optManual = New System.Windows.Forms.RadioButton
+		Me.optAuto = New System.Windows.Forms.RadioButton
+		Me.lnklblAssist = New System.Windows.Forms.LinkLabel
 		Me.lblAssist3 = New System.Windows.Forms.Label
 		Me.picMagic = New System.Windows.Forms.PictureBox
 		Me.cmdAssistCancel = New System.Windows.Forms.Button
@@ -63,6 +63,13 @@ Partial Class frmNewEdition
 		Me.cmdHeaderNext = New System.Windows.Forms.Button
 		Me.propEdition = New System.Windows.Forms.PropertyGrid
 		Me.lblHeader = New System.Windows.Forms.Label
+		Me.grpAuto = New System.Windows.Forms.GroupBox
+		Me.lblStatus = New System.Windows.Forms.Label
+		Me.lblAuto2 = New System.Windows.Forms.Label
+		Me.lblAuto1 = New System.Windows.Forms.Label
+		Me.chkNewEditionAuto = New System.Windows.Forms.CheckedListBox
+		Me.cmdAutoPrevious = New System.Windows.Forms.Button
+		Me.cmdAutoNext = New System.Windows.Forms.Button
 		Me.grpData.SuspendLayout
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
@@ -70,6 +77,7 @@ Partial Class frmNewEdition
 		Me.grpAssist.SuspendLayout
 		CType(Me.picMagic,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.grpHeader.SuspendLayout
+		Me.grpAuto.SuspendLayout
 		Me.SuspendLayout
 		'
 		'grpData
@@ -109,7 +117,7 @@ Partial Class frmNewEdition
 		Me.splitH.Panel1.Controls.Add(Me.txtCheckList)
 		Me.splitH.Panel1.Controls.Add(Me.lblSpoilerList)
 		Me.splitH.Panel1.Controls.Add(Me.lblCheckList)
-		Me.splitH.Panel1.Controls.Add(Me.lblInfo)
+		Me.splitH.Panel1.Controls.Add(Me.lblData)
 		'
 		'splitH.Panel2
 		'
@@ -170,15 +178,15 @@ Partial Class frmNewEdition
 		Me.lblCheckList.TabIndex = 1
 		Me.lblCheckList.Text = "Check list - "
 		'
-		'lblInfo
+		'lblData
 		'
-		Me.lblInfo.BackColor = System.Drawing.SystemColors.Control
-		Me.lblInfo.Location = New System.Drawing.Point(12, 9)
-		Me.lblInfo.Name = "lblInfo"
-		Me.lblInfo.Size = New System.Drawing.Size(332, 29)
-		Me.lblInfo.TabIndex = 0
-		Me.lblInfo.Text = "Choisissez une série dont les cartes ne sont pas encore référencées ainsi que les"& _ 
-		" deux fichiers Wizard of The Coast les accompagnant :"
+		Me.lblData.BackColor = System.Drawing.SystemColors.Control
+		Me.lblData.Location = New System.Drawing.Point(12, 9)
+		Me.lblData.Name = "lblData"
+		Me.lblData.Size = New System.Drawing.Size(388, 29)
+		Me.lblData.TabIndex = 0
+		Me.lblData.Text = "Choisissez une édition dont les cartes ne sont pas encore référencées ainsi que l"& _ 
+		"es deux fichiers Wizard of The Coast les accompagnant :"
 		'
 		'chkNewEdition
 		'
@@ -190,6 +198,7 @@ Partial Class frmNewEdition
 		Me.chkNewEdition.Name = "chkNewEdition"
 		Me.chkNewEdition.Size = New System.Drawing.Size(433, 124)
 		Me.chkNewEdition.TabIndex = 0
+		AddHandler Me.chkNewEdition.ItemCheck, AddressOf Me.ChkNewEditionItemCheck
 		'
 		'dlgOpen
 		'
@@ -199,10 +208,10 @@ Partial Class frmNewEdition
 		'
 		'grpAssist
 		'
-		Me.grpAssist.Controls.Add(Me.lnklblAssist3)
-		Me.grpAssist.Controls.Add(Me.lblAssist4)
-		Me.grpAssist.Controls.Add(Me.lnklblAssist2)
-		Me.grpAssist.Controls.Add(Me.lnklblAssist1)
+		Me.grpAssist.Controls.Add(Me.optUpdate)
+		Me.grpAssist.Controls.Add(Me.optManual)
+		Me.grpAssist.Controls.Add(Me.optAuto)
+		Me.grpAssist.Controls.Add(Me.lnklblAssist)
 		Me.grpAssist.Controls.Add(Me.lblAssist3)
 		Me.grpAssist.Controls.Add(Me.picMagic)
 		Me.grpAssist.Controls.Add(Me.cmdAssistCancel)
@@ -216,56 +225,60 @@ Partial Class frmNewEdition
 		Me.grpAssist.TabIndex = 1
 		Me.grpAssist.TabStop = false
 		'
-		'lnklblAssist3
+		'optUpdate
 		'
-		Me.lnklblAssist3.AutoSize = true
-		Me.lnklblAssist3.Location = New System.Drawing.Point(12, 305)
-		Me.lnklblAssist3.Name = "lnklblAssist3"
-		Me.lnklblAssist3.Size = New System.Drawing.Size(102, 13)
-		Me.lnklblAssist3.TabIndex = 9
-		Me.lnklblAssist3.TabStop = true
-		Me.lnklblAssist3.Text = "2. Logo des éditions"
-		AddHandler Me.lnklblAssist3.LinkClicked, AddressOf Me.LnklblAssist3LinkClicked
+		Me.optUpdate.AutoSize = true
+		Me.optUpdate.Location = New System.Drawing.Point(15, 297)
+		Me.optUpdate.Name = "optUpdate"
+		Me.optUpdate.Size = New System.Drawing.Size(191, 17)
+		Me.optUpdate.TabIndex = 10
+		Me.optUpdate.Text = "Mettre à jour les en-têtes des séries"
+		Me.optUpdate.UseVisualStyleBackColor = true
 		'
-		'lblAssist4
+		'optManual
 		'
-		Me.lblAssist4.AutoSize = true
-		Me.lblAssist4.Location = New System.Drawing.Point(15, 283)
-		Me.lblAssist4.Name = "lblAssist4"
-		Me.lblAssist4.Size = New System.Drawing.Size(42, 13)
-		Me.lblAssist4.TabIndex = 8
-		Me.lblAssist4.Text = "ou bien"
+		Me.optManual.AutoSize = true
+		Me.optManual.Location = New System.Drawing.Point(15, 274)
+		Me.optManual.Name = "optManual"
+		Me.optManual.Size = New System.Drawing.Size(89, 17)
+		Me.optManual.TabIndex = 9
+		Me.optManual.Text = "Mode manuel"
+		Me.optManual.UseVisualStyleBackColor = true
+		AddHandler Me.optManual.CheckedChanged, AddressOf Me.OptManualCheckedChanged
 		'
-		'lnklblAssist2
+		'optAuto
 		'
-		Me.lnklblAssist2.AutoSize = true
-		Me.lnklblAssist2.Location = New System.Drawing.Point(63, 283)
-		Me.lnklblAssist2.Name = "lnklblAssist2"
-		Me.lnklblAssist2.Size = New System.Drawing.Size(338, 13)
-		Me.lnklblAssist2.TabIndex = 7
-		Me.lnklblAssist2.TabStop = true
-		Me.lnklblAssist2.Text = "Fichiers de description des nouvelles cartes (site Wizards of the Coast)"
-		AddHandler Me.lnklblAssist2.LinkClicked, AddressOf Me.LnklblAssist2LinkClicked
+		Me.optAuto.AutoSize = true
+		Me.optAuto.Checked = true
+		Me.optAuto.Location = New System.Drawing.Point(15, 251)
+		Me.optAuto.Name = "optAuto"
+		Me.optAuto.Size = New System.Drawing.Size(183, 17)
+		Me.optAuto.TabIndex = 8
+		Me.optAuto.TabStop = true
+		Me.optAuto.Text = "Mode automatique (recommandé)"
+		Me.optAuto.UseVisualStyleBackColor = true
 		'
-		'lnklblAssist1
+		'lnklblAssist
 		'
-		Me.lnklblAssist1.AutoSize = true
-		Me.lnklblAssist1.Location = New System.Drawing.Point(12, 261)
-		Me.lnklblAssist1.Name = "lnklblAssist1"
-		Me.lnklblAssist1.Size = New System.Drawing.Size(303, 13)
-		Me.lnklblAssist1.TabIndex = 6
-		Me.lnklblAssist1.TabStop = true
-		Me.lnklblAssist1.Text = "1. Fichiers de description des nouvelles cartes (site de l'éditeur)"
-		AddHandler Me.lnklblAssist1.LinkClicked, AddressOf Me.LnklblAssist1LinkClicked
+		Me.lnklblAssist.AutoSize = true
+		Me.lnklblAssist.Enabled = false
+		Me.lnklblAssist.Location = New System.Drawing.Point(110, 276)
+		Me.lnklblAssist.Name = "lnklblAssist"
+		Me.lnklblAssist.Size = New System.Drawing.Size(297, 13)
+		Me.lnklblAssist.TabIndex = 7
+		Me.lnklblAssist.TabStop = true
+		Me.lnklblAssist.Text = "Fichiers de description des éditions (site Wizards of the Coast)"
+		AddHandler Me.lnklblAssist.LinkClicked, AddressOf Me.LnklblAssistLinkClicked
 		'
 		'lblAssist3
 		'
-		Me.lblAssist3.Location = New System.Drawing.Point(179, 197)
+		Me.lblAssist3.Location = New System.Drawing.Point(179, 187)
 		Me.lblAssist3.Name = "lblAssist3"
-		Me.lblAssist3.Size = New System.Drawing.Size(248, 51)
+		Me.lblAssist3.Size = New System.Drawing.Size(248, 61)
 		Me.lblAssist3.TabIndex = 5
-		Me.lblAssist3.Text = "Avant de commencer, assurez-vous d'avoir téléchargé les fichiers nécessaires en s"& _ 
-		"uivant les liens ci-dessous :"
+		Me.lblAssist3.Text = "Avant de commencer, choisissez le mode désiré. L'option automatique est recommand"& _ 
+		"ée, mais si vous ne trouvez pas l'édition recherchée, il faudra passer en mode m"& _ 
+		"anuel..."
 		'
 		'picMagic
 		'
@@ -282,7 +295,7 @@ Partial Class frmNewEdition
 		Me.cmdAssistCancel.Name = "cmdAssistCancel"
 		Me.cmdAssistCancel.Size = New System.Drawing.Size(75, 23)
 		Me.cmdAssistCancel.TabIndex = 3
-		Me.cmdAssistCancel.Text = "Annuler"
+		Me.cmdAssistCancel.Text = "Fermer"
 		Me.cmdAssistCancel.UseVisualStyleBackColor = true
 		AddHandler Me.cmdAssistCancel.Click, AddressOf Me.CmdAssistCancelClick
 		'
@@ -302,8 +315,8 @@ Partial Class frmNewEdition
 		Me.lblAssist2.Name = "lblAssist2"
 		Me.lblAssist2.Size = New System.Drawing.Size(248, 51)
 		Me.lblAssist2.TabIndex = 1
-		Me.lblAssist2.Text = "Cliquez sur 'Suivant' pour ajouter de nouvelles séries à votre logiciel Magic The"& _ 
-		" Gathering Manager..."
+		Me.lblAssist2.Text = "Cliquez sur 'Suivant' pour ajouter de nouvelles éditions à votre logiciel Magic T"& _ 
+		"he Gathering Manager..."
 		'
 		'lblAssist1
 		'
@@ -373,9 +386,86 @@ Partial Class frmNewEdition
 		Me.lblHeader.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
 		Me.lblHeader.Location = New System.Drawing.Point(6, 12)
 		Me.lblHeader.Name = "lblHeader"
-		Me.lblHeader.Size = New System.Drawing.Size(343, 31)
+		Me.lblHeader.Size = New System.Drawing.Size(347, 31)
 		Me.lblHeader.TabIndex = 0
-		Me.lblHeader.Text = "Caractéristiques de la série"
+		Me.lblHeader.Text = "Caractéristiques de l'édition"
+		'
+		'grpAuto
+		'
+		Me.grpAuto.Controls.Add(Me.lblStatus)
+		Me.grpAuto.Controls.Add(Me.lblAuto2)
+		Me.grpAuto.Controls.Add(Me.lblAuto1)
+		Me.grpAuto.Controls.Add(Me.chkNewEditionAuto)
+		Me.grpAuto.Controls.Add(Me.cmdAutoPrevious)
+		Me.grpAuto.Controls.Add(Me.cmdAutoNext)
+		Me.grpAuto.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grpAuto.Location = New System.Drawing.Point(0, 0)
+		Me.grpAuto.Name = "grpAuto"
+		Me.grpAuto.Size = New System.Drawing.Size(439, 355)
+		Me.grpAuto.TabIndex = 3
+		Me.grpAuto.TabStop = false
+		Me.grpAuto.Visible = false
+		'
+		'lblStatus
+		'
+		Me.lblStatus.AutoSize = true
+		Me.lblStatus.Location = New System.Drawing.Point(76, 276)
+		Me.lblStatus.Name = "lblStatus"
+		Me.lblStatus.Size = New System.Drawing.Size(50, 13)
+		Me.lblStatus.TabIndex = 11
+		Me.lblStatus.Text = "Attente..."
+		'
+		'lblAuto2
+		'
+		Me.lblAuto2.Location = New System.Drawing.Point(76, 71)
+		Me.lblAuto2.Name = "lblAuto2"
+		Me.lblAuto2.Size = New System.Drawing.Size(270, 50)
+		Me.lblAuto2.TabIndex = 10
+		Me.lblAuto2.Text = "Les éditions suivantes sont disponibles sur le site de l'éditeur. Choisissez cell"& _ 
+		"e que vous souhaitez inclure à votre base de données :"
+		'
+		'lblAuto1
+		'
+		Me.lblAuto1.AutoSize = true
+		Me.lblAuto1.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
+		Me.lblAuto1.Location = New System.Drawing.Point(6, 12)
+		Me.lblAuto1.Name = "lblAuto1"
+		Me.lblAuto1.Size = New System.Drawing.Size(254, 31)
+		Me.lblAuto1.TabIndex = 9
+		Me.lblAuto1.Text = "Editions disponibles"
+		'
+		'chkNewEditionAuto
+		'
+		Me.chkNewEditionAuto.CheckOnClick = true
+		Me.chkNewEditionAuto.FormattingEnabled = true
+		Me.chkNewEditionAuto.Location = New System.Drawing.Point(76, 129)
+		Me.chkNewEditionAuto.MultiColumn = true
+		Me.chkNewEditionAuto.Name = "chkNewEditionAuto"
+		Me.chkNewEditionAuto.Size = New System.Drawing.Size(270, 139)
+		Me.chkNewEditionAuto.TabIndex = 8
+		AddHandler Me.chkNewEditionAuto.ItemCheck, AddressOf Me.ChkNewEditionItemCheck
+		'
+		'cmdAutoPrevious
+		'
+		Me.cmdAutoPrevious.Enabled = false
+		Me.cmdAutoPrevious.Location = New System.Drawing.Point(271, 322)
+		Me.cmdAutoPrevious.Name = "cmdAutoPrevious"
+		Me.cmdAutoPrevious.Size = New System.Drawing.Size(75, 23)
+		Me.cmdAutoPrevious.TabIndex = 7
+		Me.cmdAutoPrevious.Text = "< Précédent"
+		Me.cmdAutoPrevious.UseVisualStyleBackColor = true
+		AddHandler Me.cmdAutoPrevious.Click, AddressOf Me.CmdAutoPreviousClick
+		'
+		'cmdAutoNext
+		'
+		Me.cmdAutoNext.Enabled = false
+		Me.cmdAutoNext.Location = New System.Drawing.Point(352, 322)
+		Me.cmdAutoNext.Name = "cmdAutoNext"
+		Me.cmdAutoNext.Size = New System.Drawing.Size(75, 23)
+		Me.cmdAutoNext.TabIndex = 6
+		Me.cmdAutoNext.Text = "Suivant >"
+		Me.cmdAutoNext.UseVisualStyleBackColor = true
+		AddHandler Me.cmdAutoNext.Click, AddressOf Me.CmdAutoNextClick
 		'
 		'frmNewEdition
 		'
@@ -383,6 +473,7 @@ Partial Class frmNewEdition
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
 		Me.ClientSize = New System.Drawing.Size(439, 355)
 		Me.Controls.Add(Me.grpAssist)
+		Me.Controls.Add(Me.grpAuto)
 		Me.Controls.Add(Me.grpData)
 		Me.Controls.Add(Me.grpHeader)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
@@ -403,15 +494,25 @@ Partial Class frmNewEdition
 		CType(Me.picMagic,System.ComponentModel.ISupportInitialize).EndInit
 		Me.grpHeader.ResumeLayout(false)
 		Me.grpHeader.PerformLayout
+		Me.grpAuto.ResumeLayout(false)
+		Me.grpAuto.PerformLayout
 		Me.ResumeLayout(false)
 	End Sub
+	Private optUpdate As System.Windows.Forms.RadioButton
+	Private lblStatus As System.Windows.Forms.Label
+	Private lblData As System.Windows.Forms.Label
+	Private chkNewEditionAuto As System.Windows.Forms.CheckedListBox
+	Private lblAuto1 As System.Windows.Forms.Label
+	Private lblAuto2 As System.Windows.Forms.Label
+	Private cmdAutoNext As System.Windows.Forms.Button
+	Private cmdAutoPrevious As System.Windows.Forms.Button
+	Private lnklblAssist As System.Windows.Forms.LinkLabel
+	Private grpAuto As System.Windows.Forms.GroupBox
+	Private optAuto As System.Windows.Forms.RadioButton
+	Private optManual As System.Windows.Forms.RadioButton
 	Private picMagic As System.Windows.Forms.PictureBox
 	Private chkHeaderAlready As System.Windows.Forms.CheckBox
 	Private lblAssist3 As System.Windows.Forms.Label
-	Private lnklblAssist1 As System.Windows.Forms.LinkLabel
-	Private lnklblAssist2 As System.Windows.Forms.LinkLabel
-	Private lblAssist4 As System.Windows.Forms.Label
-	Private lnklblAssist3 As System.Windows.Forms.LinkLabel
 	Private cmdHeaderNext As System.Windows.Forms.Button
 	Private cmdHeaderPrevious As System.Windows.Forms.Button
 	Private lblHeader As System.Windows.Forms.Label
@@ -425,7 +526,6 @@ Partial Class frmNewEdition
 	Private grpData As System.Windows.Forms.GroupBox
 	Private dlgOpen As System.Windows.Forms.OpenFileDialog
 	Private cmdOK As System.Windows.Forms.Button
-	Private lblInfo As System.Windows.Forms.Label
 	Private lblCheckList As System.Windows.Forms.Label
 	Private lblSpoilerList As System.Windows.Forms.Label
 	Private txtCheckList As System.Windows.Forms.TextBox
