@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -17,8 +18,10 @@
 '------------------------------------------------------
 Imports System.IO
 Imports System.ComponentModel
+Imports System.Text
 Public Partial Class frmNewEdition
 	Private VmEditionHeader As New clsEditionHeader
+	Private VmEncNbr0 As Integer = -1
 	Public Sub New()
 		Me.InitializeComponent()
 		Me.picMagic.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
@@ -71,10 +74,12 @@ Public Partial Class frmNewEdition
 	'------------------------------------------------------------------------------------
 	Dim VpChecker As String = "\" + VpInfos(0) + "_checklist_en.txt"
 	Dim VpSpoiler As String = "\" + VpInfos(0) + "_spoiler_en.txt"
+	Dim VpTrad As String = "\" + VpInfos(0) + "_titles_fr.txt"
 		'Téléchargement des fichiers nécessaires
-		Call Me.DLResource("(1/3)", clsModule.CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
-		Call Me.DLResource("(2/3)", clsModule.CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
-		Call Me.DLResource("(3/3)", clsModule.CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
+		Call Me.DLResource("(1/4)", clsModule.CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
+		Call Me.DLResource("(2/4)", clsModule.CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
+		Call Me.DLResource("(3/4)", clsModule.CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
+		Call Me.DLResource("(4/4)", clsModule.CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
 		'Inscription de l'en-tête
 		Me.lblStatus.Text = "Inscription de l'en-tête..."
 		Application.DoEvents
@@ -85,12 +90,14 @@ Public Partial Class frmNewEdition
 			'La suite est comme en mode manuel
 			Me.txtCheckList.Text = Application.StartupPath + VpChecker
 			Me.txtSpoilerList.Text = Application.StartupPath + VpSpoiler
+			Me.txtSpoilerList.Tag = Application.StartupPath + VpTrad
 			Me.chkNewEdition.Tag = VpInfos(2)
 			Call Me.AddNewEdition
 		End If
 		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
 		Call clsModule.SecureDelete(Application.StartupPath + VpChecker)
 		Call clsModule.SecureDelete(Application.StartupPath + VpSpoiler)
+		Call clsModule.SecureDelete(Application.StartupPath + VpTrad)
 	End Sub
 	Private Sub UpdateSeriesHeaders
 	'--------------------------------------------------------------
@@ -186,6 +193,9 @@ Public Partial Class frmNewEdition
 		'Dernier numéro d'identification de carte utilisé
 		VgDBCommand.CommandText = "Select Max(EncNbr) From Card;"
 		VpEncNbr = CLng(VgDBCommand.ExecuteScalar) + 1
+		If VmEncNbr0 = -1 Then
+			VmEncNbr0 = VpEncNbr
+		End If
 		'Vérifie si la carte a déjà été éditée dans une édition précédente
 		VgDBCommand.CommandText = "Select LastPrint From Spell Where Title = '" + VpCarac(0).Replace("'", "''") + "';"
 		VpPrevious = Not ( VgDBCommand.ExecuteScalar Is Nothing )
@@ -278,12 +288,27 @@ Public Partial Class frmNewEdition
 	'---------------------------------------------------------------------------------------
 	Dim VpFile As New StreamReader(Me.txtSpoilerList.Text)
 	Dim VpCounter As Integer = 0
+	Dim VpStrs() As String
+		VmEncNbr0 = -1
+		'Ajout des cartes
 		Do While Not VpFile.EndOfStream
 			If Me.AddNewCard(frmNewEdition.ParseNewCard(VpFile)) Then
 				VpCounter = VpCounter + 1
 			End If
 		Loop
 		VpFile.Close
+		'Traduction
+		If Not Me.txtSpoilerList.Tag Is Nothing AndAlso File.Exists(Me.txtSpoilerList.Tag.ToString) Then
+			Me.lblStatus.Text = "Traduction en cours..."
+			Application.DoEvents
+			VpFile = New StreamReader(Me.txtSpoilerList.Tag.ToString, Encoding.Default)
+			While Not VpFile.EndOfStream
+				VpStrs = VpFile.ReadLine.Split("#")
+				VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.EncNbr >= " + VmEncNbr0.ToString + ";"
+				VgDBCommand.ExecuteNonQuery
+	    	End While
+			VpFile.Close
+		End If
 		Me.lblStatus.Text = "Terminé."
 		Call clsModule.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
 		Me.txtCheckList.Text = ""
@@ -645,7 +670,7 @@ Public Class clsEditionHeader
 			VmSeriesNM = VpSeriesNM
 		End Set
 	End Property
-	<Category("Identification"), Description("Nom raccourci de la série sur magiccorportation.com (12 caractères maxi., correspondance requise pour la mise à jour des prix...)")> _
+	<Category("Identification"), Description("Nom raccourci de la série sur magiccorportation.com (correspondance requise pour la mise à jour des prix...)")> _
 	Public Property SeriesNM_MtG As String
 		Get
 			Return VmSeriesNM_MtG

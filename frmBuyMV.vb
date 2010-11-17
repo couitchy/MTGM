@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -60,6 +61,22 @@ Public Partial Class frmBuyMV
 			End If
 			Application.DoEvents
 		End While
+	End Sub
+	Private Sub ClearSellList
+	'--------------------------------------------------------
+	'Supprime les entrées de la liste dont la quantité vaut 0
+	'--------------------------------------------------------
+	Dim VpToRemove As New ArrayList
+		'Récupération des éléments à supprimer
+		For Each VpProposition As clsMVCard In VmToSell
+			If VpProposition.Quantite = 0 Then
+				VpToRemove.Add(VpProposition)
+			End If
+		Next VpProposition
+		'Suppression effective
+		For Each VpDelete As clsMVCard In VpToRemove
+			VmToSell.Remove(VpDelete)
+		Next VpDelete
 	End Sub
 	Private Sub DownloadMVInfos(VpCard As String)
 	'---------------------------------------------------------------------------------------------------------------------
@@ -341,6 +358,7 @@ Public Partial Class frmBuyMV
 				Me.prgRefresh.Increment(1)
 			Next VpCard
 			Me.prgRefresh.Value = 0
+			Call Me.ClearSellList
 			Call Me.LoadGrid(clsModule.eBasketMode.MV)
 		Catch
 			Call clsModule.ShowWarning(clsModule.CgDL3b) 

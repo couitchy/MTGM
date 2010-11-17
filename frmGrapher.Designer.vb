@@ -41,23 +41,17 @@ Partial Class frmGrapher
 		Me.btClear = New System.Windows.Forms.ToolStripButton
 		Me.splitH = New System.Windows.Forms.SplitContainer
 		Me.plotMain = New NPlot.Windows.PlotSurface2D
-		Me.cmdDel = New System.Windows.Forms.Button
-		Me.cmdOk = New System.Windows.Forms.Button
-		Me.cboStyle = New System.Windows.Forms.ComboBox
-		Me.lblColorPick = New System.Windows.Forms.Label
-		Me.txtLegend = New System.Windows.Forms.TextBox
-		Me.cboPlots = New System.Windows.Forms.ComboBox
-		Me.lblStyle = New System.Windows.Forms.Label
-		Me.lblColor = New System.Windows.Forms.Label
-		Me.lblLegend = New System.Windows.Forms.Label
-		Me.dlgColor = New System.Windows.Forms.ColorDialog
+		Me.splitV = New System.Windows.Forms.SplitContainer
+		Me.chklstCurves = New System.Windows.Forms.CheckedListBox
+		Me.propCurves = New System.Windows.Forms.PropertyGrid
 		Me.dlgCapture = New System.Windows.Forms.SaveFileDialog
-		Me.lblWidth = New System.Windows.Forms.Label
-		Me.txtWidth = New System.Windows.Forms.TextBox
 		Me.toolStrip.SuspendLayout
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
 		Me.splitH.SuspendLayout
+		Me.splitV.Panel1.SuspendLayout
+		Me.splitV.Panel2.SuspendLayout
+		Me.splitV.SuspendLayout
 		Me.SuspendLayout
 		'
 		'toolStrip
@@ -65,7 +59,7 @@ Partial Class frmGrapher
 		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCapture, Me.btSeparator, Me.btEdit, Me.btClear})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolStrip.Name = "toolStrip"
-		Me.toolStrip.Size = New System.Drawing.Size(458, 25)
+		Me.toolStrip.Size = New System.Drawing.Size(553, 25)
 		Me.toolStrip.TabIndex = 1
 		Me.toolStrip.Text = "toolStrip1"
 		'
@@ -118,20 +112,10 @@ Partial Class frmGrapher
 		'
 		'splitH.Panel2
 		'
-		Me.splitH.Panel2.Controls.Add(Me.txtWidth)
-		Me.splitH.Panel2.Controls.Add(Me.lblWidth)
-		Me.splitH.Panel2.Controls.Add(Me.cmdDel)
-		Me.splitH.Panel2.Controls.Add(Me.cmdOk)
-		Me.splitH.Panel2.Controls.Add(Me.cboStyle)
-		Me.splitH.Panel2.Controls.Add(Me.lblColorPick)
-		Me.splitH.Panel2.Controls.Add(Me.txtLegend)
-		Me.splitH.Panel2.Controls.Add(Me.cboPlots)
-		Me.splitH.Panel2.Controls.Add(Me.lblStyle)
-		Me.splitH.Panel2.Controls.Add(Me.lblColor)
-		Me.splitH.Panel2.Controls.Add(Me.lblLegend)
+		Me.splitH.Panel2.Controls.Add(Me.splitV)
 		Me.splitH.Panel2MinSize = 101
-		Me.splitH.Size = New System.Drawing.Size(458, 260)
-		Me.splitH.SplitterDistance = 155
+		Me.splitH.Size = New System.Drawing.Size(553, 457)
+		Me.splitH.SplitterDistance = 236
 		Me.splitH.TabIndex = 2
 		'
 		'plotMain
@@ -147,7 +131,7 @@ Partial Class frmGrapher
 		Me.plotMain.Name = "plotMain"
 		Me.plotMain.RightMenu = Nothing
 		Me.plotMain.ShowCoordinates = false
-		Me.plotMain.Size = New System.Drawing.Size(458, 155)
+		Me.plotMain.Size = New System.Drawing.Size(553, 236)
 		Me.plotMain.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None
 		Me.plotMain.TabIndex = 1
 		Me.plotMain.Title = ""
@@ -158,91 +142,43 @@ Partial Class frmGrapher
 		Me.plotMain.YAxis2 = Nothing
 		AddHandler Me.plotMain.MouseDown, AddressOf Me.PlotMainMouseDown
 		'
-		'cmdDel
+		'splitV
 		'
-		Me.cmdDel.Location = New System.Drawing.Point(371, 38)
-		Me.cmdDel.Name = "cmdDel"
-		Me.cmdDel.Size = New System.Drawing.Size(75, 23)
-		Me.cmdDel.TabIndex = 9
-		Me.cmdDel.Text = "Supprimer"
-		Me.cmdDel.UseVisualStyleBackColor = true
-		AddHandler Me.cmdDel.Click, AddressOf Me.CmdDelClick
+		Me.splitV.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitV.Location = New System.Drawing.Point(0, 0)
+		Me.splitV.Name = "splitV"
 		'
-		'cmdOk
+		'splitV.Panel1
 		'
-		Me.cmdOk.Location = New System.Drawing.Point(371, 67)
-		Me.cmdOk.Name = "cmdOk"
-		Me.cmdOk.Size = New System.Drawing.Size(75, 23)
-		Me.cmdOk.TabIndex = 8
-		Me.cmdOk.Text = "Appliquer"
-		Me.cmdOk.UseVisualStyleBackColor = true
-		AddHandler Me.cmdOk.Click, AddressOf Me.CmdOkClick
+		Me.splitV.Panel1.Controls.Add(Me.chklstCurves)
 		'
-		'cboStyle
+		'splitV.Panel2
 		'
-		Me.cboStyle.FormattingEnabled = true
-		Me.cboStyle.Location = New System.Drawing.Point(86, 69)
-		Me.cboStyle.Name = "cboStyle"
-		Me.cboStyle.Size = New System.Drawing.Size(121, 21)
-		Me.cboStyle.TabIndex = 7
+		Me.splitV.Panel2.Controls.Add(Me.propCurves)
+		Me.splitV.Size = New System.Drawing.Size(553, 217)
+		Me.splitV.SplitterDistance = 251
+		Me.splitV.TabIndex = 0
 		'
-		'lblColorPick
+		'chklstCurves
 		'
-		Me.lblColorPick.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-		Me.lblColorPick.Location = New System.Drawing.Point(86, 44)
-		Me.lblColorPick.Name = "lblColorPick"
-		Me.lblColorPick.Size = New System.Drawing.Size(121, 23)
-		Me.lblColorPick.TabIndex = 6
-		AddHandler Me.lblColorPick.Click, AddressOf Me.LblColorPickClick
+		Me.chklstCurves.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chklstCurves.FormattingEnabled = true
+		Me.chklstCurves.Location = New System.Drawing.Point(0, 0)
+		Me.chklstCurves.Name = "chklstCurves"
+		Me.chklstCurves.Size = New System.Drawing.Size(251, 214)
+		Me.chklstCurves.TabIndex = 0
+		AddHandler Me.chklstCurves.SelectedIndexChanged, AddressOf Me.ChklstCurvesSelectedIndexChanged
+		AddHandler Me.chklstCurves.ItemCheck, AddressOf Me.ChklstCurvesItemCheck
 		'
-		'txtLegend
+		'propCurves
 		'
-		Me.txtLegend.Location = New System.Drawing.Point(86, 21)
-		Me.txtLegend.Name = "txtLegend"
-		Me.txtLegend.Size = New System.Drawing.Size(236, 20)
-		Me.txtLegend.TabIndex = 5
-		'
-		'cboPlots
-		'
-		Me.cboPlots.Dock = System.Windows.Forms.DockStyle.Top
-		Me.cboPlots.FormattingEnabled = true
-		Me.cboPlots.Location = New System.Drawing.Point(0, 0)
-		Me.cboPlots.Name = "cboPlots"
-		Me.cboPlots.Size = New System.Drawing.Size(458, 21)
-		Me.cboPlots.TabIndex = 4
-		AddHandler Me.cboPlots.SelectedIndexChanged, AddressOf Me.CboPlotsSelectedIndexChanged
-		'
-		'lblStyle
-		'
-		Me.lblStyle.AutoSize = true
-		Me.lblStyle.Location = New System.Drawing.Point(12, 72)
-		Me.lblStyle.Name = "lblStyle"
-		Me.lblStyle.Size = New System.Drawing.Size(30, 13)
-		Me.lblStyle.TabIndex = 3
-		Me.lblStyle.Text = "Style"
-		'
-		'lblColor
-		'
-		Me.lblColor.AutoSize = true
-		Me.lblColor.Location = New System.Drawing.Point(12, 48)
-		Me.lblColor.Name = "lblColor"
-		Me.lblColor.Size = New System.Drawing.Size(43, 13)
-		Me.lblColor.TabIndex = 2
-		Me.lblColor.Text = "Couleur"
-		'
-		'lblLegend
-		'
-		Me.lblLegend.AutoSize = true
-		Me.lblLegend.Location = New System.Drawing.Point(12, 24)
-		Me.lblLegend.Name = "lblLegend"
-		Me.lblLegend.Size = New System.Drawing.Size(49, 13)
-		Me.lblLegend.TabIndex = 1
-		Me.lblLegend.Text = "Légende"
-		'
-		'dlgColor
-		'
-		Me.dlgColor.AnyColor = true
-		Me.dlgColor.FullOpen = true
+		Me.propCurves.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.propCurves.Location = New System.Drawing.Point(0, 0)
+		Me.propCurves.Name = "propCurves"
+		Me.propCurves.PropertySort = System.Windows.Forms.PropertySort.NoSort
+		Me.propCurves.Size = New System.Drawing.Size(298, 217)
+		Me.propCurves.TabIndex = 0
+		Me.propCurves.ToolbarVisible = false
 		'
 		'dlgCapture
 		'
@@ -250,29 +186,11 @@ Partial Class frmGrapher
 		Me.dlgCapture.Filter = "Fichiers d'image (*.png)|*.png"
 		Me.dlgCapture.Title = "Sélection du fichier de sauvegarde"
 		'
-		'lblWidth
-		'
-		Me.lblWidth.AutoSize = true
-		Me.lblWidth.Location = New System.Drawing.Point(228, 72)
-		Me.lblWidth.Name = "lblWidth"
-		Me.lblWidth.Size = New System.Drawing.Size(53, 13)
-		Me.lblWidth.TabIndex = 10
-		Me.lblWidth.Text = "Epaisseur"
-		'
-		'txtWidth
-		'
-		Me.txtWidth.Location = New System.Drawing.Point(287, 69)
-		Me.txtWidth.Name = "txtWidth"
-		Me.txtWidth.Size = New System.Drawing.Size(45, 20)
-		Me.txtWidth.TabIndex = 11
-		Me.txtWidth.Text = "1"
-		Me.txtWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-		'
 		'frmGrapher
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(458, 285)
+		Me.ClientSize = New System.Drawing.Size(553, 482)
 		Me.Controls.Add(Me.splitH)
 		Me.Controls.Add(Me.toolStrip)
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -283,24 +201,17 @@ Partial Class frmGrapher
 		Me.toolStrip.PerformLayout
 		Me.splitH.Panel1.ResumeLayout(false)
 		Me.splitH.Panel2.ResumeLayout(false)
-		Me.splitH.Panel2.PerformLayout
 		Me.splitH.ResumeLayout(false)
+		Me.splitV.Panel1.ResumeLayout(false)
+		Me.splitV.Panel2.ResumeLayout(false)
+		Me.splitV.ResumeLayout(false)
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
-	Private lblWidth As System.Windows.Forms.Label
-	Private txtWidth As System.Windows.Forms.TextBox
-	Private cmdDel As System.Windows.Forms.Button
+	Private propCurves As System.Windows.Forms.PropertyGrid
+	Private chklstCurves As System.Windows.Forms.CheckedListBox
+	Private splitV As System.Windows.Forms.SplitContainer
 	Private dlgCapture As System.Windows.Forms.SaveFileDialog
-	Private txtLegend As System.Windows.Forms.TextBox
-	Private dlgColor As System.Windows.Forms.ColorDialog
-	Private lblLegend As System.Windows.Forms.Label
-	Private lblColor As System.Windows.Forms.Label
-	Private lblStyle As System.Windows.Forms.Label
-	Private cboPlots As System.Windows.Forms.ComboBox
-	Private lblColorPick As System.Windows.Forms.Label
-	Private cboStyle As System.Windows.Forms.ComboBox
-	Private cmdOk As System.Windows.Forms.Button
 	Private btSeparator As System.Windows.Forms.ToolStripSeparator
 	Private btClear As System.Windows.Forms.ToolStripButton
 	Private btEdit As System.Windows.Forms.ToolStripButton

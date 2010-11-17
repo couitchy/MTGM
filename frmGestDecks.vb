@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -32,7 +33,7 @@ Public Partial Class frmGestDecks
 		Me.lstDecks.Items.Clear
 		For VpI As Integer = 1 To clsModule.GetDeckCount
 			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpI))
-		Next VpI	
+		Next VpI
 		Me.btDown.Enabled = False
 		Me.btUp.Enabled = False
 		Me.btRename.Enabled = False
@@ -50,13 +51,13 @@ Public Partial Class frmGestDecks
 		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId1.ToString + " Where GameID = " + VpId2.ToString + ";"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId2.ToString + " Where GameID = -1;"
-		VgDBCommand.ExecuteNonQuery		
+		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub ManageSwap(VpDirection As Integer)
 	Dim VpId1 As Integer = clsModule.GetDeckIndex(Me.lstDecks.SelectedItem)
 	Dim VpId2 As Integer = clsModule.GetDeckIndex(Me.lstDecks.Items(Me.lstDecks.SelectedIndex + VpDirection))
 		Call Me.SwapDeckId("MyGamesID", VpId1, VpId2)
-		Call Me.SwapDeckId("MyGames", VpId1, VpId2)		
+		Call Me.SwapDeckId("MyGames", VpId1, VpId2)
 		Call Me.LoadDecks(VpDirection)
 	End Sub
 	Sub CbarDecksManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -87,21 +88,29 @@ Public Partial Class frmGestDecks
 		Me.btDown.Enabled = ( Me.lstDecks.SelectedIndex < Me.lstDecks.Items.Count - 1 )
 	End Sub
 	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
-		Me.Visible = False
-		Call VmOwner.LoadMnu
-		Call VmOwner.LoadTvw		
-	End Sub	
+		If e.CloseReason = CloseReason.UserClosing Then
+			Me.Visible = False
+			Call VmOwner.LoadMnu
+			Call VmOwner.LoadTvw
+		End If
+	End Sub
 	Sub BtAddActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String
 	Dim VpId As Integer
 		VpDeckName = InputBox("Entrer le nom du deck :", "Nouveau deck", "(Deck)")
 		If VpDeckName <> "" Then
+			For Each VpD As String In Me.lstDecks.Items
+				If VpD.ToLower = VpDeckName.ToLower Then
+					Call clsModule.ShowWarning("Un deck portant ce nom existe déjà...")
+					Exit Sub
+				End If
+			Next VpD
 			VpId = clsModule.GetNewDeckId
-			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "');"
+			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0);"
 			VgDBCommand.ExecuteNonQuery
 			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpId + 1))
-		End If		
-	End Sub	
+		End If
+	End Sub
 	Sub BtRemoveActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
 	Dim VpDeckId As Integer = clsModule.GetDeckIndex(VpDeckName)
@@ -120,7 +129,7 @@ Public Partial Class frmGestDecks
 					VpContenu.Add(.GetInt32(0), .GetInt32(1))
 				End While
 				.Close
-			End With			
+			End With
 			'Insertion ou mise à jour dans la collection
 			For Each VpEncNbr As Integer In VpContenu.Keys
 				VgDBCommand.CommandText = "Select Items From MyCollection Where EncNbr = " + VpEncNbr.ToString + ";"
@@ -130,26 +139,32 @@ Public Partial Class frmGestDecks
 					VgDBCommand.CommandText = "Update MyCollection Set Items = " + (CInt(VpO) + VpContenu.Item(VpEncNbr)).ToString + " Where EncNbr = " + VpEncNbr.ToString + ";"
 				'Cas 2 : nouvelle carte => insertion
 				Else
-					VgDBCommand.CommandText = "Insert Into MyCollection(EncNbr, Items) Values (" + VpEncNbr.ToString + ", " + VpContenu.Item(VpEncNbr).ToString + ");"	
+					VgDBCommand.CommandText = "Insert Into MyCollection(EncNbr, Items) Values (" + VpEncNbr.ToString + ", " + VpContenu.Item(VpEncNbr).ToString + ");"
 				End If
-				VgDBCommand.ExecuteNonQuery				
-			Next VpEncNbr			
+				VgDBCommand.ExecuteNonQuery
+			Next VpEncNbr
 		End If
 		VgDBCommand.CommandText = "Delete * From MyGames Where GameID = " + VpDeckId.ToString + ";"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From MyGamesId Where GameID = " + VpDeckId.ToString + ";"
 		VgDBCommand.ExecuteNonQuery
-		Me.lstDecks.Items.RemoveAt(Me.lstDecks.SelectedIndex)	
+		Me.lstDecks.Items.RemoveAt(Me.lstDecks.SelectedIndex)
 		Me.btRemove.Enabled = False
 		Me.btRename.Enabled = False
-	End Sub	
+	End Sub
 	Sub BtRenameActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String
-	Dim VpOldName As String = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
+	Dim VpOldName As String = Me.lstDecks.SelectedItem 'clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
 		VpDeckName = InputBox("Entrer le nom du deck :", "Renommer un deck", VpOldName)
 		VpDeckName = VpDeckName.Replace("'", "''")
 		VpOldName = VpOldName.Replace("'", "''")
 		If VpDeckName <> "" Then
+			For Each VpD As String In Me.lstDecks.Items
+				If VpD.ToLower = VpDeckName.ToLower Then
+					Call clsModule.ShowWarning("Un deck portant ce nom existe déjà...")
+					Exit Sub
+				End If
+			Next VpD
 			VgDBCommand.CommandText = "Select * From MyScores Where JeuLocal = '" + VpOldName + "' Or JeuAdverse = '" + VpOldName + "';"
 			VgDBReader = VgDBCommand.ExecuteReader
 			VgDBReader.Read
@@ -164,10 +179,10 @@ Public Partial Class frmGestDecks
 			Else
 				VgDBReader.Close
 			End If
-			VgDBCommand.CommandText = "Update MyGamesID Set GameName = '" + VpDeckName + "' Where GameID = " + Me.lstDecks.SelectedIndex.ToString + ";"
+			VgDBCommand.CommandText = "Update MyGamesID Set GameName = '" + VpDeckName + "' Where GameName = '" + VpOldName + "';"
 			VgDBCommand.ExecuteNonQuery
 			Me.lstDecks.Items(Me.lstDecks.SelectedIndex) = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
-		End If		
+		End If
 	End Sub
 	Sub BtDownActivate(sender As Object, e As EventArgs)
 		Call Me.ManageSwap(1)

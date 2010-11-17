@@ -425,7 +425,7 @@ Partial Class frmSimu
 		Me.cmdMain.Name = "cmdMain"
 		Me.cmdMain.Size = New System.Drawing.Size(256, 23)
 		Me.cmdMain.TabIndex = 2
-		Me.cmdMain.Text = "Tirer une main !"
+		Me.cmdMain.Text = "Tirer une main"
 		Me.cmdMain.UseVisualStyleBackColor = true
 		AddHandler Me.cmdMain.Click, AddressOf Me.CmdMainClick
 		'

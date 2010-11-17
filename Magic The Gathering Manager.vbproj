@@ -112,6 +112,10 @@
       <DependentUpon>frmExport.vb</DependentUpon>
     </Compile>
     <Compile Include="frmExport.vb" />
+    <Compile Include="frmGestAdv.Designer.vb">
+      <DependentUpon>frmGestAdv.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmGestAdv.vb" />
     <Compile Include="frmGestDecks.Designer.vb">
       <DependentUpon>frmGestDecks.vb</DependentUpon>
     </Compile>
@@ -192,6 +196,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmExport.resx">
       <DependentUpon>frmExport.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGestAdv.resx">
+      <DependentUpon>frmGestAdv.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGestDecks.resx">
       <DependentUpon>frmGestDecks.vb</DependentUpon>

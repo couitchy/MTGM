@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -48,10 +49,12 @@ Public Partial Class frmXL
 	Dim VpElements As New ArrayList
 	Dim VpElementsGroupes As New ArrayList
 	Dim VpCur As clsXLItem
+		System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US")
 		Try
 			VpExcelApp = CreateObject("Excel.Application")
 		Catch
 			Call clsModule.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système." + vbCrLf + "Impossible de continuer...")
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR")
 			Exit Sub
 		End Try
 		'Récupération de la liste
@@ -193,7 +196,7 @@ Public Partial Class frmXL
 				Next VpI
 				'Formatage particulier
 				If VpForceCurrency <> -1 Then
-					.Columns(VpForceCurrency).EntireColumn.NumberFormat = "0,00 €"
+					.Columns(VpForceCurrency).EntireColumn.NumberFormat = "0.00 €"
 				End If
 				If VpForceText <> -1 Then
 					.Columns(VpForceText).EntireColumn.NumberFormat = "@"
@@ -202,14 +205,8 @@ Public Partial Class frmXL
 		End If
 		VpExcelApp.Visible = True
 		VpExcelApp.DisplayAlerts = True
+		System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR")
 	End Sub
-'		Clipboard.SetImage(Me.imglstTvw.Images(VpNode.ImageIndex))
-'			.ActiveSheet.Paste
-'			VpPic = .ActiveSheet.Pictures(VpY)
-'			VpPic.Top = .Cells(VpY, VpX).Top
-'			VpPic.Left = .Cells(VpY, VpX).Left
-'    		VpPic.ShapeRange.PictureFormat.TransparentBackground = True
-'    		VpPic.ShapeRange.PictureFormat.TransparencyColor = RGB(0, 0, 211)
 	Private Sub ExtractPictures(VpSaveFolder As String)
 	'-------------------------------------------------------------------------------------------------
 	'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection

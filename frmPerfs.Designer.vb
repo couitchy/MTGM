@@ -55,10 +55,8 @@ Partial Class frmPerfs
 		Me.dropAddGames = New System.Windows.Forms.ToolStripDropDownButton
 		Me.dropGamesVersions = New System.Windows.Forms.ToolStripMenuItem
 		Me.dropSeparator = New System.Windows.Forms.ToolStripSeparator
-		Me.dropAddLocal = New System.Windows.Forms.ToolStripMenuItem
-		Me.dropAddLocalOther = New System.Windows.Forms.ToolStripMenuItem
-		Me.dropAddAdv = New System.Windows.Forms.ToolStripMenuItem
-		Me.dropAddMixte = New System.Windows.Forms.ToolStripMenuItem
+		Me.dropAddGame = New System.Windows.Forms.ToolStripMenuItem
+		Me.dropAddGameOther = New System.Windows.Forms.ToolStripMenuItem
 		Me.lblAllPlayed = New System.Windows.Forms.ToolStripStatusLabel
 		Me.pnlGraph.SuspendLayout
 		Me.cmnuChart.SuspendLayout
@@ -91,7 +89,7 @@ Partial Class frmPerfs
 		'
 		Me.cmnuChart.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuBreakDown, Me.mnuEvol})
 		Me.cmnuChart.Name = "cmnuChart"
-		Me.cmnuChart.Size = New System.Drawing.Size(139, 48)
+		Me.cmnuChart.Size = New System.Drawing.Size(133, 48)
 		AddHandler Me.cmnuChart.Opening, AddressOf Me.CmnuChartOpening
 		'
 		'mnuBreakDown
@@ -99,7 +97,7 @@ Partial Class frmPerfs
 		Me.mnuBreakDown.Checked = true
 		Me.mnuBreakDown.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.mnuBreakDown.Name = "mnuBreakDown"
-		Me.mnuBreakDown.Size = New System.Drawing.Size(138, 22)
+		Me.mnuBreakDown.Size = New System.Drawing.Size(132, 22)
 		Me.mnuBreakDown.Text = "Répartition"
 		AddHandler Me.mnuBreakDown.Click, AddressOf Me.MnuBreakDownClick
 		'
@@ -107,7 +105,7 @@ Partial Class frmPerfs
 		'
 		Me.mnuEvol.Enabled = false
 		Me.mnuEvol.Name = "mnuEvol"
-		Me.mnuEvol.Size = New System.Drawing.Size(138, 22)
+		Me.mnuEvol.Size = New System.Drawing.Size(132, 22)
 		Me.mnuEvol.Text = "Evolution"
 		AddHandler Me.mnuEvol.Click, AddressOf Me.MnuEvolClick
 		'
@@ -193,53 +191,39 @@ Partial Class frmPerfs
 		'
 		'dropAddGames
 		'
-		Me.dropAddGames.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.dropGamesVersions, Me.dropSeparator, Me.dropAddLocal, Me.dropAddAdv, Me.dropAddMixte})
+		Me.dropAddGames.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.dropGamesVersions, Me.dropSeparator, Me.dropAddGame})
 		Me.dropAddGames.Image = CType(resources.GetObject("dropAddGames.Image"),System.Drawing.Image)
 		Me.dropAddGames.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.dropAddGames.Name = "dropAddGames"
-		Me.dropAddGames.Size = New System.Drawing.Size(62, 20)
+		Me.dropAddGames.Size = New System.Drawing.Size(67, 20)
 		Me.dropAddGames.Text = "Menu"
 		'
 		'dropGamesVersions
 		'
 		Me.dropGamesVersions.CheckOnClick = true
 		Me.dropGamesVersions.Name = "dropGamesVersions"
-		Me.dropGamesVersions.Size = New System.Drawing.Size(215, 22)
+		Me.dropGamesVersions.Size = New System.Drawing.Size(210, 22)
 		Me.dropGamesVersions.Text = "Gérer les versions des jeux"
 		AddHandler Me.dropGamesVersions.Click, AddressOf Me.DropGamesVersionsClick
 		'
 		'dropSeparator
 		'
 		Me.dropSeparator.Name = "dropSeparator"
-		Me.dropSeparator.Size = New System.Drawing.Size(212, 6)
+		Me.dropSeparator.Size = New System.Drawing.Size(207, 6)
 		'
-		'dropAddLocal
+		'dropAddGame
 		'
-		Me.dropAddLocal.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.dropAddLocalOther})
-		Me.dropAddLocal.Name = "dropAddLocal"
-		Me.dropAddLocal.Size = New System.Drawing.Size(215, 22)
-		Me.dropAddLocal.Text = "Ajouter jeu local"
+		Me.dropAddGame.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.dropAddGameOther})
+		Me.dropAddGame.Name = "dropAddGame"
+		Me.dropAddGame.Size = New System.Drawing.Size(210, 22)
+		Me.dropAddGame.Text = "Ajouter jeu"
 		'
-		'dropAddLocalOther
+		'dropAddGameOther
 		'
-		Me.dropAddLocalOther.Name = "dropAddLocalOther"
-		Me.dropAddLocalOther.Size = New System.Drawing.Size(124, 22)
-		Me.dropAddLocalOther.Text = "Autre..."
-		AddHandler Me.dropAddLocalOther.Click, AddressOf Me.DropAddLocalOtherClick
-		'
-		'dropAddAdv
-		'
-		Me.dropAddAdv.Name = "dropAddAdv"
-		Me.dropAddAdv.Size = New System.Drawing.Size(215, 22)
-		Me.dropAddAdv.Text = "Ajouter jeu adverse"
-		AddHandler Me.dropAddAdv.Click, AddressOf Me.DropAddAdvClick
-		'
-		'dropAddMixte
-		'
-		Me.dropAddMixte.Name = "dropAddMixte"
-		Me.dropAddMixte.Size = New System.Drawing.Size(215, 22)
-		Me.dropAddMixte.Text = "Ajouter jeu indépendant"
-		AddHandler Me.dropAddMixte.Click, AddressOf Me.DropAddMixteClick
+		Me.dropAddGameOther.Name = "dropAddGameOther"
+		Me.dropAddGameOther.Size = New System.Drawing.Size(152, 22)
+		Me.dropAddGameOther.Text = "Autre"
+		AddHandler Me.dropAddGameOther.Click, AddressOf Me.DropAddGameOtherClick
 		'
 		'lblAllPlayed
 		'
@@ -258,8 +242,8 @@ Partial Class frmPerfs
 		Me.Name = "frmPerfs"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Victoires & Défaites"
-		AddHandler FormClosing, AddressOf Me.FrmPerfsFormClosing
 		AddHandler Load, AddressOf Me.FrmPerfsLoad
+		AddHandler FormClosing, AddressOf Me.FrmPerfsFormClosing
 		Me.pnlGraph.ResumeLayout(false)
 		Me.cmnuChart.ResumeLayout(false)
 		Me.cbarGraph.ResumeLayout(false)
@@ -268,8 +252,9 @@ Partial Class frmPerfs
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private dropAddGame As System.Windows.Forms.ToolStripMenuItem
+	Private dropAddGameOther As System.Windows.Forms.ToolStripMenuItem
 	Private lblAllPlayed As System.Windows.Forms.ToolStripStatusLabel
-	Private dropAddMixte As System.Windows.Forms.ToolStripMenuItem
 	Private btEfficiency As TD.SandBar.ButtonItem
 	Private mnuEvol As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBreakDown As System.Windows.Forms.ToolStripMenuItem
@@ -281,9 +266,6 @@ Partial Class frmPerfs
 	Private btAdvice As TD.SandBar.ButtonItem
 	Private cboJeuLocal As TD.SandBar.ComboBoxItem
 	Private cboJeuAdv As TD.SandBar.ComboBoxItem
-	Private dropAddAdv As System.Windows.Forms.ToolStripMenuItem
-	Private dropAddLocalOther As System.Windows.Forms.ToolStripMenuItem
-	Private dropAddLocal As System.Windows.Forms.ToolStripMenuItem
 	Private dropAddGames As System.Windows.Forms.ToolStripDropDownButton
 	Private strStatus As System.Windows.Forms.StatusStrip
 	Private btDefNok As TD.SandBar.ButtonItem

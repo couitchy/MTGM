@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -87,8 +88,8 @@ End Class
 Public Class clsSettings
 	Private VmNJeux As Integer = 1
 	Private VmNomsJeux As String = ""
-	Private VmDefaultBase As String = ".\Cartes\Magic DB.mdb"
-	Private VmPicturesFile As String = ".\Cartes\Images DB.dat"
+	Private VmDefaultBase As String = Application.StartupPath + clsModule.CgMDB
+	Private VmPicturesFile As String = Application.StartupPath + clsModule.CgDAT
 	Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
 	Private VmPreferredSellers As String = ""
 	Private VmDefaultActivatedCriteria As String = "2#7"
@@ -204,7 +205,7 @@ Public Class clsSettings
 			VmPreferredSellers = VpPreferredSellers
 		End Set
 	End Property
-	<DisplayName("Base par défaut"), Category("Général"), DefaultValue(".\Cartes\Magic DB.mdb"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
+	<DisplayName("Base par défaut"), Category("Général"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
 	Public Property DefaultBase As String
 		Get
 			Return VmDefaultBase
@@ -280,7 +281,7 @@ Public Class clsSettings
 			VmAutoHideAutorisations = VpAutoHideAutorisations
 		End Set
 	End Property
-	<DisplayName("Base des images"), Category("Explorateur"), DefaultValue(".\Cartes\Images DB.dat"), Description("Fichier des images numérisées des cartes."), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
+	<DisplayName("Base des images"), Category("Explorateur"), Description("Fichier des images numérisées des cartes."), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
 	Public Property PicturesFile As String
 		Get
 			Return VmPicturesFile

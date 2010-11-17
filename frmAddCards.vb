@@ -9,10 +9,12 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - verrouillage de l'édition de saisie   27/03/2010 |
+'| - gestion améliorée Ae / Æ			   03/10/2010 |
 '------------------------------------------------------
 Public Partial Class frmAddCards
 	#Region "Déclarations"
@@ -20,6 +22,7 @@ Public Partial Class frmAddCards
 	Private VmMousePos As Point						'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False  			'Formulaire peut être fermé
 	Private VmChangesCommited As Boolean = False	'Modifications en cours sur ComboBoxes
+	Private VmKeyChange As Boolean = False	
 	Private VmOwner As MainForm
 	#End Region
 	#Region "Méthodes"
@@ -75,12 +78,18 @@ Public Partial Class frmAddCards
 		End If
 		VmChangesCommited = False
 	End Sub
-	Private Function AdjustEncNbr(VpTitle As String, VpSerie As String) As Integer
+	Private Function AdjustEncNbr(VpTitle As String, VpSerie As String) As String
 	'------------------------------------------------------------------------------------------
 	'Retourne le numéro encyclopédique de la carte passée en paramètre pour l'édition spécifiée
 	'------------------------------------------------------------------------------------------
+	Dim VpO As Object
 		VgDBCommand.CommandText = "Select Card.EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpTitle.Replace("'", "''") + "' And Series.SeriesNM = '" + VpSerie + "';"
-		Return VgDBCommand.ExecuteScalar.ToString
+		VpO = VgDBCommand.ExecuteScalar
+		If Not VpO Is Nothing Then
+			Return VpO.ToString
+		Else
+			Return Me.lblEncNbr.Text
+		End If		
 	End Function
 	Private Function FindDateSerie(VpSerie As String) As String
 	'--------------------------------------------------------------
@@ -154,6 +163,11 @@ Public Partial Class frmAddCards
 				Exit For
 			End If
 		Next VpItem1
+		'Etats possibles pour les cartes
+		For Each VpEtat As String In [Enum].GetNames(GetType(clsModule.eQuality))
+			Me.cboEtat.Items.Add(VpEtat)
+		Next VpEtat
+		Me.cboEtat.SelectedIndex = 0
 	End Sub
 	#End Region
 	#Region "Evènements"
@@ -164,14 +178,14 @@ Public Partial Class frmAddCards
 		Me.cmdDestination.Tag = clsModule.GetDeckIndex(sender.Text)
 		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text)
 	End Sub
-	Private Sub CBarAjoutMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
+	Private Sub CbarAjoutMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
 		VmMousePos = New Point(e.X, e.Y)
 	End Sub
-	Private Sub CBarAjoutMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
+	Private Sub CbarAjoutMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = False
 	End Sub
-	Sub CBarAjoutMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
+	Sub CbarAjoutMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
 		If VmFormMove Then
 			Me.Location = New Point(MousePosition.X - VmMousePos.X, MousePosition.Y - VmMousePos.Y)
 		End If
@@ -218,33 +232,65 @@ Public Partial Class frmAddCards
 			Me.lblNbItems.Text = clsModule.CgStock
 			Me.lblNbItems.Tag = 0
 			Me.txtNbItems.Text = "+1"
+			Me.chkFoil.Checked = False
+			Me.cboEtat.SelectedIndex = 0
 			Me.cboTitleFR.Focus
 		Catch
 			Call clsModule.ShowWarning("Impossible d'ajouter cette carte dans la base de données." + vbCrLf + "La carte n'est peut-être pas (ou incorrectement) référencée...")
 		End Try
 	End Sub
-	Sub CboTitleKeyUp(ByVal sender As Object, ByVal e As KeyEventArgs)
+	Function GetRefText(sender As Object) As String
+		If sender.SelectionLength > 0 Then
+			Return sender.Text.Replace(sender.SelectedText, "").ToLower
+		Else
+			Return sender.Text.ToLower
+		End If
+	End Function
+	Sub CboTitleKeyDown(ByVal sender As Object, ByVal e As KeyEventArgs)
+	Dim VpRef As String = Me.GetRefText(sender)
+		If e.KeyCode = Keys.Back And VpRef = "æ" Then
+			sender.Text = "Ae "
+			sender.SelectionStart = 3
+			VmKeyChange = True
+		ElseIf e.KeyCode = Keys.Back And VpRef.EndsWith("œ") And Not VpRef.Replace("oe", "").Length <= VpRef.Length - 2  Then	'lourdingue mais il y a un bug dans .NET : oe et œ sont des strings considérées identiques pour un EndsWith par exemple alors que la différence de taille est bien prise en compte (1 contre 2)
+			sender.Text = VpRef.Substring(0, VpRef.Length - 1) + "oe "
+			sender.SelectionStart = sender.Text.Length
+			VmKeyChange = True
+		End If
+	End Sub
+	Sub CboTitleKeyUp(sender As Object, e As KeyEventArgs)
+	Dim VpRef As String = Me.GetRefText(sender)
 		If e.KeyCode = Keys.Add Then
 			sender.Text = sender.Tag
+		ElseIf VpRef = "ae" And Not VmKeyChange Then
+			sender.Text = "Æ"
+			sender.SelectionStart = 1
+		ElseIf sender Is Me.cboTitleFR And VpRef.EndsWith("oe") And VpRef.Replace("oe", "").Length <= VpRef.Length - 2 And Not VmKeyChange Then	'lourdingue mais il y a un bug dans .NET : oe et œ sont des strings considérées identiques pour un EndsWith par exemple alors que la différence de taille est bien prise en compte (1 contre 2)
+			sender.Text = VpRef.Substring(0, VpRef.Length - 2) + "œ"
+			sender.SelectionStart = sender.Text.Length
 		End If
+		VmKeyChange = False
 	End Sub
 	Sub CmdDestinationMouseDown(sender As Object, e As MouseEventArgs)
 		Me.cmnuDestination.Show(Me.cmdDestination, e.Location)
 	End Sub
-	Sub CBarAjoutVisibleChanged(sender As Object, e As EventArgs)
+	Sub CbarAjoutVisibleChanged(sender As Object, e As EventArgs)
 		If VmCanClose AndAlso Not Me.CBarAjout.Visible Then
 			Me.Close
-		End If		
+		End If
 	End Sub
 	Sub FrmAddCardsFormClosing(sender As Object, e As FormClosingEventArgs)
 		VmOwner.BringToFront
 		Me.Hide
 		If VgOptions.VgSettings.AutoRefresh Then
 			Call VmOwner.LoadTvw
-		End If		
+		End If
 	End Sub
 	Sub FrmAddCardsLoad(sender As Object, e As EventArgs)
 		VmCanClose = True
+	End Sub	
+	Sub CmdCloseClick(sender As Object, e As EventArgs)
+		Me.Close
 	End Sub
 	#End Region
 End Class

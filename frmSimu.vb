@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -190,7 +191,7 @@ Public Partial Class frmSimu
 				.FixedRows = 0
 				For Each VpCard As clsCard In VpPartie.CardsDrawn
 					.Rows.Insert(.RowsCount)
-					VpCell = New Cells.Cell(VpCard.CardName)
+					VpCell = New Cells.Cell(VpCard.CardNameFR + " (" + VpCard.CardName + ")")
 					VpCell.Behaviors.Add(VpCellBehavior)
 					Me.grdMainsTirage(.RowsCount - 1, 0) = VpCell
 				Next VpCard
@@ -536,10 +537,10 @@ Public Partial Class frmSimu
 		Call Me.MainsSimu
 	End Sub
 	Sub CellMouseClick(sender As Object, e As SourceGrid2.PositionEventArgs)
-		Call clsModule.LoadScanCard(e.Cell.GetValue(e.Position), Me.picScanCard)
+		Call clsModule.LoadScanCard(clsModule.ExtractENName(e.Cell.GetValue(e.Position)), Me.picScanCard)
 	End Sub
 	Sub CellKeyUp(sender As Object, e As SourceGrid2.PositionKeyEventArgs)
-		Call clsModule.LoadScanCard(e.Cell.GetValue(e.Position), Me.picScanCard)
+		Call clsModule.LoadScanCard(clsModule.ExtractENName(e.Cell.GetValue(e.Position)), Me.picScanCard)
 	End Sub
 	Sub CmdSimu2Click(ByVal sender As Object, ByVal e As EventArgs)
 		If Me.chkVerbosity.Checked Then
@@ -694,9 +695,9 @@ Public Class clsPartie
 	'-------------------
 	Dim VpSQL As String
 		If Not VpGestDeploy Then
-			VpSQL = "Select Card.Title, " + VpSource + ".Items From Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr Where "
+			VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		Else
-			VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
+			VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items, CardFR.TitleFR From ((Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		End If
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
@@ -705,9 +706,9 @@ Public Class clsPartie
 		With VgDBReader
 			While .Read
 				If Not VpGestDeploy Then
-					Me.AddCard(.GetString(0), .GetInt32(1))
+					Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1))
 				Else
-					Me.AddCard(.GetString(0), .GetInt32(4), .GetValue(1).ToString.Replace(vbCrLf, " "), .GetValue(3).ToString, .GetValue(2).ToString, True)
+					Me.AddCard(.GetString(0), .GetString(5), .GetInt32(4), .GetValue(1).ToString.Replace(vbCrLf, " "), .GetValue(3).ToString, .GetValue(2).ToString, True)
 				End If
 			End While
 			.Close
@@ -715,12 +716,12 @@ Public Class clsPartie
 		VmVerbose = VpVerbose
 		VmSimuOut = VpSimuOut
 	End Sub
-	Private Sub AddCard(VpName As String, VpCount As Integer , Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
+	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer , Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
 	'--------------------
 	'Construction du deck
 	'--------------------
 		For VpI As Integer = 1 To VpCount
-			VmDeckCopy.Add(New clsCard(VpName, VpCardText, VpCost, VpType, VpGestDeploy))
+			VmDeckCopy.Add(New clsCard(VpName, VpNameFR, VpCardText, VpCost, VpType, VpGestDeploy))
 		Next VpI
 	End Sub
 	Public Sub DeckShuffle(VpRndSeed As Integer)
@@ -1296,6 +1297,7 @@ Public Class clsPartie
 End Class
 Public Class clsCard
 	Private VmCardName As String					'Nom de la carte (VO)
+	Private VmCardNameFR As String					'Nom de la carte (VF)
 	Private VmCardType As String					'Type de la carte (C,I,A,E,L,N,S,T,U,P)
 	Private VmManasInvoc As clsManas				'Coût d'invocation de la carte
 	Private VmManasGen As clsManas = Nothing		'Manas générables par la carte
@@ -1303,9 +1305,10 @@ Public Class clsCard
 	Private VmTagged As Boolean = False				'Carte marquée ? (utilisation interne)
 	Private VmSpeciality As clsSpeciality = Nothing	'Carte destinée à une utilisation spéciale (pour la simulation de déploiement uniquement) ?
 	Private VmCardText As String
-	Public Sub New(VpCardName As String, Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
+	Public Sub New(VpCardName As String, VpNameFR As String, Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
 	Dim VpGCost As String
 		VmCardName = VpCardName
+		VmCardNameFR = VpNameFR
 		VmCardText = VpCardText
 		If VpGestDeploy Then
 			VmCardType = VpType
@@ -1341,6 +1344,11 @@ Public Class clsCard
 	Public ReadOnly Property CardName As String
 		Get
 			Return Me.VmCardName
+		End Get
+	End Property
+	Public ReadOnly Property CardNameFR As String
+		Get
+			Return Me.VmCardNameFR
 		End Get
 	End Property
 	Public ReadOnly Property CardType As String

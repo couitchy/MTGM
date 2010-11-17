@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -98,7 +99,9 @@ Public Partial Class frmUpdateContenu
 			Case clsMAJContenu.EgMAJContenu.NewAut
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateAut, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.PatchPict
-				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdatePictPatch, VpStamp, VpSize)
+				If File.Exists(VgOptions.VgSettings.PicturesFile) Then
+					VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdatePictPatch, VpStamp, VpSize)
+				End If
 			Case clsMAJContenu.EgMAJContenu.NewSimu
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSimu, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.PatchTrad

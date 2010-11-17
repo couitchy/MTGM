@@ -38,8 +38,10 @@ Partial Class frmExport
 		Me.cbarImpExp = New TD.SandBar.ContainerBar
 		Me.pnlImpExp = New TD.SandBar.ContainerBarClientPanel
 		Me.grpExport = New System.Windows.Forms.GroupBox
-		Me.optApprentice = New System.Windows.Forms.RadioButton
 		Me.optNormal = New System.Windows.Forms.RadioButton
+		Me.lblFormat = New System.Windows.Forms.Label
+		Me.optOld = New System.Windows.Forms.RadioButton
+		Me.optApprentice = New System.Windows.Forms.RadioButton
 		Me.cmdExport = New System.Windows.Forms.Button
 		Me.lstchkSources = New System.Windows.Forms.CheckedListBox
 		Me.grpImport = New System.Windows.Forms.GroupBox
@@ -91,8 +93,10 @@ Partial Class frmExport
 		'grpExport
 		'
 		Me.grpExport.BackColor = System.Drawing.Color.Transparent
-		Me.grpExport.Controls.Add(Me.optApprentice)
 		Me.grpExport.Controls.Add(Me.optNormal)
+		Me.grpExport.Controls.Add(Me.lblFormat)
+		Me.grpExport.Controls.Add(Me.optOld)
+		Me.grpExport.Controls.Add(Me.optApprentice)
 		Me.grpExport.Controls.Add(Me.cmdExport)
 		Me.grpExport.Controls.Add(Me.lstchkSources)
 		Me.grpExport.Dock = System.Windows.Forms.DockStyle.Fill
@@ -102,29 +106,50 @@ Partial Class frmExport
 		Me.grpExport.TabIndex = 0
 		Me.grpExport.TabStop = false
 		'
-		'optApprentice
-		'
-		Me.optApprentice.AutoSize = true
-		Me.optApprentice.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optApprentice.Location = New System.Drawing.Point(210, 125)
-		Me.optApprentice.Name = "optApprentice"
-		Me.optApprentice.Size = New System.Drawing.Size(111, 22)
-		Me.optApprentice.TabIndex = 8
-		Me.optApprentice.Text = "Format Apprentice"
-		Me.optApprentice.UseVisualStyleBackColor = true
-		'
 		'optNormal
 		'
 		Me.optNormal.AutoSize = true
 		Me.optNormal.Checked = true
-		Me.optNormal.Dock = System.Windows.Forms.DockStyle.Left
-		Me.optNormal.Location = New System.Drawing.Point(3, 125)
+		Me.optNormal.Dock = System.Windows.Forms.DockStyle.Right
+		Me.optNormal.Location = New System.Drawing.Point(114, 125)
 		Me.optNormal.Name = "optNormal"
-		Me.optNormal.Size = New System.Drawing.Size(127, 22)
-		Me.optNormal.TabIndex = 7
+		Me.optNormal.Size = New System.Drawing.Size(73, 22)
+		Me.optNormal.TabIndex = 11
 		Me.optNormal.TabStop = true
-		Me.optNormal.Text = "Format MTGM normal"
+		Me.optNormal.Text = "MTGM v2"
 		Me.optNormal.UseVisualStyleBackColor = true
+		'
+		'lblFormat
+		'
+		Me.lblFormat.Dock = System.Windows.Forms.DockStyle.Left
+		Me.lblFormat.Location = New System.Drawing.Point(3, 125)
+		Me.lblFormat.Name = "lblFormat"
+		Me.lblFormat.Size = New System.Drawing.Size(100, 22)
+		Me.lblFormat.TabIndex = 10
+		Me.lblFormat.Text = "Format de sortie :"
+		Me.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+		'
+		'optOld
+		'
+		Me.optOld.AutoSize = true
+		Me.optOld.Dock = System.Windows.Forms.DockStyle.Right
+		Me.optOld.Location = New System.Drawing.Point(187, 125)
+		Me.optOld.Name = "optOld"
+		Me.optOld.Size = New System.Drawing.Size(58, 22)
+		Me.optOld.TabIndex = 9
+		Me.optOld.Text = "MTGM"
+		Me.optOld.UseVisualStyleBackColor = true
+		'
+		'optApprentice
+		'
+		Me.optApprentice.AutoSize = true
+		Me.optApprentice.Dock = System.Windows.Forms.DockStyle.Right
+		Me.optApprentice.Location = New System.Drawing.Point(245, 125)
+		Me.optApprentice.Name = "optApprentice"
+		Me.optApprentice.Size = New System.Drawing.Size(76, 22)
+		Me.optApprentice.TabIndex = 8
+		Me.optApprentice.Text = "Apprentice"
+		Me.optApprentice.UseVisualStyleBackColor = true
 		'
 		'cmdExport
 		'
@@ -258,7 +283,7 @@ Partial Class frmExport
 		'
 		'dlgFileBrowser
 		'
-		Me.dlgFileBrowser.Filter = "Fichiers de deck (*.dck) | *.dck"
+		Me.dlgFileBrowser.Filter = "Fichiers de deck (*.dck) | *.dck |Fichiers de deck v2 (*.dk2) | *.dk2"
 		Me.dlgFileBrowser.Title = "Sélectionner le fichier à importer"
 		'
 		'frmExport
@@ -270,7 +295,6 @@ Partial Class frmExport
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmExport"
-		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		AddHandler Load, AddressOf Me.FrmExportLoad
 		AddHandler FormClosing, AddressOf Me.FrmExportFormClosing
 		Me.cbarImpExp.ResumeLayout(false)
@@ -281,6 +305,8 @@ Partial Class frmExport
 		Me.grpImport.PerformLayout
 		Me.ResumeLayout(false)
 	End Sub
+	Private optOld As System.Windows.Forms.RadioButton
+	Private lblFormat As System.Windows.Forms.Label
 	Private optApprentice As System.Windows.Forms.RadioButton
 	Private optNormal As System.Windows.Forms.RadioButton
 	Private dlgFileBrowser As System.Windows.Forms.OpenFileDialog

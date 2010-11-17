@@ -9,9 +9,11 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - /!\ nouveau site MagicCorporation     01/10/2010 |
 '------------------------------------------------------
 Imports System.Net
 Imports System.Text
@@ -19,7 +21,7 @@ Imports System.IO
 Imports System.Data
 Imports System.Data.OleDb
 Public Partial Class frmTranslate
-	Private Const CmURL     As String  = "http://www.magiccorporation.com/mc.php?rub=cartes&file=search&word=#cardname#&=Ok&search=carte"
+	Private Const CmURL     As String  = "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
 	Private Const CmId      As String  = "#cardname#"
 	Private Const CmKey     As String  = "gathering-cartes-view"
 	Private Const CmFrench  As Integer = 2	

@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -43,11 +44,12 @@ Public Partial Class MainForm
 	Private VmMustReload As Boolean = False
 	Private VmImgDL As Boolean = False
 	Private VmMainReaderBusy As Boolean = False
+	Private VmStartup As String = ""
 '	Public  VgBar As Windows7ProgressBar
 	Public Shared VgMe As MainForm
 	#End Region
 	#Region "Méthodes"
-	Public Sub New()
+	Public Sub New(VpArgs() As String)
 		VgMe = Me
 		'Intégrité de l'application
 		If Not clsModule.CheckIntegrity Then
@@ -62,6 +64,12 @@ Public Partial Class MainForm
 			clsModule.VgTimer.Interval = 1000 * 10		'recherche d'une mise à jour 10 sec après le démarrage
 			'Anciens fichiers temporaires éventuels
 			Call clsModule.DeleteTempFiles
+		End If
+		'Arguments au lancement
+		If VpArgs.Length > 0 Then
+			If File.Exists(VpArgs(0)) And VpArgs(0).EndsWith(clsModule.CgFExtN) Or VpArgs(0).EndsWith(clsModule.CgFExtO) Or VpArgs(0).EndsWith(clsModule.CgFExtD) Then
+				VmStartup = VpArgs(0)
+			End If
 		End If
 	End Sub
 	Public Function StatusTextGet As String
@@ -243,7 +251,7 @@ Public Partial Class MainForm
 		'Effectue les modifications
 		For Each VpTxtFR As clsTxtFR In VpTrad
 			If VpTxtFR.Texte.Trim <> "" Then
-				If VpTxtFR.Already = clsTxtFR.eTxtState.Neww Then 'ce cas ne devrait jamais se produire puisque par défaut il devrait y avoir la traduction VO (mais on ne sait jamais)
+				If VpTxtFR.Already = clsTxtFR.eTxtState.Neww Then	'cas où le correctif porte sur des cartes d'une édition pas encore présente dans la base courante
 					VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpTxtFR.CardName.Replace("'", "''") + "', '" + VpTxtFR.Texte.Replace("'", "''") + "');"
 					VgDBCommand.ExecuteNonQuery
 					VpCount = VpCount + 1
@@ -282,6 +290,7 @@ Public Partial Class MainForm
 	Dim VpCount As Integer = 0
 		Try
 			Call Me.InitBars(File.ReadAllLines(VpLogFile).Length)
+			VpOffsetBase = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length
 			'Concaténation des données brutes
 			VpOutB.Write(VpInB.ReadBytes(VpFileInfo.Length))
 			Me.prgAvance.Value = Me.prgAvance.Maximum / 2
@@ -289,9 +298,8 @@ Public Partial Class MainForm
 			VpIn.Close
 			VpOutB.Flush
 			VpOutB.Close
-			'Mise à jour des index
+			'Mise à jour des index (seulement si CardPictures est obsolète)
 			VgDBCommand.CommandText = "Select Max([End]) From CardPictures;"
-			VpOffsetBase = CLng(VgDBCommand.ExecuteScalar) + 1
 			While Not VpLog.EndOfStream
 				VpStrs = VpLog.ReadLine.Split("#")
 				VpCurOffset = VpOffsetBase + CLng(VpStrs(1))
@@ -300,7 +308,7 @@ Public Partial Class MainForm
 				VgDBCommand.ExecuteNonQuery
 				VpCount = VpCount + 1
 				Me.prgAvance.Increment(1)
-'				VgBar.Increment(1)
+'					VgBar.Increment(1)
 				Application.DoEvents
 			End While
 			VpLog.Close
@@ -392,11 +400,28 @@ Public Partial Class MainForm
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub FixFR
-	'-----------------------------------------------------
+	'--------------------------------------------------------------------------------------------
 	'Remplace une traduction vide par son original anglais
-	'-----------------------------------------------------
+	'Remplace ensuite les libellés non traduits par une traduction trouvée dans une autre édition
+	'--------------------------------------------------------------------------------------------
+	Dim VpMissing As New Hashtable
+	Dim VpNewName As String
 		VgDBCommand.CommandText = "Update CardFR Inner Join Card On Card.EncNbr = CardFR.EncNbr Set CardFR.TitleFR = Card.Title Where CardFR.TitleFR In (Null, '');"
 		VgDBCommand.ExecuteNonQuery
+    	VgDBCommand.CommandText = "SELECT Title, EncNbr FROM (Select Card.Title, Card.Series, Card.EncNbr From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title = TitleFR And Not Series In ('CH', 'AL', 'BE', 'UN', 'AN', 'AQ', 'LE', 'DK', 'FE')) WHERE Title In (Select Card.Title From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title <> TitleFR) ORDER BY Series;"
+    	VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpMissing.Add(CLng(.GetValue(1)), .GetString(0))
+			End While
+			.Close
+		End With
+		For Each VpCard As Long In VpMissing.Keys
+			VgDBCommand.CommandText = "Select TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title <> TitleFR And Title = '" + VpMissing.Item(VpCard).ToString.Replace("'", "''") + "';"
+			VpNewName = VgDBCommand.ExecuteScalar.ToString
+			VgDBCommand.CommandText = "Update CardFR Set TitleFR = '" + VpNewName.Replace("'", "''") + "' Where EncNbr = " + VpCard.ToString + ";"
+			VgDBCommand.ExecuteNonQuery
+		Next VpCard
 	End Sub
 	Public Function FixFR2 As Boolean
 	'------------------------------------------------------------------
@@ -462,19 +487,24 @@ Public Partial Class MainForm
 	'--------------------------------------------------
 	'Supprime les en-têtes orphelins de la table Series
 	'--------------------------------------------------
-		VgDBCommand.CommandText = "Select SeriesCD From Series Where SeriesCD Not In (Select Distinct Series From Card);"
+		VgDBCommand.CommandText = "Delete * From Series Where SeriesCD Not In (Select Distinct Series From Card);"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub FixAssoc
 	'------------------------------------------------------------------------------------------------------------------------------------------
 	'Correction a posteriori d'un bug initial lors de l'ajout dans la base de nouvelles cartes d'artefacts dont la couleur n'est pas référencée
 	' + créatures / créatures avec capacité
+	' + jetons
 	'------------------------------------------------------------------------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Update ((Select Spell.Color From Card Inner Join Spell On Card.Title = Spell.Title Where Card.Type = 'A' And Spell.Color = 'L') As MyFix) Set MyFix.Color = 'A';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set Type = 'C' Where Type = 'U' And Trim(CardText) = '';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set Type = 'U' Where Type = 'C' And Trim(CardText) <> '';"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Card Inner Join Spell On Card.Title = Spell.Title Set Card.Type = 'K' Where Spell.Color = 'C';"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Spell Set Color = 'T' Where Color = 'C';"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub ValidateCriteria
@@ -560,6 +590,16 @@ Public Partial Class MainForm
 		Call Me.LoadAutorisations("")
 		Me.scrollStock.Visible = False
 		Me.cmdHistPrices.Enabled = False
+	End Sub
+	Private Sub ClearAll
+		Me.VmAdvSearch = ""
+		Me.VmAdvSearchLabel = ""
+		Me.tvwExplore.Nodes.Clear
+		Me.mnuFindNext.Enabled = False
+		Me.mnuSearchText.Text = clsModule.CgCard
+		Me.lblDB.Text = "Base -"
+		Me.lblNCards.Text = ""
+		Call Me.ClearCarac
 	End Sub
 	Private Function GetNCards(VpSource As String, Optional VpDistinct As Boolean = False) As Integer
 	'-------------------------------------------------------------------------
@@ -734,17 +774,17 @@ Public Partial Class MainForm
 			Me.tvwExplore.Nodes.Add(VpNode)
 			VpNode.Expand
 			Me.mnuCardsFR.Enabled = True
+			'Restauration des paramètres langue / tri (NB. Si on est en VO on est toujours en ordre alphabétique)
+			If Me.mnuCardsFR.Checked Then
+				Me.tvwExplore.BeginUpdate
+				Call Me.ChangeLanguage(Me.tvwExplore.Nodes.Item(0))
+				Me.tvwExplore.EndUpdate
+			End If
+			If Me.mnuSort.Tag = True Then
+				Call Me.SortTvw
+			End If
 		End If
 		Me.VmMustReload = False
-		'Restauration des paramètres langue / tri (NB. Si on est en VO on est toujours en ordre alphabétique)
-		If Me.mnuCardsFR.Checked Then
-			Me.tvwExplore.BeginUpdate
-			Call Me.ChangeLanguage(Me.tvwExplore.Nodes.Item(0))
-			Me.tvwExplore.EndUpdate
-		End If
-		If Me.mnuSort.Tag = True Then
-			Call Me.SortTvw
-		End If
 	End Sub
 	Private Function CanAdd(VpNode As TreeNode, VpCard As String) As Boolean
 	'--------------------------------------------------------------------------
@@ -1019,17 +1059,20 @@ Public Partial Class MainForm
 	'Retourne les numéros d'icônes à utiliser comme symboles dans le treeview)
 	'-------------------------------------------------------------------------
 		Select Case VpTag
-			Case "Card.Type"
+			Case "Card.myPrice"
+				Return (32 + CInt(VpStr))
 			Case "Card.Series"
 				Return Me.imglstTvw.Images.IndexOfKey("_e" + VpStr + CgIconsExt)
 			Case "Spell.Color", "Card.Title"
 				Return FindImageIndexColor(VpStr)
 			Case "Spell.myCost"
 				If VpStr.Trim <> "" Then
-					Return (12 + CInt(VpStr))
+					Return (13 + CInt(VpStr))
 				Else
-					Return 11
+					Return 12
 				End If
+			Case "Card.Rarity"
+				Return FindImageIndexRarity(VpStr)
 			Case Else
 				Return 0
 		End Select
@@ -1052,6 +1095,20 @@ Public Partial Class MainForm
 				Return 6
 			Case "W"
 				Return 3
+			Case "T", "K"
+				Return 11
+			Case Else
+				Return 0
+		End Select
+	End Function
+	Private Function FindImageIndexRarity(VpRarity As String) As Integer
+		Select Case VpRarity.Substring(0, 1)
+			Case "C"
+				Return 30
+			Case "U"
+				Return 31
+			Case "R"
+				Return 32
 			Case Else
 				Return 0
 		End Select
@@ -1274,11 +1331,13 @@ Public Partial Class MainForm
 		Me.mnuUpdateTxtFR.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuFixFR2.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuFixPic.Visible = VgOptions.VgSettings.ShowUpdateMenus
+		Me.mnuTranslate.Visible = VgOptions.VgSettings.ShowUpdateMenus
 	End Sub
 	Sub MainFormLoad(ByVal sender As Object, ByVal e As EventArgs)
 	'----------------------------------
 	'Chargement du formulaire principal
 	'----------------------------------
+	Dim VpOpen As String = ""
 		'Chargement des options
 		Call VgOptions.LoadSettings
 		'Taille par défaut
@@ -1295,6 +1354,7 @@ Public Partial Class MainForm
 			Me.mnuUpdateTxtFR.Visible = False
 			Me.mnuFixFR2.Visible = False
 			Me.mnuFixPic.Visible = False
+			Me.mnuTranslate.Visible = False
 		End If
 		'Panneau des images
 		Me.picScanCard.SizeMode = VgOptions.VgSettings.ImageMode
@@ -1319,8 +1379,9 @@ Public Partial Class MainForm
 		'Chargement de la base par défaut
 		If clsModule.LoadIcons(Me.imglstTvw) Then
 			Call Me.ValidateCriteria
-			If VgOptions.VgSettings.DefaultBase <> "" Then
-				If clsModule.DBOpen(VgOptions.VgSettings.DefaultBase) Then
+			VpOpen = IIf(VmStartup.EndsWith(clsModule.CgFExtD), VmStartup, VgOptions.VgSettings.DefaultBase)
+			If VpOpen <> "" Then
+				If clsModule.DBOpen(VpOpen) Then
 					Call Me.LoadMnu
 					Call Me.LoadTvw
 				End If
@@ -1336,6 +1397,13 @@ Public Partial Class MainForm
 		Call Me.LoadAutorisations("")
 		Me.mnuSort.Tag = False
 '		Me.VgBar = New Windows7ProgressBar(Me)
+		'Argument éventuel
+		If VmStartup.EndsWith(clsModule.CgFExtN) Or VmStartup.EndsWith(clsModule.CgFExtO) Then
+			Call Me.MnuExportActivate(sender, Nothing)
+			If Not Me.VmMyChildren.DoesntExist(Me.VmMyChildren.ImporterExporter) Then
+				Me.VmMyChildren.ImporterExporter.InitImport(VmStartup)
+			End If
+		End If
 	End Sub
 	Private Sub ManageDelete(VpSender As Object, VpSQL As String, Optional VpAlternateCaption As String = "")
 	Dim VpQuestion As String
@@ -1397,6 +1465,9 @@ Public Partial Class MainForm
 	Sub MnuAboutActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpAbout As New About
 		VpAbout.ShowDialog
+	End Sub
+	Sub MnuWebsiteClick(sender As Object, e As EventArgs)
+		Diagnostics.Process.Start(clsModule.CgURL17)
 	End Sub
 	Sub MnuDispCollectionActivate(ByVal sender As Object, ByVal e As EventArgs)
 	'---------------------------------------------
@@ -1734,10 +1805,10 @@ Public Partial Class MainForm
 	Sub MnuStatsActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpStats As New frmStats(Me)
 		If clsModule.DBOK Then
-			If Me.GetNCards(IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)) > 1 Then
+			If Me.GetNCards(IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection), True) > 1 Then
 				VpStats.Show
 			Else
-				Call clsModule.ShowWarning("Il faut au minimum une sélection de 2 cartes pour pouvoir lancer l'affichage des statistiques...")
+				Call clsModule.ShowWarning("Il faut au minimum une sélection de 2 cartes distinctes pour pouvoir lancer l'affichage des statistiques...")
 			End If
 		End If
 	End Sub
@@ -1931,6 +2002,19 @@ Public Partial Class MainForm
 			VpGestDecks.BringToFront
 		End If
 	End Sub
+	Sub MnuGestAdvClick(sender As Object, e As EventArgs)
+	Dim VpGestAdv As frmGestAdv
+		If clsModule.DBOK Then
+			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.AdversairesManager) Then
+				VpGestAdv = New frmGestAdv
+				Me.VmMyChildren.AdversairesManager = VpGestAdv
+			Else
+				VpGestAdv = Me.VmMyChildren.AdversairesManager
+			End If
+			VpGestAdv.Show
+			VpGestAdv.BringToFront
+		End If
+	End Sub
 	Sub MnuShowImageActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpDistance As Integer = Me.splitV.SplitterDistance
 	Static VpDistance2 As Integer
@@ -1963,6 +2047,7 @@ Public Partial Class MainForm
 		Call Me.MVBuy(True, ( Me.tvwExplore.SelectedNode.Parent Is Nothing ))
 	End Sub
 	Sub MnuDBOpenClick(sender As Object, e As EventArgs)
+		Call Me.ClearAll
 		If Me.dlgOpen.ShowDialog <> System.Windows.Forms.DialogResult.Cancel Then
 			Call Me.DBOpenInit(Me.dlgOpen.FileName)
 		End If
@@ -1972,12 +2057,16 @@ Public Partial Class MainForm
 		If clsModule.DBOK Then
 			VpSource = New FileInfo(VgDB.DataSource)
 			If Me.dlgSave.ShowDialog <> System.Windows.Forms.DialogResult.Cancel Then
-				Call clsModule.SecureDelete(Me.dlgSave.FileName)
-				File.Copy(VpSource.FullName, Me.dlgSave.FileName)
-				If clsModule.DBOpen(Me.dlgSave.FileName) Then
-					Me.lblDB.Text = "Base - " + VgDB.DataSource
-					Call Me.LoadMnu
-					Call Me.LoadTvw
+				If Not VpSource.FullName = Me.dlgSave.FileName Then
+					Call clsModule.SecureDelete(Me.dlgSave.FileName)
+					File.Copy(VpSource.FullName, Me.dlgSave.FileName)
+					If clsModule.DBOpen(Me.dlgSave.FileName) Then
+						Me.lblDB.Text = "Base - " + VgDB.DataSource
+						Call Me.LoadMnu
+						Call Me.LoadTvw
+					End If
+				Else
+					Call clsModule.ShowWarning("Vous avez sélectionné le fichier actuellement ouvert !")
 				End If
 			End If
 		End If
@@ -2058,7 +2147,7 @@ Public Partial Class MainForm
 	Dim VpStr As String
 		If e.Data.GetDataPresent(DataFormats.FileDrop) Then
 			VpStr = e.Data.GetData(DataFormats.FileDrop)(0)
-			If VpStr.EndsWith(clsModule.CgFExtN) Or VpStr.EndsWith(clsModule.CgFExtD) Then
+			If VpStr.EndsWith(clsModule.CgFExtN) Or VpStr.EndsWith(clsModule.CgFExtO) Or VpStr.EndsWith(clsModule.CgFExtD) Then
 				e.Effect = DragDropEffects.Copy
 				Exit Sub
 			End If
@@ -2067,7 +2156,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub TvwExploreDragDrop(sender As Object, e As DragEventArgs)
 	Dim VpStr As String = e.Data.GetData(DataFormats.FileDrop)(0)
-		If VpStr.EndsWith(clsModule.CgFExtN) Then
+		If VpStr.EndsWith(clsModule.CgFExtN) Or VpStr.EndsWith(clsModule.CgFExtO) Then
 			Call Me.MnuExportActivate(sender, Nothing)
 			If Not Me.VmMyChildren.DoesntExist(Me.VmMyChildren.ImporterExporter) Then
 				Me.VmMyChildren.ImporterExporter.InitImport(VpStr)

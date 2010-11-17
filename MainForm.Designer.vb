@@ -121,6 +121,7 @@ Partial Class MainForm
 		Me.mnuCheckForBetas = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuRestorePrev = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator9 = New System.Windows.Forms.ToolStripSeparator
+		Me.mnuWebsite = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
 		Me.toolStrip = New System.Windows.Forms.ToolStrip
@@ -135,6 +136,7 @@ Partial Class MainForm
 		Me.btSimu = New System.Windows.Forms.ToolStripButton
 		Me.btStats = New System.Windows.Forms.ToolStripButton
 		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton
+		Me.btWebsite = New System.Windows.Forms.ToolStripButton
 		Me.splitV = New System.Windows.Forms.SplitContainer
 		Me.CBarTvw = New TD.SandBar.ContainerBar
 		Me.pnlTvw = New TD.SandBar.ContainerBarClientPanel
@@ -186,6 +188,7 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
+		Me.mnuGestAdv = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -231,7 +234,7 @@ Partial Class MainForm
 		'
 		Me.lblDB.Name = "lblDB"
 		Me.lblDB.Size = New System.Drawing.Size(37, 17)
-		Me.lblDB.Text = "Base :"
+		Me.lblDB.Text = "Base -"
 		'
 		'lblNCards
 		'
@@ -290,24 +293,36 @@ Partial Class MainForm
 		Me.imglstTvw.Images.SetKeyName(8, "_tland.ico")
 		Me.imglstTvw.Images.SetKeyName(9, "_tmulticolor.ico")
 		Me.imglstTvw.Images.SetKeyName(10, "_tred.ico")
-		Me.imglstTvw.Images.SetKeyName(11, "_mx.gif")
-		Me.imglstTvw.Images.SetKeyName(12, "_m0.gif")
-		Me.imglstTvw.Images.SetKeyName(13, "_m1.gif")
-		Me.imglstTvw.Images.SetKeyName(14, "_m2.gif")
-		Me.imglstTvw.Images.SetKeyName(15, "_m3.gif")
-		Me.imglstTvw.Images.SetKeyName(16, "_m4.gif")
-		Me.imglstTvw.Images.SetKeyName(17, "_m5.gif")
-		Me.imglstTvw.Images.SetKeyName(18, "_m6.gif")
-		Me.imglstTvw.Images.SetKeyName(19, "_m7.gif")
-		Me.imglstTvw.Images.SetKeyName(20, "_m8.gif")
-		Me.imglstTvw.Images.SetKeyName(21, "_m9.gif")
-		Me.imglstTvw.Images.SetKeyName(22, "_m10.gif")
-		Me.imglstTvw.Images.SetKeyName(23, "_m11.gif")
-		Me.imglstTvw.Images.SetKeyName(24, "_m12.gif")
-		Me.imglstTvw.Images.SetKeyName(25, "_m13.gif")
-		Me.imglstTvw.Images.SetKeyName(26, "_m14.gif")
-		Me.imglstTvw.Images.SetKeyName(27, "_m15.gif")
-		Me.imglstTvw.Images.SetKeyName(28, "_m16.gif")
+		Me.imglstTvw.Images.SetKeyName(11, "_ttocken.ico")
+		Me.imglstTvw.Images.SetKeyName(12, "_mx.gif")
+		Me.imglstTvw.Images.SetKeyName(13, "_m0.gif")
+		Me.imglstTvw.Images.SetKeyName(14, "_m1.gif")
+		Me.imglstTvw.Images.SetKeyName(15, "_m2.gif")
+		Me.imglstTvw.Images.SetKeyName(16, "_m3.gif")
+		Me.imglstTvw.Images.SetKeyName(17, "_m4.gif")
+		Me.imglstTvw.Images.SetKeyName(18, "_m5.gif")
+		Me.imglstTvw.Images.SetKeyName(19, "_m6.gif")
+		Me.imglstTvw.Images.SetKeyName(20, "_m7.gif")
+		Me.imglstTvw.Images.SetKeyName(21, "_m8.gif")
+		Me.imglstTvw.Images.SetKeyName(22, "_m9.gif")
+		Me.imglstTvw.Images.SetKeyName(23, "_m10.gif")
+		Me.imglstTvw.Images.SetKeyName(24, "_m11.gif")
+		Me.imglstTvw.Images.SetKeyName(25, "_m12.gif")
+		Me.imglstTvw.Images.SetKeyName(26, "_m13.gif")
+		Me.imglstTvw.Images.SetKeyName(27, "_m14.gif")
+		Me.imglstTvw.Images.SetKeyName(28, "_m15.gif")
+		Me.imglstTvw.Images.SetKeyName(29, "_m16.gif")
+		Me.imglstTvw.Images.SetKeyName(30, "_rco.gif")
+		Me.imglstTvw.Images.SetKeyName(31, "_runco.gif")
+		Me.imglstTvw.Images.SetKeyName(32, "_rrare.gif")
+		Me.imglstTvw.Images.SetKeyName(33, "_p0.png")
+		Me.imglstTvw.Images.SetKeyName(34, "_p1.png")
+		Me.imglstTvw.Images.SetKeyName(35, "_p2.png")
+		Me.imglstTvw.Images.SetKeyName(36, "_p3.png")
+		Me.imglstTvw.Images.SetKeyName(37, "_p4.png")
+		Me.imglstTvw.Images.SetKeyName(38, "_p5.png")
+		Me.imglstTvw.Images.SetKeyName(39, "_p6.png")
+		Me.imglstTvw.Images.SetKeyName(40, "_p7.png")
 		'
 		'imglstCarac
 		'
@@ -639,7 +654,7 @@ Partial Class MainForm
 		'
 		'mnuTools
 		'
-		Me.mnuTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuGestDecks, Me.mnuAddCards, Me.mnuRemCards, Me.mnuFixTable, Me.mnuFixDivers, Me.mnuSeparator7, Me.mnuPrefs})
+		Me.mnuTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuGestDecks, Me.mnuGestAdv, Me.mnuAddCards, Me.mnuRemCards, Me.mnuFixTable, Me.mnuFixDivers, Me.mnuSeparator7, Me.mnuPrefs})
 		Me.mnuTools.Name = "mnuTools"
 		Me.mnuTools.Size = New System.Drawing.Size(59, 20)
 		Me.mnuTools.Text = "Gestion"
@@ -699,53 +714,53 @@ Partial Class MainForm
 		'mnuFixPrices
 		'
 		Me.mnuFixPrices.Name = "mnuFixPrices"
-		Me.mnuFixPrices.Size = New System.Drawing.Size(169, 22)
+		Me.mnuFixPrices.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixPrices.Text = "Liste des prix"
 		AddHandler Me.mnuFixPrices.Click, AddressOf Me.MnuFixPricesActivate
 		'
 		'mnuFixFR
 		'
 		Me.mnuFixFR.Name = "mnuFixFR"
-		Me.mnuFixFR.Size = New System.Drawing.Size(169, 22)
-		Me.mnuFixFR.Text = "Traductions"
+		Me.mnuFixFR.Size = New System.Drawing.Size(206, 22)
+		Me.mnuFixFR.Text = "Traductions manquantes"
 		AddHandler Me.mnuFixFR.Click, AddressOf Me.MnuFixFRActivate
 		'
 		'mnuFixCreatures
 		'
 		Me.mnuFixCreatures.Name = "mnuFixCreatures"
-		Me.mnuFixCreatures.Size = New System.Drawing.Size(169, 22)
+		Me.mnuFixCreatures.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixCreatures.Text = "Créatures"
 		AddHandler Me.mnuFixCreatures.Click, AddressOf Me.MnuFixCreaturesClick
 		'
 		'mnuFixSerie
 		'
 		Me.mnuFixSerie.Name = "mnuFixSerie"
-		Me.mnuFixSerie.Size = New System.Drawing.Size(169, 22)
+		Me.mnuFixSerie.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixSerie.Text = "Edition..."
 		'
 		'mnuFixSerie2
 		'
 		Me.mnuFixSerie2.Name = "mnuFixSerie2"
-		Me.mnuFixSerie2.Size = New System.Drawing.Size(169, 22)
+		Me.mnuFixSerie2.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixSerie2.Text = "En-têtes orphelins"
 		AddHandler Me.mnuFixSerie2.Click, AddressOf Me.MnuFixSerie2Click
 		'
 		'mnuSeparator10
 		'
 		Me.mnuSeparator10.Name = "mnuSeparator10"
-		Me.mnuSeparator10.Size = New System.Drawing.Size(166, 6)
+		Me.mnuSeparator10.Size = New System.Drawing.Size(203, 6)
 		'
 		'mnuFixCollec
 		'
 		Me.mnuFixCollec.Name = "mnuFixCollec"
-		Me.mnuFixCollec.Size = New System.Drawing.Size(169, 22)
+		Me.mnuFixCollec.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixCollec.Text = "Collection"
 		AddHandler Me.mnuFixCollec.Click, AddressOf Me.MnuFixCollecActivate
 		'
 		'mnuFixGames
 		'
 		Me.mnuFixGames.Name = "mnuFixGames"
-		Me.mnuFixGames.Size = New System.Drawing.Size(169, 22)
+		Me.mnuFixGames.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixGames.Text = "Jeu..."
 		'
 		'mnuFixDivers
@@ -860,7 +875,7 @@ Partial Class MainForm
 		'
 		'mnuInfo
 		'
-		Me.mnuInfo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCheckForUpdates, Me.mnuCheckForBetas, Me.mnuRestorePrev, Me.mnuSeparator9, Me.mnuHelp, Me.mnuAbout})
+		Me.mnuInfo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCheckForUpdates, Me.mnuCheckForBetas, Me.mnuRestorePrev, Me.mnuSeparator9, Me.mnuWebsite, Me.mnuHelp, Me.mnuAbout})
 		Me.mnuInfo.Name = "mnuInfo"
 		Me.mnuInfo.Size = New System.Drawing.Size(24, 20)
 		Me.mnuInfo.Text = "?"
@@ -908,6 +923,14 @@ Partial Class MainForm
 		Me.mnuSeparator9.Name = "mnuSeparator9"
 		Me.mnuSeparator9.Size = New System.Drawing.Size(234, 6)
 		'
+		'mnuWebsite
+		'
+		Me.mnuWebsite.Image = CType(resources.GetObject("mnuWebsite.Image"),System.Drawing.Image)
+		Me.mnuWebsite.Name = "mnuWebsite"
+		Me.mnuWebsite.Size = New System.Drawing.Size(237, 22)
+		Me.mnuWebsite.Text = "Site Web de MTGM"
+		AddHandler Me.mnuWebsite.Click, AddressOf Me.MnuWebsiteClick
+		'
 		'mnuHelp
 		'
 		Me.mnuHelp.Image = CType(resources.GetObject("mnuHelp.Image"),System.Drawing.Image)
@@ -926,7 +949,7 @@ Partial Class MainForm
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBSelect, Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBSelect, Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(757, 25)
@@ -1033,6 +1056,17 @@ Partial Class MainForm
 		Me.btCheckForUpdates.Size = New System.Drawing.Size(23, 22)
 		Me.btCheckForUpdates.Text = "Vérifier les mises à jour"
 		AddHandler Me.btCheckForUpdates.Click, AddressOf Me.MnuCheckForUpdatesActivate
+		'
+		'btWebsite
+		'
+		Me.btWebsite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+		Me.btWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btWebsite.Image = CType(resources.GetObject("btWebsite.Image"),System.Drawing.Image)
+		Me.btWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btWebsite.Name = "btWebsite"
+		Me.btWebsite.Size = New System.Drawing.Size(23, 22)
+		Me.btWebsite.Text = "Site Web de MTGM"
+		AddHandler Me.btWebsite.Click, AddressOf Me.MnuWebsiteClick
 		'
 		'splitV
 		'
@@ -1619,6 +1653,14 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
 		'
+		'mnuGestAdv
+		'
+		Me.mnuGestAdv.Image = CType(resources.GetObject("mnuGestAdv.Image"),System.Drawing.Image)
+		Me.mnuGestAdv.Name = "mnuGestAdv"
+		Me.mnuGestAdv.Size = New System.Drawing.Size(234, 22)
+		Me.mnuGestAdv.Text = "Liste des adversaires"
+		AddHandler Me.mnuGestAdv.Click, AddressOf Me.MnuGestAdvClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1673,6 +1715,9 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuGestAdv As System.Windows.Forms.ToolStripMenuItem
+	Private btWebsite As System.Windows.Forms.ToolStripButton
+	Private mnuWebsite As System.Windows.Forms.ToolStripMenuItem
 	Private mnuMV As System.Windows.Forms.ToolStripMenuItem
 	Private cmdHistPrices As System.Windows.Forms.Button
 	Private mnuContenuUpdate As System.Windows.Forms.ToolStripMenuItem

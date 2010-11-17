@@ -9,6 +9,7 @@
 '| Release 5      |                        21/03/2010 |
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
+'| Release 8      |                        03/10/2010 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -25,6 +26,7 @@ Public Partial Class frmSearch
 	Private VmSource As String
 	Private VmRestriction As String
 	Private VmPrevSearchs As New ArrayList
+	Private VmKeyChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
@@ -186,12 +188,7 @@ Public Partial Class frmSearch
 	Dim VpTitle As String
 	Dim VpSource As String
 		If Me.lstResult.SelectedItem Is Nothing Then Exit Sub
-		VpTitle = Me.lstResult.SelectedItem.ToString
-		VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
-		If VpTitle.Contains("(") Then
-			VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
-		End If
-		VpTitle = VpTitle.Substring(0, VpTitle.Length - 1)
+		VpTitle = clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString)
 		If Not Me.chkRestriction.Checked Then
 			VpSource = ""
 		Else
@@ -272,6 +269,29 @@ Public Partial Class frmSearch
 				Me.cboFind.Items.Add(VpSearch)
 			End If
 		Next VpSearch
+	End Sub
+	Function GetRefText(sender As Object) As String
+		If sender.SelectionLength > 0 Then
+			Return sender.Text.Replace(sender.SelectedText, "").ToLower
+		Else
+			Return sender.Text.ToLower
+		End If
+	End Function
+	Sub CboFindKeyDown(sender As Object, e As KeyEventArgs)
+	Dim VpRef As String = Me.GetRefText(sender)
+		If e.KeyCode = Keys.Back And VpRef = "æ" Then
+			sender.Text = "Ae "
+			sender.SelectionStart = 3
+			VmKeyChange = True
+		End If
+	End Sub
+	Sub CboFindKeyUp(sender As Object, e As KeyEventArgs)
+	Dim VpRef As String = Me.GetRefText(sender)
+		If VpRef = "ae" And Not VmKeyChange Then
+			sender.Text = "Æ"
+			sender.SelectionStart = 1
+		End If
+		VmKeyChange = False
 	End Sub
 	#End Region
 End Class
