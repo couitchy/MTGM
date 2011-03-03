@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -373,14 +374,14 @@ Public Partial Class frmSimu
 			.Close
 		End With
 		' - prix moyen
-		VpM = Me.QueryInfo("Sum(Val(Price) * Items) / Sum(Items)")
-		VpV = Me.QueryInfo("Sum(((Val(Price) - Val('" + VpM.ToString.Replace(",", ".") + "')) ^ 2) * Items) / Sum(Items)")
+		VpM = Me.QueryInfo("Sum(Price * Items) / Sum(Items)")
+		VpV = Me.QueryInfo("Sum(((Price - " + VpM.ToString.Replace(",", ".") + ") ^ 2) * Items) / Sum(Items)")
 		VpV = VpV ^ 0.5
 		Me.txtPrix.Text = Format(VpM, "0.00") + " ± " + Format(VpV, "0.00") + " €"
 		Me.txtPrix.Tag = VpV
 		' - coûts d'invocation
-		VpM = Me.QueryInfo("Sum(Val(MyCost) * Items) / Sum(Items)", " Where ( Cost <> Null ) And ")
-		VpV = Me.QueryInfo("Sum(((Val(MyCost) - Val('" + VpM.ToString.Replace(",", ".") + "')) ^ 2) * Items) / Sum(Items)", " Where ( Cost <> Null ) And ")
+		VpM = Me.QueryInfo("Sum(myCost * Items) / Sum(Items)", " Where ( Cost <> Null ) And ")
+		VpV = Me.QueryInfo("Sum(((myCost - " + VpM.ToString.Replace(",", ".") + ") ^ 2) * Items) / Sum(Items)", " Where ( Cost <> Null ) And ")
 		VpV = VpV ^ 0.5
 		Me.txtInvoc.Text = Format(VpM, "0.0") + " ± " + Format(VpV, "0.0")
 		Me.txtInvoc.Tag = VpV
@@ -435,11 +436,11 @@ Public Partial Class frmSimu
 		End If
 		' - prix moyen
 		If Me.chkPrix.Checked Then
-			VpSQL = VpSQL + "(Val(Card.Price) > Val('" + (Val(Me.txtPrix.Text.Replace(",", ".")) - CSng(Me.txtPrix.Tag)).ToString.Replace(",", ".") + "') And Val(Card.Price) < Val('" + (Val(Me.txtPrix.Text.Replace(",", ".")) + CSng(Me.txtPrix.Tag)).ToString.Replace(",", ".") + "')) And "
+			VpSQL = VpSQL + "(Card.Price > " + (Val(Me.txtPrix.Text) - CSng(Me.txtPrix.Tag)).ToString.Replace(",", ".") + " And Card.Price < " + (Val(Me.txtPrix.Text) + CSng(Me.txtPrix.Tag)).ToString.Replace(",", ".") + ") And "
 		End If
 		' - coûts d'invocation
 		If Me.chkInvoc.Checked Then
-			VpSQL = VpSQL + "((Val(Spell.MyCost) > Val('" + (Val(Me.txtInvoc.Text.Replace(",", ".")) - CSng(Me.txtInvoc.Tag)).ToString.Replace(",", ".") + "') And Val(Spell.MyCost) < Val('" + (Val(Me.txtInvoc.Text.Replace(",", ".")) + CSng(Me.txtInvoc.Tag)).ToString.Replace(",", ".") + "')) Or Val(Spell.MyCost) = 0) And "
+			VpSQL = VpSQL + "((Spell.myCost > " + (Val(Me.txtInvoc.Text) - CSng(Me.txtInvoc.Tag)).ToString.Replace(",", ".") + " And Spell.myCost < " + (Val(Me.txtInvoc.Text) + CSng(Me.txtInvoc.Tag)).ToString.Replace(",", ".") + ") Or Spell.myCost = 0) And "
 		End If
 		VpSQL = clsModule.TrimQuery(VpSQL, False)
 		VgDBCommand.CommandText = VpSQL

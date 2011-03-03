@@ -10,11 +10,13 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - téléchargement auto des dépendances   10/10/2009 |
 '| - prévention des exécutions multiples   31/01/2010 |
+'| - gestion cartes foils				   19/12/2010 |
 '------------------------------------------------------
 Imports System.Data
 Imports System.Data.OleDb
@@ -30,7 +32,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 21390
+	Public Const CgCodeLines As Integer   		= 24154
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -50,6 +52,7 @@ Public Module clsModule
 	Public Const CgHLPFile As String      		= "\MTGM.pdf"
 	Public Const CgHSTFile As String      		= "\Historique.txt"
 	Public Const CgUpdater As String      		= "\Updater.exe"
+	Public Const CgMTGMWebResourcer As String	= "\WebResourcer.exe"
 	Public Const CgUpDFile As String      		= "\Magic The Gathering Manager.new"
 	Public Const CgDownDFile As String     		= "\Magic The Gathering Manager.bak"
 	Public Const CgUpDDB As String      		= "\Images DB.mdb"
@@ -66,12 +69,12 @@ Public Module clsModule
 	Public Const CgURL1 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/ContenuStamp.txt"
-	Public Const CgURL1E As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/ContenuSizes.txt"
+	Public Const CgURL1D As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/ContenuStamp r9b.txt"
+	Public Const CgURL1E As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/ContenuSizes r9.txt"
 	Public Const CgURL2 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Images DB.mdb"
-	Public Const CgURL3B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Patch.mdb"
+	Public Const CgURL3B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Patch r9.mdb"
 	Public Const CgURL4 As String				= "http://couitchy.free.fr/upload/MTGM/Listes%20des%20editions/"
 	Public Const CgURL5 As String				= "http://couitchy.free.fr/upload/MTGM/Logos%20des%20editions/"
 	Public Const CgURL6 As String				= "http://gatherer.wizards.com/Pages/Default.aspx"
@@ -100,6 +103,7 @@ Public Module clsModule
 	Public Const CgErr3 As String				= "Impossible d'afficher les informations demandées maintenant..." + vbCrLf + "Si une mise à jour est en cours, merci d'attendre qu'elle se finisse."
 	Public Const CgErr4 As String				= "Le nombre maximal de courbes affichables a été atteint..." + vbCrLf + "Les suivantes seront ignorées."
 	Public Const CgErr5 As String				= "Le processus de mise à jour a été interrompu..."
+	Public Const CgErr6 As String				= "Le plug-in spécifié est introuvable..."
 	Public Const CgFExtO As String				= ".dck"
 	Public Const CgFExtN As String				= ".dk2"
 	Public Const CgFExtA As String				= ".dec"
@@ -134,6 +138,9 @@ Public Module clsModule
 	Public Const CgPerfsVFree As String   		= "sans version"
 	Public Const CgAlternateStart As String 	= "Card Name:"
 	Public Const CgAlternateStart2 As String	= "Name:"
+	Public Const CgFoil As String				= "PREMIUMFOILVO"
+	Public Const CgFoil2 As String				= " (Foil)"
+	Public Const CgCategory As String			= "Properties"
 	Public CgBalises() As String 				= {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:"}
 	Public CgManaParsing() As String 			= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
 	Public CgCriterionsFields() As String 		= {"", "Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
@@ -185,15 +192,16 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque Adversaires, manque Historique prix
-		BDD_v8		'manque Adversaires
-		BDD_v9		'à jour
+		BDD_v1		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'ajustement types numériques, manque Adversaires
+		BDD_v9		'ajustement types numériques
+		BDD_v10		'à jour
 	End Enum
 	Public Sub Main(ByVal VpArgs() As String)
 	'-------------------------------
@@ -315,8 +323,14 @@ Public Module clsModule
 				'Si on est ici, BDD version 8
 				VpDBVersion = eDBVersion.BDD_v8
 			Else
-				'Si on est ici, BDD version 9
-				VpDBVersion = eDBVersion.BDD_v9
+				VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Card", Nothing})
+				If CInt(VpSchemaTable.Rows(11)!DATA_TYPE) <> 4 Then
+					'Si on est ici, BDD version 9
+					VpDBVersion = eDBVersion.BDD_v9
+				Else
+					'Si on est ici, BDD version 10
+					VpDBVersion = eDBVersion.BDD_v10
+				End If
 			End If
 		Else
 			'Si on est ici, BDD version 1
@@ -325,10 +339,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v9 Then		'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v10 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v9)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v10)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -381,16 +395,37 @@ Public Module clsModule
 					'Passage version 8 à 9
 					If CInt(VpDBVersion) < 9 Then
 						VgDBCommand.CommandText = "Create Table MyAdversairesID (AdvID Long, AdvName Text(255) With Compression);"
-						VgDBCommand.ExecuteNonQuery						
+						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Insert Into MyAdversairesID(AdvID, AdvName) Values (0, '" + clsModule.CgMe + "');"
-						VgDBCommand.ExecuteNonQuery						
+						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Alter Table MyGamesID Add AdvID Long;"
-						VgDBCommand.ExecuteNonQuery						
+						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update MyGamesID Set AdvID = 0;"
-						VgDBCommand.ExecuteNonQuery			
+						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Alter Table MyScores Drop Column IsMixte;"
 						VgDBCommand.ExecuteNonQuery
-					End If					
+					End If
+					'Passage version 9 à 10
+					If CInt(VpDBVersion) < 10 Then
+						Call DBChangeType("Card", "Price", "Single", "Val")
+						Call DBChangeType("Card", "myPrice", "Integer", "Int")
+						Call DBChangeType("Spell", "myCost", "Integer", "Int")
+						VgDBCommand.CommandText = "Alter Table MyGames Add Foil Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table MyCollection Add Foil Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table PricesHistory Add Foil Bit;"
+						VgDBCommand.ExecuteNonQuery
+						Try		'normalement la clé primaire n'existe pas (mais on ne sait jamais), d'où la trappe pour éviter une exception
+							VgDBCommand.CommandText = "Drop Index PrimaryKey On MyCollection;"
+							VgDBCommand.ExecuteNonQuery
+						Catch
+						End Try
+						VgDBCommand.CommandText = "Drop Index EncNbr On MyCollection;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Create Index EncNbr On MyCollection (EncNbr);"
+						VgDBCommand.ExecuteNonQuery
+					End If
 				Catch
 					Call clsModule.ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
 					Return False
@@ -401,6 +436,23 @@ Public Module clsModule
 			End If
 		End If
 	End Function
+	Private Sub DBChangeType(VpTable As String, VpField As String, VpType As String, VpCaster As String)
+	'-----------------------------------------------------------------------------------------------------------------
+	'Jet-SQL ne supporte pas le changement de type d'une colonne avec conversion implicite, d'où la routine ci-dessous
+	'-----------------------------------------------------------------------------------------------------------------
+		VgDBCommand.CommandText = "Alter Table " + VpTable + " Add " + VpField + "2 " + VpType + ";"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update " + VpTable + " Set " + VpField + "2 = " + VpCaster + "(" + VpField + ");"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Alter Table " + VpTable + " Drop Column " + VpField + ";"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Alter Table " + VpTable + " Add " + VpField + " " + VpType + ";"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update " + VpTable + " Set " + VpField + " = " + VpField + "2;"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Alter Table " + VpTable + " Drop Column " + VpField + "2;"
+		VgDBCommand.ExecuteNonQuery
+	End Sub
 	Public Function DBOK As Boolean
 		If VgDB Is Nothing Then
 			Call clsModule.ShowWarning("Aucune base de données n'a été sélectionnée...")
@@ -522,6 +574,22 @@ Public Module clsModule
 		VpDB.Dispose
 		VpDB = Nothing
 		Call clsModule.SecureDelete(VpPath)
+	End Sub
+	Public Sub DBAdaptEncNbr
+	'--------------------------------------------------------------------------------------------------------------------------
+	'Toutes les éditions ne sont pas forcément importées dans le même ordre chez les utilisateurs, d'où des EncNbr différents :
+	'=> cette procédure détermine les bons EncNbr à partir du nom de la carte et de son édition
+	'--------------------------------------------------------------------------------------------------------------------------
+		VgDBCommand.CommandText = "Alter Table PricesHistory Add EncNbr Long;"
+		VgDBCommand.ExecuteNonQuery
+    	VgDBCommand.CommandText = "Update Card Inner Join PricesHistory On PricesHistory.Title = Card.Title And PricesHistory.Series = Card.Series Set PricesHistory.EncNbr = Card.EncNbr Where PricesHistory.Title = Card.Title And PricesHistory.Series = Card.Series;"
+    	VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Alter Table PricesHistory Drop Column Series;"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Alter Table PricesHistory Drop Column Title;"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Create Index EncNbr On PricesHistory (EncNbr);"
+		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Function PreDelete(VpTable As String) As Boolean
 	'---------------------------------------------------------------------------------------------
@@ -653,12 +721,18 @@ Public Module clsModule
 	'----------------------------------
 	'Suppression des mots-clés inutiles
 	'----------------------------------
+	Dim VpTrimSQL As String
 		If VpSQL.EndsWith(" Where ") Then
-			Return VpSQL.Substring(0, VpSQL.Length - 7) + VpAddendum + IIf(VpDot, ";", "")
+			VpTrimSQL = VpSQL.Substring(0, VpSQL.Length - 7)
 		ElseIf VpSQL.EndsWith(" And ") Then
-			Return VpSQL.Substring(0, VpSQL.Length - 5) + VpAddendum + IIf(VpDot, ";", "")
+			VpTrimSQL = VpSQL.Substring(0, VpSQL.Length - 5)
 		Else
-			Return VpSQL + VpAddendum + IIf(VpDot, ";", "")
+			VpTrimSQL = VpSQL
+		End If
+		If VpDot Then
+			Return VpTrimSQL + VpAddendum + ";"
+		Else
+			Return VpTrimSQL + VpAddendum
 		End If
 	End Function
 	Public Function ColorTo1(VpColor As String) As String
@@ -759,7 +833,11 @@ Public Module clsModule
 						Return VpStr
 				End Select
 			Case "Spell.myCost"
-				Return IIf(VpIsForTvw, "", VpStr)
+				If VpIsForTvw Then
+					Return ""
+				Else
+					Return VpStr
+				End If
 			Case "Card.myPrice"
 				Select Case VpStr
 					Case "1"
@@ -1017,7 +1095,7 @@ Public Module clsModule
 					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + VpStr + clsModule.CgPicUpExt), clsModule.CgUpPic + clsModule.CgPicUpExt)
 				End If
 			Else
-				If clsModule.ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant (~300 Mo) ?") = System.Windows.Forms.DialogResult.Yes Then
+				If clsModule.ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 					'Re-téléchargement complet de la base principale
 					MainForm.VgMe.IsInImgDL = True
 					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
@@ -1186,9 +1264,6 @@ Public Module clsModule
 			Catch
 				Call clsModule.ShowWarning(clsModule.CgErr5)
 			End Try
-		'Maj MDB
-		ElseIf File.Exists(Application.StartupPath + clsModule.CgUpDDB) Then
-			Call clsModule.DBImport(Application.StartupPath + clsModule.CgUpDDB)
 		'Maj Images
 		ElseIf File.Exists(Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicUpExt) And File.Exists(Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicLogExt) Then
 			Call MainForm.VgMe.UpdatePictures(Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicUpExt, Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicLogExt, True)
@@ -1197,7 +1272,7 @@ Public Module clsModule
 			Call MainForm.VgMe.UpdateTxtFR
 		End If
 	End Sub
-	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, Optional VpSource As String = "", Optional VpEdition As String = "")
+	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, VpGestFoil As Boolean, Optional VpSource As String = "", Optional VpEdition As String = "", Optional VpFoil As Boolean = False)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
 	'-----------------------------------------------
@@ -1208,10 +1283,10 @@ Public Module clsModule
 		Else
 			'Le type de la carte est inconnu à priori, on suppose par défaut que c'est une créature
 			If VpSource <> "" Then
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + IIf(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
 				VpSQL = VpSQL + VpMainForm.Restriction
 			Else
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
 			End If
 			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 			VgDBReader = VgDBCommand.ExecuteReader
@@ -1219,18 +1294,25 @@ Public Module clsModule
 			If Not VgDBReader.HasRows Then
 				VgDBReader.Close
 				If VpSource <> "" Then
-					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
+					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + IIf(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
 					VpSQL = VpSQL + VpMainForm.Restriction
 				Else
-					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
+					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
 				End If
 				VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 				VgDBReader = VgDBCommand.ExecuteReader
-				VpForm.lblProp6.Enabled = False
-				VpForm.lblAD.Text = ""
-				VgDBReader.Read
-				VpOpened = True
-				Call clsModule.BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
+				'S'il n'y a encore pas de réponse, c'est que la carte a été supprimée dans l'intervalle
+				If Not VgDBReader.HasRows Then
+					Call clsModule.ShowWarning("Impossible d'afficher les détails de cette carte...")
+					VgDBReader.Close
+					Exit Sub
+				Else
+					VpForm.lblProp6.Enabled = False
+					VpForm.lblAD.Text = ""
+					VgDBReader.Read
+					VpOpened = True
+					Call clsModule.BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
+				End If
 			'S'il y a des réponses c'était bien une créature
 			Else
 				VgDBReader.Read
@@ -1264,11 +1346,11 @@ Public Module clsModule
 				Else
 					VpForm.lblStock.Text = ""
 				End If
-				If .GetValue(VgDBReader.GetOrdinal("Price")) Is DBNull.Value OrElse MyVal(.GetValue(VgDBReader.GetOrdinal("Price"))) = 0 Then
+				If .GetValue(VgDBReader.GetOrdinal(IIf(VpFoil, "FoilPrice", "Price"))) Is DBNull.Value OrElse .GetValue(VgDBReader.GetOrdinal(IIf(VpFoil, "FoilPrice", "Price"))) = 0 Then
 					VpForm.lblPrix.Text = "N/C"
 				Else
 					'VpForm.lblProp5.Text = "Prix (" + .GetDateTime(VgDBReader.GetOrdinal("PriceDate")).ToShortDateString + ") :"
-					VpForm.lblPrix.Text = Format(MyVal(.GetValue(VgDBReader.GetOrdinal("Price"))), "0.00") + " €"
+					VpForm.lblPrix.Text = Format(.GetValue(VgDBReader.GetOrdinal(IIf(VpFoil, "FoilPrice", "Price"))), "0.00") + " €"
 				End If
 				VpForm.lblRarete.Text = clsModule.FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
 				If VpMainForm.mnuCardsFR.Checked Then
@@ -1276,13 +1358,14 @@ Public Module clsModule
 				Else
 					VpForm.txtCardText.Text = .GetValue(VgDBReader.GetOrdinal("CardText")).ToString
 				End If
-				If VpEdition = "" Then
+				If VpEdition = "" Or Not VpGestFoil Then
 					'Il peut y avoir trois cas si jamais la requête a rapporté plus d'un enregistrement :
 					'- 1 - soit la carte existe dans une autre édition et dans ce cas il faut inclure cette dernière dans la liste déroulante
 					'- 2 - soit dans la même édition mais d'un autre deck (cas où la source vaut MyGames) et dans ce cas il faut sommer les items en stock
 					'- 3 - soit dans la même édition et c'est alors un doublon (cas d'une recherche avancée sur une carte doublonnée)
+					'- 4 - soit dans la même édition et c'est alors une version foil qu'on doit sommer (car on est en mode de non distinction foil)
 					While .Read
-						'Gestion cas 2
+						'Gestion cas 2, 4
 						If VpForm.cboEdition.Items.Contains(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString) Then
 							'Gestion cas 3
 							If VpSource <> "" Then
@@ -1351,12 +1434,8 @@ Public Module clsModule
 			Return " And "
 		End If
 	End Function
-	Public Function GetEncNbr(VpOwner As MainForm, VpSource As String, VpCardName As String, VpIDSerie As String) As Integer
-	Dim VpSQL As String
-		VpSQL = "Select Card.EncNbr From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And Card.Series = '" + VpIDSerie + "' And "
-		VpSQL = VpSQL + VpOwner.Restriction
-		VpSQL = clsModule.TrimQuery(VpSQL)
-		VgDBCommand.CommandText = VpSQL
+	Public Function GetEncNbr(VpCardName As String, VpIDSerie As String) As Integer
+		VgDBCommand.CommandText = "Select Card.EncNbr From Card Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And Card.Series = '" + VpIDSerie + "';"
 		Return CInt(VgDBCommand.ExecuteScalar)
 	End Function
 	Public Function GetSerieCodeFromName(VpName As String, Optional VpApprox As Boolean = False) As String
@@ -1387,12 +1466,13 @@ Public Module clsModule
 		VgDBCommand.CommandText = "Select Count(*) From PricesHistory;"
 		Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
 	End Function
-	Public Function GetPriceHistory(VpCardName As String, VpSerie As String) As SortedList
+	Public Function GetPriceHistory(VpCardName As String, VpSerie As String, VpFoil As Boolean) As SortedList
 	'----------------------------------------------------------------
 	'Retourne l'historique des prix pour la carte passée en paramètre
 	'----------------------------------------------------------------
 	Dim VpHist As New SortedList
-		VgDBCommand.CommandText = "Select PricesHistory.PriceDate, PricesHistory.Price From PricesHistory Inner Join Card On PricesHistory.EncNbr = Card.EncNbr Where Card.Title = '" + VpCardName + "' And Card.Series = '" + VpSerie + "' Order By PricesHistory.PriceDate Asc;"
+		'VgDBCommand.CommandText = "Select PricesHistory.PriceDate, PricesHistory.Price From PricesHistory Inner Join Card On PricesHistory.EncNbr = Card.EncNbr Where Card.Title = '" + VpCardName + "' And Card.Series = '" + VpSerie + "' And PricesHistory.Foil = " + VpFoil.ToString + " Order By PricesHistory.PriceDate Asc;"
+		VgDBCommand.CommandText = "Select GlobalHisto.PriceDate, GlobalHisto.Price From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate, DatesToUse.Foil FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate, PricesHistory.Foil FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate, PricesHistory.Foil) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST) AND (PricesHistory.Foil = DatesToUse.Foil)) As GlobalHisto) Inner Join Card On Card.EncNbr = GlobalHisto.EncNbr Where Card.Title = '" + VpCardName + "' And Card.Series = '" + VpSerie + "' And GlobalHisto.Foil = " + VpFoil.ToString + ";"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -1470,7 +1550,9 @@ Public Module clsModule
 						Try
 							VppicScanCard.Image = Image.FromFile(VpTmp)
 						Catch
-							Call clsModule.ShowWarning("La base d'images semble être corrompue." + vbCrLf + "Essayez de la mettre à jour ou de la re-télécharger...")
+							If VgOptions.VgSettings.ShowCorruption Then
+								Call clsModule.ShowWarning("La base d'images semble être corrompue." + vbCrLf + "Essayez de la mettre à jour ou de la re-télécharger...")
+							End If
 							VppicScanCard.Image = Nothing
 							VgDBReader.Close
 							Exit Sub
@@ -1527,14 +1609,14 @@ Public Module clsModule
 	'Retourne l'identifiant de l'adversaire dont le nom est passé en paramètre
 	'-------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Select AdvId From MyAdversairesId Where AdvName = '" + VpName.Replace("'", "''") + "';"
-		Return VgDBCommand.ExecuteScalar	
+		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Function GetOwner(VpDeck As String) As String
 	'-------------------------------------------------------------------------
 	'Retourne l'identifiant de l'adversaire dont le nom est passé en paramètre
 	'-------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Select AdvName From MyAdversairesID Inner Join MyGamesID On MyAdversairesID.AdvID = MyGamesID.AdvID Where GameName = '" + VpDeck.Replace("'", "''") + "';"
-		Return VgDBCommand.ExecuteScalar	
+		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Function GetAdvName(VpI As Integer) As String
 	'-------------------------------------------------------------
@@ -1797,20 +1879,26 @@ Public Class clsManas
 		ElseIf VpCost.Contains(clsModule.CgManaParsing(6)) Then
 			VpCost = VpCost.Replace(clsModule.CgManaParsing(6), "")
 			VpStrs = VpCost.Split(" ")
-			Select Case VpStrs(1)
-				Case "black"
-					VpStrs(1) = "B"
-				Case "blue"
-					VpStrs(1) = "U"
-				Case "red"
-					VpStrs(1) = "R"
-				Case "white"
-					VpStrs(1) = "W"
-				Case "green"
-					VpStrs(1) = "G"
-				Case Else
-					VpStrs(1) = "A"
-			End Select
+			Try
+				Select Case VpStrs(1)
+					Case "black"
+						VpStrs(1) = "B"
+					Case "blue"
+						VpStrs(1) = "U"
+					Case "red"
+						VpStrs(1) = "R"
+					Case "white"
+						VpStrs(1) = "W"
+					Case "green"
+						VpStrs(1) = "G"
+					Case Else
+						VpStrs(1) = "A"
+				End Select
+			'Si la couleur n'a pas été précisée, assume par défaut de l'incolore
+			Catch
+				ReDim Preserve VpStrs(0 To 1)
+				VpStrs(1) = "A"
+			End Try
 			VpCost = clsModule.StrBuild(VpStrs(1), clsModule.FindNumber(VpStrs(0)))
 		'- XA... (ex. X2U)
 		ElseIf VpCost.StartsWith("x") AndAlso Val(VpCost.Substring(1)) <> 0 Then

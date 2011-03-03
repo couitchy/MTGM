@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -60,7 +61,7 @@ Public Partial Class frmSearch
 	Dim VpCriteria As String
 		'Si on effectue une recherche numérique, demande l'égalité et sinon, la simple présence dans la chaîne
 		If VpEquals Then
-			VpCriteria = "Val(" + VpField + ") = " + VpValue
+			VpCriteria = VpField + " = " + VpValue.Replace(",", ".")
 		Else
 			If Not VpValue.Contains(" ") Then
 				VpCriteria = "InStr(" + VpField + ", " + VpValue + ") > 0"
@@ -202,7 +203,7 @@ Public Partial Class frmSearch
 			'VmOwner.tvwExplore.Focus
 		Else
 			Me.SuspendLayout
-			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, VpSource)
+			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, False, VpSource)
 			Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
 			Me.btResult.Enabled = True
 			Call Me.BtResultActivate(sender, e)
@@ -212,7 +213,7 @@ Public Partial Class frmSearch
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 		'Astuce un peu crade : nom de la carte sauvé dans lstresult.tag et source dans grpserie.tag
 		Me.SuspendLayout
-		Call clsModule.LoadCarac(VmOwner, Me, Me.lstResult.Tag, Me.grpSerie.Tag, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+		Call clsModule.LoadCarac(VmOwner, Me, Me.lstResult.Tag, False, Me.grpSerie.Tag, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		Me.ResumeLayout
 	End Sub
 	Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)

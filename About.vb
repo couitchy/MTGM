@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -35,9 +36,9 @@ Public Partial Class About
 		End If
 	End Sub
 	Sub LnkMailLinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL18)
+		Process.Start(clsModule.CgURL18)
 	End Sub
 	Sub PicPaypalClick(ByVal sender As Object, ByVal e As EventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL16)
+		Process.Start(clsModule.CgURL16)
 	End Sub
 End Class

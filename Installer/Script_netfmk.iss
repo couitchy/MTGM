@@ -11,8 +11,8 @@ AppUpdatesURL=http://couitchy.free.fr
 DefaultDirName={pf}\Magic The Gathering Manager
 DefaultGroupName=Magic The Gathering Manager
 AllowNoIcons=yes
-LicenseFile=D:\Programmation\VB .NET\Magic The Gathering Manager\Ressources\Licence.txt
-OutputDir=D:\Programmation\VB .NET\Magic The Gathering Manager\Installer
+LicenseFile=E:\Programmation\VB .NET\Magic The Gathering Manager\Ressources\Licence.txt
+OutputDir=E:\Programmation\VB .NET\Magic The Gathering Manager\Installer
 OutputBaseFilename=MTGM_setup
 Compression=lzma
 SolidCompression=yes
@@ -25,21 +25,21 @@ Name: "fre"; MessagesFile: "compiler:Languages\French.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Magic The Gathering Manager.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Ressources\*.*"; DestDir: "{app}\Ressources"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Cartes\Magic DB.mdb"; DestDir: "{app}\Cartes"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\MTGM.ini"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\MTGM.pdf"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Historique.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\ChartFX.Lite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\NPlot.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\TreeViewMS.dll"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Win7Taskbar.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SandBar.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SourceGrid2.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SourceLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\_LIBRAIRIES\isxdl.dll"; Flags: dontcopy
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Magic The Gathering Manager.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Ressources\*.*"; DestDir: "{app}\Ressources"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Cartes\Magic DB.mdb"; DestDir: "{app}\Cartes"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\MTGM.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\MTGM.pdf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Historique.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\ChartFX.Lite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\NPlot.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\TreeViewMS.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\Win7Taskbar.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SandBar.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SourceGrid2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release\SourceLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programmation\VB .NET\_LIBRAIRIES\isxdl.dll"; Flags: dontcopy
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"

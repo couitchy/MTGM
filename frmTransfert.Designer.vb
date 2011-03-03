@@ -137,7 +137,7 @@ Partial Class frmTransfert
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
 		Me.Name = "frmTransfert"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-		Me.Text = "Transfert / Suppression"
+		Me.Text = "Transfert"
 		CType(Me.picSerie,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.sldQuant,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)

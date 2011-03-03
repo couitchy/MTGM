@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -53,7 +54,7 @@ Public Partial Class frmNewEdition
 	Private Sub FillHeader(VpInfos() As String)
 	'-------------------------------------------------------------------------
 	'Remplit l'objet en-tête à partir du tableau de chaînes passé en paramètre
-	'-------------------------------------------------------------------------	
+	'-------------------------------------------------------------------------
 		With Me.VmEditionHeader
 			.SeriesCD = VpInfos(1)
 			.SeriesNM = VpInfos(2)
@@ -66,7 +67,7 @@ Public Partial Class frmNewEdition
 			.Common = Val(VpInfos(15))
 			.Land = Val(VpInfos(16))
 			.NotesEdition = VpInfos(30)
-		End With		
+		End With
 	End Sub
 	Private Sub UpdateSerie(VpInfos() As String)
 	'------------------------------------------------------------------------------------
@@ -105,9 +106,9 @@ Public Partial Class frmNewEdition
 	'--------------------------------------------------------------
 	Dim VpSeriesInfos As StreamReader
 	Dim VpInfos() As String
-	Dim VpLine As String	
+	Dim VpLine As String
 		Call clsModule.DownloadNow(New Uri(clsModule.CgURL12), clsModule.CgUpSeries)
-		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then	
+		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
 			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
 			Do While Not VpSeriesInfos.EndOfStream
 				VpLine = VpSeriesInfos.ReadLine
@@ -121,11 +122,11 @@ Public Partial Class frmNewEdition
 						End With
 					Catch
 						Call clsModule.ShowWarning("Impossible de mettre à jour l'en-tête " + Me.VmEditionHeader.SeriesNM + " de la base de données...")
-					End Try	
+					End Try
 				End If
 			Loop
 			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
-			Call clsModule.ShowInformation("Terminé !")		
+			Call clsModule.ShowInformation("Terminé !")
 		Else
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
 		End If
@@ -236,7 +237,7 @@ Public Partial Class frmNewEdition
 			VpMyCard = New clsMyCard(VpCarac, VpComplement)
 			Try
 				'Insertion dans la table Card (Series, Title, EncNbr, 1, Null, Rarity, Type, SubType, 1, 0, Null, 'N', Null, Null, Author, False, 10, 10, CardText, Null)
-				VgDBCommand.CommandText = "Insert Into Card Values ('" + VpSerieCD + "', '" + VpMyCard.Title.Replace("'", "''") + "', " + VpEncNbr.ToString + ", 1, Null, '" + VpMyCard.Rarity + "', '" + VpMyCard.MyType + "', " + VpMycard.MySubType + ", 1, 0, Null, 'N', Null, Null, '" + VpMyCard.Author.Replace("'", "''") + "', False, 10, 10, " + VpMyCard.MyCardText + ", Null);"
+				VgDBCommand.CommandText = "Insert Into Card (Series, Title, EncNbr, Versions, CardNbr, Rarity, Type, SubType, myPrice, Price, PriceDate, Condition, FoilPrice, FoilDate, Artist, CenterText, TextSize, FlavorSize, CardText, FlavorText) Values ('" + VpSerieCD + "', '" + VpMyCard.Title.Replace("'", "''") + "', " + VpEncNbr.ToString + ", 1, Null, '" + VpMyCard.Rarity + "', '" + VpMyCard.MyType + "', " + VpMycard.MySubType + ", 1, 0, Null, 'N', Null, Null, '" + VpMyCard.Author.Replace("'", "''") + "', False, 10, 10, " + VpMyCard.MyCardText + ", Null);"
 				VgDBCommand.ExecuteNonQuery
 				'Insertion dans la table CardFR où par défaut le nom français sera le nom anglais jusqu'à mise à jour (EncNbr, TitleFR)
 				VgDBCommand.CommandText = "Insert Into CardFR Values (" + VpEncNbr.ToString + ", '" + VpMyCard.Title.Replace("'", "''") + "');"
@@ -245,7 +246,7 @@ Public Partial Class frmNewEdition
 				If VpPrevious Then
 					VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "' Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
 				Else
-					VgDBCommand.CommandText = "Insert Into Spell Values ('" + VpMyCard.Title.Replace("'", "''") + "', '" + VpSerieCD + "', '" + VpMyCard.MyColor + "', Null, Null, '" + VpMyCard.GetMyCost + "', " + VpMyCard.Cost + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
+					VgDBCommand.CommandText = "Insert Into Spell (Title, LastPrint, Color, Goal, Rating, myCost, Cost, CostA, CostB, CostU, CostG, CostR, CostW, CostX, ConvCost, CostLife, CostUnsum, CostSac, CostDisc, Kicker, Buyback, Flashback, Cycling, Madness, Upkeep, UpkeepMana, UpkeepLife, UpkeepSac, UpkeepDisc, Cumulative, Echo, Phasing, Fading, Cantrip, Threshold, Legal1, LegalE, LegalB, Rulings) Values ('" + VpMyCard.Title.Replace("'", "''") + "', '" + VpSerieCD + "', '" + VpMyCard.MyColor + "', Null, Null, " + VpMyCard.GetMyCost + ", " + VpMyCard.Cost + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
 				End If
 				VgDBCommand.ExecuteNonQuery
 				If Not VpPrevious Then
@@ -256,8 +257,11 @@ Public Partial Class frmNewEdition
 						VgDBCommand.ExecuteNonQuery
 					End If
 					'Si c'est une nouvelle carte, insertion dans la table TextesFR où par défaut le texte français sera le texte anglais jusqu'à mise à jour (CardName, TexteFR)
-					VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyCardText + ");"
-					VgDBCommand.ExecuteNonQuery
+					Try
+						VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyCardText + ");"
+						VgDBCommand.ExecuteNonQuery
+					Catch	'Trappe d'erreur au cas où une mise à jour de textes VF a été faite avant que la série n'ait été ajoutée (auquel cas TextesFR est déjà bon et il n'y a rien de plus à faire)
+					End Try
 				End If
 			Catch
 				Call clsModule.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + "...")
@@ -408,7 +412,7 @@ Public Partial Class frmNewEdition
 	End Sub
 	Sub CmdAssistNextClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Me.optUpdate.Checked Then
-			Call Me.UpdateSeriesHeaders	
+			Call Me.UpdateSeriesHeaders
 		Else
 			If Me.optAuto.Checked Then
 				Me.chkNewEditionAuto.Items.Clear
@@ -426,7 +430,7 @@ Public Partial Class frmNewEdition
 		End If
 	End Sub
 	Sub LnklblAssistLinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL6)
+		Process.Start(clsModule.CgURL6)
 	End Sub
 	Sub ChkHeaderAlreadyCheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Me.propEdition.Enabled = Not Me.chkHeaderAlready.Checked
@@ -595,7 +599,11 @@ Public Class clsMyCard
 	End Property
 	Public ReadOnly Property Cost As String
 		Get
-			Return IIf(VmCost <> "", "'" + VmCost + "'", "Null")
+			If VmCost <> "" Then
+				Return "'" + VmCost + "'"
+			Else
+				Return "Null"
+			End If
 		End Get
 	End Property
 	Public ReadOnly Property Type As String

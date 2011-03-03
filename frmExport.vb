@@ -10,11 +10,13 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - support passif depuis drag&drop	   27/09/2010 |
 '| - format v2 avec ref. éditions		   01/10/2010 |
+'| - gestion cartes foils				   19/12/2010 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmExport
@@ -55,7 +57,7 @@ Public Partial Class frmExport
 			VpOut.WriteLine("// CREATOR : " + Environment.UserName)
 			VpOut.WriteLine("// FORMAT :")
 		End If
-		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series From " + IIf(VpSource = clsModule.CgCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
+		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Foil From " + IIf(VpSource = clsModule.CgCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -64,7 +66,7 @@ Public Partial Class frmExport
 				ElseIf Me.optOld.Checked Then
 					VpOut.WriteLine(.GetValue(0).ToString + "#" + .GetValue(1).ToString)
 				ElseIf Me.optNormal.Checked Then
-					VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString)
+					VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString + "#" + .GetValue(4).ToString)
 				End If
 			End While
 			.Close
@@ -81,6 +83,7 @@ Public Partial Class frmExport
 	Dim VpId As Integer
 	Dim VpSQL As String
 	Dim VpO As Object
+	Dim VpFoil As Boolean
 		'S'il s'agit d'un nouveau deck, l'inscrit en BDD
 		If VpIsNew Then
 			VpId = clsModule.GetNewDeckId
@@ -90,38 +93,44 @@ Public Partial Class frmExport
 		'Lecture du fichier d'entrée et ajout dans la base de données
 		While Not VpIn.EndOfStream
 			VpStrs = VpIn.ReadLine.Split("#")
-			'Pré-traitement : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et sa série
+			'Pré-traitement 1 : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et sa série
 			If VpStrs.Length > 2 Then
 				VgDBCommand.CommandText = "Select EncNbr From Card Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
 				VpStrs(0) = VgDBCommand.ExecuteScalar
 				VpStrs(1) = VpStrs(2)
 			End If
+			'Pré-traitement 2 : gestion éventuelle de la mention foil
+			If VpStrs.Length > 3 Then
+				VpFoil = clsModule.Matching(VpStrs(3))
+			Else
+				VpFoil = False
+			End If
 			If IsNumeric(VpStrs(0)) Then
 				'Cas 1 : nouveau deck
 				If VpIsNew Then
-					VpSQL = "Insert Into MyGames(EncNbr, Items, GameID) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VpId.ToString + ");"
+					VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VpId.ToString + ", " + VpFoil.ToString + ");"
 				Else
 					'Cas 2 : complément collection
 					If VpSource = clsModule.CgCollection Then
-						VgDBCommand.CommandText = "Select Items From MyCollection Where EncNbr = " + VpStrs(0) + ";"
+						VgDBCommand.CommandText = "Select Items From MyCollection Where EncNbr = " + VpStrs(0) + " And Foil = " + VpFoil.ToString + ";"
 						VpO = VgDBCommand.ExecuteScalar
 						'Cas 2.1 : la carte a ajouté existe déjà => mise à jour de la quantité somme
 						If Not VpO Is Nothing AndAlso CInt(VpO) > 0 Then
-							VpSQL = "Update MyCollection Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + ";"
+							VpSQL = "Update MyCollection Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + " And Foil = " + VpFoil.ToString + ";"
 						'Cas 2.2 : nouvelle carte => insertion
 						Else
-							VpSQL = "Insert Into MyCollection(EncNbr, Items) Values (" + VpStrs(0) + ", " + VpStrs(1) + ");"
+							VpSQL = "Insert Into MyCollection(EncNbr, Items, Foil) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VpFoil.ToString + ");"
 						End If
 					'Cas 3 : complément ancien deck
 					Else
-						VgDBCommand.CommandText = "Select Items From MyGames Where EncNbr = " + VpStrs(0) + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
+						VgDBCommand.CommandText = "Select Items From MyGames Where EncNbr = " + VpStrs(0) + " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
 						VpO = VgDBCommand.ExecuteScalar
 						'Cas 3.1 : la carte a ajouté existe déjà => mise à jour de la quantité somme
 						If Not VpO Is Nothing AndAlso CInt(VpO) > 0 Then
-							VpSQL = "Update MyGames Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
+							VpSQL = "Update MyGames Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
 						'Cas 3.2 : nouvelle carte => insertion
 						Else
-							VpSQL = "Insert Into MyGames(EncNbr, Items, GameID) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + clsModule.GetDeckIndex(VpSource) + ");"
+							VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + clsModule.GetDeckIndex(VpSource) + ", " + VpFoil.ToString + ");"
 						End If
 					End If
 				End If

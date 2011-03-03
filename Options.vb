@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -44,7 +45,7 @@ Public Partial Class Options
 			'Si on tombe sur une propriété
 			If VpProperty.MemberType = MemberTypes.Property Then
 				'On la sauvegarde dans le fichier INI
-				Call clsModule.WritePrivateProfileString("Properties", VpProperty.Name, VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.GetProperty, Nothing, VgSettings, Nothing).ToString, Application.StartupPath + clsModule.CgINIFile)
+				Call clsModule.WritePrivateProfileString(clsModule.CgCategory, VpProperty.Name, VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.GetProperty, Nothing, VgSettings, Nothing).ToString, Application.StartupPath + clsModule.CgINIFile)
 			End If
 		Next VpProperty
 	End Sub
@@ -91,6 +92,7 @@ Public Class clsSettings
 	Private VmDefaultBase As String = Application.StartupPath + clsModule.CgMDB
 	Private VmPicturesFile As String = Application.StartupPath + clsModule.CgDAT
 	Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
+	Private VmPlugins As String = Application.StartupPath
 	Private VmPreferredSellers As String = ""
 	Private VmDefaultActivatedCriteria As String = "2#7"
 	Private VmDefaultCriteriaOrder As String = "Decks#Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
@@ -115,6 +117,7 @@ Public Class clsSettings
 	Private VmShowUpdateMenus As Boolean = False
 	Private VmPrevSearches As String = ""
 	Private VmVFDefault As Boolean = True
+	Private VmShowCorruption As Boolean = True
 	<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 	Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 		Get
@@ -131,6 +134,15 @@ Public Class clsSettings
 		End Get
 		Set (VpRestoreSize As Boolean)
 			VmRestoreSize = VpRestoreSize
+		End Set
+	End Property
+	<DisplayName("Avertissement de corruption"), Category("Général"), DefaultValue(True), Description("Affiche un message d'avertissement lorsque le chargement d'une image échoue")> _
+	Public Property ShowCorruption As Boolean
+		Get
+			Return VmShowCorruption
+		End Get
+		Set (VpShowCorruption As Boolean)
+			VmShowCorruption = VpShowCorruption
 		End Set
 	End Property
 	<Browsable(False), Category("Général"), Description("Mémorisation largeur")> _
@@ -205,7 +217,7 @@ Public Class clsSettings
 			VmPreferredSellers = VpPreferredSellers
 		End Set
 	End Property
-	<DisplayName("Base par défaut"), Category("Général"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
+	<DisplayName("Base par défaut"), Category("Emplacements des fichiers"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
 	Public Property DefaultBase As String
 		Get
 			Return VmDefaultBase
@@ -245,7 +257,7 @@ Public Class clsSettings
 			VmDefaultCriteriaOrder = VpDefaultCriteriaOrder
 		End Set
 	End Property
-	<DisplayName("Rafraîchissement automatique"), Category("Explorateur"), DefaultValue(True), Description("Rafraîchir automatiquement l'arborescence après avoir ajouté ou supprimé des cartes.")> _
+	<DisplayName("Rafraîchissement automatique"), Category("Explorateur"), DefaultValue(True), Description("Rafraîchir automatiquement l'arborescence après avoir ajouté ou supprimé des cartes")> _
 	Public Property AutoRefresh As Boolean
 		Get
 			Return VmAutoRefresh
@@ -254,7 +266,7 @@ Public Class clsSettings
 			VmAutoRefresh = VpAutoRefresh
 		End Set
 	End Property
-	<DisplayName("Cartes en français par défaut"), Category("Explorateur"), DefaultValue(True), Description("Toujours considérer le français comme la langue par défaut pour le titre et le texte des cartes.")> _
+	<DisplayName("Cartes en français par défaut"), Category("Explorateur"), DefaultValue(True), Description("Toujours considérer le français comme la langue par défaut pour le titre et le texte des cartes")> _
 	Public Property VFDefault As Boolean
 		Get
 			Return VmVFDefault
@@ -263,7 +275,7 @@ Public Class clsSettings
 			VmVFDefault = VpVFDefault
 		End Set
 	End Property
-	<DisplayName("Masquer les images"), Category("Explorateur"), DefaultValue(False), Description("Toujours fermer le panneau image au démarrage.")> _
+	<DisplayName("Masquer les images"), Category("Explorateur"), DefaultValue(False), Description("Toujours fermer le panneau image au démarrage")> _
 	Public Property AutoHideImage As Boolean
 		Get
 			Return VmAutoHideImage
@@ -272,7 +284,7 @@ Public Class clsSettings
 			VmAutoHideImage = VpAutoHideImage
 		End Set
 	End Property
-	<DisplayName("Masquer les autorisations"), Category("Explorateur"), DefaultValue(False), Description("Toujours fermer le panneau des autorisations en tournois.")> _
+	<DisplayName("Masquer les autorisations"), Category("Explorateur"), DefaultValue(False), Description("Toujours fermer le panneau des autorisations en tournois")> _
 	Public Property AutoHideAutorisations As Boolean
 		Get
 			Return VmAutoHideAutorisations
@@ -281,7 +293,7 @@ Public Class clsSettings
 			VmAutoHideAutorisations = VpAutoHideAutorisations
 		End Set
 	End Property
-	<DisplayName("Base des images"), Category("Explorateur"), Description("Fichier des images numérisées des cartes."), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
+	<DisplayName("Base des images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
 	Public Property PicturesFile As String
 		Get
 			Return VmPicturesFile
@@ -290,7 +302,7 @@ Public Class clsSettings
 			VmPicturesFile = VpPicturesFile
 		End Set
 	End Property
-	<DisplayName("Image de fond"), Category("Explorateur"), Description("Image de fond à afficher par défaut dans le panneau latéral."), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Images JPEG (*.jpg)|*.jpg")> _
+	<DisplayName("Image de fond"), Category("Emplacements des fichiers"), Description("Image de fond à afficher par défaut dans le panneau latéral"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Images JPEG (*.jpg)|*.jpg")> _
 	Public Property MagicBack As String
 		Get
 			Return VmMagicBack
@@ -299,7 +311,16 @@ Public Class clsSettings
 			VmMagicBack = VpMagicBack
 		End Set
 	End Property
-	<DisplayName("Format des images"), Category("Explorateur"), DefaultValue(PictureBoxSizeMode.CenterImage), Description("Mode d'affichage des images des cartes.")> _
+	<DisplayName("Emplacement des plug-ins"), Category("Emplacements des fichiers"), Description("Chemin d'accès au dossier des plug-ins MTGM"), Editor(GetType(System.Windows.Forms.Design.FolderNameEditor), GetType(System.Drawing.Design.UITypeEditor))> _
+	Public Property Plugins As String
+		Get
+			Return VmPlugins
+		End Get
+		Set (VpPlugins As String)
+			VmPlugins = VpPlugins
+		End Set
+	End Property
+	<DisplayName("Format des images"), Category("Explorateur"), DefaultValue(PictureBoxSizeMode.CenterImage), Description("Mode d'affichage des images des cartes")> _
 	Public Property ImageMode As PictureBoxSizeMode
 		Get
 			Return VmImageMode
@@ -308,7 +329,7 @@ Public Class clsSettings
 			VmImageMode = VpImageMode
 		End Set
 	End Property
-	<DisplayName("Forcer source unique"), Category("Explorateur"), DefaultValue(False), Description("Limitation à une source unique sélectionnée dans le menu affichage (un seul deck ou collection).")> _
+	<DisplayName("Forcer source unique"), Category("Explorateur"), DefaultValue(False), Description("Limitation à une source unique sélectionnée dans le menu affichage (un seul deck ou collection)")> _
 	Public Property ForceSingleSource As Boolean
 		Get
 			Return VmForceSingleSource

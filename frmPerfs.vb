@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -308,7 +309,7 @@ Public Partial Class frmPerfs
 	Dim VpLeastPlayed As String = ""
 		For Each VpLocal As String In Me.cboJeuLocal.Items
 			For Each VpAdv As String In Me.cboJeuAdv.Items
-				If Not VpLocal.StartsWith(clsModule.CgPerfsTotal) And Not VpAdv.StartsWith(clsModule.CgPerfsTotal) And VpLocal <> VpAdv Then
+				If Not VpLocal.StartsWith(clsModule.CgPerfsTotal) And Not VpAdv.StartsWith(clsModule.CgPerfsTotal) And VpLocal <> VpAdv And clsModule.GetOwner(VpLocal) <> clsModule.GetOwner(VpAdv) Then
 					VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpAdv.Replace("'", "''") + "';"
 					VpCur = VgDBCommand.ExecuteScalar
 					If VpCur < VpMin Then
@@ -799,8 +800,12 @@ Public Class clsPerformances
 	Dim VpId As String
 		VpId = clsModule.GetDeckIndex(VpGame)
 		If VpId <> "" Then
-			VgDBCommand.CommandText = "Select Sum(Val(Price) * Items) From Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where GameID = " + VpId + ";"
-			Return VgDBCommand.ExecuteScalar
+			Try
+				VgDBCommand.CommandText = "Select Sum(Price * Items) From Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where GameID = " + VpId + ";"
+				Return VgDBCommand.ExecuteScalar
+			Catch
+				Return -1
+			End Try
 		Else
 			Return -1
 		End If

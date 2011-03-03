@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -24,6 +25,7 @@
 '| - annul. / estimation téléchargements   06/03/2010 |
 '| - correction auto images				   10/04/2010 |
 '| - gestion des autorisations tournois	   15/04/2010 |
+'| - gestion cartes foils				   19/12/2010 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -153,8 +155,16 @@ Public Partial Class MainForm
 				If VpStr.IndexOf("^") <> -1 Then
 					VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
 					VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
-					VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.Price = '" + VpPrice + "', Card.myPrice = '" + clsModule.MyPrice(VpPrice).ToString + "', PriceDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
-					VgDBCommand.ExecuteNonQuery
+					'Prix foil
+					If VpEdition.EndsWith(clsModule.CgFoil) Then
+						VpEdition = VpEdition.Replace(clsModule.CgFoil, "")
+						VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.FoilPrice = " + VpPrice + ", FoilDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
+						VgDBCommand.ExecuteNonQuery
+					'Prix standard
+					Else
+						VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.Price = " + VpPrice + ", Card.myPrice = " + clsModule.MyPrice(VpPrice).ToString + ", PriceDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
+						VgDBCommand.ExecuteNonQuery
+					End If
 				Else
 					VpCardName = VpStr.Replace("'", "''")
 				End If
@@ -284,12 +294,19 @@ Public Partial Class MainForm
 	Dim VpOutB As New BinaryWriter(VpOut.BaseStream)
 	Dim VpFileInfo As New FileInfo(VpFile)
 	Dim VpStrs() As String
+	Dim VpLogInfos() As String
+	Dim VpSizeCheck As String
 	Dim VpOffsetBase As Long
 	Dim VpCurOffset As Long
 	Dim VpCurEnd As Long
 	Dim VpCount As Integer = 0
 		Try
-			Call Me.InitBars(File.ReadAllLines(VpLogFile).Length)
+			'Vérification de l'intégrité du patch
+			VpLogInfos = File.ReadAllLines(VpLogFile)
+			VpSizeCheck = VpLogInfos(VpLogInfos.Length - 1)
+			VpSizeCheck = VpSizeCheck.Substring(VpSizeCheck.LastIndexOf("#") + 1)
+			If CLng(VpSizeCheck) <> VpFileInfo.Length - 1 Then Throw New Exception
+			Call Me.InitBars(VpLogInfos.Length)
 			VpOffsetBase = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length
 			'Concaténation des données brutes
 			VpOutB.Write(VpInB.ReadBytes(VpFileInfo.Length))
@@ -304,8 +321,13 @@ Public Partial Class MainForm
 				VpStrs = VpLog.ReadLine.Split("#")
 				VpCurOffset = VpOffsetBase + CLng(VpStrs(1))
 				VpCurEnd = VpOffsetBase + CLng(VpStrs(2))
-				VgDBCommand.CommandText = "Insert Into CardPictures Values ('" + VpStrs(0).Replace(".jpg", "").Replace("'", "''") + "', " + VpCurOffset.ToString + ", " + VpCurEnd.ToString + ");"
-				VgDBCommand.ExecuteNonQuery
+				Try
+					VgDBCommand.CommandText = "Insert Into CardPictures Values ('" + VpStrs(0).Replace(".jpg", "").Replace("'", "''") + "', " + VpCurOffset.ToString + ", " + VpCurEnd.ToString + ");"
+					VgDBCommand.ExecuteNonQuery
+				Catch
+					VgDBCommand.CommandText = "Update CardPictures Set Offset = " + VpCurOffset.ToString + ", [End] = " + VpCurEnd.ToString + " Where Title = '" + VpStrs(0).Replace(".jpg", "").Replace("'", "''") + "';"
+					VgDBCommand.ExecuteNonQuery
+				End Try
 				VpCount = VpCount + 1
 				Me.prgAvance.Increment(1)
 '					VgBar.Increment(1)
@@ -396,7 +418,7 @@ Public Partial Class MainForm
 	'-----------------------------------------
 	'Remplace tous les prix non indiqués par 0
 	'-----------------------------------------
-		VgDBCommand.CommandText = "Update Card Set Price = '0', myPrice = '1' Where Card.Price In ('0', Null);"
+		VgDBCommand.CommandText = "Update Card Set Price = 0, myPrice = 1 Where Card.Price In (0, Null);"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub FixFR
@@ -634,7 +656,7 @@ Public Partial Class MainForm
 		Loop Until VpNode Is Me.tvwExplore.Nodes(0)
 		Return VpHistory.Substring(1)
 	End Function
-	Private Sub RestoreNode(VpHistory As String, VpNode As TreeNode)
+	Private Sub RecurRestoreNode(VpHistory As String, VpNode As TreeNode)
 	'-------------------------------------------------------------------
 	'Réouvre la généalogie passée en paramètre aussi loin qu'elle existe
 	'-------------------------------------------------------------------
@@ -652,9 +674,15 @@ Public Partial Class MainForm
 				If VpChild.Text = VpCur Then
 					Me.tvwExplore.SelectedNode = VpChild
 					VpChild.Expand
-					Call Me.RestoreNode(VpLeft, VpChild)
+					Call Me.RecurRestoreNode(VpLeft, VpChild)
 				End If
 			Next VpChild
+		End If
+	End Sub
+	Private Sub RestoreNode(VpHistory As String, VpNode As TreeNode)
+		Call Me.RecurRestoreNode(VpHistory, VpNode)
+		If Not Me.tvwExplore.SelectedNode Is Nothing Then
+			Me.tvwExplore.SelectedNode.EnsureVisible
 		End If
 	End Sub
 	Public Sub InitBars(VpMax As Integer)
@@ -682,6 +710,7 @@ Public Partial Class MainForm
 			Me.mnuFixGames.DropDownItems.RemoveAt(Me.mnuFixGames.DropDownItems.Count - 1)
 			Me.mnuRemGames.DropDownItems.RemoveAt(Me.mnuRemGames.DropDownItems.Count - 1)
 			Me.mnuMoveACard.DropDownItems.RemoveAt(Me.mnuMoveACard.DropDownItems.Count - 1)
+			Me.mnuCopyACard.DropDownItems.RemoveAt(Me.mnuCopyACard.DropDownItems.Count - 1)
 		Next VpI
 		'Reconstruction
 		For VpI = 1 To clsModule.GetDeckCount
@@ -689,6 +718,7 @@ Public Partial Class MainForm
 			Me.mnuFixGames.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf MnuFixSubGamesActivate)
 			Me.mnuDisp.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf MnuDispCollectionActivate)
 			Me.mnuMoveACard.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf mnuMoveACardActivate)
+			Me.mnuCopyACard.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf mnuCopyACardActivate)
 		Next VpI
 		'Pour les éditions
 		Me.mnuFixSerie.DropDownItems.Clear
@@ -814,7 +844,11 @@ Public Partial Class MainForm
 		If VpRecurLevel > Me.chkClassement.CheckedItems.Count Then Exit Sub
 		'La requête s'effectue dans les deux tables Card et Spell mises en correspondances sur le nom de la carte, elles-mêmes mises en correspondance avec MyGames ou MyCollection sur le numéro encyclopédique
 		If VpNode.Tag = "Card.Title" Then
-			VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+			If Me.mnuDegroupFoils.Checked And Not Me.IsInAdvSearch Then
+				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, " + VpSource2 + ".Foil From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+			Else
+				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+			End If
 		Else
 			VpSQL = "Select Distinct " + VpNode.Tag + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
 		End If
@@ -822,7 +856,7 @@ Public Partial Class MainForm
 		VpSQL = VpSQL + Me.Restriction
 		'Ajoute les conditions sur les critères des ancêtres
 		While Not VpParent.Parent Is Nothing
-			VpSQL = VpSQL + VpParent.Parent.Tag + " = '" + VpParent.Text + "' And "
+			VpSQL = VpSQL + Me.ElderCriteria(VpParent.Text, VpParent.Parent.Tag)
 			VpParent = VpParent.Parent
 		End While
 		'Suppression des mots-clés inutiles
@@ -851,6 +885,11 @@ Public Partial Class MainForm
 					'Si on est au niveau du nom des cartes, le tag est celui de sa traduction (Title = VO, Tag = VF)
 					ElseIf VpNode.Tag = "Card.Title"
 						VpChild.Tag = .GetValue(2).ToString
+						'Gestion éventuelle de la mention foil
+						If Me.mnuDegroupFoils.Checked AndAlso Not Me.IsInAdvSearch AndAlso .GetBoolean(3) Then
+							VpChild.Text = VpChild.Text + clsModule.CgFoil2
+							VpChild.Tag = VpChild.Tag + clsModule.CgFoil2
+						End If
 					End If
 					'Ajout effectif
 					VpNode.Nodes.Add(VpChild)
@@ -863,6 +902,14 @@ Public Partial Class MainForm
 			Call Me.RecurLoadTvw(VpSource1, VpSource2, VpChild, VpRecurLevel + 1)
 		Next VpChild
 	End Sub
+	Private Function ElderCriteria(VpValue As String, VpField As String) As String
+		Select Case VpField
+			Case "Card.myPrice", "Spell.myCost"
+				Return VpField + " = " + VpValue + " And "
+			Case Else
+				Return VpField + " = '" + VpValue + "' And "
+		End Select
+	End Function
 	Public Function Restriction(Optional VpTextMode As Boolean = False) As String
 	'------------------------------------------------------------------------
 	'Retourne une clause de restriction pour n'afficher que les jeux demandés
@@ -871,9 +918,17 @@ Public Partial Class MainForm
 		For Each VpItem As Object In Me.mnuDisp.DropDownItems
 			If clsModule.SafeGetChecked(VpItem) Then
 				If VpItem.Text = clsModule.CgCollection Then
-					Return IIf(VpTextMode, clsModule.CgCollection, "")
+					If VpTextMode Then
+						Return clsModule.CgCollection
+					Else
+						Return ""
+					End If
 				Else
-					VpStr = VpStr + IIf(VpTextMode, VpItem.Text + " ", "MyGames.GameID = " + clsModule.GetDeckIndex(VpItem.Text) + " Or ")
+					If VpTextMode Then
+						VpStr = VpStr + VpItem.Text + " "
+					Else
+						VpStr = VpStr + "MyGames.GameID = " + clsModule.GetDeckIndex(VpItem.Text) + " Or "
+					End If
 				End If
 			End If
 		Next VpItem
@@ -923,7 +978,7 @@ Public Partial Class MainForm
 		'Nombre de carte possédées (distinctes)
 		Me.lblSerieMyTotDist.Text = Me.QueryInfo("Select Count(*) From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where Card.Series = '" + VpIDSerie + "' And ")
 		'Cote de l'édition
-		VgDBCommand.CommandText = "Select Sum(Val(Price)) From Card Where Series = '" + VpIDSerie + "';"
+		VgDBCommand.CommandText = "Select Sum(Price) From Card Where Series = '" + VpIDSerie + "';"
 		Me.lblSerieCote.Text = Format(VgDBCommand.ExecuteScalar, "0.00") + " €"
 		'Notes
 		VgDBCommand.CommandText = "Select Notes From Series Where SeriesNM = '" + VpSerie + "';"
@@ -949,7 +1004,7 @@ Public Partial Class MainForm
 		'Nombre de carte possédées (distinctes)
 		Me.lblSerieMyTotDist.Text = Me.QueryInfo("Select Count(*) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where Spell.Color = '" + VpColor1 + "' And ")
 		'Cote de la couleur
-		VgDBCommand.CommandText = "Select Sum(Val(Price)) From Card Inner Join Spell On Card.Title = Spell.Title Where Spell.Color = '" + VpColor1 + "';"
+		VgDBCommand.CommandText = "Select Sum(Price) From Card Inner Join Spell On Card.Title = Spell.Title Where Spell.Color = '" + VpColor1 + "';"
 		VpO = VgDBCommand.ExecuteScalar
 		If Not VpO Is Nothing AndAlso IsNumeric(VpO) Then
 			Me.lblSerieCote.Text = Format(VpO, "0.00") + " €"
@@ -1114,41 +1169,66 @@ Public Partial Class MainForm
 		End Select
 	End Function
 	Private Function ManageTransfert(VpNode As TreeNode, VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "") As Boolean
-	'------------------------------------------------------------------------------
-	'Gère la suppression d'une carte ou son transfert dans un autre deck/collection
-	'------------------------------------------------------------------------------
+	'----------------------------------------------------------------------------------------------------------
+	'Gère la suppression d'une carte ou son transfert dans un autre deck/collection, ou encore son simple ajout
+	'----------------------------------------------------------------------------------------------------------
 	Dim VpPreciseTransfert As frmTransfert
 	Dim VpTransfertResult As New clsTransfertResult
 	Dim VpCardName As String = IIf(Me.mnuCardsFR.Checked, VpNode.Tag.ToString, VpNode.Text)
-	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
-		'Gestion des cas multiples
-		If Me.cboEdition.Items.Count > 1 Or CInt(Me.lblStock.Text) > 1 Then
-			'VpPreciseTransfert = New frmTransfert(Me, Me.cboEdition.Items, VpCardName, VpSource, VpTransfertResult)
-			VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpTransfertResult)
+	Dim VpSource As String
+	Dim VpSource2 As String
+	Dim VpFoil As Boolean
+		'Source
+		If Me.IsInAdvSearch Then
+			VpSource = clsModule.CgSFromSearch
+			VpSource2 = VmAdvSearch
+		ElseIf Me.chkClassement.GetItemChecked(0) Then
+			VpSource = clsModule.CgSDecks
+			VpSource2 = clsModule.CgSDecks
+		Else
+			VpSource = clsModule.CgSCollection
+			VpSource2 = clsModule.CgSCollection
+		End If
+		If VpCardName.EndsWith(clsModule.CgFoil2) Then
+			VpCardName = VpCardName.Replace(clsModule.CgFoil2, "")
+			VpFoil = True
+		Else
+			VpFoil = False
+		End If
+		'Type d'opération
+		VpTransfertResult.TransfertType = VpTransfertType
+		'Gestion des cas multiples / foils
+		If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType) Then
+			VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
 			VpPreciseTransfert.ShowDialog
 		Else
 			VpTransfertResult.NCartes = 1
 			VpTransfertResult.IDSerie = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
+			VpTransfertResult.Foil = VpFoil
 		End If
-		'Récupération du numéro encyclopédique de la carte concernée
-		VpTransfertResult.EncNbr = clsModule.GetEncNbr(Me, VpSource, VpCardName, VpTransfertResult.IDSerie)
-		'Type d'opération
-		VpTransfertResult.TransfertType = VpTransfertType
-		'Lieux des modifications
-		VpTransfertResult.TFrom = Me.GetSelectedSource
-		VpTransfertResult.SFrom = VpSource
-		If VpTransfertType = clsTransfertResult.EgTransfertType.Move Then
-			VpTransfertResult.TTo = VpTo
-			VpTransfertResult.STo = IIf(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
+		'Si pas d'annulation utilisateur
+		If VpTransfertResult.NCartes <> 0 Then
+			'Récupération du numéro encyclopédique de la carte concernée
+			VpTransfertResult.EncNbr = clsModule.GetEncNbr(VpCardName, VpTransfertResult.IDSerie)
+			'Lieux des modifications
+			VpTransfertResult.TFrom = Me.GetSelectedSource
+			VpTransfertResult.SFrom = VpSource
+			If VpTransfertType = clsTransfertResult.EgTransfertType.Move Or VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
+				VpTransfertResult.TTo = VpTo
+				VpTransfertResult.STo = IIf(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
+			End If
+			'Opération effective
+			If Me.IsInAdvSearch Or (VpTransfertResult.TFrom <> VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+				Call frmTransfert.CommitAction(VpTransfertResult)
+				Return False
+			ElseIf VpTransfertResult.TFrom <> VpTransfertResult.TTo Or (VpTransfertResult.TFrom = VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+				Call frmTransfert.CommitAction(VpTransfertResult)
+				Return True
+			Else
+				Call clsModule.ShowWarning("La source et la destination sont identiques !")
+				Return False
+			End If
 		End If
-		'Opération effective
-		If VpTransfertResult.TFrom <> VpTransfertResult.TTo Then
-			Call frmTransfert.CommitAction(VpTransfertResult)
-			Return ( VpTransfertResult.NCartes <> 0 )
-		ElseIf VpTransfertResult.NCartes <> 0 Then
-			Call clsModule.ShowWarning("La source et la destination sont identiques !")
-		End If
-		Return False
 	End Function
 	Private Sub ManageMultipleTransferts(VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "")
 	'-------------------------------------------------------------------------------------------------------------
@@ -1162,7 +1242,9 @@ Public Partial Class MainForm
 		If VpMustReload Then
 			VpHistory = Me.SaveNode(Me.tvwExplore.SelectedNode)
 			Call Me.LoadTvw
+			Me.tvwExplore.BeginUpdate
 			Call Me.RestoreNode(VpHistory, Me.tvwExplore.Nodes(0))
+			Me.tvwExplore.EndUpdate
 		End If
 	End Sub
 	Private Sub MVBuy(VpLoad As Boolean, VpFullLoad As Boolean)
@@ -1194,7 +1276,7 @@ Public Partial Class MainForm
 			VpBuy.LoadGrid(clsModule.eBasketMode.Local)
 		ElseIf VpLoad Then
 			For Each VpNode As TreeNode In Me.tvwExplore.SelectedNodes
-				VpBuy.AddToBasket(VpNode.Text)
+				VpBuy.AddToBasket(VpNode.Text.Replace(clsModule.CgFoil2, ""))
 			Next VpNode
 			VpBuy.LoadGrid(clsModule.eBasketMode.Local)
 		End If
@@ -1437,6 +1519,10 @@ Public Partial Class MainForm
 		Call Me.ManageDelete(sender, "Delete * From MyScores", "Êtes-vous sûr de vouloir supprimer de manière permanente l'ensemble des scores comptés jusqu'à présent ?")
 	End Sub
 	Sub MnuFixCollecActivate(ByVal sender As Object, ByVal e As EventArgs)
+		VgDBCommand.CommandText = "Drop Index EncNbr On MyCollection;"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Create Index EncNbr On MyCollection (EncNbr);"
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From MyCollection Where Items = 0"
 		Try
 			VgDBCommand.ExecuteNonQuery
@@ -1467,7 +1553,7 @@ Public Partial Class MainForm
 		VpAbout.ShowDialog
 	End Sub
 	Sub MnuWebsiteClick(sender As Object, e As EventArgs)
-		Diagnostics.Process.Start(clsModule.CgURL17)
+		Process.Start(clsModule.CgURL17)
 	End Sub
 	Sub MnuDispCollectionActivate(ByVal sender As Object, ByVal e As EventArgs)
 	'---------------------------------------------
@@ -1575,6 +1661,7 @@ Public Partial Class MainForm
 			End If
 			Me.mnuDeleteACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
 			Me.mnuMoveACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
+			Me.mnuCopyACard.Enabled = VpEN
 			If Not VpNode Is Nothing Then
 				Me.mnuBuy.Enabled = VpEN Or ( VpNode.Parent Is Nothing And Not Me.IsInAdvSearch )
 			Else
@@ -1613,7 +1700,7 @@ Public Partial Class MainForm
 			While Not VpNode.Parent Is Nothing
 				If VpNode.Parent.Tag = "Card.Series" Then
 					Me.cboEdition.SelectedItem = VpNode.Text
-					Me.scrollStock.Visible = Not Me.IsInAdvSearch
+					Me.scrollStock.Visible = (Not Me.IsInAdvSearch) And Me.mnuDegroupFoils.Checked
 					Exit Sub
 				End If
 				VpNode = VpNode.Parent
@@ -1623,19 +1710,26 @@ Public Partial Class MainForm
 	End Sub
 	Sub TvwExploreAfterSelect(ByVal sender As Object, ByVal e As TreeViewEventArgs)
 	Dim VpTitle As String
+	Dim VpFoil As Boolean
 		If Not e.Node.Parent Is Nothing Then
 			Me.SuspendLayout
 			Me.cboEdition.Visible = False	'assez crade mais on dirait que le combobox ne tient pas compte du suspendlayout avec Aero
 			'Sélection d'un élément de type carte
 			If e.Node.Parent.Tag = "Card.Title" Then
 				VpTitle = IIf(Me.mnuCardsFR.Checked, e.Node.Tag, e.Node.Text)
+				If VpTitle.EndsWith(clsModule.CgFoil2) Then
+					VpTitle = VpTitle.Replace(clsModule.CgFoil2, "")
+					VpFoil = True
+				Else
+					VpFoil = False
+				End If
 				Call Me.ManageSerieGrp(Me.grpSerie, Me.grpSerie2)
 				If Me.IsInAdvSearch Then
-					Call clsModule.LoadCarac(Me, Me, VpTitle)
+					Call clsModule.LoadCarac(Me, Me, VpTitle, False)
 				ElseIf Me.chkClassement.GetItemChecked(0) Then
-					Call clsModule.LoadCarac(Me, Me, VpTitle, clsModule.CgSDecks)
+					Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSDecks, , VpFoil)
 				Else
-					Call clsModule.LoadCarac(Me, Me, VpTitle, clsModule.CgSCollection)
+					Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSCollection, , VpFoil)
 				End If
 				Call Me.ManageCurSerie(e.Node)
 				If Not Me.splitV2.Panel2Collapsed Then
@@ -1677,13 +1771,20 @@ Public Partial Class MainForm
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpTitle As String = IIf(Me.mnuCardsFR.Checked, Me.tvwExplore.SelectedNode.Tag, Me.tvwExplore.SelectedNode.Text)
+	Dim VpFoil As Boolean
+		If VpTitle.EndsWith(clsModule.CgFoil2) Then
+			VpTitle = VpTitle.Replace(clsModule.CgFoil2, "")
+			VpFoil = True
+		Else
+			VpFoil = False
+		End If
 		Me.SuspendLayout
 		If Me.IsInAdvSearch Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+			Call clsModule.LoadCarac(Me, Me, VpTitle, False, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		ElseIf Me.chkClassement.GetItemChecked(0) Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, clsModule.CgSDecks, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSDecks, clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil)
 		Else
-			Call clsModule.LoadCarac(Me, Me, VpTitle, clsModule.CgSCollection, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSCollection, clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil)
 		End If
 		Me.ResumeLayout
 	End Sub
@@ -1712,6 +1813,7 @@ Public Partial Class MainForm
 				Call clsModule.DownloadNow(New Uri(clsModule.CgURL3B), clsModule.CgUpDDBb)
 				If File.Exists(Application.StartupPath + clsModule.CgUpDDBb) Then
 					Call clsModule.DBImport(Application.StartupPath + clsModule.CgUpDDBb)
+					Call clsModule.DBAdaptEncNbr
 				Else
 					Call clsModule.ShowWarning(clsModule.CgDL3b)
 				End If
@@ -1754,7 +1856,7 @@ Public Partial Class MainForm
 		If clsModule.DBOK Then
 			If File.Exists(VgOptions.VgSettings.PicturesFile) Then
 				If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < clsModule.CgImgMinLength Then
-					If clsModule.ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant (~300 Mo) ?") = System.Windows.Forms.DialogResult.Yes Then
+					If clsModule.ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 						'Re-téléchargement complet de la base principale
 						Me.IsInImgDL = True
 						Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
@@ -1778,7 +1880,7 @@ Public Partial Class MainForm
 					End If
 				End If
 			Else
-				If clsModule.ShowQuestion("La base d'images est introuvable." + vbCrLf + "Voulez-vous la télécharger maintenant (~300 Mo) ?") = System.Windows.Forms.DialogResult.Yes Then
+				If clsModule.ShowQuestion("La base d'images est introuvable." + vbCrLf + "Voulez-vous la télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 					'Téléchargement complet de la base principale
 					Me.IsInImgDL = True
 					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
@@ -1788,7 +1890,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuUpdateTxtFRClick(sender As Object, e As EventArgs)
 		If clsModule.DBOK Then
-			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer les textes des cartes en français (~2 Mo) ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis le fichier sur le disque dur...") = System.Windows.Forms.DialogResult.Yes Then
+			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer les textes des cartes en français ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis le fichier sur le disque dur...") = System.Windows.Forms.DialogResult.Yes Then
 				Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL11), clsModule.CgUpTXTFR)
 			Else
 				If File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
@@ -1950,6 +2052,9 @@ Public Partial Class MainForm
 	Sub MnuDeleteACardClick(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Deletion)
 	End Sub
+	Sub MnuCopyACardActivate(sender As Object, e As EventArgs)
+		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Copy, sender.Text)
+	End Sub
 	Sub MnuExcelGenActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpXL As frmXL
 		If clsModule.DBOK Then
@@ -2110,7 +2215,15 @@ Public Partial Class MainForm
 	Sub ScrollStockScroll(sender As Object, e As ScrollEventArgs)
 	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpCard As String = IIf(Me.mnuCardsFR.Checked, Me.tvwExplore.SelectedNode.Tag.ToString, Me.tvwExplore.SelectedNode.Text)
-	Dim VpEncNbr As Integer = clsModule.GetEncNbr(Me, VpSource, VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+	Dim VpEncNbr As Integer
+	Dim VpFoil As Boolean
+		If VpCard.EndsWith(clsModule.CgFoil2) Then
+			VpCard = VpCard.Replace(clsModule.CgFoil2, "")
+			VpFoil = True
+		Else
+			VpFoil = False
+		End If
+ 		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll And Me.IsSingleSource Then
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
 				If Val(Me.lblStock.Text) > 0 Then
@@ -2120,13 +2233,14 @@ Public Partial Class MainForm
 				Me.lblStock.Text = (Val(Me.lblStock.Text) + 1).ToString
 			End If
 			'Mise à jour du nombre d'items présents à la destination
-			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + IIf(VpSource = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + IIf(VpSource = clsModule.CgSDecks, " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 			VgDBCommand.ExecuteNonQuery
 		End If
 	End Sub
 	Sub CmdHistPricesClick(sender As Object, e As EventArgs)
 	Dim VpPricesHistory As frmGrapher
 	Dim VpCardName As String = IIf(Me.mnuCardsFR.Checked, Me.tvwExplore.SelectedNode.Tag.ToString, Me.tvwExplore.SelectedNode.Text)
+	Dim VpFoil As Boolean
 		If clsModule.DBOK Then
 			If clsModule.HasPriceHistory Then
 				If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.PricesHistory) Then
@@ -2135,7 +2249,13 @@ Public Partial Class MainForm
 				Else
 					VpPricesHistory = Me.VmMyChildren.PricesHistory
 				End If
-				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text)), VpCardName + " (" + Me.cboEdition.Text + ")")
+				If VpCardName.EndsWith(clsModule.CgFoil2) Then
+					VpCardName = VpCardName.Replace(clsModule.CgFoil2, "")
+					VpFoil = True
+				Else
+					VpFoil = False
+				End If
+				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
 				VpPricesHistory.Show
 				VpPricesHistory.BringToFront
 			Else
@@ -2163,6 +2283,26 @@ Public Partial Class MainForm
 			End If
 		ElseIf VpStr.EndsWith(clsModule.CgFExtD) Then
 			Call Me.DBOpenInit(VpStr)
+		End If
+	End Sub
+	Sub MnuDegroupFoilsClick(sender As Object, e As EventArgs)
+	Dim VpHistory As String = ""
+		Me.mnuDegroupFoils.Checked = Not Me.mnuDegroupFoils.Checked
+		If Not Me.tvwExplore.SelectedNode Is Nothing Then
+			VpHistory = Me.SaveNode(Me.tvwExplore.SelectedNode)
+		End If
+		Call Me.LoadTvw(Me.VmAdvSearch, , Me.VmAdvSearchLabel)
+		If VpHistory <> "" Then
+			Me.tvwExplore.BeginUpdate
+			Call Me.RestoreNode(VpHistory, Me.tvwExplore.Nodes(0))
+			Me.tvwExplore.EndUpdate
+		End If
+	End Sub
+	Sub MnuPlugResourcerClick(sender As Object, e As EventArgs)
+		If File.Exists(VgOptions.VgSettings.Plugins + clsModule.CgMTGMWebResourcer) Then
+			Process.Start(VgOptions.VgSettings.Plugins + clsModule.CgMTGMWebResourcer)
+		Else
+			Call clsModule.ShowWarning(clsModule.CgErr6)
 		End If
 	End Sub
 	#End Region

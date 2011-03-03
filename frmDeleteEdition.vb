@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -25,11 +26,15 @@ Public Partial Class frmDeleteEdition
 	'Suppression d'une édition dans la base de données
 	'-------------------------------------------------
 	Dim VpCD As String = Me.cboSerie.Text.Substring(1, 2)
-		VgDBCommand.CommandText = "Delete Card.*, CardFR.*, MyCollection.* From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join MyCollection On Card.EncNbr = MyCollection.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.CommandText = "Delete PricesHistory.* From PricesHistory Inner Join Card On PricesHistory.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.CommandText = "Delete CardFR.* From CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.CommandText = "Delete MyCollection.* From MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
 		VgDBCommand.ExecuteNonQuery
-		VgDBCommand.CommandText = "Delete Card.*, CardFR.*, MyGames.* From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.CommandText = "Delete MyGames.* From MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
 		VgDBCommand.ExecuteNonQuery
-		VgDBCommand.CommandText = "Delete Card.*, CardFR.* From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.CommandText = "Delete * From Card Where Series = '" + VpCD + "';"
 		VgDBCommand.ExecuteNonQuery	
 		If Me.chkHeader.Checked Then
 			VgDBCommand.CommandText = "Delete * From Series Where SeriesCD = '" + VpCD + "';"

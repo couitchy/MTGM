@@ -8,3 +8,20 @@ _colors_Rouges
 Le mana rouge coule des chaînes montagneuses escarpées, des cordillières rocheuses et du coeur incandescent des volcans. La magie rouge n'est que furie et passion. Quand un mage rouge combat, des étincelles éclairent le ciel rouge sans, la lave jaillit de la terre et le feu consume la contrée. Les magiciens rouges ne s'intéressent ni à la discussion, ni à la subtilité. Ils agissent sans attendre et en toute imprudence. Avec le mana rouge, un mage contrôle la puissance du feu et de la terre.
 _colors_Vertes
 Les forêts luxuriantes bouillonnent de mana vert, le rythme de la nature. Le mana vert est la magie de la vie, de la croissance et de la force brute. Quand un mage vert combat, d'énormes créatures jaillissent des forêts, des animaux prennent des tailles gigantesques et les blessures se referment avant que le sang ne coule. Les magiciens verts comprennent que le monde obéit à la loi de la jungle : tout y est proie ou prédateur.
+
+
+  <data name="_colors_Blanches" xml:space="preserve">
+    <value>Le blanc est la couleur de la structure, de l'ordre et de la loi. Le mana blanc vient des grandes étendues des plaines, des savanes éclairées par le soleil et les praires caressées par les vents. Justice, honneur, communauté, telles sont les valeurs auxquelles le blanc aspire. Quand les mages utilisent le mana blanc, des légions de chevaliers chargent sur le champ de bataille, l'étendard au vent. Des escadrilles d'anges de combat fondent sur leurs adversaires. Des explosions de lumière aveuglante purifient toute trace de corruption.</value>
+  </data>
+  <data name="_colors_Bleues" xml:space="preserve">
+    <value>Les îles produisent le mana bleu, la magie des profondeurs de l'océan et des cieux illimités. La magie bleue se concentre sur l'esprit. Pour un mage bleu, la connaissances et les arcanes sont primordiales. Il veut tout savoir. Quand un mage bleu combat, les vagues se fracassent contre les rochers des falaises, le vent se déchaîne dans un ciel de tempête et les sorts de l'ennemi échouent, ses créatures s'évanouissant dans les airs.</value>
+  </data>
+  <data name="_colors_Noires" xml:space="preserve">
+    <value>Les landes foudroyées, les catacombes hantées et les marais fétides sont les sources principales du mana noir. Le noir est la couleur de la mort, de la peur et de l'égoïsme, les valeurs corrompues des ténèbres. La magie noire est puissante, mais elle a un prix élevé. Les mages noirs contrôlent les forces de la nuit : les démons, les horreurs et les morts-vivants. Ils sont prêts à tout pour acquérir la puissance, quel qu'en soit le prix.</value>
+  </data>
+  <data name="_colors_Rouges" xml:space="preserve">
+    <value>Le mana rouge coule des chaînes montagneuses escarpées, des cordillières rocheuses et du coeur incandescent des volcans. La magie rouge n'est que furie et passion. Quand un mage rouge combat, des étincelles éclairent le ciel rouge sans, la lave jaillit de la terre et le feu consume la contrée. Les magiciens rouges ne s'intéressent ni à la discussion, ni à la subtilité. Ils agissent sans attendre et en toute imprudence. Avec le mana rouge, un mage contrôle la puissance du feu et de la terre.</value>
+  </data>
+  <data name="_colors_Vertes" xml:space="preserve">
+    <value>Les forêts luxuriantes bouillonnent de mana vert, le rythme de la nature. Le mana vert est la magie de la vie, de la croissance et de la force brute. Quand un mage vert combat, d'énormes créatures jaillissent des forêts, des animaux prennent des tailles gigantesques et les blessures se referment avant que le sang ne coule. Les magiciens verts comprennent que le monde obéit à la loi de la jungle : tout y est proie ou prédateur.</value>
+  </data>

@@ -10,6 +10,7 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -167,6 +168,7 @@ Public Partial Class frmUpdateContenu
 				Call clsModule.DownloadNow(New Uri(clsModule.CgURL3B), clsModule.CgUpDDBb)
 				If File.Exists(Application.StartupPath + clsModule.CgUpDDBb) Then
 					Call clsModule.DBImport(Application.StartupPath + clsModule.CgUpDDBb, True)
+					Call clsModule.DBAdaptEncNbr
 					VgOptions.VgSettings.LastUpdateSimu = VpElement.Serveur
 				Else
 					Return False
@@ -209,7 +211,7 @@ Public Partial Class frmUpdateContenu
 					While VmPassiveUpdate = EgPassiveUpdate.InProgress
 						Application.DoEvents
 					End While
-					If VmPassiveUpdate = EgPassiveUpdate.Failed Then
+					If VmPassiveUpdate = EgPassiveUpdate.Failed Then	'dès que l'application d'un service pack a merdé, il faut sortir sans poursuivre avec les suivants
 						Return False
 					End If
 				Next VpI

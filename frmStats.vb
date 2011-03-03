@@ -10,11 +10,13 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - levée de l'ambiguité sur les sources  03/10/2009 |
 '| - gestion des autorisations tournois	   17/04/2010 |
+'| - gestion cartes foils				   19/12/2010 |
 '------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
@@ -59,7 +61,7 @@ Public Partial Class frmStats
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpValues.Add(.GetString(0))
+				VpValues.Add(.GetValue(0).ToString)
 			End While
 			.Close
 		End With
@@ -69,7 +71,13 @@ Public Partial Class frmStats
 		'Nombre d'items correspondant
 		With Me.grdDetails
 			For Each VpValue As String In VpValues
-				VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.CgCriteres.Item(Me.cboCriterion.ControlText) + " ='" + VpValue + "' And " + VmRestriction
+				Select Case Me.cboCriterion.ComboBox.SelectedIndex
+					'Requête numérique
+					Case 3, 5
+						VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.CgCriteres.Item(Me.cboCriterion.ControlText) + " = " + VpValue.Replace(",", ".") + " And " + VmRestriction
+					Case Else
+						VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.CgCriteres.Item(Me.cboCriterion.ControlText) + " = '" + VpValue + "' And " + VmRestriction
+				End Select
 				VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 				.Rows.Insert(.RowsCount)
 				Me.grdDetails(.RowsCount - 1, 1) = New Cells.Cell(VgDBCommand.ExecuteScalar)
@@ -249,14 +257,15 @@ Public Partial Class frmStats
 	'---------------------------------------------------------
 	Dim VpHist As New SortedList
 	Dim VpSQL As String
-		VpSQL = "Select PriceDate, Sum(Price * Items) From (SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr Where "
+		'VpSQL = "Select PriceDate, Sum(Price * Items) From (SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr Where "
+		VpSQL = "Select PriceDate, Sum(Price * Items) From (SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate, DatesToUse.Foil FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate, PricesHistory.Foil FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate, PricesHistory.Foil) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST) AND (PricesHistory.Foil = DatesToUse.Foil)) As GlobalHisto Inner Join " + VmSource + " On (" + VmSource + ".EncNbr = GlobalHisto.EncNbr) And (" + VmSource + ".Foil = GlobalHisto.Foil) Where "
 		VpSQL = VpSQL + VmRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By PriceDate")
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpHist.Add(.GetDateTime(0), Val(.GetValue(1)))
+				VpHist.Add(.GetDateTime(0), .GetValue(1))
 			End While
 			.Close
 		End With
@@ -271,9 +280,10 @@ Public Partial Class frmStats
 	Dim VpLastTitle As String = ""
 	Dim VpTitle As String
 		If clsModule.HasPriceHistory Then
-			VpSQL = "Select Card.Title, Card.Series, GlobalHisto.PriceDate, GlobalHisto.Price From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr) Inner Join Card On Card.EncNbr = " + VmSource + ".EncNbr Where "
+			'VpSQL = "Select Card.Title, Card.Series, GlobalHisto.PriceDate, GlobalHisto.Price From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr) Inner Join Card On Card.EncNbr = " + VmSource + ".EncNbr Where "
+			VpSQL = "Select Card.Title, Card.Series, GlobalHisto.PriceDate, GlobalHisto.Price, " + VmSource + ".Foil From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate, DatesToUse.Foil FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate, PricesHistory.Foil FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate, PricesHistory.Foil) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST) AND (PricesHistory.Foil = DatesToUse.Foil)) As GlobalHisto Inner Join " + VmSource + " On (" + VmSource + ".EncNbr = GlobalHisto.EncNbr) And (" + VmSource + ".Foil = GlobalHisto.Foil)) Inner Join Card On Card.EncNbr = " + VmSource + ".EncNbr Where "
 			If VpMyPriceCriteria <> "" Then
-				VpSQL = VpSQL + "Card.myPrice = '" + VpMyPriceCriteria + "' And "
+				VpSQL = VpSQL + "Card.myPrice = " + VpMyPriceCriteria + " And "
 			End If
 			VpSQL = VpSQL + VmRestriction
 			VpSQL = clsModule.TrimQuery(VpSQL, , " Order By Card.EncNbr")
@@ -281,7 +291,7 @@ Public Partial Class frmStats
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				While .Read
-					VpTitle = .GetString(0) + " (" + .GetString(1) + ")"
+					VpTitle = .GetString(0) + " (" + .GetString(1) + IIf(.GetBoolean(4), " foil)", ")")
 					If VpTitle <> VpLastTitle Then
 						If VpHist.Count > 0 Then
 							If VpGrapher.GraphsCount >= clsModule.CgMaxGraphs Then
@@ -296,7 +306,7 @@ Public Partial Class frmStats
 						VpLastTitle = VpTitle
 					End If
 					If Not VpHist.Contains(.GetDateTime(2)) Then
-						VpHist.Add(.GetDateTime(2), Val(.GetValue(3)))
+						VpHist.Add(.GetDateTime(2), .GetValue(3))
 					End If
 				End While
 				.Close
@@ -320,23 +330,40 @@ Public Partial Class frmStats
 	Dim VpC As Double
 	Dim VpP As Double
 	Dim VpT As Double
-		VpC = Me.QueryInfo("Sum(Val(myCost) * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")
+	Dim VpMaxNoFoil As Double
+	Dim VpMaxFoil As Double
+		VpC = Me.QueryInfo("Sum(myCost * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")
 		'Trappe d'erreur si pas de créatures dans la sélection
 		Try
 			VpP = Me.QueryInfo("Sum(Val(Power) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
 			VpT = Me.QueryInfo("Sum(Val(Tough) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
 		Catch
 		End Try
-		Me.txtMaxCost.Text = Me.QueryInfo("Card.Title", , " Order By Val(myCost) Desc;") + " : " + Me.QueryInfo("Max(Val(myCost))").ToString
-		Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(Val(Price))"), "0.00") + " €"
-		Me.txtMeanCost.Text = Format(Me.QueryInfo("Sum(Val(myCost) * Items) / Sum(Items)"), "0.0")
-		Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(Val(Price) * Items) / Sum(Items)"), "0.00") + " €"
-		Me.txtMinCost.Text = Me.QueryInfo("Card.Title", "Where Type <> 'L' And ", " Order By Val(myCost) Asc;") + " : " + Me.QueryInfo("Min(Val(myCost))", "Where Type <> 'L' And ").ToString
-		Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Val(Price) Desc;") + " : " + Format(Me.QueryInfo("Max(Val(Price))"), "0.00") + " €"
+		Me.txtMaxCost.Text = Me.QueryInfo("Card.Title", , " Order By myCost Desc;") + " : " + Me.QueryInfo("Max(myCost)").ToString
+		'Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(Price)"), "0.00") + " €"
+		Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(IIf(Foil, FoilPrice, Price))"), "0.00") + " €"
+		Me.txtMeanCost.Text = Format(Me.QueryInfo("Sum(myCost * Items) / Sum(Items)"), "0.0")
+		'Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(Price * Items) / Sum(Items)"), "0.00") + " €"
+		Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(IIf(Foil, FoilPrice, Price) * Items) / Sum(Items)"), "0.00") + " €"
+		Me.txtMinCost.Text = Me.QueryInfo("Card.Title", "Where Type <> 'L' And ", " Order By myCost Asc;") + " : " + Me.QueryInfo("Min(myCost)", "Where Type <> 'L' And ").ToString
+		'Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Price Desc;") + " : " + Format(Me.QueryInfo("Max(Price)"), "0.00") + " €"
+		VpMaxNoFoil = Me.QueryInfo("Max(Price)")
+		'Trappe d'erreur si aucune carte foil
+		Try
+			VpMaxFoil = Me.QueryInfo("Max(FoilPrice)", "Where Foil = True And ")
+		Catch
+			VpMaxFoil = 0
+		End Try
+		If VpMaxFoil > VpMaxNoFoil Then
+			Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By FoilPrice Desc;") + clsModule.CgFoil2 + " : " + Format(VpMaxFoil, "0.00") + " €"
+		Else
+			Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Price Desc;") + " : " + Format(VpMaxNoFoil, "0.00") + " €"
+		End If
 		Me.txtNCartes.Text = Me.QueryInfo("Sum(Items)").ToString
 		Me.txtOldest.Text = Me.QueryInfo("Card.Title", , " Order By Release Asc;")
 		Me.txtRarest.Text = Me.QueryInfo("Card.Title", "Where InStr(UCase(Rarity), 'R') > 0 And " , " Order By Val(Mid(Rarity, 2)) Desc;")
-		Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(Val(Price) * Items)"), "0.00") + " €"
+		'Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(Price * Items)"), "0.00") + " €"
+		Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(IIf(Foil, FoilPrice, Price) * Items)"), "0.00") + " €"
 		Me.txtTougher.Text = Me.QueryInfo("Card.Title", "Inner Join Creature On Card.Title = Creature.Title ", " Order By Val(Power) Desc;")
 		Me.txtMeanCost2.Text = Format(VpC, "0.0")
 		Me.txtMeanPower.Text = Format(VpP, "0.0")

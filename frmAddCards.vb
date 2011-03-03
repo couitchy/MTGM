@@ -10,11 +10,13 @@
 '| Release 6      |                        17/04/2010 |
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
+'| Release 9      |                        05/02/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - verrouillage de l'édition de saisie   27/03/2010 |
 '| - gestion améliorée Ae / Æ			   03/10/2010 |
+'| - gestion cartes foils				   19/12/2010 |
 '------------------------------------------------------
 Public Partial Class frmAddCards
 	#Region "Déclarations"
@@ -98,7 +100,7 @@ Public Partial Class frmAddCards
 		VgDBCommand.CommandText = "Select Release From Series Where SeriesNM = '" + VpSerie + "';"
 		Return CDate(VgDBCommand.ExecuteScalar).Year
 	End Function
-	Private Function FindQuant(VpEncNbr As String) As String
+	Private Function FindQuant(VpEncNbr As String, VpFoil As Boolean) As String
 	'--------------------------------------------------------------------------------------------------------------
 	'Retourne la quantité enregistrée d'items dont la référence est passée en paramètre dans la collection courante
 	'--------------------------------------------------------------------------------------------------------------
@@ -107,14 +109,14 @@ Public Partial Class frmAddCards
 	Dim VpStr As String = "0"
 		If Not IsNumeric(VpEncNbr) Then Return clsModule.CgStock
 		'Quantité dans l'édition courante
-		VgDBCommand.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString + ";", ";")
+		VgDBCommand.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr + " And Foil = " + VpFoil.ToString + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString + ";", ";")
 		VpO = VgDBCommand.ExecuteScalar
 		If Not VpO Is Nothing Then
 			VpStr = VpO.ToString
 		End If
 		Me.lblNbItems.Tag = Val(VpStr)
-		VpStr = VpStr + " " + Me.cboSerie.Text.Substring(0, 4) + " / "
-		'Quantité totale toutes éditions confondues
+		VpStr = VpStr + " " + Me.cboSerie.Text.Substring(0, 3) + IIf(VpFoil, " foil) / " , ") / ")
+		'Quantité totale toutes éditions confondues / foil ou pas
 		VgDBCommand.CommandText = "Select Sum(Items) From " + VpSource + " Inner Join Card On Card.EncNbr = " + VpSource + ".EncNbr Where Title = '" + Me.cboTitleEN.Text.Replace("'", "''") + "'" + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString + ";", ";")
 		VpO = VgDBCommand.ExecuteScalar
 		If (Not VpO Is Nothing) AndAlso VpO.ToString <> "" Then
@@ -163,11 +165,6 @@ Public Partial Class frmAddCards
 				Exit For
 			End If
 		Next VpItem1
-		'Etats possibles pour les cartes
-		For Each VpEtat As String In [Enum].GetNames(GetType(clsModule.eQuality))
-			Me.cboEtat.Items.Add(VpEtat)
-		Next VpEtat
-		Me.cboEtat.SelectedIndex = 0
 	End Sub
 	#End Region
 	#Region "Evènements"
@@ -176,8 +173,11 @@ Public Partial Class frmAddCards
 			VpItem.Checked = ( VpItem Is sender )
 		Next VpItem
 		Me.cmdDestination.Tag = clsModule.GetDeckIndex(sender.Text)
-		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text)
+		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked)
 	End Sub
+	Sub ChkFoilCheckedChanged(sender As Object, e As EventArgs)
+		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked)
+	End Sub	
 	Private Sub CbarAjoutMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
 		VmMousePos = New Point(e.X, e.Y)
@@ -207,18 +207,18 @@ Public Partial Class frmAddCards
 		Else
 			Me.imgEdition.Image = Nothing
 		End If
-		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text)
+		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked)
 	End Sub
 	Sub CmdAddClick(ByVal sender As Object, ByVal e As EventArgs)
 		Try
 			If CInt(Me.lblNbItems.Tag) = 0 Then
-				VgDBCommand.CommandText = "Insert Into " + IIf(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + IIf(Me.mnuDropToCollection.Checked = False, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ");"
+				VgDBCommand.CommandText = "Insert Into " + IIf(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + IIf(Me.mnuDropToCollection.Checked = False, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + ");"
 				VgDBCommand.ExecuteNonQuery
 			ElseIf ( CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text) ) <= 0 Then
-				VgDBCommand.CommandText = "Delete * From " + IIf(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+				VgDBCommand.CommandText = "Delete * From " + IIf(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
 				VgDBCommand.ExecuteNonQuery
 			Else
-				VgDBCommand.CommandText = "Update " + IIf(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+				VgDBCommand.CommandText = "Update " + IIf(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + IIf(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
 				VgDBCommand.ExecuteNonQuery
 			End If
 			Me.cboSerie.Tag = Me.cboSerie.Text
@@ -233,7 +233,6 @@ Public Partial Class frmAddCards
 			Me.lblNbItems.Tag = 0
 			Me.txtNbItems.Text = "+1"
 			Me.chkFoil.Checked = False
-			Me.cboEtat.SelectedIndex = 0
 			Me.cboTitleFR.Focus
 		Catch
 			Call clsModule.ShowWarning("Impossible d'ajouter cette carte dans la base de données." + vbCrLf + "La carte n'est peut-être pas (ou incorrectement) référencée...")
@@ -289,6 +288,9 @@ Public Partial Class frmAddCards
 	Sub FrmAddCardsLoad(sender As Object, e As EventArgs)
 		VmCanClose = True
 	End Sub	
+	Sub FrmAddCardsActivated(sender As Object, e As EventArgs)
+		Me.cboTitleFR.Focus
+	End Sub
 	Sub CmdCloseClick(sender As Object, e As EventArgs)
 		Me.Close
 	End Sub

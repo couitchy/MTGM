@@ -41,21 +41,21 @@ Partial Class Options
 		Me.propOptions.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.propOptions.Location = New System.Drawing.Point(0, 0)
 		Me.propOptions.Name = "propOptions"
-		Me.propOptions.Size = New System.Drawing.Size(286, 252)
+		Me.propOptions.Size = New System.Drawing.Size(538, 400)
 		Me.propOptions.TabIndex = 0
 		'
 		'Options
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(286, 267)
+		Me.ClientSize = New System.Drawing.Size(538, 400)
 		Me.Controls.Add(Me.propOptions)
-		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
 		Me.Name = "Options"
 		Me.ShowInTaskbar = false
 		Me.Text = "Options"
-		AddHandler FormClosing, AddressOf Me.OptionsFormClosing
 		AddHandler Load, AddressOf Me.OptionsLoad
+		AddHandler FormClosing, AddressOf Me.OptionsFormClosing
 		Me.ResumeLayout(false)
 	End Sub
 	Private propOptions As System.Windows.Forms.PropertyGrid

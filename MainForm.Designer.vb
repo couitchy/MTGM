@@ -47,6 +47,7 @@ Partial Class MainForm
 		Me.cmnuTvw = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.mnuCardsFR = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSort = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuDegroupFoils = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSearchCard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSearchText = New System.Windows.Forms.ToolStripTextBox
 		Me.mnuFindNext = New System.Windows.Forms.ToolStripMenuItem
@@ -85,6 +86,7 @@ Partial Class MainForm
 		Me.mnuDispCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuGestDecks = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuGestAdv = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuAddCards = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuRemCards = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuRemScores = New System.Windows.Forms.ToolStripMenuItem
@@ -114,6 +116,8 @@ Partial Class MainForm
 		Me.mnuSimu = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuStats = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMV = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuPlugins = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuPlugResourcer = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuInfo = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuApplicationUpdate = New System.Windows.Forms.ToolStripMenuItem
@@ -188,7 +192,8 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.mnuGestAdv = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCopyACard = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCopyToCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -233,7 +238,7 @@ Partial Class MainForm
 		'lblDB
 		'
 		Me.lblDB.Name = "lblDB"
-		Me.lblDB.Size = New System.Drawing.Size(37, 17)
+		Me.lblDB.Size = New System.Drawing.Size(39, 17)
 		Me.lblDB.Text = "Base -"
 		'
 		'lblNCards
@@ -364,9 +369,9 @@ Partial Class MainForm
 		'
 		'cmnuTvw
 		'
-		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuMoveACard, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
+		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 170)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 236)
 		'
 		'mnuCardsFR
 		'
@@ -384,6 +389,16 @@ Partial Class MainForm
 		Me.mnuSort.Size = New System.Drawing.Size(233, 22)
 		Me.mnuSort.Text = "Trier par ordre alphabétique"
 		AddHandler Me.mnuSort.Click, AddressOf Me.MnuSortClick
+		'
+		'mnuDegroupFoils
+		'
+		Me.mnuDegroupFoils.Checked = true
+		Me.mnuDegroupFoils.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.mnuDegroupFoils.Image = CType(resources.GetObject("mnuDegroupFoils.Image"),System.Drawing.Image)
+		Me.mnuDegroupFoils.Name = "mnuDegroupFoils"
+		Me.mnuDegroupFoils.Size = New System.Drawing.Size(233, 22)
+		Me.mnuDegroupFoils.Text = "Dissocier les cartes foils"
+		AddHandler Me.mnuDegroupFoils.Click, AddressOf Me.MnuDegroupFoilsClick
 		'
 		'mnuSearchCard
 		'
@@ -435,7 +450,7 @@ Partial Class MainForm
 		'mnuMoveToCollection
 		'
 		Me.mnuMoveToCollection.Name = "mnuMoveToCollection"
-		Me.mnuMoveToCollection.Size = New System.Drawing.Size(128, 22)
+		Me.mnuMoveToCollection.Size = New System.Drawing.Size(152, 22)
 		Me.mnuMoveToCollection.Text = "Collection"
 		AddHandler Me.mnuMoveToCollection.Click, AddressOf Me.MnuMoveACardActivate
 		'
@@ -445,7 +460,7 @@ Partial Class MainForm
 		Me.mnuDeleteACard.Image = CType(resources.GetObject("mnuDeleteACard.Image"),System.Drawing.Image)
 		Me.mnuDeleteACard.Name = "mnuDeleteACard"
 		Me.mnuDeleteACard.Size = New System.Drawing.Size(233, 22)
-		Me.mnuDeleteACard.Text = "Supprimer..."
+		Me.mnuDeleteACard.Text = "Supprimer"
 		AddHandler Me.mnuDeleteACard.Click, AddressOf Me.MnuDeleteACardClick
 		'
 		'mnuSeparator2
@@ -482,7 +497,7 @@ Partial Class MainForm
 		'
 		'mnu
 		'
-		Me.mnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFile, Me.mnuDisp, Me.mnuTools, Me.mnuBigSearch, Me.mnuInfo})
+		Me.mnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFile, Me.mnuDisp, Me.mnuTools, Me.mnuBigSearch, Me.mnuPlugins, Me.mnuInfo})
 		Me.mnu.Location = New System.Drawing.Point(0, 0)
 		Me.mnu.Name = "mnu"
 		Me.mnu.Size = New System.Drawing.Size(757, 24)
@@ -666,6 +681,14 @@ Partial Class MainForm
 		Me.mnuGestDecks.Size = New System.Drawing.Size(234, 22)
 		Me.mnuGestDecks.Text = "Liste des decks"
 		AddHandler Me.mnuGestDecks.Click, AddressOf Me.MnuGestDecksActivate
+		'
+		'mnuGestAdv
+		'
+		Me.mnuGestAdv.Image = CType(resources.GetObject("mnuGestAdv.Image"),System.Drawing.Image)
+		Me.mnuGestAdv.Name = "mnuGestAdv"
+		Me.mnuGestAdv.Size = New System.Drawing.Size(234, 22)
+		Me.mnuGestAdv.Text = "Liste des adversaires"
+		AddHandler Me.mnuGestAdv.Click, AddressOf Me.MnuGestAdvClick
 		'
 		'mnuAddCards
 		'
@@ -872,6 +895,21 @@ Partial Class MainForm
 		Me.mnuMV.Size = New System.Drawing.Size(231, 22)
 		Me.mnuMV.Text = "Achats sur Magic-Ville"
 		AddHandler Me.mnuMV.Click, AddressOf Me.MnuMVClick
+		'
+		'mnuPlugins
+		'
+		Me.mnuPlugins.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPlugResourcer})
+		Me.mnuPlugins.Name = "mnuPlugins"
+		Me.mnuPlugins.Size = New System.Drawing.Size(63, 20)
+		Me.mnuPlugins.Text = "Plug-ins"
+		'
+		'mnuPlugResourcer
+		'
+		Me.mnuPlugResourcer.Image = CType(resources.GetObject("mnuPlugResourcer.Image"),System.Drawing.Image)
+		Me.mnuPlugResourcer.Name = "mnuPlugResourcer"
+		Me.mnuPlugResourcer.Size = New System.Drawing.Size(190, 22)
+		Me.mnuPlugResourcer.Text = "MTGM WebResourcer"
+		AddHandler Me.mnuPlugResourcer.Click, AddressOf Me.MnuPlugResourcerClick
 		'
 		'mnuInfo
 		'
@@ -1653,13 +1691,21 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
 		'
-		'mnuGestAdv
+		'mnuCopyACard
 		'
-		Me.mnuGestAdv.Image = CType(resources.GetObject("mnuGestAdv.Image"),System.Drawing.Image)
-		Me.mnuGestAdv.Name = "mnuGestAdv"
-		Me.mnuGestAdv.Size = New System.Drawing.Size(234, 22)
-		Me.mnuGestAdv.Text = "Liste des adversaires"
-		AddHandler Me.mnuGestAdv.Click, AddressOf Me.MnuGestAdvClick
+		Me.mnuCopyACard.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCopyToCollection})
+		Me.mnuCopyACard.Enabled = false
+		Me.mnuCopyACard.Image = CType(resources.GetObject("mnuCopyACard.Image"),System.Drawing.Image)
+		Me.mnuCopyACard.Name = "mnuCopyACard"
+		Me.mnuCopyACard.Size = New System.Drawing.Size(233, 22)
+		Me.mnuCopyACard.Text = "Copier vers..."
+		'
+		'mnuCopyToCollection
+		'
+		Me.mnuCopyToCollection.Name = "mnuCopyToCollection"
+		Me.mnuCopyToCollection.Size = New System.Drawing.Size(152, 22)
+		Me.mnuCopyToCollection.Text = "Collection"
+		AddHandler Me.mnuCopyToCollection.Click, AddressOf Me.MnuCopyACardActivate
 		'
 		'MainForm
 		'
@@ -1715,6 +1761,11 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuCopyToCollection As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCopyACard As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPlugResourcer As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPlugins As System.Windows.Forms.ToolStripMenuItem
+	Private mnuDegroupFoils As System.Windows.Forms.ToolStripMenuItem
 	Private mnuGestAdv As System.Windows.Forms.ToolStripMenuItem
 	Private btWebsite As System.Windows.Forms.ToolStripButton
 	Private mnuWebsite As System.Windows.Forms.ToolStripMenuItem

@@ -39,8 +39,6 @@ Partial Class frmAddCards
 		Me.pnlAjout = New TD.SandBar.ContainerBarClientPanel
 		Me.grpQuality = New System.Windows.Forms.GroupBox
 		Me.chkFoil = New System.Windows.Forms.CheckBox
-		Me.cboEtat = New System.Windows.Forms.ComboBox
-		Me.lblEtat = New System.Windows.Forms.Label
 		Me.cmdClose = New System.Windows.Forms.Button
 		Me.cmdDestination = New System.Windows.Forms.Button
 		Me.cmdAdd = New System.Windows.Forms.Button
@@ -109,49 +107,30 @@ Partial Class frmAddCards
 		'
 		Me.grpQuality.BackColor = System.Drawing.Color.Transparent
 		Me.grpQuality.Controls.Add(Me.chkFoil)
-		Me.grpQuality.Controls.Add(Me.cboEtat)
-		Me.grpQuality.Controls.Add(Me.lblEtat)
 		Me.grpQuality.Location = New System.Drawing.Point(181, 207)
 		Me.grpQuality.Name = "grpQuality"
 		Me.grpQuality.Size = New System.Drawing.Size(162, 69)
-		Me.grpQuality.TabIndex = 10
+		Me.grpQuality.TabIndex = 103
 		Me.grpQuality.TabStop = false
 		Me.grpQuality.Text = "Qualité"
 		'
 		'chkFoil
 		'
 		Me.chkFoil.AutoSize = true
-		Me.chkFoil.Location = New System.Drawing.Point(102, 45)
+		Me.chkFoil.Location = New System.Drawing.Point(26, 30)
 		Me.chkFoil.Name = "chkFoil"
-		Me.chkFoil.Size = New System.Drawing.Size(42, 17)
-		Me.chkFoil.TabIndex = 2
-		Me.chkFoil.Text = "Foil"
+		Me.chkFoil.Size = New System.Drawing.Size(91, 17)
+		Me.chkFoil.TabIndex = 5
+		Me.chkFoil.Text = "Premium (Foil)"
 		Me.chkFoil.UseVisualStyleBackColor = true
-		'
-		'cboEtat
-		'
-		Me.cboEtat.FormattingEnabled = true
-		Me.cboEtat.Location = New System.Drawing.Point(46, 19)
-		Me.cboEtat.Name = "cboEtat"
-		Me.cboEtat.RightToLeft = System.Windows.Forms.RightToLeft.Yes
-		Me.cboEtat.Size = New System.Drawing.Size(98, 21)
-		Me.cboEtat.TabIndex = 1
-		'
-		'lblEtat
-		'
-		Me.lblEtat.AutoSize = true
-		Me.lblEtat.Location = New System.Drawing.Point(14, 22)
-		Me.lblEtat.Name = "lblEtat"
-		Me.lblEtat.Size = New System.Drawing.Size(26, 13)
-		Me.lblEtat.TabIndex = 0
-		Me.lblEtat.Text = "Etat"
+		AddHandler Me.chkFoil.CheckedChanged, AddressOf Me.ChkFoilCheckedChanged
 		'
 		'cmdClose
 		'
 		Me.cmdClose.Location = New System.Drawing.Point(187, 282)
 		Me.cmdClose.Name = "cmdClose"
 		Me.cmdClose.Size = New System.Drawing.Size(75, 23)
-		Me.cmdClose.TabIndex = 9
+		Me.cmdClose.TabIndex = 8
 		Me.cmdClose.Text = "Fermer"
 		Me.cmdClose.UseVisualStyleBackColor = true
 		AddHandler Me.cmdClose.Click, AddressOf Me.CmdCloseClick
@@ -161,7 +140,7 @@ Partial Class frmAddCards
 		Me.cmdDestination.Location = New System.Drawing.Point(10, 282)
 		Me.cmdDestination.Name = "cmdDestination"
 		Me.cmdDestination.Size = New System.Drawing.Size(75, 23)
-		Me.cmdDestination.TabIndex = 8
+		Me.cmdDestination.TabIndex = 6
 		Me.cmdDestination.Text = "Ajouter à >"
 		Me.cmdDestination.UseVisualStyleBackColor = true
 		AddHandler Me.cmdDestination.MouseDown, AddressOf Me.CmdDestinationMouseDown
@@ -171,7 +150,7 @@ Partial Class frmAddCards
 		Me.cmdAdd.Location = New System.Drawing.Point(268, 282)
 		Me.cmdAdd.Name = "cmdAdd"
 		Me.cmdAdd.Size = New System.Drawing.Size(75, 23)
-		Me.cmdAdd.TabIndex = 4
+		Me.cmdAdd.TabIndex = 7
 		Me.cmdAdd.Text = "Valider"
 		Me.cmdAdd.UseVisualStyleBackColor = true
 		AddHandler Me.cmdAdd.Click, AddressOf Me.CmdAddClick
@@ -185,7 +164,7 @@ Partial Class frmAddCards
 		Me.grpQuantite.Location = New System.Drawing.Point(10, 207)
 		Me.grpQuantite.Name = "grpQuantite"
 		Me.grpQuantite.Size = New System.Drawing.Size(165, 69)
-		Me.grpQuantite.TabIndex = 7
+		Me.grpQuantite.TabIndex = 102
 		Me.grpQuantite.TabStop = false
 		Me.grpQuantite.Text = "Quantité"
 		'
@@ -205,7 +184,7 @@ Partial Class frmAddCards
 		Me.lblNbItems.Location = New System.Drawing.Point(38, 46)
 		Me.lblNbItems.Name = "lblNbItems"
 		Me.lblNbItems.Size = New System.Drawing.Size(111, 13)
-		Me.lblNbItems.TabIndex = 1
+		Me.lblNbItems.TabIndex = 106
 		Me.lblNbItems.Text = "Nombre déjà en stock"
 		'
 		'txtNbItems
@@ -227,7 +206,7 @@ Partial Class frmAddCards
 		Me.grpEdition.Location = New System.Drawing.Point(10, 118)
 		Me.grpEdition.Name = "grpEdition"
 		Me.grpEdition.Size = New System.Drawing.Size(333, 83)
-		Me.grpEdition.TabIndex = 6
+		Me.grpEdition.TabIndex = 101
 		Me.grpEdition.TabStop = false
 		Me.grpEdition.Text = "Edition"
 		'
@@ -256,7 +235,7 @@ Partial Class frmAddCards
 		Me.lblEncNbr.Location = New System.Drawing.Point(38, 59)
 		Me.lblEncNbr.Name = "lblEncNbr"
 		Me.lblEncNbr.Size = New System.Drawing.Size(85, 13)
-		Me.lblEncNbr.TabIndex = 1
+		Me.lblEncNbr.TabIndex = 104
 		Me.lblEncNbr.Text = "ID Encyclopédie"
 		'
 		'cboSerie
@@ -280,7 +259,7 @@ Partial Class frmAddCards
 		Me.grpId.Location = New System.Drawing.Point(10, 12)
 		Me.grpId.Name = "grpId"
 		Me.grpId.Size = New System.Drawing.Size(333, 100)
-		Me.grpId.TabIndex = 5
+		Me.grpId.TabIndex = 100
 		Me.grpId.TabStop = false
 		Me.grpId.Text = "Identification"
 		'
@@ -357,6 +336,7 @@ Partial Class frmAddCards
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Ajouter des cartes"
 		AddHandler Load, AddressOf Me.FrmAddCardsLoad
+		AddHandler Activated, AddressOf Me.FrmAddCardsActivated
 		AddHandler FormClosing, AddressOf Me.FrmAddCardsFormClosing
 		Me.cbarAjout.ResumeLayout(false)
 		Me.pnlAjout.ResumeLayout(false)
@@ -374,8 +354,6 @@ Partial Class frmAddCards
 		Me.cmnuDestination.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
-	Private lblEtat As System.Windows.Forms.Label
-	Private cboEtat As System.Windows.Forms.ComboBox
 	Private chkFoil As System.Windows.Forms.CheckBox
 	Private grpQuality As System.Windows.Forms.GroupBox
 	Private cbarAjout As TD.SandBar.ContainerBar
