@@ -1545,7 +1545,7 @@ Partial Class MainForm
 		'
 		Me.lblSerieCote.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblSerieCote.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieCote.Location = New System.Drawing.Point(149, 95)
+		Me.lblSerieCote.Location = New System.Drawing.Point(149, 55)
 		Me.lblSerieCote.Name = "lblSerieCote"
 		Me.lblSerieCote.Size = New System.Drawing.Size(70, 13)
 		Me.lblSerieCote.TabIndex = 15
@@ -1555,9 +1555,9 @@ Partial Class MainForm
 		'
 		Me.lblSerieMyTotDist.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblSerieMyTotDist.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieMyTotDist.Location = New System.Drawing.Point(174, 75)
+		Me.lblSerieMyTotDist.Location = New System.Drawing.Point(154, 95)
 		Me.lblSerieMyTotDist.Name = "lblSerieMyTotDist"
-		Me.lblSerieMyTotDist.Size = New System.Drawing.Size(45, 13)
+		Me.lblSerieMyTotDist.Size = New System.Drawing.Size(65, 13)
 		Me.lblSerieMyTotDist.TabIndex = 14
 		Me.lblSerieMyTotDist.TextAlign = System.Drawing.ContentAlignment.TopRight
 		'
@@ -1565,7 +1565,7 @@ Partial Class MainForm
 		'
 		Me.lblSerieMyTot.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblSerieMyTot.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieMyTot.Location = New System.Drawing.Point(174, 55)
+		Me.lblSerieMyTot.Location = New System.Drawing.Point(174, 75)
 		Me.lblSerieMyTot.Name = "lblSerieMyTot"
 		Me.lblSerieMyTot.Size = New System.Drawing.Size(45, 13)
 		Me.lblSerieMyTot.TabIndex = 13
@@ -1585,17 +1585,17 @@ Partial Class MainForm
 		'
 		Me.lblProp12.AutoSize = true
 		Me.lblProp12.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp12.Location = New System.Drawing.Point(5, 95)
+		Me.lblProp12.Location = New System.Drawing.Point(5, 55)
 		Me.lblProp12.Name = "lblProp12"
 		Me.lblProp12.Size = New System.Drawing.Size(98, 13)
 		Me.lblProp12.TabIndex = 10
-		Me.lblProp12.Text = "Cote édition (total) :"
+		Me.lblProp12.Text = "Cote totale :"
 		'
 		'lblProp11
 		'
 		Me.lblProp11.AutoSize = true
 		Me.lblProp11.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp11.Location = New System.Drawing.Point(5, 75)
+		Me.lblProp11.Location = New System.Drawing.Point(5, 95)
 		Me.lblProp11.Name = "lblProp11"
 		Me.lblProp11.Size = New System.Drawing.Size(144, 13)
 		Me.lblProp11.TabIndex = 8
@@ -1605,7 +1605,7 @@ Partial Class MainForm
 		'
 		Me.lblProp10.AutoSize = true
 		Me.lblProp10.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp10.Location = New System.Drawing.Point(5, 55)
+		Me.lblProp10.Location = New System.Drawing.Point(5, 75)
 		Me.lblProp10.Name = "lblProp10"
 		Me.lblProp10.Size = New System.Drawing.Size(91, 13)
 		Me.lblProp10.TabIndex = 7

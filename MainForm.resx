@@ -117,14 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>119, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btDownload.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJVSURBVDhPfZNPSFRxEMd/tKvugh48CGlqi0tosv7fXXcV
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAJVSURBVDhPfZNPSFRxEMd/tKvugh48CGlqi0tosv7fXXcV
         sSJEDFwvWaQShR06hFHkJTpEEYpBSIGUa+4u5hrqQciLVB48VLgIFSjkRemgWUoSRKzap3lvy3Rf9mAO
         7zczn5n5zu+nVNw34vUyedLHUuAua4PdrDzu4k1rM09y7KwvLhIfv/3/vqeHV+cbYbIbuk7AdRdcKYRW
         O7TkwJ0mPrSdY6KlxQjRkudvXoT79fy8fZTX3gP0WxMZKCrCb7HwItMCx1PAvY/1y42MNzTshkz5quBe
@@ -137,18 +134,12 @@
         LhDYO3nnM52VwMHyckKy56BYpLNzz8Rf3tCJY6xnbhIAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="dlgOpen.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>224, 17</value>
-  </metadata>
-  <metadata name="imglstTvw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <data name="imglstTvw.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
-        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAC
-        tAAAAk1TRnQBSQFMAgEBKQEAAQQBAgEEAQIBEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAE
+        tAAAAk1TRnQBSQFMAgEBKQEAAQQBAgEQAQIBEAEAARABAAT/ASEBEAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABsAMAAQEBAAEgBgABsBYAAz0BaQNYAcwDJgH2AzIB8wNYAcwDOwFj5AADTQGWAwUB/wMHAf8DDQH/
         AxkB/wMXAf8DBgH/A0gBhwM9AWkDWAHMAyUB9gMxAfMDWAHMAzsBY8gAAwMB/wMJAf8DAwH/AwEB/wMB
         Af8DAwH/AwsB/wMXAfsDBAH/AwYB/wMLAf8DFwH/AxUB/wMGAf8DSAGHxAADWAHDAwoB/wMfAf8DQAH/
@@ -916,18 +907,15 @@
         AT8B/gE/Ev8CPwH+Bf8BDwEQAfwBPwT/AY8BCAH4AQ8E/wGOAQgB8AEDBP8BzgEYAeABAwH8AR8C/wHG
         ARgBwAEDAfgBDwL/AcQBEAHAAQEB8AEHAv8B4AEAAcABAwHwAQcC/wHgAQEBwAEBAfABBwL/AeABQQHA
         AQMB8AEHAv8B4AHhAYABBwHwAQcC/wHhAcEBgAEHAfgBDwP/AcMBgAEPAfwBHwT/AcABHwb/AfABPwb/
-        AfwBfwL/Cw==
+        AfwBfwL/FgAL
 </value>
   </data>
-  <metadata name="imglstCarac.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>318, 17</value>
-  </metadata>
   <data name="imglstCarac.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADO
-        5AAAAk1TRnQBSQFMAgEBIQEAARwBAgEcAQIBEgEAARIBAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFI
+        5AAAAk1TRnQBSQFMAgEBIQEAARwBAgEoAQIBEgEAARIBAAT/ASEBEAj/AUIBTQE2BwABNgMAASgDAAFI
         AwABogMAAQEBAAEgBQABQAG2JgABqwGNAYEB/wGRAoEB/wOBAf8DgQH/A4EB/wGRAoEB/wGoAYoBgQH/
         /AABsgGSAYEB/wGGAoEB/wOBAf8DgQH/A4EB/wOBAf8DgQH/A4EB/wOBAf8DgQH/AasBjQGBAf/wAAGs
         AY0BgQH/A4EB/wOBAf8DgQH/AasBrAG0Af8BvwHBAcsB/wG/AcEBywH/Ab8BwQHLAf8BvwHBAcsB/wG/
@@ -1903,12 +1891,9 @@
         AQABBgEAAQMFAAFgAQABGAEAAQQBAAEBBQABYAEAAQgDAAEBBQABQAUAAQEFAAFABQABAQUAAUAFAAEB
         BQABYAEAAQgDAAEBBQABYAEAAQgDAAEBAwABgAEAAWABAAEYAQABBgEAAQEDAAHAAQAB8AEAARwBAAEH
         AQABAwMAAcABAQH4AQABPgEAAQ8BAAEHAwAB8AEDAfwBAAF/AQABHwHAAQ8DAAH4AQcB/gEAAf8BgAE/
-        AeABHwMAA/8BxwH/AfED/wMACw==
+        AeABHwMAA/8BxwH/AfED/xkACw==
 </value>
   </data>
-  <metadata name="cmnuTvw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>429, 17</value>
-  </metadata>
   <data name="mnuCardsFR.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -1940,7 +1925,7 @@
   <data name="mnuDegroupFoils.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAIYSURBVDhPnZLdT9JRGMf9A7rxqotyma/TKSsrHBSYZQpN
+        YQUAAAAJcEhZcwAADr0AAA69AUf7kK0AAAIYSURBVDhPnZLdT9JRGMf9A7rxqotyma/TKSsrHBSYZQpN
         N7bSci1r67Krtrrosq2tK2/qJrdqLZeu3KwEFXxBAiQEAbMgTAtqoAgC8fPl9tOZ1IVz0OxsZ+fZzvP9
         PN/znKegIM+ymbpxGu+QLyfvXdiqImo/+X8Ap/EWSa+GpEeDx9C+d0jEpkQKdLAe6CRilu8N4B25JKpr
         2Vi4ug2IT5/l45uG3BCX6SaB8RbCUyqWbYo/4itIn1r45VaS8bUTm1ITGpKxMCDD97Ke6f4OpoafUhC2
@@ -1989,7 +1974,7 @@
   <data name="mnuCopyACard.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACxSURBVDhPzVMxDsMgDOSNHfuIvKFPAfYwdyMrSKwZ+Qq1
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAACxSURBVDhPzVMxDsMgDOSNHfuIvKFPAfYwdyMrSKwZ+Qq1
         nTglkRG0XYp0gkS+850TlPqLVR6lFFUBnoeNERmxVECxURHqXJP5XDvisyTaFGiIhhDO8Q6B6xwkB5KT
         Q6AV5epkbxRj3JwsCirgJe24mMDDlXZoZq0VBJDcIfInN8Z8L4BufxY4R4BMNIORCHutc26LsD5nIn+C
         6X4rOef3/+C9p0xa6y6wLqU0fld6l+oFt9whUd5fqrIAAAAASUVORK5CYII=
@@ -2019,18 +2004,6 @@
         /8YUz+UTSMdvFD5lfhgRdb+828WktLPIJAICY6f0oIhzAyp+AejmoORxB260AAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="dlgOpen2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>529, 17</value>
-  </metadata>
-  <metadata name="dlgOpen3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>629, 17</value>
-  </metadata>
-  <metadata name="dlgOpen4.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>729, 17</value>
-  </metadata>
-  <metadata name="mnu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>829, 17</value>
-  </metadata>
   <data name="mnuDBOpen.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -2250,7 +2223,7 @@
   <data name="mnuGestAdv.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADr4AAA6+AepCscAAAAHTSURBVDhPlZPdT1JxGMf951xbF8VFm9JaWzW86MWLbizU
+        YQUAAAAJcEhZcwAADrwAAA68AZW8ckkAAAHTSURBVDhPlZPdT1JxGMf951xbF8VFm9JaWzW86MWLbizU
         3HQ0N+NI6lIZL6kNiCkzl0D4WnkwQ07QIREw3vJUgrRKZuTcPmEXbZWD4+/6+X6ez+959jQ0nPBlExKb
         YQ/ymhVxdpQTxQsfYqRlK18/22F/mi3Roh5QVFIUtv1Uym42lm5Rej1AcLxbHWBXkdn9OMNBxYcSv0sp
         LpAL9OLsa68PyKdWUdI2Dn8+oZg28qNoppw1Iy2q0M8kRPJbQ9Wwm/LOEAcFC9/fmYi/fPh3ZyUt/aei
@@ -2425,7 +2398,7 @@
   <data name="mnuPlugResourcer.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAADdSURBVDhP3VNREcMgDK2Y6eh3XdRABWAAAzWAgP7vMIAB
+        YQUAAAAJcEhZcwAADr8AAA6/ATgFUyQAAADdSURBVDhP3VNREcMgDK2Y6eh3XdRABWAAAzWAgP7vMIAB
         /qYma3gLgQwmYLnLHU3CI+8lXZb/shACiaeUSNjRcdzn1+1r8X3fa65RAEku3Db6nJHOOZdvjrNPALhU
         AbgQL4spAOqGBgDbBTrQOINf19WDICA07Gu4bCnGGFsQXGYRISC0EOfDeZ76/Xx0Ot2E5JURZ86JKXDV
         gtu3yreqAxzmnKtdNHFw/hKmjlT4j7ooMVHfjmY2unZfmgWx8+W2RETNrURFwKqZjs57bxYEHfTA64Dq
@@ -2542,13 +2515,10 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>1001, 17</value>
-  </metadata>
   <data name="btDBSelect.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAI8SURBVDhPdVPLS1RxGP21bd0f0LZFO3ftWkWEiwhsUURZ
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAI8SURBVDhPdVPLS1RxGP21bd0f0LZFO3ftWkWEiwhsUURZ
         QZREpWaGFOZMGBNkNqjYZJgSaGAoNBCTi0mSRFqEQi6GXqbTTJPzuM7zzpzuOeOdbosuHOYO3HO+xzmf
         +XhvHB/8T4V3d8YQvfVYeH0jiHBnEHNXH2Lm8gNMXwzg2fl+jJ/xIXTah5GTvYKhQDq6KKQiUSE+Ny+s
         T4WF2JOXWBueFlYHJgXy/hGA96k5f6o11OwqquUK7FIZlUIR5e0CSlYepaz1V4Cts3rjcYkVG+nYd0Ta
@@ -2564,7 +2534,7 @@
   <data name="btExport.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFGSURBVDhPpVOhbsMwFOyn5BPyCYGBhYOBg4aDhoOGhYaF
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAFGSURBVDhPpVOhbsMwFOyn5BPyCYGBhYOBg4aDhoOGhYaF
         hgEFBgPppmqeNmmdNGAyadBw7PbO3tomoKnUk45Ufnf37qWLxbVwPqIwFPYB1gW8vH7gIm0OT2GdR6ct
         nnZhXoSuU5i1hx8COmXwuHs+L8LIhN8DkhwhJhjr4IYkKxXaXn5zhdu3r7Eg4x7wA6QExG8ZFIEp9Dqh
         vvXYbD+PIlbiEnYAjDhpF6FshBXnKdSqCNc3DpuH9yLCfYmU3VN25xq2L+UaVxj2CZ2JeZislvZPQPbl
@@ -2576,7 +2546,7 @@
   <data name="btGestDecks.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACRSURBVDhPpZMJDsAgCAR5uj+rP7McUhXBI9VgYsgOK0GA
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAACRSURBVDhPpZMJDsAgCAR5uj+rP7McUhXBI9VgYsgOK0GA
         eBWgDRxXS4T9PoTMwlNIznkt1mzo5IHyF1LgBCIOwqbGEBSllDgqwIVIsnfSCfmJeMeDw3PS6AjRip6w
         OrGzQeCPLE01FS3UENSdQMimQhxh1MgRQiASK0jvm/GeISo0sNX/aJDNu9eQi4ohaPuVX5ejDryUeXwt
         AAAAAElFTkSuQmCC
@@ -2585,7 +2555,7 @@
   <data name="btAddCards.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACWSURBVDhPzVNBDsAgCPPpPs2fuRWtCqIznkbiWDbaQokh
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAACWSURBVDhPzVNBDsAgCPPpPs2fuRWtCqIznkbiWDbaQokh
         1Mg5ZL7f5vw7Eox0NZYAMQ7CkLik/FiBgvNI2M2UFbDAmzKNlZoY4yiGZRUsHiklYlVmEcCWXBGggIc/
         bF6QlDbsgRq68jrrtdK9CtePkWgHFlMYnvoXuLlqicatVNN316WvkEQnyg6jJjpQXnb1Gju7zeoHfv8r
         /i3tbWMAAAAASUVORK5CYII=
@@ -2594,7 +2564,7 @@
   <data name="btAdvancedSearch.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKGSURBVDhPrZPbS9MBFMf9TyICqV4KQqiH8kGKREyUrI2l
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAKGSURBVDhPrZPbS9MBFMf9TyICqV4KQqiH8kGKREyUrI2l
         IIrTNu+61DQ1XZKKc97HvGXzOpfm3NS8Baah5qVZBqmYipdCQfMSYfrp99vDSuZDDx34vhz4fg58zzku
         Lv+rCnXDRKaWsL6xy8j0KqXaMczGPFIzn9h7eztLVOTe58R5lbUzKFMKmfuyglhlxWN0t2tRPixw9ERz
         cri/M6DTuoeopoZNiouWiYmZ5OOghrcdajoMydSXRNsnDxnvEi7xdAZ0mHfp78OhpKRpZkcLOdhpdGi+
@@ -2611,7 +2581,7 @@
   <data name="btExcelGen.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIeSURBVDhPbZNfSJNhFMY/8Eropq6UTOwmi7qSkOxGCxki
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAIeSURBVDhPbZNfSJNhFMY/8Eropq6UTOwmi7qSkOxGCxki
         I4RkJepKdCpOJP9MwVFYYEaQF2qKmuCFlIzA6CJBbzICIRBEUHTKFDd1OnXamKzJfPQ54/XbwsHv4vvY
         83vPOe/5tPYxG0ib4wXsn61C87BFqB80C5WdhUJZh1EoaTPA1JojaAx/cLzGx/H3cfCd4u2wDYqXfVYo
         7j1Kg8aTGeYvchLB8ckxwpEwQuEQguEjBP8FEQgF4D/yYy+4B1/AB++hFxZbAUTAkilo+lGLum9VqP5a
@@ -2626,7 +2596,7 @@
   <data name="btSimu.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFYSURBVDhPY2DAAR7uD/6PS46gOEjzty/n/x/e1kSeIbd3
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAFYSURBVDhPY2DAAR7uD/6PS46gOEjzty/n/x/e1kSeIbd3
         hf5/9mjR/1cv9v0/uLkZxZAvRZ6EDd29JP7/xz31/588nAY05Pj/FdNSwZpAmv/dvvj/bZgqYUN2Lk74
         //ha1P8nj+b+78lQBmt41KD6/2d32v9/l4/+vx+sgd8Q38Cw/w3pdv8f3439n+htBlZ82Ev7/9MgJbAh
         S8zEcRvgFRAGl0RmgwwBaQQZgtMAbJphYjAaQzMsZPHZjO4SeFqAhey7QETIWjZp/9erU/uvXqUE9gq6
@@ -2638,7 +2608,7 @@
   <data name="btStats.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAE+SURBVDhPrZOrkoQwEEXnM/YXViKxK/kEbCRyBCIWiYyM
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAE+SURBVDhPrZOrkoQwEEXnM/YXViKxK/kEbCRyBCIWiYyM
         RSKRsZFIJBaJRPb27ZCZDI+qFZuqUylC7u1Hksfjv0dWeSqaSVBqpD/7K+XpS0+UNTN973M0wNywYV3X
         14aIlrfziaMBTE5GiAyDsltP4B9KgJHWM4uXHffOBmI9bKTdAV6LGUDctuvOxvP2Nsjyku5A9KqaRGgM
         CdYGUEqWK3pAjE3XoHnLSwRh1wVeBjFKqHEVYrp23yyinqhnBi6tH2DgQgYY0ge9SG0QIVVsjkAkOCLn
@@ -2650,7 +2620,7 @@
   <data name="btCheckForUpdates.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFbSURBVDhPjVMxboNAENyXpHKRmhqJlhq55QGWLr0LZNHQ
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAFbSURBVDhPjVMxboNAENyXpHKRmhqJlhq55QGWLr0LZNHQ
         I6VEblOENqSgslKmSJ8oj/APJjsLZw4MUu40OnS7M7N7a4tsrLoD2raFOwNVVaEsS2zlzu4vvxfUus9w
         qJDiCTvEvUCaBvL8jePxuC3klEZijQ5vunlSJBSgiBxUbLmcEulGgU6pFOCmALf0sVUgxd6QZdlCRBPo
         RIJvYajiB+kHIK9XbeMAKbWdQrEvJoG00oRTbwIEKyFYlfsCdu8ap3ujRC+Q50EVDCoiTfAi0p/w8nk1
@@ -2662,7 +2632,7 @@
   <data name="btWebsite.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALASURBVDhPhdJpSNNhHAfwxxyVVyKpHfTCSiujLEzT8EiM
+        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAALASURBVDhPhdJpSNNhHAfwxxyVVyKpHfTCSiujLEzT8EiM
         pCCNssMkEU3xWJlpGc2DdC5xoWJqijInXgkeaWqbf53mPNN55DWvmtcc82iokfUivv17I4XGnpcP3+fz
         PL/f7yFki9UzNm/ukU5V+2U3rQTmNs8ysxoy5PJVw62ym/Z6JxfMTBMEKmrhGzpV6+hUrKBUIsOxe2mj
         SiV01SJuycICB+EE2Io1sOdXwe6cAvtdN8y9YhFX0PhQLWD2rGJoN68b9o2fYU+Nwz6nBXbRhdC+EAz3
@@ -2746,18 +2716,12 @@
         RU5ErkJggg==
 </value>
   </data>
-  <metadata name="dlgSave.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>164, 54</value>
-  </metadata>
-  <metadata name="imglstAutorisations.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 54</value>
-  </metadata>
   <data name="imglstAutorisations.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABO
-        wQAAAk1TRnQBSQFMAgEBEAEAAegBAAHoAQABIwEAARkBAAT/AREBAAj/AUIBTQE2BwABNgMAASgDAAGM
+        wQAAAk1TRnQBSQFMAgEBEAEAAegBAAH0AQABIwEAARkBAAT/AREBEAj/AUIBTQE2BwABNgMAASgDAAGM
         AwABfQMAAQEBAAEQBQABuAGI/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A
         /wD/AP8A/wD/AP8AlwAB/wF/AgABvQF3AZwBcwGcAXMBnAFzAZwBcwGcAXMBnAFzAZwBcwGcAXMBnAFz
         AZwBcwGcAXMBvQF3AgAB/wF/JAAB/wF/AfwBewHYAXMB1gFvAZYBZwGWAWcBlgFnAZYBZwGWAWcBlgFn
@@ -3581,7 +3545,7 @@
         AcABPwHBAYABEAIAAYADAAEwAwABBgMAAQEBwAMAARACAAGAAwABMAMAAQYEAAHgAwABMAIAAcADAAF4
         AwABDwGAAgABAwHgAwABMAIAAeADAAH8AwABHwGAAQABfAEHAfADAAFwAgAB8AIAAQEB/gMAAT8B4AEA
         AfgBDwH4AwAB8AIAAfgCAAEDAf8DAAF/AeACAAEPAf4CAAEDAfACAAH8AgABBwH/AcABAAEBAf8B8gIA
-        AR8B/wGAAQABDwHwAgAB/wGAAQABPwH/AfABAAEHAf8B/gEfAfgC/wH8AQABfwHwAgAL
+        AR8B/wGAAQABDwHwAgAB/wGAAQABPwH/AfABAAEHAf8B/gEfAfgC/wH8AQABfwHwGAAL
 </value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -3663,5 +3627,80 @@
   </data>
   <data name="_colors_Vertes" xml:space="preserve">
     <value>Les forêts luxuriantes bouillonnent de mana vert, le rythme de la nature. Le mana vert est la magie de la vie, de la croissance et de la force brute. Quand un mage vert combat, d'énormes créatures jaillissent des forêts, des animaux prennent des tailles gigantesques et les blessures se referment avant que le sang ne coule. Les magiciens verts comprennent que le monde obéit à la loi de la jungle : tout y est proie ou prédateur.</value>
-  </data>  
+  </data>
+  <data name="_colors_Incolores" xml:space="preserve">
+    <value>Colorless cards belong to no color, and most often appear in the form of Lands and Artifacts. Unlike the five colors, Colorless cards do not have a specific personality or style of play. Sometimes, colorless cards will imitate the mechanics of a particular color, though in a less-efficient manner than a similar colored card. Often colorless cards are linked to one or more colors via their abilities, through story references, or through flavor text on the cards themselves. With the Rise of the Eldrazi expansion, however, colorless cards that are neither artifacts nor lands have been introduced for the first time in larger quantities. These are mainly Eldrazi cards, massive creatures and spells to help cast the costly Eldrazi.</value>
+  </data>
+  <data name="_colors_Terrains" xml:space="preserve">
+    <value>Colorless cards belong to no color, and most often appear in the form of Lands and Artifacts. Unlike the five colors, Colorless cards do not have a specific personality or style of play. Sometimes, colorless cards will imitate the mechanics of a particular color, though in a less-efficient manner than a similar colored card. Often colorless cards are linked to one or more colors via their abilities, through story references, or through flavor text on the cards themselves. With the Rise of the Eldrazi expansion, however, colorless cards that are neither artifacts nor lands have been introduced for the first time in larger quantities. These are mainly Eldrazi cards, massive creatures and spells to help cast the costly Eldrazi.</value>
+  </data>
+  <data name="_colors_Multicolores" xml:space="preserve">
+    <value>Multi-color cards were introduced in the Legends set and typically use a gold frame to distinguish them from mono-color cards. These cards require mana from two or more different colors to be played and count as each of the colors used to play them. Multi-color cards tend to combine the philosophy and mechanics of all the colors used in the spell's cost. Multi-color cards tend to be proportionally more powerful compared to single-color or hybrid cards, as requiring multiple colors of mana makes them harder to cast. More recently, two-color "hybrid" cards were introduced in the Ravnica set, and appeared extensively throughout the Shadowmoor and Eventide sets. Hybrid cards are distinguished by a gradient frame with those two colors, and can be paid with either of the card's colors (as opposed to requiring both); for instance, a card with two hybrid-red/white icons can be cast using two red mana, two white mana, or one of each.</value>
+  </data>
+  <data name="Créatures" xml:space="preserve">
+    <value>Une créature est un permanent qui permet d'attaquer l'adversaire ou ses planeswalkers et de défendre ses points de vie. Ces permanents possèdent une case indiquant leur « force » et leur « endurance ». La force représente les dégâts que les créatures peuvent infliger et l'endurance les dégâts qu'elles peuvent encaisser par tour avant d'être détruites. Une créature 4/3, par exemple, peut infliger 4 blessures, et doit subir 3 blessures ou plus pour être détruite. Les créatures peuvent attaquer l'adversaire pendant la phase de combat. Elles peuvent être bloquées par les créatures de l'adversaire. Si elles ne le sont pas, la créature attaquante inflige autant de blessures à l'entité qu'elle attaque (joueur ou planeswalker) que sa force. Dans les anciennes éditions de Magic, les créatures qui n'étaient pas des créatures artefact s'appelaient des sorts d'invocation.</value>
+  </data>
+  <data name="Ephémères" xml:space="preserve">
+    <value>Un éphémère est un sort non-permanent joué généralement depuis la main à n'importe quel moment du jeu et qui provoque des effets divers.</value>
+  </data>
+  <data name="Artefacts" xml:space="preserve">
+    <value>Un artefact est un permanent, le plus souvent incolore. Les artefacts représentent souvent des machines ou des objets qui pourraient avoir été manufacturés. Dans les premières extensions, certains artefacts étaient des mono artefacts, des poly artefacts ou des continuous artifacts. Ces cartes ont reçu un errata et sont dorénavant simplement des artefacts.</value>
+  </data>
+  <data name="Enchantements" xml:space="preserve">
+    <value>C'est un permanent qui possède des effets divers et variés.</value>
+  </data>
+  <data name="Terrains" xml:space="preserve">
+    <value>Un terrain est un permanent qui n'est pas un sort. La plupart du temps, il produit du mana en s'engageant. Il n'est possible de jouer qu'un seul terrain par tour et uniquement durant son propre tour. Les terrains les plus connus sont ceux dits « de base », dont le nombre est illimité dans un deck.</value>
+  </data>
+  <data name="Interruptions" xml:space="preserve">
+    <value>Un éphémère est un sort non-permanent joué généralement depuis la main à n'importe quel moment du jeu et qui provoque des effets divers.</value>
+  </data>
+  <data name="Rituels" xml:space="preserve">
+    <value>Un rituel est identique à un éphémère, mais n'est jouable que pendant son tour lors d'une phase principale et alors que la pile est vide.</value>
+  </data>
+  <data name="Arpenteurs" xml:space="preserve">
+    <value>Ce type de carte est apparu avec le bloc Lorwyn en 2007. Un planeswalker arrive sur le champ de bataille avec un nombre de marqueurs loyauté particulier. Il a généralement trois ou quatre capacités nécessitant un coût d'activation payé en retirant ou ajoutant des marqueurs loyauté. Ces capacités se jouent à tout moment où vous pourriez jouer un rituel et une seule peut être activée par tour par planeswalker. Comme les joueurs, les planeswalkers peuvent être attaqués par les créatures, si bien qu'à la déclaration des attaquants, il convient de préciser quelles créatures attaque l'adversaire et quelles créatures attaquent un ou plusieurs planeswalkers qu'il contrôle. Les blessures qui ne sont pas des blessures de combat peuvent être redirigées sur les planeswalkers. Les blessures lui retirent des marqueurs loyauté, de plus, si un planeswalker n'a plus de loyauté sur lui, il est mis au cimetière, c'est un effet basé sur un état. Les interactions offertes par l'arrivée de ce nouveau type de carte ouvrent une nouvelle perspective sur le jeu.</value>
+  </data>
+  <data name="Créatures avec capacité" xml:space="preserve">
+    <value>Une créature est un permanent qui permet d'attaquer l'adversaire ou ses planeswalkers et de défendre ses points de vie. Ces permanents possèdent une case indiquant leur « force » et leur « endurance ». La force représente les dégâts que les créatures peuvent infliger et l'endurance les dégâts qu'elles peuvent encaisser par tour avant d'être détruites. Une créature 4/3, par exemple, peut infliger 4 blessures, et doit subir 3 blessures ou plus pour être détruite. Les créatures peuvent attaquer l'adversaire pendant la phase de combat. Elles peuvent être bloquées par les créatures de l'adversaire. Si elles ne le sont pas, la créature attaquante inflige autant de blessures à l'entité qu'elle attaque (joueur ou planeswalker) que sa force. Dans les anciennes éditions de Magic, les créatures qui n'étaient pas des créatures artefact s'appelaient des sorts d'invocation.</value>
+  </data>
+  <data name="Enchanter-permanents" xml:space="preserve">
+    <value>C'est un permanent qui possède des effets divers et variés.</value>
+  </data>
+  <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>119, 17</value>
+  </metadata>
+  <metadata name="dlgOpen.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>224, 17</value>
+  </metadata>
+  <metadata name="imglstTvw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="imglstCarac.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>318, 17</value>
+  </metadata>
+  <metadata name="cmnuTvw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>429, 17</value>
+  </metadata>
+  <metadata name="dlgOpen2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>529, 17</value>
+  </metadata>
+  <metadata name="dlgOpen3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>629, 17</value>
+  </metadata>
+  <metadata name="dlgOpen4.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>729, 17</value>
+  </metadata>
+  <metadata name="mnu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>829, 17</value>
+  </metadata>
+  <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1001, 17</value>
+  </metadata>
+  <metadata name="dlgSave.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>164, 54</value>
+  </metadata>
+  <metadata name="imglstAutorisations.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 54</value>
+  </metadata>
 </root>

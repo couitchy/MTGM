@@ -102,7 +102,7 @@ Public Partial Class frmSearch
 	'---------------------------------------------------------------------
 	'Recherche dans les noeuds du treeview la carte spécifiée en paramètre
 	'---------------------------------------------------------------------
-		If VpNode.Text = VpTitle Or VpNode.Tag = VpTitle Then
+		If VpNode.Tag.Value = VpTitle Then
 			VpNode.TreeView.SelectedNode = VpNode
 			VpNode.EnsureVisible
 			Return True

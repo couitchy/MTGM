@@ -26,6 +26,7 @@
 '| - correction auto images				   10/04/2010 |
 '| - gestion des autorisations tournois	   15/04/2010 |
 '| - gestion cartes foils				   19/12/2010 |
+'| - infos restreintes aux ancêtres		   06/03/2011 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -36,6 +37,18 @@ Imports System.Resources
 Imports System.Reflection
 #End Region
 Public Partial Class MainForm
+	#Region "Sous-classes"
+	Private Class clsTag
+		Public Key As String = ""
+		Public Value As String = ""
+		Public Value2 As String = ""
+		Public Sub New
+		End Sub
+		Public Sub New(VpValue As String)
+			Value = VpValue
+		End Sub
+	End Class
+	#End Region
 	#Region "Déclarations"
 	Private VmMyChildren As New clsChildren
 	Private VmSearch As New clsSearch
@@ -558,8 +571,9 @@ Public Partial Class MainForm
 	'Mémorise les cartes dont le titre contient le texte recherché par l'utilisateur
 	'-------------------------------------------------------------------------------
 	Dim VpChild As TreeNode
+	Dim VpQuery As String = Me.mnuSearchText.Text.ToUpper
 		Try
-			If VpNode.Parent.Tag = "Card.Title" And ( VpNode.Text.ToUpper.IndexOf(Me.mnuSearchText.Text.ToUpper) <> -1 Or VpNode.Tag.ToUpper.IndexOf(Me.mnuSearchText.Text.ToUpper) <> -1) Then
+			If VpNode.Parent.Tag.Key = "Card.Title" And ( VpNode.Tag.Value.ToUpper.IndexOf(VpQuery) <> -1 Or VpNode.Tag.Value2.ToUpper.IndexOf(VpQuery) <> -1) Then
 				VmSearch.ItemsFound.Add(VpNode)
 			End If
 		Catch
@@ -765,6 +779,7 @@ Public Partial Class MainForm
 			Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
 		Else
 			VpNode = New TreeNode
+			VpNode.Tag = New clsTag
 			VpNode.ImageIndex = 1
 			VpNode.SelectedImageIndex = 1
 			'Cas 1 : chargement des résultats d'une recherche de l'utilisateur
@@ -772,9 +787,9 @@ Public Partial Class MainForm
 				Call Me.MnuDispCollectionActivate(Me.mnuDispCollection, Nothing) 'Un peu crade mais il faut absolument déselectionner les decks avant de vouloir charger la recherche (car sinon le me.restriction va altérer l'expression de la requête)
 				VpNode.Text = VpSearchName
 				Try
-					VpNode.Tag = CgCriteres.Item(Me.chkClassement.CheckedItems(0))
+					VpNode.Tag.Key = CgCriteres.Item(Me.chkClassement.CheckedItems(0))
 				Catch
-					Call clsModule.ShowWarning("Aucun critère de classement n'a été sélectionné...")
+					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
 				Call Me.RecurLoadTvw(VpLoadFromSearch, clsModule.CgSFromSearch, VpNode, 1)
 				Me.lblNCards.Text = ""
@@ -783,9 +798,9 @@ Public Partial Class MainForm
 			ElseIf Me.chkClassement.GetItemChecked(0) Then
 				VpNode.Text = clsModule.CgDecks
 				Try
-					VpNode.Tag = CgCriteres.Item(Me.chkClassement.CheckedItems(1))
+					VpNode.Tag.Key = CgCriteres.Item(Me.chkClassement.CheckedItems(1))
 				Catch
-					Call clsModule.ShowWarning("Aucun critère de classement n'a été sélectionné...")
+					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
 				Call Me.RecurLoadTvw(clsModule.CgSDecks, clsModule.CgSDecks, VpNode, 2)
 				Me.lblNCards.Text = "(" + Me.GetNCards(clsModule.CgSDecks).ToString + " cartes attachées, " + Me.GetNCards(clsModule.CgSDecks, True).ToString + " distinctes)"
@@ -793,14 +808,13 @@ Public Partial Class MainForm
 			Else
 				VpNode.Text = clsModule.CgCollection
 				Try
-					VpNode.Tag = CgCriteres.Item(Me.chkClassement.CheckedItems(0))
+					VpNode.Tag.Key = CgCriteres.Item(Me.chkClassement.CheckedItems(0))
 				Catch
-					Call clsModule.ShowWarning("Aucun critère de classement n'a été sélectionné...")
+					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
 				Call Me.RecurLoadTvw(clsModule.CgSCollection, clsModule.CgSCollection, VpNode, 1)
 				Me.lblNCards.Text = "(" + Me.GetNCards(clsModule.CgSCollection).ToString + " cartes attachées, " + Me.GetNCards(clsModule.CgSCollection, True).ToString + " distinctes)"
 			End If
-			Call Me.RecurFormatTitle(VpNode)
 			Me.tvwExplore.Nodes.Add(VpNode)
 			VpNode.Expand
 			Me.mnuCardsFR.Enabled = True
@@ -820,7 +834,7 @@ Public Partial Class MainForm
 	'--------------------------------------------------------------------------
 	'Si l'on est en mode suggestions, empêche l'insertion d'un noeud non validé
 	'--------------------------------------------------------------------------
-		If VpNode.Tag = "Card.Title" And Not Me.VmSuggestions Is Nothing Then
+		If VpNode.Tag.Key = "Card.Title" And Not Me.VmSuggestions Is Nothing Then
 			For Each VpSugg As clsCorrelation In Me.VmSuggestions
 				If VpSugg.Card1 = VpCard Then
 					Return True
@@ -843,20 +857,20 @@ Public Partial Class MainForm
 		'Lorsque le niveau de récursivité courant dépasse le nombre de critères sélectionnés, c'est que l'arborescence est complète
 		If VpRecurLevel > Me.chkClassement.CheckedItems.Count Then Exit Sub
 		'La requête s'effectue dans les deux tables Card et Spell mises en correspondances sur le nom de la carte, elles-mêmes mises en correspondance avec MyGames ou MyCollection sur le numéro encyclopédique
-		If VpNode.Tag = "Card.Title" Then
+		If VpNode.Tag.Key = "Card.Title" Then
 			If Me.mnuDegroupFoils.Checked And Not Me.IsInAdvSearch Then
 				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, " + VpSource2 + ".Foil From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
 			Else
 				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
 			End If
 		Else
-			VpSQL = "Select Distinct " + VpNode.Tag + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
+			VpSQL = "Select Distinct " + VpNode.Tag.Key + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
 		End If
 		'Ajoute les conditions sur les identifiants des jeux
 		VpSQL = VpSQL + Me.Restriction
 		'Ajoute les conditions sur les critères des ancêtres
 		While Not VpParent.Parent Is Nothing
-			VpSQL = VpSQL + Me.ElderCriteria(VpParent.Text, VpParent.Parent.Tag)
+			VpSQL = VpSQL + Me.ElderCriteria(VpParent.Tag.Value, VpParent.Parent.Tag.Key)
 			VpParent = VpParent.Parent
 		End While
 		'Suppression des mots-clés inutiles
@@ -869,27 +883,31 @@ Public Partial Class MainForm
 				'Ajoute un enfant par enregistrement trouvé
 				VpStr = .GetValue(0).ToString
 				If Me.CanAdd(VpNode, VpStr) Then
-					VpChild = New TreeNode(VpStr)
+					VpChild = New TreeNode
+					VpChild.Tag = New clsTag(VpStr)
 					'Si on est au niveau du nom des cartes, l'icône est celle de la couleur de la carte
-					If VpNode.Tag = "Card.Title" Then
-						VpChild.ImageIndex = Me.FindImageIndex(VpNode.Tag, .GetValue(1).ToString)
+					If VpNode.Tag.Key = "Card.Title" Then
+						VpChild.ImageIndex = Me.FindImageIndex(VpNode.Tag.Key, .GetValue(1).ToString)
 					'Sinon l'icône est celle du critère associé
 					Else
-						VpChild.ImageIndex = Me.FindImageIndex(VpNode.Tag, VpChild.Text)
+						VpChild.ImageIndex = Me.FindImageIndex(VpNode.Tag.Key, VpChild.Tag.Value)
 					End If
 					'Icône identique lorsque l'élément est mis en surbrillance
 					VpChild.SelectedImageIndex = VpChild.ImageIndex
 					'Tant que l'on est pas au dernier niveau, on tag les éléments avec le critère requis pour leur descendance
 					If VpRecurLevel < Me.chkClassement.CheckedItems.Count Then
-						VpChild.Tag = clsModule.CgCriteres.Item(Me.chkClassement.CheckedItems(VpRecurLevel))
-					'Si on est au niveau du nom des cartes, le tag est celui de sa traduction (Title = VO, Tag = VF)
-					ElseIf VpNode.Tag = "Card.Title"
-						VpChild.Tag = .GetValue(2).ToString
+						VpChild.Tag.Key = clsModule.CgCriteres.Item(Me.chkClassement.CheckedItems(VpRecurLevel))
+						'Caption explicite
+						VpChild.Text = clsModule.FormatTitle(VpNode.Tag.Key, VpChild.Tag.Value)
+					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag les deux noms VO et VF
+					ElseIf VpNode.Tag.Key = "Card.Title"
+						VpChild.Tag.Value2 = .GetValue(2).ToString
 						'Gestion éventuelle de la mention foil
 						If Me.mnuDegroupFoils.Checked AndAlso Not Me.IsInAdvSearch AndAlso .GetBoolean(3) Then
-							VpChild.Text = VpChild.Text + clsModule.CgFoil2
-							VpChild.Tag = VpChild.Tag + clsModule.CgFoil2
+							VpChild.Tag.Value = VpChild.Tag.Value + clsModule.CgFoil2
+							VpChild.Tag.Value2 = VpChild.Tag.Value2 + clsModule.CgFoil2
 						End If
+						VpChild.Text = VpChild.Tag.Value
 					End If
 					'Ajout effectif
 					VpNode.Nodes.Add(VpChild)
@@ -904,8 +922,10 @@ Public Partial Class MainForm
 	End Sub
 	Private Function ElderCriteria(VpValue As String, VpField As String) As String
 		Select Case VpField
+			'Champs numériques
 			Case "Card.myPrice", "Spell.myCost"
 				Return VpField + " = " + VpValue + " And "
+			'Champs textuels
 			Case Else
 				Return VpField + " = '" + VpValue + "' And "
 		End Select
@@ -943,14 +963,14 @@ Public Partial Class MainForm
 			Return "MyGames.GameID = -1"
 		End If
 	End Function
-	Private Function QueryInfo(VpQuery As String) As Object
+	Private Function QueryInfo(VpQuery As String, VpElderCriteria As String) As String
 	'------------------
 	'Requête ponctuelle
 	'------------------
 	Dim VpO As Object
 	Dim VpSQL As String
 		VpSQL = VpQuery
-		VpSQL = VpSQL + Me.Restriction
+		VpSQL = VpSQL + Me.Restriction + VpElderCriteria
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VpO = VgDBCommand.ExecuteScalar
@@ -960,59 +980,49 @@ Public Partial Class MainForm
 			Return "0"
 		End If
 	End Function
-	Private Sub LoadSerieCarac(VpSerie As String)
-	'---------------------------------------------------------------------
-	'Charge des informations sur une édition sélectionnée dans le treeview
-	'---------------------------------------------------------------------
+	Private Sub LoadCaracOther(VpCritere As String, VpModeCarac As clsModule.eModeCarac, VpElderCriteria As String)
+	'------------------------------------------------------------------------------------
+	'Charge des informations sur {édition, couleur, type} sélectionné(e) dans le treeview
+	'------------------------------------------------------------------------------------
 	Dim VpO As Object
 	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
-	Dim VpIDSerie As String = clsModule.GetSerieCodeFromName(VpSerie)
-		'Date de sortie
-		VgDBCommand.CommandText = "Select Release From Series Where SeriesNM = '" + VpSerie + "';"
-		Me.lblSerieDate.Text = CDate(VgDBCommand.ExecuteScalar).ToShortDateString
-		'Nombre de cartes
-		VgDBCommand.CommandText = "Select TotCards From Series Where SeriesNM = '" + VpSerie + "';"
+		'Nombre de cartes total répondant aux critères
+		VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria, False) + ");"
 		Me.lblSerieTot.Text = VgDBCommand.ExecuteScalar
-		'Nombre de carte possédées
-		Me.lblSerieMyTot.Text = Me.QueryInfo("Select Sum(Items) From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where Card.Series = '" + VpIDSerie + "' And ")
-		'Nombre de carte possédées (distinctes)
-		Me.lblSerieMyTotDist.Text = Me.QueryInfo("Select Count(*) From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where Card.Series = '" + VpIDSerie + "' And ")
-		'Cote de l'édition
-		VgDBCommand.CommandText = "Select Sum(Price) From Card Where Series = '" + VpIDSerie + "';"
-		Me.lblSerieCote.Text = Format(VgDBCommand.ExecuteScalar, "0.00") + " €"
-		'Notes
-		VgDBCommand.CommandText = "Select Notes From Series Where SeriesNM = '" + VpSerie + "';"
-		VpO = VgDBCommand.ExecuteScalar
-		If Not VpO Is Nothing Then
-			Me.txtCardText.Text = VpO.ToString
-		Else
-			Me.txtCardText.Text = ""
-		End If
-	End Sub
-	Private Sub LoadColorCarac(VpColor As String)
-	'---------------------------------------------------------------------
-	'Charge des informations sur une couleur sélectionnée dans le treeview
-	'---------------------------------------------------------------------
-	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
-	Dim VpColor1 As String = clsModule.ColorTo1(VpColor)
-	Dim VpO As Object
-		'Nombre de cartes
-		VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Title From Spell Where Color = '" + VpColor1 + "');"
-		Me.lblSerieTot.Text = VgDBCommand.ExecuteScalar
-		'Nombre de carte possédées
-		Me.lblSerieMyTot.Text = Me.QueryInfo("Select Sum(Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where Spell.Color = '" + VpColor1 + "' And ")
-		'Nombre de carte possédées (distinctes)
-		Me.lblSerieMyTotDist.Text = Me.QueryInfo("Select Count(*) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where Spell.Color = '" + VpColor1 + "' And ")
-		'Cote de la couleur
-		VgDBCommand.CommandText = "Select Sum(Price) From Card Inner Join Spell On Card.Title = Spell.Title Where Spell.Color = '" + VpColor1 + "';"
+		'Nombre de carte possédées répondant aux critères
+		Me.lblSerieMyTot.Text = Me.QueryInfo("Select Sum(Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", VpElderCriteria)
+		'Nombre de carte possédées distinctes répondant aux critères
+		Me.lblSerieMyTotDist.Text = Me.QueryInfo("Select Count(*) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", VpElderCriteria)
+		Me.lblSerieMyTotDist.Text = Me.lblSerieMyTotDist.Text + " (" + Format(100 * CInt(Me.lblSerieMyTotDist.Text) / CInt(Me.lblSerieTot.Text), "0") + "%)"
+		'Cote de toutes les cartes répondant aux critères
+		VgDBCommand.CommandText = "Select Sum(Price) From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria)
 		VpO = VgDBCommand.ExecuteScalar
 		If Not VpO Is Nothing AndAlso IsNumeric(VpO) Then
 			Me.lblSerieCote.Text = Format(VpO, "0.00") + " €"
 		Else
 			Me.lblSerieCote.Text = ""
 		End If
-		'Notes
-		Me.txtCardText.Text = (New ResourceManager(clsModule.CgProject, Assembly.GetExecutingAssembly)).GetString(VpColor)
+		'Cas particuliers
+		Select Case VpModeCarac
+			Case clsModule.eModeCarac.Serie
+				'Date de sortie
+				Me.lblProp8.Visible = True
+				Me.lblSerieDate.Visible = True
+				VgDBCommand.CommandText = "Select Release From Series Where SeriesCD = '" + VpCritere + "';"
+				Me.lblSerieDate.Text = CDate(VgDBCommand.ExecuteScalar).ToShortDateString
+				'Notes
+				VgDBCommand.CommandText = "Select Notes From Series Where SeriesCD = '" + VpCritere + "';"
+				VpO = VgDBCommand.ExecuteScalar
+				If Not VpO Is Nothing Then
+					Me.txtCardText.Text = VpO.ToString
+				Else
+					Me.txtCardText.Text = ""
+				End If
+			Case Else
+				Me.lblProp8.Visible = False
+				Me.lblSerieDate.Visible = False
+				Me.txtCardText.Text = (New ResourceManager(clsModule.CgProject, Assembly.GetExecutingAssembly)).GetString(VpCritere)
+		End Select
 	End Sub
 	Private Sub LoadAutorisations(VpCard As String)
 	'-----------------------------------------------------------------------
@@ -1085,29 +1095,21 @@ Public Partial Class MainForm
 	'Commute la langue du titre des cartes
 	'-------------------------------------
 	Dim VpChild As TreeNode
-	Dim VpStr As String
-		If VpNode.Tag = "Card.Title" Then
-			For Each VpChild In VpNode.Nodes
-				VpStr = VpChild.Text
-				VpChild.Text = VpChild.Tag
-				VpChild.Tag = VpStr
-			Next VpChild
+		If VpNode.Tag.Key = "Card.Title" Then
+			If Me.mnuCardsFR.Checked Then
+				For Each VpChild In VpNode.Nodes
+					VpChild.Text = VpChild.Tag.Value2
+				Next VpChild
+			Else
+				For Each VpChild In VpNode.Nodes
+					VpChild.Text = VpChild.Tag.Value
+				Next VpChild
+			End If
 		Else
 			For Each VpChild In VpNode.Nodes
 				Call Me.ChangeLanguage(VpChild)
 			Next VpChild
 		End If
-	End Sub
-	Private Sub RecurFormatTitle(VpNode As TreeNode)
-	'----------------------------------------------------------
-	'Modifie les captions des noeuds en un titre plus explicite
-	'----------------------------------------------------------
-		If Not VpNode.Parent Is Nothing Then
-			VpNode.Text = clsModule.FormatTitle(VpNode.Parent.Tag, VpNode.Text)
-		End If
-		For Each VpChild As TreeNode In VpNode.Nodes
-			Call Me.RecurFormatTitle(VpChild)
-		Next VpChild
 	End Sub
 	Private Function FindImageIndex(VpTag As String, VpStr As String) As Integer
 	'-------------------------------------------------------------------------
@@ -1174,7 +1176,7 @@ Public Partial Class MainForm
 	'----------------------------------------------------------------------------------------------------------
 	Dim VpPreciseTransfert As frmTransfert
 	Dim VpTransfertResult As New clsTransfertResult
-	Dim VpCardName As String = IIf(Me.mnuCardsFR.Checked, VpNode.Tag.ToString, VpNode.Text)
+	Dim VpCardName As String = VpNode.Tag.Value
 	Dim VpSource As String
 	Dim VpSource2 As String
 	Dim VpFoil As Boolean
@@ -1641,11 +1643,7 @@ Public Partial Class MainForm
 		Me.mnuCardsFR.Checked = Not Me.mnuCardsFR.Checked
 		Me.mnuSort.Tag = False
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
-			If Me.mnuCardsFR.Checked Then
-				Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Text, True)
-			Else
-				Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag, False)
-			End If
+			Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked)
 		End If
 		Me.tvwExplore.BeginUpdate
 		Call Me.ChangeLanguage(Me.tvwExplore.Nodes.Item(0))
@@ -1657,7 +1655,7 @@ Public Partial Class MainForm
 	Dim VpSingle As Boolean = Me.IsSingleSource
 		If e.Button = System.Windows.Forms.MouseButtons.Right Then
 			If Not VpNode Is Nothing AndAlso Not VpNode.Parent Is Nothing Then
-				VpEN = ( VpNode.Parent.Tag = "Card.Title" )
+				VpEN = ( VpNode.Parent.Tag.Key = "Card.Title" )
 			End If
 			Me.mnuDeleteACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
 			Me.mnuMoveACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
@@ -1672,14 +1670,8 @@ Public Partial Class MainForm
 			Me.tvwExplore.SelectedNode = VpNode
 		End If
 	End Sub
-	Sub ManageSerieGrp(VpGrp1 As GroupBox, VpGrp2 As GroupBox, Optional VpHideDate As Boolean = False)
+	Sub ManageSerieGrp(VpGrp1 As GroupBox, VpGrp2 As GroupBox)
 		If Not VpGrp1.Visible Then
-'			Me.grpCarac.Dock = DockStyle.None
-'			VpGrp2.Dock = DockStyle.None
-'			VpGrp2.Visible = False
-'			VpGrp1.Dock = DockStyle.Top
-'			VpGrp1.Visible = True
-'			Me.grpCarac.Dock = DockStyle.Fill
 			Me.pnlProperties.SuspendLayout
 			VpGrp2.Dock = DockStyle.None
 			VpGrp2.Visible = False
@@ -1687,18 +1679,11 @@ Public Partial Class MainForm
 			VpGrp1.Visible = True
 			Me.pnlProperties.ResumeLayout
 		End If
-		Me.lblProp8.Visible = Not VpHideDate
-		Me.lblSerieDate.Visible = Not VpHideDate
-		If VpHideDate Then
-			Me.lblProp12.Text = "Cote couleur (total) :"
-		Else
-			Me.lblProp12.Text = "Cote édition (total) :"
-		End If
 	End Sub
 	Sub ManageCurSerie(VpNode As TreeNode)
 		If Not Me.IsMainReaderBusy Then
 			While Not VpNode.Parent Is Nothing
-				If VpNode.Parent.Tag = "Card.Series" Then
+				If VpNode.Parent.Tag.Key = "Card.Series" Then
 					Me.cboEdition.SelectedItem = VpNode.Text
 					Me.scrollStock.Visible = (Not Me.IsInAdvSearch) And Me.mnuDegroupFoils.Checked
 					Exit Sub
@@ -1711,12 +1696,14 @@ Public Partial Class MainForm
 	Sub TvwExploreAfterSelect(ByVal sender As Object, ByVal e As TreeViewEventArgs)
 	Dim VpTitle As String
 	Dim VpFoil As Boolean
+	Dim VpParent As TreeNode
+	Dim VpElderCriteria As String
 		If Not e.Node.Parent Is Nothing Then
 			Me.SuspendLayout
 			Me.cboEdition.Visible = False	'assez crade mais on dirait que le combobox ne tient pas compte du suspendlayout avec Aero
-			'Sélection d'un élément de type carte
-			If e.Node.Parent.Tag = "Card.Title" Then
-				VpTitle = IIf(Me.mnuCardsFR.Checked, e.Node.Tag, e.Node.Text)
+			'Sélection d'un élément de type 'carte'
+			If e.Node.Parent.Tag.Key = "Card.Title" Then
+				VpTitle = e.Node.Tag.Value
 				If VpTitle.EndsWith(clsModule.CgFoil2) Then
 					VpTitle = VpTitle.Replace(clsModule.CgFoil2, "")
 					VpFoil = True
@@ -1739,26 +1726,41 @@ Public Partial Class MainForm
 					Call Me.LoadAutorisations(VpTitle)
 				End If
 				Me.cmdHistPrices.Enabled = True
-			'Sélection d'un élément de type série
-			ElseIf e.Node.Parent.Tag = "Card.Series" Then
-				Me.cmdHistPrices.Enabled = False
-				Call Me.ManageSerieGrp(Me.grpSerie2, Me.grpSerie)
-				Call Me.LoadSerieCarac(e.Node.Text)
-				If Not Me.splitV2.Panel2Collapsed Then
-					Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text), Me.picScanCard)
-				End If
-				Call Me.LoadAutorisations("")
-			'Sélection d'un élément de type couleur
-			ElseIf e.Node.Parent.Tag = "Spell.Color" Then
-				Me.cmdHistPrices.Enabled = False
-				Call Me.ManageSerieGrp(Me.grpSerie2, Me.grpSerie, True)
-				Call Me.LoadColorCarac(clsModule.CgImgColors + e.Node.Text)
-				If Not Me.splitV2.Panel2Collapsed Then
-					Call clsModule.LoadScanCard(clsModule.CgImgColors + e.Node.Text, Me.picScanCard)
-				End If
-				Call Me.LoadAutorisations("")
 			Else
-				Me.cmdHistPrices.Enabled = False
+				'Préconstruction de la requête avec les conditions sur les critères des ancêtres
+				VpParent = e.Node
+				VpElderCriteria = ""
+				While Not VpParent.Parent Is Nothing
+					VpElderCriteria = VpElderCriteria + Me.ElderCriteria(VpParent.Tag.Value, VpParent.Parent.Tag.Key)
+					VpParent = VpParent.Parent
+				End While
+				'Sélection d'un élément de type 'série'
+				If e.Node.Parent.Tag.Key = "Card.Series" Then
+					Me.cmdHistPrices.Enabled = False
+					Call Me.ManageSerieGrp(Me.grpSerie2, Me.grpSerie)
+					Call Me.LoadCaracOther(e.Node.Tag.Value, clsModule.eModeCarac.Serie, VpElderCriteria)
+					If Not Me.splitV2.Panel2Collapsed Then
+						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text), Me.picScanCard)
+					End If
+					Call Me.LoadAutorisations("")
+				'Sélection d'un élément de type 'couleur'
+				ElseIf e.Node.Parent.Tag.Key = "Spell.Color" Then
+					Me.cmdHistPrices.Enabled = False
+					Call Me.ManageSerieGrp(Me.grpSerie2, Me.grpSerie)
+					Call Me.LoadCaracOther(clsModule.CgImgColors + e.Node.Text, clsModule.eModeCarac.Couleur, VpElderCriteria)
+					If Not Me.splitV2.Panel2Collapsed Then
+						Call clsModule.LoadScanCard(clsModule.CgImgColors + e.Node.Text, Me.picScanCard)
+					End If
+					Call Me.LoadAutorisations("")
+				'Sélection d'un élément de type 'type'
+				ElseIf e.Node.Parent.Tag.Key = "Card.Type" Then
+					Me.cmdHistPrices.Enabled = False
+					Call Me.ManageSerieGrp(Me.grpSerie2, Me.grpSerie)
+					Call Me.LoadCaracOther(e.Node.Text, clsModule.eModeCarac.Type, VpElderCriteria)
+					Call Me.LoadAutorisations("")
+				Else
+					Me.cmdHistPrices.Enabled = False
+				End If
 			End If
 			Me.cboEdition.Visible = True
 			Me.ResumeLayout
@@ -1770,7 +1772,8 @@ Public Partial Class MainForm
 		Call Me.MnuRefreshActivate(sender, e)
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpTitle As String = IIf(Me.mnuCardsFR.Checked, Me.tvwExplore.SelectedNode.Tag, Me.tvwExplore.SelectedNode.Text)
+	Dim VpTitle As String = Me.tvwExplore.SelectedNode.Tag.Value
+	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
 	Dim VpFoil As Boolean
 		If VpTitle.EndsWith(clsModule.CgFoil2) Then
 			VpTitle = VpTitle.Replace(clsModule.CgFoil2, "")
@@ -1780,11 +1783,11 @@ Public Partial Class MainForm
 		End If
 		Me.SuspendLayout
 		If Me.IsInAdvSearch Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, False, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+			Call clsModule.LoadCarac(Me, Me, VpTitle, False, , VpSerie)
 		ElseIf Me.chkClassement.GetItemChecked(0) Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSDecks, clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil)
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSDecks, VpSerie, VpFoil)
 		Else
-			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSCollection, clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil)
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSCollection, VpSerie, VpFoil)
 		End If
 		Me.ResumeLayout
 	End Sub
@@ -2214,7 +2217,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub ScrollStockScroll(sender As Object, e As ScrollEventArgs)
 	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
-	Dim VpCard As String = IIf(Me.mnuCardsFR.Checked, Me.tvwExplore.SelectedNode.Tag.ToString, Me.tvwExplore.SelectedNode.Text)
+	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpEncNbr As Integer
 	Dim VpFoil As Boolean
 		If VpCard.EndsWith(clsModule.CgFoil2) Then
@@ -2239,7 +2242,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub CmdHistPricesClick(sender As Object, e As EventArgs)
 	Dim VpPricesHistory As frmGrapher
-	Dim VpCardName As String = IIf(Me.mnuCardsFR.Checked, Me.tvwExplore.SelectedNode.Tag.ToString, Me.tvwExplore.SelectedNode.Text)
+	Dim VpCardName As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpFoil As Boolean
 		If clsModule.DBOK Then
 			If clsModule.HasPriceHistory Then

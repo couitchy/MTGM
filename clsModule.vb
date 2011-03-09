@@ -32,7 +32,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 24154
+	Public Const CgCodeLines As Integer   		= 24135
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -104,6 +104,7 @@ Public Module clsModule
 	Public Const CgErr4 As String				= "Le nombre maximal de courbes affichables a été atteint..." + vbCrLf + "Les suivantes seront ignorées."
 	Public Const CgErr5 As String				= "Le processus de mise à jour a été interrompu..."
 	Public Const CgErr6 As String				= "Le plug-in spécifié est introuvable..."
+	Public Const CgErr7 As String				= "Aucun critère de classement n'a été sélectionné..."
 	Public Const CgFExtO As String				= ".dck"
 	Public Const CgFExtN As String				= ".dk2"
 	Public Const CgFExtA As String				= ".dec"
@@ -189,6 +190,11 @@ Public Module clsModule
 		Excellent
 		Played
 		Poor
+	End Enum
+	Public Enum eModeCarac
+		Serie = 0
+		Couleur
+		Type
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
@@ -734,34 +740,6 @@ Public Module clsModule
 		Else
 			Return VpTrimSQL + VpAddendum
 		End If
-	End Function
-	Public Function ColorTo1(VpColor As String) As String
-	'----------------------------------------
-	'Description de la couleur en 1 caractère
-	'----------------------------------------
-		VpColor = VpColor.Replace(CgImgColors, "")
-		Select Case VpColor
-			Case "Noires"
-				Return "B"
-			Case "Vertes"
-				Return "G"
-			Case "Rouges"
-				Return "R"
-			Case "Bleues"
-				Return "U"
-			Case "Blanches"
-				Return "W"
-			Case "Terrains"
-				Return "L"
-			Case "Multicolores"
-				Return "M"
-			Case "Jetons"
-				Return "T"
-			Case "Incolores"
-				Return "A"
-			Case Else
-				Return ""
-		End Select
 	End Function
 	Public Function FormatTitle(VpTag As String, VpStr As String, Optional VpIsForTvw As Boolean = True) As String
 	'-------------------------------------------------------------------
