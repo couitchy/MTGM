@@ -55,6 +55,8 @@ Partial Class MainForm
 		Me.mnuSeparator1 = New System.Windows.Forms.ToolStripSeparator
 		Me.mnuMoveACard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMoveToCollection = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCopyACard = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCopyToCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuDeleteACard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator2 = New System.Windows.Forms.ToolStripSeparator
 		Me.mnuBuy = New System.Windows.Forms.ToolStripMenuItem
@@ -112,6 +114,7 @@ Partial Class MainForm
 		Me.mnuAdvancedSearch = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator8 = New System.Windows.Forms.ToolStripSeparator
 		Me.mnuExcelGen = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuWordGen = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPerfs = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSimu = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuStats = New System.Windows.Forms.ToolStripMenuItem
@@ -137,6 +140,7 @@ Partial Class MainForm
 		Me.btAdvancedSearch = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
 		Me.btExcelGen = New System.Windows.Forms.ToolStripButton
+		Me.btWordGen = New System.Windows.Forms.ToolStripButton
 		Me.btSimu = New System.Windows.Forms.ToolStripButton
 		Me.btStats = New System.Windows.Forms.ToolStripButton
 		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton
@@ -192,8 +196,6 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.mnuCopyACard = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCopyToCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -371,7 +373,7 @@ Partial Class MainForm
 		'
 		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 236)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 214)
 		'
 		'mnuCardsFR
 		'
@@ -450,9 +452,25 @@ Partial Class MainForm
 		'mnuMoveToCollection
 		'
 		Me.mnuMoveToCollection.Name = "mnuMoveToCollection"
-		Me.mnuMoveToCollection.Size = New System.Drawing.Size(152, 22)
+		Me.mnuMoveToCollection.Size = New System.Drawing.Size(128, 22)
 		Me.mnuMoveToCollection.Text = "Collection"
 		AddHandler Me.mnuMoveToCollection.Click, AddressOf Me.MnuMoveACardActivate
+		'
+		'mnuCopyACard
+		'
+		Me.mnuCopyACard.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCopyToCollection})
+		Me.mnuCopyACard.Enabled = false
+		Me.mnuCopyACard.Image = CType(resources.GetObject("mnuCopyACard.Image"),System.Drawing.Image)
+		Me.mnuCopyACard.Name = "mnuCopyACard"
+		Me.mnuCopyACard.Size = New System.Drawing.Size(233, 22)
+		Me.mnuCopyACard.Text = "Copier vers..."
+		'
+		'mnuCopyToCollection
+		'
+		Me.mnuCopyToCollection.Name = "mnuCopyToCollection"
+		Me.mnuCopyToCollection.Size = New System.Drawing.Size(128, 22)
+		Me.mnuCopyToCollection.Text = "Collection"
+		AddHandler Me.mnuCopyToCollection.Click, AddressOf Me.MnuCopyACardActivate
 		'
 		'mnuDeleteACard
 		'
@@ -830,7 +848,7 @@ Partial Class MainForm
 		'
 		'mnuBigSearch
 		'
-		Me.mnuBigSearch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuStdSearch, Me.mnuAdvancedSearch, Me.mnuSeparator8, Me.mnuExcelGen, Me.mnuPerfs, Me.mnuSimu, Me.mnuStats, Me.mnuMV})
+		Me.mnuBigSearch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuStdSearch, Me.mnuAdvancedSearch, Me.mnuSeparator8, Me.mnuExcelGen, Me.mnuWordGen, Me.mnuPerfs, Me.mnuSimu, Me.mnuStats, Me.mnuMV})
 		Me.mnuBigSearch.Name = "mnuBigSearch"
 		Me.mnuBigSearch.Size = New System.Drawing.Size(50, 20)
 		Me.mnuBigSearch.Text = "Outils"
@@ -839,7 +857,7 @@ Partial Class MainForm
 		'
 		Me.mnuStdSearch.Image = CType(resources.GetObject("mnuStdSearch.Image"),System.Drawing.Image)
 		Me.mnuStdSearch.Name = "mnuStdSearch"
-		Me.mnuStdSearch.Size = New System.Drawing.Size(231, 22)
+		Me.mnuStdSearch.Size = New System.Drawing.Size(258, 22)
 		Me.mnuStdSearch.Text = "Rechercher dans l'explorateur"
 		AddHandler Me.mnuStdSearch.Click, AddressOf Me.MnuStdSearchActivate
 		'
@@ -847,28 +865,36 @@ Partial Class MainForm
 		'
 		Me.mnuAdvancedSearch.Image = CType(resources.GetObject("mnuAdvancedSearch.Image"),System.Drawing.Image)
 		Me.mnuAdvancedSearch.Name = "mnuAdvancedSearch"
-		Me.mnuAdvancedSearch.Size = New System.Drawing.Size(231, 22)
+		Me.mnuAdvancedSearch.Size = New System.Drawing.Size(258, 22)
 		Me.mnuAdvancedSearch.Text = "Recherche avancée"
 		AddHandler Me.mnuAdvancedSearch.Click, AddressOf Me.MnuAdvancedSearchActivate
 		'
 		'mnuSeparator8
 		'
 		Me.mnuSeparator8.Name = "mnuSeparator8"
-		Me.mnuSeparator8.Size = New System.Drawing.Size(228, 6)
+		Me.mnuSeparator8.Size = New System.Drawing.Size(255, 6)
 		'
 		'mnuExcelGen
 		'
 		Me.mnuExcelGen.Image = CType(resources.GetObject("mnuExcelGen.Image"),System.Drawing.Image)
 		Me.mnuExcelGen.Name = "mnuExcelGen"
-		Me.mnuExcelGen.Size = New System.Drawing.Size(231, 22)
-		Me.mnuExcelGen.Text = "Génération liste Excel"
+		Me.mnuExcelGen.Size = New System.Drawing.Size(258, 22)
+		Me.mnuExcelGen.Text = "Génération d'une liste sous Excel"
 		AddHandler Me.mnuExcelGen.Click, AddressOf Me.MnuExcelGenActivate
+		'
+		'mnuWordGen
+		'
+		Me.mnuWordGen.Image = CType(resources.GetObject("mnuWordGen.Image"),System.Drawing.Image)
+		Me.mnuWordGen.Name = "mnuWordGen"
+		Me.mnuWordGen.Size = New System.Drawing.Size(258, 22)
+		Me.mnuWordGen.Text = "Génération de vignettes sous Word"
+		AddHandler Me.mnuWordGen.Click, AddressOf Me.MnuWordGenClick
 		'
 		'mnuPerfs
 		'
 		Me.mnuPerfs.Image = CType(resources.GetObject("mnuPerfs.Image"),System.Drawing.Image)
 		Me.mnuPerfs.Name = "mnuPerfs"
-		Me.mnuPerfs.Size = New System.Drawing.Size(231, 22)
+		Me.mnuPerfs.Size = New System.Drawing.Size(258, 22)
 		Me.mnuPerfs.Text = "Comptage Victoires / Défaites"
 		AddHandler Me.mnuPerfs.Click, AddressOf Me.MnuPerfsActivate
 		'
@@ -876,7 +902,7 @@ Partial Class MainForm
 		'
 		Me.mnuSimu.Image = CType(resources.GetObject("mnuSimu.Image"),System.Drawing.Image)
 		Me.mnuSimu.Name = "mnuSimu"
-		Me.mnuSimu.Size = New System.Drawing.Size(231, 22)
+		Me.mnuSimu.Size = New System.Drawing.Size(258, 22)
 		Me.mnuSimu.Text = "Simulations sur la sélection"
 		AddHandler Me.mnuSimu.Click, AddressOf Me.MnuSimuActivate
 		'
@@ -884,7 +910,7 @@ Partial Class MainForm
 		'
 		Me.mnuStats.Image = CType(resources.GetObject("mnuStats.Image"),System.Drawing.Image)
 		Me.mnuStats.Name = "mnuStats"
-		Me.mnuStats.Size = New System.Drawing.Size(231, 22)
+		Me.mnuStats.Size = New System.Drawing.Size(258, 22)
 		Me.mnuStats.Text = "Statistiques sur la sélection"
 		AddHandler Me.mnuStats.Click, AddressOf Me.MnuStatsActivate
 		'
@@ -892,7 +918,7 @@ Partial Class MainForm
 		'
 		Me.mnuMV.Image = CType(resources.GetObject("mnuMV.Image"),System.Drawing.Image)
 		Me.mnuMV.Name = "mnuMV"
-		Me.mnuMV.Size = New System.Drawing.Size(231, 22)
+		Me.mnuMV.Size = New System.Drawing.Size(258, 22)
 		Me.mnuMV.Text = "Achats sur Magic-Ville"
 		AddHandler Me.mnuMV.Click, AddressOf Me.MnuMVClick
 		'
@@ -987,7 +1013,7 @@ Partial Class MainForm
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBSelect, Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBSelect, Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(757, 25)
@@ -1061,8 +1087,18 @@ Partial Class MainForm
 		Me.btExcelGen.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btExcelGen.Name = "btExcelGen"
 		Me.btExcelGen.Size = New System.Drawing.Size(23, 22)
-		Me.btExcelGen.Text = "Génération liste Excel"
+		Me.btExcelGen.Text = "Génération d'une liste sous Excel"
 		AddHandler Me.btExcelGen.Click, AddressOf Me.MnuExcelGenActivate
+		'
+		'btWordGen
+		'
+		Me.btWordGen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btWordGen.Image = CType(resources.GetObject("btWordGen.Image"),System.Drawing.Image)
+		Me.btWordGen.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btWordGen.Name = "btWordGen"
+		Me.btWordGen.Size = New System.Drawing.Size(23, 22)
+		Me.btWordGen.Text = "Génération de vignettes sous Word"
+		AddHandler Me.btWordGen.Click, AddressOf Me.MnuWordGenClick
 		'
 		'btSimu
 		'
@@ -1587,7 +1623,7 @@ Partial Class MainForm
 		Me.lblProp12.BackColor = System.Drawing.Color.Transparent
 		Me.lblProp12.Location = New System.Drawing.Point(5, 55)
 		Me.lblProp12.Name = "lblProp12"
-		Me.lblProp12.Size = New System.Drawing.Size(98, 13)
+		Me.lblProp12.Size = New System.Drawing.Size(64, 13)
 		Me.lblProp12.TabIndex = 10
 		Me.lblProp12.Text = "Cote totale :"
 		'
@@ -1691,22 +1727,6 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
 		'
-		'mnuCopyACard
-		'
-		Me.mnuCopyACard.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCopyToCollection})
-		Me.mnuCopyACard.Enabled = false
-		Me.mnuCopyACard.Image = CType(resources.GetObject("mnuCopyACard.Image"),System.Drawing.Image)
-		Me.mnuCopyACard.Name = "mnuCopyACard"
-		Me.mnuCopyACard.Size = New System.Drawing.Size(233, 22)
-		Me.mnuCopyACard.Text = "Copier vers..."
-		'
-		'mnuCopyToCollection
-		'
-		Me.mnuCopyToCollection.Name = "mnuCopyToCollection"
-		Me.mnuCopyToCollection.Size = New System.Drawing.Size(152, 22)
-		Me.mnuCopyToCollection.Text = "Collection"
-		AddHandler Me.mnuCopyToCollection.Click, AddressOf Me.MnuCopyACardActivate
-		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1761,6 +1781,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btWordGen As System.Windows.Forms.ToolStripButton
+	Private mnuWordGen As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCopyToCollection As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCopyACard As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPlugResourcer As System.Windows.Forms.ToolStripMenuItem

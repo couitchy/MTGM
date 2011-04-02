@@ -160,6 +160,10 @@
       <DependentUpon>frmUpdateContenu.vb</DependentUpon>
     </Compile>
     <Compile Include="frmUpdateContenu.vb" />
+    <Compile Include="frmWord.Designer.vb">
+      <DependentUpon>frmWord.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmWord.vb" />
     <Compile Include="frmXL.Designer.vb">
       <DependentUpon>frmXL.vb</DependentUpon>
     </Compile>
@@ -232,6 +236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmUpdateContenu.resx">
       <DependentUpon>frmUpdateContenu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmWord.resx">
+      <DependentUpon>frmWord.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmXL.resx">
       <DependentUpon>frmXL.vb</DependentUpon>

@@ -2065,6 +2065,13 @@ Public Partial Class MainForm
 			VpXL.ShowDialog
 		End If
 	End Sub
+	Sub MnuWordGenClick(sender As Object, e As EventArgs)
+	Dim VpWord As frmWord
+		If clsModule.DBOK Then
+			VpWord = New frmWord(Me)
+			VpWord.ShowDialog
+		End If
+	End Sub
 	Sub MnuRemEditionActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpDeletor As frmDeleteEdition
 		If clsModule.DBOK Then

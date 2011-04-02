@@ -32,7 +32,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 24135
+	Public Const CgCodeLines As Integer   		= 24640
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -44,6 +44,10 @@ Public Module clsModule
 	Public Const CgMissingTable As Long			= -2147217865
 	Public Const CgImgMinLength As Long			= 296297676
 	Public Const CgTimeOut As Integer			= 5
+	Public Const CgMTGCardWidth As Integer		= 63
+	Public Const CgMTGCardHeight As Integer		= 88
+	Public Const CgXMargin As Integer			= 5
+	Public Const CgYMargin As Integer			= 8
 	Public Const CgIcons As String        		= "\Ressources"
 	Public Const CgMagicBack As String      	= "\Ressources\Magic Back.jpg"
 	Public Const CgMDB As String				= "\Cartes\Magic DB.mdb"
@@ -1480,6 +1484,28 @@ Public Module clsModule
 		End With
 		VpCbo.Sorted = True
 	End Sub
+	Public Function ExtractPictures(VpSaveFolder As String, VpSource As String, VpRestriction As String) As Integer
+	'-------------------------------------------------------------------------------------------------
+	'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection
+	'-------------------------------------------------------------------------------------------------
+	Dim VpSQL As String
+	Dim VpCards As New ArrayList
+		VpSQL = "Select Distinct Card.Title From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where "
+		VpSQL = VpSQL + VpRestriction
+		VpSQL = clsModule.TrimQuery(VpSQL)
+		VgDBCommand.CommandText = VpSQL
+		VgDBReader = VgDBcommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpCards.Add(.GetString(0))
+			End While
+			.Close
+		End With	
+		For Each VpCard As String In VpCards
+			Call clsModule.LoadScanCard(VpCard, Nothing, True, VpSaveFolder)
+		Next VpCard
+		Return VpCards.Count
+	End Function		
 	Public Sub LoadScanCard(VpTitle As String, VppicScanCard As PictureBox, Optional VpSave As Boolean = False, Optional VpSaveFolder As String = "")
 	'---------------------------------------------------------------------------------
 	'Charge l'image scannérisée de la carte recherchée dans la zone prévue à cet effet

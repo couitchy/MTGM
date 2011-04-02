@@ -208,27 +208,6 @@ Public Partial Class frmXL
 		VpExcelApp.DisplayAlerts = True
 		System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR")
 	End Sub
-	Private Sub ExtractPictures(VpSaveFolder As String)
-	'-------------------------------------------------------------------------------------------------
-	'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection
-	'-------------------------------------------------------------------------------------------------
-	Dim VpSQL As String
-	Dim VpCards As New ArrayList
-		VpSQL = "Select Distinct Card.Title From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where "
-		VpSQL = VpSQL + VmRestriction
-		VpSQL = clsModule.TrimQuery(VpSQL)
-		VgDBCommand.CommandText = VpSQL
-		VgDBReader = VgDBcommand.ExecuteReader
-		With VgDBReader
-			While .Read
-				VpCards.Add(.GetString(0))
-			End While
-			.Close
-		End With	
-		For Each VpCard As String In VpCards
-			Call clsModule.LoadScanCard(VpCard, Nothing, True, VpSaveFolder)
-		Next VpCard
-	End Sub	
 	Private Sub SetCheckState
 	Dim VpAll As Boolean = True
 	Dim VpNone As Boolean = True
@@ -268,7 +247,7 @@ Public Partial Class frmXL
 	Sub CmdXLClick(sender As Object, e As EventArgs)
 		Call Me.ExcelGen
 		If Me.chkSaveImg.Checked Then
-			Call Me.ExtractPictures(Me.txtSaveImg.Text)
+			Call clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
 			Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
 		End If
 	End Sub
