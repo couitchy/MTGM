@@ -283,7 +283,7 @@ Partial Class frmExport
 		'
 		'dlgFileBrowser
 		'
-		Me.dlgFileBrowser.Filter = "Fichiers de deck (*.dck) | *.dck |Fichiers de deck v2 (*.dk2) | *.dk2"
+		Me.dlgFileBrowser.Filter = "Fichiers de deck v2 (*.dk2) | *.dk2|Fichiers de deck (*.dck) | *.dck"
 		Me.dlgFileBrowser.Title = "Sélectionner le fichier à importer"
 		'
 		'frmExport

@@ -28,7 +28,7 @@ Public Partial Class frmStats
 	Private VmOwnerChildren As clsChildren
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmOwnerChildren = VpOwner.MyChildren
 		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)
@@ -291,7 +291,7 @@ Public Partial Class frmStats
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				While .Read
-					VpTitle = .GetString(0) + " (" + .GetString(1) + IIf(.GetBoolean(4), " foil)", ")")
+					VpTitle = .GetString(0) + " (" + .GetString(1) + If(.GetBoolean(4), " foil)", ")")
 					If VpTitle <> VpLastTitle Then
 						If VpHist.Count > 0 Then
 							If VpGrapher.GraphsCount >= clsModule.CgMaxGraphs Then
@@ -377,7 +377,7 @@ Public Partial Class frmStats
 	'------------------
 	Dim VpSQL As String
 		VpSQL = "Select " + VpQuery + " From (((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) " + VpTblCreature
-		VpSQL = VpSQL + IIf(VpSQL.EndsWith("And "), "", "Where ")
+		VpSQL = VpSQL + If(VpSQL.EndsWith("And "), "", "Where ")
 		VpSQL = VpSQL + VmRestriction
 		VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + VpSort
 		Return VgDBCommand.ExecuteScalar

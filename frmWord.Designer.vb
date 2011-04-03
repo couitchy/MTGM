@@ -36,10 +36,6 @@ Partial Class frmWord
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmWord))
 		Me.cbarWord = New TD.SandBar.ContainerBar
 		Me.pnlWord = New TD.SandBar.ContainerBarClientPanel
-		Me.grpVignettes = New System.Windows.Forms.GroupBox
-		Me.chklstWord = New System.Windows.Forms.CheckedListBox
-		Me.chkAllNone = New System.Windows.Forms.CheckBox
-		Me.lblWord = New System.Windows.Forms.Label
 		Me.cmdWord = New System.Windows.Forms.Button
 		Me.grpOptions = New System.Windows.Forms.GroupBox
 		Me.prgAvance = New System.Windows.Forms.ProgressBar
@@ -48,13 +44,17 @@ Partial Class frmWord
 		Me.chkSaveImg = New System.Windows.Forms.CheckBox
 		Me.chkWordShow = New System.Windows.Forms.CheckBox
 		Me.chkSingle = New System.Windows.Forms.CheckBox
+		Me.grpVignettes = New System.Windows.Forms.GroupBox
+		Me.chklstWord = New System.Windows.Forms.CheckedListBox
+		Me.chkAllNone = New System.Windows.Forms.CheckBox
+		Me.lblWord = New System.Windows.Forms.Label
 		Me.btVignettes = New TD.SandBar.ButtonItem
 		Me.btAdvance = New TD.SandBar.ButtonItem
 		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
 		Me.cbarWord.SuspendLayout
 		Me.pnlWord.SuspendLayout
-		Me.grpVignettes.SuspendLayout
 		Me.grpOptions.SuspendLayout
+		Me.grpVignettes.SuspendLayout
 		Me.SuspendLayout
 		'
 		'cbarWord
@@ -69,7 +69,7 @@ Partial Class frmWord
 		Me.cbarWord.Location = New System.Drawing.Point(0, 0)
 		Me.cbarWord.Movable = false
 		Me.cbarWord.Name = "cbarWord"
-		Me.cbarWord.Size = New System.Drawing.Size(284, 262)
+		Me.cbarWord.Size = New System.Drawing.Size(284, 275)
 		Me.cbarWord.TabIndex = 0
 		Me.cbarWord.Text = "Génération Word"
 		AddHandler Me.cbarWord.VisibleChanged, AddressOf Me.CbarWordVisibleChanged
@@ -80,65 +80,17 @@ Partial Class frmWord
 		'pnlWord
 		'
 		Me.pnlWord.Controls.Add(Me.cmdWord)
-		Me.pnlWord.Controls.Add(Me.grpOptions)
 		Me.pnlWord.Controls.Add(Me.grpVignettes)
+		Me.pnlWord.Controls.Add(Me.grpOptions)
 		Me.pnlWord.Location = New System.Drawing.Point(2, 49)
 		Me.pnlWord.Name = "pnlWord"
-		Me.pnlWord.Size = New System.Drawing.Size(280, 211)
+		Me.pnlWord.Size = New System.Drawing.Size(280, 224)
 		Me.pnlWord.TabIndex = 0
-		'
-		'grpVignettes
-		'
-		Me.grpVignettes.Controls.Add(Me.chklstWord)
-		Me.grpVignettes.Controls.Add(Me.chkAllNone)
-		Me.grpVignettes.Controls.Add(Me.lblWord)
-		Me.grpVignettes.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpVignettes.Location = New System.Drawing.Point(0, 0)
-		Me.grpVignettes.Name = "grpVignettes"
-		Me.grpVignettes.Size = New System.Drawing.Size(280, 211)
-		Me.grpVignettes.TabIndex = 18
-		Me.grpVignettes.TabStop = false
-		'
-		'chklstWord
-		'
-		Me.chklstWord.CheckOnClick = true
-		Me.chklstWord.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.chklstWord.FormattingEnabled = true
-		Me.chklstWord.Location = New System.Drawing.Point(3, 49)
-		Me.chklstWord.Name = "chklstWord"
-		Me.chklstWord.Size = New System.Drawing.Size(274, 124)
-		Me.chklstWord.TabIndex = 13
-		AddHandler Me.chklstWord.SelectedValueChanged, AddressOf Me.ChklstWordSelectedValueChanged
-		'
-		'chkAllNone
-		'
-		Me.chkAllNone.Checked = true
-		Me.chkAllNone.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.chkAllNone.Location = New System.Drawing.Point(3, 183)
-		Me.chkAllNone.Name = "chkAllNone"
-		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
-		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
-		Me.chkAllNone.TabIndex = 12
-		Me.chkAllNone.Text = "Sélectionner tout"
-		Me.chkAllNone.UseVisualStyleBackColor = true
-		AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
-		'
-		'lblWord
-		'
-		Me.lblWord.BackColor = System.Drawing.Color.Transparent
-		Me.lblWord.Dock = System.Windows.Forms.DockStyle.Top
-		Me.lblWord.Location = New System.Drawing.Point(3, 16)
-		Me.lblWord.Name = "lblWord"
-		Me.lblWord.Size = New System.Drawing.Size(274, 33)
-		Me.lblWord.TabIndex = 5
-		Me.lblWord.Text = "Sélectionnez les cartes que vous souhaitez faire apparaître en vignettes sous Wor"& _ 
-		"d :"
 		'
 		'cmdWord
 		'
 		Me.cmdWord.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdWord.Location = New System.Drawing.Point(0, 188)
+		Me.cmdWord.Location = New System.Drawing.Point(0, 201)
 		Me.cmdWord.Name = "cmdWord"
 		Me.cmdWord.Size = New System.Drawing.Size(280, 23)
 		Me.cmdWord.TabIndex = 13
@@ -157,21 +109,21 @@ Partial Class frmWord
 		Me.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpOptions.Location = New System.Drawing.Point(0, 0)
 		Me.grpOptions.Name = "grpOptions"
-		Me.grpOptions.Size = New System.Drawing.Size(280, 211)
+		Me.grpOptions.Size = New System.Drawing.Size(280, 224)
 		Me.grpOptions.TabIndex = 17
 		Me.grpOptions.TabStop = false
 		Me.grpOptions.Visible = false
 		'
 		'prgAvance
 		'
-		Me.prgAvance.Location = New System.Drawing.Point(39, 26)
+		Me.prgAvance.Location = New System.Drawing.Point(39, 36)
 		Me.prgAvance.Name = "prgAvance"
 		Me.prgAvance.Size = New System.Drawing.Size(212, 23)
 		Me.prgAvance.TabIndex = 7
 		'
 		'cmdSaveImg
 		'
-		Me.cmdSaveImg.Location = New System.Drawing.Point(231, 144)
+		Me.cmdSaveImg.Location = New System.Drawing.Point(231, 154)
 		Me.cmdSaveImg.Name = "cmdSaveImg"
 		Me.cmdSaveImg.Size = New System.Drawing.Size(20, 20)
 		Me.cmdSaveImg.TabIndex = 6
@@ -181,7 +133,7 @@ Partial Class frmWord
 		'
 		'txtSaveImg
 		'
-		Me.txtSaveImg.Location = New System.Drawing.Point(59, 144)
+		Me.txtSaveImg.Location = New System.Drawing.Point(59, 154)
 		Me.txtSaveImg.Name = "txtSaveImg"
 		Me.txtSaveImg.ReadOnly = true
 		Me.txtSaveImg.Size = New System.Drawing.Size(166, 20)
@@ -193,7 +145,7 @@ Partial Class frmWord
 		Me.chkSaveImg.Checked = true
 		Me.chkSaveImg.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkSaveImg.Enabled = false
-		Me.chkSaveImg.Location = New System.Drawing.Point(39, 121)
+		Me.chkSaveImg.Location = New System.Drawing.Point(39, 131)
 		Me.chkSaveImg.Name = "chkSaveImg"
 		Me.chkSaveImg.Size = New System.Drawing.Size(204, 17)
 		Me.chkSaveImg.TabIndex = 4
@@ -203,7 +155,7 @@ Partial Class frmWord
 		'chkWordShow
 		'
 		Me.chkWordShow.AutoSize = true
-		Me.chkWordShow.Location = New System.Drawing.Point(39, 98)
+		Me.chkWordShow.Location = New System.Drawing.Point(39, 108)
 		Me.chkWordShow.Name = "chkWordShow"
 		Me.chkWordShow.Size = New System.Drawing.Size(197, 17)
 		Me.chkWordShow.TabIndex = 3
@@ -213,12 +165,60 @@ Partial Class frmWord
 		'chkSingle
 		'
 		Me.chkSingle.AutoSize = true
-		Me.chkSingle.Location = New System.Drawing.Point(39, 75)
+		Me.chkSingle.Location = New System.Drawing.Point(39, 85)
 		Me.chkSingle.Name = "chkSingle"
 		Me.chkSingle.Size = New System.Drawing.Size(145, 17)
 		Me.chkSingle.TabIndex = 2
 		Me.chkSingle.Text = "Vignette unique par carte"
 		Me.chkSingle.UseVisualStyleBackColor = true
+		'
+		'grpVignettes
+		'
+		Me.grpVignettes.Controls.Add(Me.chklstWord)
+		Me.grpVignettes.Controls.Add(Me.chkAllNone)
+		Me.grpVignettes.Controls.Add(Me.lblWord)
+		Me.grpVignettes.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grpVignettes.Location = New System.Drawing.Point(0, 0)
+		Me.grpVignettes.Name = "grpVignettes"
+		Me.grpVignettes.Size = New System.Drawing.Size(280, 224)
+		Me.grpVignettes.TabIndex = 18
+		Me.grpVignettes.TabStop = false
+		'
+		'chklstWord
+		'
+		Me.chklstWord.CheckOnClick = true
+		Me.chklstWord.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chklstWord.FormattingEnabled = true
+		Me.chklstWord.Location = New System.Drawing.Point(3, 49)
+		Me.chklstWord.Name = "chklstWord"
+		Me.chklstWord.Size = New System.Drawing.Size(274, 139)
+		Me.chklstWord.TabIndex = 13
+		AddHandler Me.chklstWord.SelectedValueChanged, AddressOf Me.ChklstWordSelectedValueChanged
+		'
+		'chkAllNone
+		'
+		Me.chkAllNone.Checked = true
+		Me.chkAllNone.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.chkAllNone.Location = New System.Drawing.Point(3, 196)
+		Me.chkAllNone.Name = "chkAllNone"
+		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
+		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
+		Me.chkAllNone.TabIndex = 12
+		Me.chkAllNone.Text = "Sélectionner tout"
+		Me.chkAllNone.UseVisualStyleBackColor = true
+		AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
+		'
+		'lblWord
+		'
+		Me.lblWord.BackColor = System.Drawing.Color.Transparent
+		Me.lblWord.Dock = System.Windows.Forms.DockStyle.Top
+		Me.lblWord.Location = New System.Drawing.Point(3, 16)
+		Me.lblWord.Name = "lblWord"
+		Me.lblWord.Size = New System.Drawing.Size(274, 33)
+		Me.lblWord.TabIndex = 5
+		Me.lblWord.Text = "Sélectionnez les cartes que vous souhaitez faire apparaître en vignettes sous Wor"& _ 
+		"d :"
 		'
 		'btVignettes
 		'
@@ -240,7 +240,7 @@ Partial Class frmWord
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(284, 262)
+		Me.ClientSize = New System.Drawing.Size(284, 275)
 		Me.Controls.Add(Me.cbarWord)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Name = "frmWord"
@@ -250,9 +250,9 @@ Partial Class frmWord
 		AddHandler Load, AddressOf Me.FrmWordLoad
 		Me.cbarWord.ResumeLayout(false)
 		Me.pnlWord.ResumeLayout(false)
-		Me.grpVignettes.ResumeLayout(false)
 		Me.grpOptions.ResumeLayout(false)
 		Me.grpOptions.PerformLayout
+		Me.grpVignettes.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
 	Private prgAvance As System.Windows.Forms.ProgressBar

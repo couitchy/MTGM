@@ -32,7 +32,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 24640
+	Public Const CgCodeLines As Integer   		= 24677
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -1107,7 +1107,7 @@ Public Module clsModule
 		Call clsModule.DownloadNow(New Uri(clsModule.CgURL7), clsModule.CgHSTFile)
 		'Vérification horodatage
 		Try
-			VpRequest = WebRequest.Create(IIf(VpBeta, clsModule.CgURL1B, clsModule.CgURL1))
+			VpRequest = WebRequest.Create(If(VpBeta, clsModule.CgURL1B, clsModule.CgURL1))
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			'Lecture du fichier horodaté sur Internet
 			VpAnswer.Read(VpBuf, 0, 19)
@@ -1115,8 +1115,8 @@ Public Module clsModule
 			'Si version plus récente
 			If DateTime.Compare(File.GetLastWriteTimeUtc(Application.ExecutablePath), VgRemoteDate) < 0 Then
 				VgTray.Visible = True
-				VgTray.Tag = IIf(VpBeta, eUpdateType.Beta, eUpdateType.Release)
-				VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + IIf(VpBeta, " BETA", ""), "Une mise à jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la télécharger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
+				VgTray.Tag = If(VpBeta, eUpdateType.Beta, eUpdateType.Release)
+				VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + If(VpBeta, " BETA", ""), "Une mise à jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la télécharger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
 			ElseIf VpExplicit
 				If VpBeta Then
 					Call clsModule.ShowInformation("Aucune version bêta postérieure à la dernière release n'est disponible pour l'instant...")
@@ -1185,7 +1185,7 @@ Public Module clsModule
 			MainForm.VgMe.IsDownloadInProgress = True
 			Call MainForm.VgMe.StatusText(clsModule.CgDL2, True)
 			Try
-				VgClient.DownloadFileAsync(VpURI, IIf(VpBaseDir, Application.StartupPath + VpOutput, VpOutput))
+				VgClient.DownloadFileAsync(VpURI, If(VpBaseDir, Application.StartupPath + VpOutput, VpOutput))
 				MainForm.VgMe.btDownload.Visible = True
 				MainForm.VgMe.btDownload.Tag = Now
 			Catch
@@ -1265,7 +1265,7 @@ Public Module clsModule
 		Else
 			'Le type de la carte est inconnu à priori, on suppose par défaut que c'est une créature
 			If VpSource <> "" Then
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + IIf(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
 				VpSQL = VpSQL + VpMainForm.Restriction
 			Else
 				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
@@ -1276,7 +1276,7 @@ Public Module clsModule
 			If Not VgDBReader.HasRows Then
 				VgDBReader.Close
 				If VpSource <> "" Then
-					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + IIf(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
+					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
 					VpSQL = VpSQL + VpMainForm.Restriction
 				Else
 					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
@@ -1328,11 +1328,11 @@ Public Module clsModule
 				Else
 					VpForm.lblStock.Text = ""
 				End If
-				If .GetValue(VgDBReader.GetOrdinal(IIf(VpFoil, "FoilPrice", "Price"))) Is DBNull.Value OrElse .GetValue(VgDBReader.GetOrdinal(IIf(VpFoil, "FoilPrice", "Price"))) = 0 Then
+				If .GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) Is DBNull.Value OrElse .GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) = 0 Then
 					VpForm.lblPrix.Text = "N/C"
 				Else
 					'VpForm.lblProp5.Text = "Prix (" + .GetDateTime(VgDBReader.GetOrdinal("PriceDate")).ToShortDateString + ") :"
-					VpForm.lblPrix.Text = Format(.GetValue(VgDBReader.GetOrdinal(IIf(VpFoil, "FoilPrice", "Price"))), "0.00") + " €"
+					VpForm.lblPrix.Text = Format(.GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))), "0.00") + " €"
 				End If
 				VpForm.lblRarete.Text = clsModule.FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
 				If VpMainForm.mnuCardsFR.Checked Then

@@ -30,7 +30,7 @@ Public Partial Class frmSearch
 	Private VmKeyChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmOwner = VpOwner
 		Me.cboSearchType.SelectedIndex = CInt(VgOptions.VgSettings.DefaultSearchCriterion)
@@ -71,12 +71,12 @@ Public Partial Class frmSearch
 		End If
 		'Recherche restreinte aux cartes présentes dans l'arborescence
 		If Me.chkRestriction.Checked Then
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + IIf(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
 			VpSQL = VpSQL + VmRestriction
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche étendue (toutes les cartes de la base de données)
 		Else
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + IIf(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
 		End If
 		Try
 			'Requête effective
@@ -193,7 +193,7 @@ Public Partial Class frmSearch
 		If Not Me.chkRestriction.Checked Then
 			VpSource = ""
 		Else
-			VpSource = IIf(VmOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+			VpSource = If(VmOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		End If
 		Me.lstResult.Tag = VpTitle
 		Me.grpSerie.Tag = VpSource

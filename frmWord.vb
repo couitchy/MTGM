@@ -25,7 +25,7 @@ Public Partial Class frmWord
 	Private VmBusy As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		If VmRestrictionTXT.Length > 31 Then
@@ -76,28 +76,32 @@ Public Partial Class frmWord
 			VpLeft = 0
 			VpCount = 0
 			While .Read
-				'Remplissage				
-				If Me.chklstWord.CheckedItems.Contains(.GetString(0)) Then	'Vérifie que la carte courante fait partie de celles à ajouter				
-					For VpI As Integer = 1 To If(Me.chkSingle.Checked, 1, .GetValue(1))
-						Application.DoEvents
-	 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + .GetString(0).Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg", False, True, 1, 1, 1, 1)
-	 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth)
-	 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight)
-	 					VpPicture.Top = VpTop
-	 					VpPicture.Left = VpLeft
-	 					VpCount = VpCount + 1
-	 					If VpCount Mod 9 = 0 Then
-	 						VpWordApp.Selection.InsertBreak
-	 						VpWordApp.Selection.MoveUp
-	 						VpLeft = 0
-	 						VpTop = 0
-	 					ElseIf VpCount Mod 3 = 0 Then
-	 						VpLeft = 0
-	 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight + clsModule.CgYMargin)
-	 					Else
-	 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth + clsModule.CgXMargin)
-	 					End If
-	 				Next VpI
+				'Remplissage
+				If Me.chklstWord.CheckedItems.Contains(.GetString(0)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
+					Try
+						For VpI As Integer = 1 To If(Me.chkSingle.Checked, 1, .GetValue(1))
+							Application.DoEvents
+		 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + .GetString(0).Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg", False, True, 1, 1, 1, 1)
+		 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth)
+		 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight)
+		 					VpPicture.Top = VpTop
+		 					VpPicture.Left = VpLeft
+		 					VpCount = VpCount + 1
+		 					If VpCount Mod 9 = 0 Then
+		 						VpWordApp.Selection.InsertBreak
+		 						VpWordApp.Selection.MoveUp
+		 						VpLeft = 0
+		 						VpTop = 0
+		 					ElseIf VpCount Mod 3 = 0 Then
+		 						VpLeft = 0
+		 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight + clsModule.CgYMargin)
+		 					Else
+		 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth + clsModule.CgXMargin)
+		 					End If
+		 				Next VpI
+					Catch
+						Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + .GetString(0) + "...")
+					End Try
 	 			End If
  				Me.prgAvance.Increment(1)
 			End While

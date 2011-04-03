@@ -600,7 +600,7 @@ Public Class clsSellerComparer
 		Else
 			Select Case Me.VmCriterion
 				Case clsModule.eSortCriteria.Price
-					Return IIf((Me.PackPrice(x) - Me.PackPrice(y)) < 0, -1, 1)
+					Return If((Me.PackPrice(x) - Me.PackPrice(y)) < 0, -1, 1)
 				Case clsModule.eSortCriteria.Quality
 					Return ( Me.PackQuality(x) - Me.PackQuality(y) )
 				Case clsModule.eSortCriteria.Seller

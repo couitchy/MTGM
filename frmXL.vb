@@ -27,7 +27,7 @@ Public Partial Class frmXL
 	Private VmBusy As Boolean = False	
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		If VmRestrictionTXT.Length > 31 Then
@@ -66,7 +66,7 @@ Public Partial Class frmXL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpElements.Add(New clsXLItem(Me.chklstXL, IIf(Me.chkVF.Checked, .GetValue(.GetOrdinal("TitleFR")), .GetValue(.GetOrdinal("Card.Title"))).ToString, CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal("SeriesNM")).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString))
+				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal("SeriesNM")).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetString(.GetOrdinal("CardText")).Trim))
 			End While
 			.Close
 		End With
@@ -140,6 +140,11 @@ Public Partial Class frmXL
 						.Cells(VpY, VpX) = "Rareté"
 						VpX = VpX + 1
 					End If
+					'Texte
+					If Me.chklstXL.GetItemChecked(7) Then
+						.Cells(VpY, VpX) = "Texte descriptif"
+						VpX = VpX + 1						
+					End If
 					.Cells(VpY, VpX).EntireRow.Font.Bold = True
 					VpY = VpY + 1				
 				End If
@@ -189,10 +194,16 @@ Public Partial Class frmXL
 						.Cells(VpY, VpX) = VpCur.Rarity
 						VpX = VpX + 1
 					End If
+					'Texte
+					If Me.chklstXL.GetItemChecked(7) Then
+						.Cells(VpY, VpX) = VpCur.CardText
+						VpX = VpX + 1
+					End If
 					VpY = VpY + 1
 				Next VpCur
 				'Ajustement largeur colonnes
 				For VpI As Integer = 1 To VpX - 1
+					.Columns(VpI).WrapText = False
 					.Columns(VpI).EntireColumn.AutoFit
 				Next VpI
 				'Formatage particulier
@@ -292,9 +303,11 @@ Public Class clsXLItem
 	Private VmRarity As String = ""
 	Private VmSubType As String = ""
 	Private VmType As String = ""
-	Public Sub New(VpChk As CheckedListBox, VpTitle As String, VpQuant As Integer, VpColor As String, VpInvoc As String, VpSerie As String, VpPrice As String, VpRarity As String, VpSubType As String, VpType As String)
+	Private VmCardText As String = ""
+	Public Sub New(VpChk As CheckedListBox, VpTitle As String, VpQuant As Integer, VpColor As String, VpInvoc As String, VpSerie As String, VpPrice As String, VpRarity As String, VpSubType As String, VpType As String, VpCardText As String)
 		VmTitle = VpTitle
 		VmQuant = VpQuant
+		'Type
 		If VpChk.GetItemChecked(6) Then
 			VmType = clsModule.FormatTitle("Card.Type", VpType)
 		End If
@@ -322,9 +335,13 @@ Public Class clsXLItem
 		If VpChk.GetItemChecked(4) Then
 			VmRarity = clsModule.FormatTitle("Card.Rarity", VpRarity)
 		End If
+		'Texte
+		If VpChk.GetItemChecked(7) Then
+			VmCardText = VpCardText
+		End If
 	End Sub
 	Public Shared Function AreAlike(Vp1 As clsXLItem, Vp2 As clsXLItem) As Boolean
-		Return ( Vp1.Color = Vp2.Color And Vp1.Invoc = Vp2.Invoc And Vp1.Price = Vp2.Price And Vp1.Rarity = Vp2.Rarity And Vp1.Serie = Vp2.Serie And Vp1.SubType = Vp2.SubType And Vp1.Title = Vp2.Title And Vp1.Type = Vp2.Type )
+		Return ( Vp1.Color = Vp2.Color And Vp1.Invoc = Vp2.Invoc And Vp1.Price = Vp2.Price And Vp1.Rarity = Vp2.Rarity And Vp1.Serie = Vp2.Serie And Vp1.SubType = Vp2.SubType And Vp1.Title = Vp2.Title And Vp1.Type = Vp2.Type And Vp1.CardText = Vp2.CardText )
 	End Function
 	Public ReadOnly Property Title As String
 		Get
@@ -374,4 +391,9 @@ Public Class clsXLItem
 			Return VmType
 		End Get
 	End Property
+	Public ReadOnly Property CardText As String
+		Get
+			Return VmCardText
+		End Get
+	End Property	
 End Class

@@ -51,13 +51,13 @@ Public Partial Class frmExport
 	'-------------------------------------------------------
 	'Exporte la table spécifiée dans le répertoire spécifiée
 	'-------------------------------------------------------
-	Dim VpOut As New StreamWriter(VpPath + "\" + VpSource.Replace("/", "").Replace("\", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("""", "").Replace("<", "").Replace(">", "").Replace("|", "") + IIf(Me.optApprentice.Checked, clsModule.CgFExtA, IIf(Me.optNormal.Checked, clsModule.CgFExtN, clsModule.CgFExtO)).ToString)
+	Dim VpOut As New StreamWriter(VpPath + "\" + VpSource.Replace("/", "").Replace("\", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("""", "").Replace("<", "").Replace(">", "").Replace("|", "") + If(Me.optApprentice.Checked, clsModule.CgFExtA, If(Me.optNormal.Checked, clsModule.CgFExtN, clsModule.CgFExtO)).ToString)
 		If Me.optApprentice.Checked Then
 			VpOut.WriteLine("// NAME : " + VpSource)
 			VpOut.WriteLine("// CREATOR : " + Environment.UserName)
 			VpOut.WriteLine("// FORMAT :")
 		End If
-		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Foil From " + IIf(VpSource = clsModule.CgCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
+		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Foil From " + If(VpSource = clsModule.CgCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read

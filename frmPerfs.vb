@@ -290,7 +290,7 @@ Public Partial Class frmPerfs
 			VgDBCommand.CommandText = "Select Count(*) From MyScores Where " + VpField + " = '" + VpJeu.Replace("'", "''") + "' And " + VpOtherField + " = '" + VpGame.Replace("'", "''") + "';"
 			VpTotal = VgDBCommand.ExecuteScalar
 			'Nombre de parties gagnées avec le jeu courant
-			VgDBCommand.CommandText = "Select Count(*) From MyScores Where " + VpField + " = '" + VpJeu.Replace("'", "''") + "' And " + VpOtherField + " = '" + VpGame.Replace("'", "''") + "' And Victoire = " + IIf(VpVic, "True", "False") + ";"
+			VgDBCommand.CommandText = "Select Count(*) From MyScores Where " + VpField + " = '" + VpJeu.Replace("'", "''") + "' And " + VpOtherField + " = '" + VpGame.Replace("'", "''") + "' And Victoire = " + If(VpVic, "True", "False") + ";"
 			VpCur = VgDBCommand.ExecuteScalar
 			'Si meilleur rendement, conserve le jeu courant comme le meilleur prétendant
 			If (VpCur / VpTotal) > VpMaxRatio Then
@@ -454,9 +454,9 @@ Public Partial Class frmPerfs
 		If VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then Exit Sub
 		If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
 			If Me.dropGamesVersions.Checked Then
-				VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboLocalVersion) + ", '" + VpJeuAdv.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboAdvVersion) + ", " + IIf(VpVictoire, "True", "False") + ");"
+				VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboLocalVersion) + ", '" + VpJeuAdv.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboAdvVersion) + ", " + If(VpVictoire, "True", "False") + ");"
 			Else
-				VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', Null, '" + VpJeuAdv.Replace("'", "''") + "', Null, " + IIf(VpVictoire, "True", "False") + ");"
+				VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', Null, '" + VpJeuAdv.Replace("'", "''") + "', Null, " + If(VpVictoire, "True", "False") + ");"
 			End If
 			VgDBCommand.ExecuteNonQuery
 			Call Me.UpdateGraph
@@ -469,9 +469,9 @@ Public Partial Class frmPerfs
 		If VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then Exit Sub
 		If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
 			If Me.dropGamesVersions.Checked Then
-				VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuLocalVersion = " + Me.ValidateVersion(Me.cboLocalVersion) + " And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And JeuAdverseVersion = " + Me.ValidateVersion(Me.cboAdvVersion) + " And Victoire = " + IIf(VpVictoire, "True", "False") + ");"
+				VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuLocalVersion = " + Me.ValidateVersion(Me.cboLocalVersion) + " And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And JeuAdverseVersion = " + Me.ValidateVersion(Me.cboAdvVersion) + " And Victoire = " + If(VpVictoire, "True", "False") + ");"
 			Else
-				VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And Victoire = " + IIf(VpVictoire, "True", "False") + ");"
+				VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And Victoire = " + If(VpVictoire, "True", "False") + ");"
 			End If
 			Try
 				VgDBCommand.ExecuteNonQuery
@@ -728,10 +728,10 @@ Public Class clsPerformances
 	'---------------------------------------------------------------------------------------------------------------------
 	Dim VpP As Integer
 		'Cas 1 : suppose que le jeu 1 est local et le jeu 2 est adverse
-		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpGame1.Replace("'", "''") + "'" + IIf(VpGame2 <> "", " And JeuAdverse = '" + VpGame2.Replace("'", "''") + "';", ";")
+		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuAdverse = '" + VpGame2.Replace("'", "''") + "';", ";")
 		VpP = VgDBCommand.ExecuteScalar
 		'Cas 2 : suppose que le jeu 1 est adverse et le jeu 2 est local
-		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuAdverse = '" + VpGame1.Replace("'", "''") + "'" + IIf(VpGame2 <> "", " And JeuLocal = '" + VpGame2.Replace("'", "''") + "';", ";")
+		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuAdverse = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuLocal = '" + VpGame2.Replace("'", "''") + "';", ";")
 		Return VpP + VgDBCommand.ExecuteScalar
 	End Function
 	Public Shared Function GetNVictoires(VpGame1 As String, Optional VpGame2 As String = "") As Integer
@@ -740,10 +740,10 @@ Public Class clsPerformances
 	'----------------------------------------------------------------------------------------------------------------------
 	Dim VpP As Integer
 		'Cas 1 : suppose que le jeu 1 est local et le jeu 2 est adverse
-		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpGame1.Replace("'", "''") + "'" + IIf(VpGame2 <> "", " And JeuAdverse = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = True;"
+		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuAdverse = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = True;"
 		VpP = VgDBCommand.ExecuteScalar
 		'Cas 2 : suppose que le jeu 1 est adverse et le jeu 2 est local
-		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuAdverse = '" + VpGame1.Replace("'", "''") + "'" + IIf(VpGame2 <> "", " And JeuLocal = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = False;"
+		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuAdverse = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuLocal = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = False;"
 		Return VpP + VgDBCommand.ExecuteScalar
 	End Function
 	Public Shared Function GetRatio(VpGame1 As String, Optional VpGame2 As String = "") As Single

@@ -985,7 +985,7 @@ Public Partial Class MainForm
 	'Charge des informations sur {édition, couleur, type} sélectionné(e) dans le treeview
 	'------------------------------------------------------------------------------------
 	Dim VpO As Object
-	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		'Nombre de cartes total répondant aux critères
 		VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria, False) + ");"
 		Me.lblSerieTot.Text = VgDBCommand.ExecuteScalar
@@ -1205,7 +1205,7 @@ Public Partial Class MainForm
 			VpPreciseTransfert.ShowDialog
 		Else
 			VpTransfertResult.NCartes = 1
-			VpTransfertResult.IDSerie = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
+			VpTransfertResult.IDSerie = frmTransfert.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
 			VpTransfertResult.Foil = VpFoil
 		End If
 		'Si pas d'annulation utilisateur
@@ -1217,7 +1217,7 @@ Public Partial Class MainForm
 			VpTransfertResult.SFrom = VpSource
 			If VpTransfertType = clsTransfertResult.EgTransfertType.Move Or VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
 				VpTransfertResult.TTo = VpTo
-				VpTransfertResult.STo = IIf(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
+				VpTransfertResult.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
 			End If
 			'Opération effective
 			If Me.IsInAdvSearch Or (VpTransfertResult.TFrom <> VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy) Then
@@ -1254,7 +1254,7 @@ Public Partial Class MainForm
 	'Chargement du formulaire des achats sur Magic-Ville
 	'---------------------------------------------------
 	Dim VpBuy As frmBuyMV
-	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpSQL As String
 		If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.MVBuyer) Then
 			VpBuy = New frmBuyMV
@@ -1463,7 +1463,7 @@ Public Partial Class MainForm
 		'Chargement de la base par défaut
 		If clsModule.LoadIcons(Me.imglstTvw) Then
 			Call Me.ValidateCriteria
-			VpOpen = IIf(VmStartup.EndsWith(clsModule.CgFExtD), VmStartup, VgOptions.VgSettings.DefaultBase)
+			VpOpen = If(VmStartup.EndsWith(clsModule.CgFExtD), VmStartup, VgOptions.VgSettings.DefaultBase)
 			If VpOpen <> "" Then
 				If clsModule.DBOpen(VpOpen) Then
 					Call Me.LoadMnu
@@ -1910,7 +1910,7 @@ Public Partial Class MainForm
 	Sub MnuStatsActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpStats As New frmStats(Me)
 		If clsModule.DBOK Then
-			If Me.GetNCards(IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection), True) > 1 Then
+			If Me.GetNCards(If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection), True) > 1 Then
 				VpStats.Show
 			Else
 				Call clsModule.ShowWarning("Il faut au minimum une sélection de 2 cartes distinctes pour pouvoir lancer l'affichage des statistiques...")
@@ -2223,7 +2223,7 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub ScrollStockScroll(sender As Object, e As ScrollEventArgs)
-	Dim VpSource As String = IIf(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpEncNbr As Integer
 	Dim VpFoil As Boolean
@@ -2243,7 +2243,7 @@ Public Partial Class MainForm
 				Me.lblStock.Text = (Val(Me.lblStock.Text) + 1).ToString
 			End If
 			'Mise à jour du nombre d'items présents à la destination
-			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + IIf(VpSource = clsModule.CgSDecks, " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + If(VpSource = clsModule.CgSDecks, " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 			VgDBCommand.ExecuteNonQuery
 		End If
 	End Sub

@@ -33,7 +33,7 @@ Public Partial Class frmSimu
 	#Region "Méthodes"
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = IIf(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestrictionSQL = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		Me.Text = clsModule.CgSimus + VmRestrictionTXT
@@ -974,7 +974,7 @@ Public Class clsPartie
 								End If
 							Next VpTarget
 							'Si on n'a pas pu sacrifier toutes les cartes requises, on sort après avoir annulé les sacrifices déjà faits ainsi que l'engagement de la carte
-							If VpInt < IIf(VpCard.Speciality.EffortID = 14 Or VpCard.Speciality.EffortID = 15, 1, VpStrs.Length) Then
+							If VpInt < If(VpCard.Speciality.EffortID = 14 Or VpCard.Speciality.EffortID = 15, 1, VpStrs.Length) Then
 								VpTmpInPlay2.RemoveRange(VpTmpInPlay2.Count - VpInt, VpInt)
 								VpCard.Tapped = False
 								VpNext = True
@@ -1434,7 +1434,7 @@ Public Class clsEsperance
 	Public Function GetEsp(Optional VpPercent As Boolean = True) As SortedList
 	Dim VpEsp As New SortedList(VmEsp.Count)
 		For Each VpKey As Integer In VmEsp.Keys
-			VpEsp.Add(VpKey, IIf(VpPercent, 100, 1) * VmEsp.Item(VpKey) / VmOccurences)
+			VpEsp.Add(VpKey, If(VpPercent, 100, 1) * VmEsp.Item(VpKey) / VmOccurences)
 		Next VpKey
 		Return VpEsp
 	End Function
