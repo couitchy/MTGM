@@ -256,11 +256,13 @@ Public Partial Class frmXL
 		End If
 	End Sub
 	Sub CmdXLClick(sender As Object, e As EventArgs)
+		Me.cmdXL.Enabled = False
 		Call Me.ExcelGen
 		If Me.chkSaveImg.Checked Then
 			Call clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
 			Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
 		End If
+		Me.cmdXL.Enabled = True
 	End Sub
 	Sub BtColumnsActivate(sender As Object, e As EventArgs)
 		Me.grpColumns.Visible = True

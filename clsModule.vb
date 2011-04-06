@@ -32,7 +32,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 24677
+	Public Const CgCodeLines As Integer   		= 24710
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -41,6 +41,7 @@ Public Module clsModule
 	Public Const CgMaxPot As Integer			= 100
 	Public Const CgPertinCoeff As Integer		= 4
 	Public Const CgMaxGraphs As Integer			= 128
+	Public Const CgMaxVignettes As Integer		= 120
 	Public Const CgMissingTable As Long			= -2147217865
 	Public Const CgImgMinLength As Long			= 296297676
 	Public Const CgTimeOut As Integer			= 5
@@ -151,8 +152,8 @@ Public Module clsModule
 	Public CgCriterionsFields() As String 		= {"", "Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
 	Public CgNumbers() As String 				= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgSearchFields() As String 			= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Spell.myCost", "Card.SubType"}
-	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", clsModule.CgINIFile, clsModule.CgMagicBack, clsModule.CgUpdater}
-	Public CgCriteres As New Hashtable(clsModule.CgNCriterions)
+	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgINIFile, CgMagicBack, CgUpdater}
+	Public CgCriteres As New Hashtable(CgNCriterions)
 	Public CgVirtualPath As String
 	Public VgDB As OleDbConnection
 	Public VgDBCommand As New OleDbCommand
@@ -163,6 +164,11 @@ Public Module clsModule
 	Public WithEvents VgTray As NotifyIcon
 	Public WithEvents VgTimer As Timer
 	Public WithEvents VgClient As New WebClient
+	Public Enum eForbiddenSet
+		Standard = 0
+		BDD
+		Full
+	End Enum
 	Public Enum eUpdateType
 		Release = 0
 		Beta
@@ -261,14 +267,14 @@ Public Module clsModule
 	'------------------------------------
 	'Vérifie l'intégrité de l'application
 	'------------------------------------
-		For Each VpFile As String In clsModule.CgRequiredFiles
+		For Each VpFile As String In CgRequiredFiles
 			'Si le fichier n'existe pas
 			If Not File.Exists(Application.StartupPath + VpFile) Then
 				'Essaie de le télécharger
-				Call clsModule.DownloadNow(New Uri(CgURL8 + VpFile.Replace("\", "")), VpFile)
+				Call DownloadNow(New Uri(CgURL8 + VpFile.Replace("\", "")), VpFile)
 				'Si le fichier n'existe toujours pas, on ne démarre pas
 				If Not File.Exists(Application.StartupPath + VpFile) Then
-					Call clsModule.ShowWarning("Des fichiers nécessaires à l'exécution sont manquants...")
+					Call ShowWarning("Des fichiers nécessaires à l'exécution sont manquants...")
 					Return False
 				End If
 			End If
@@ -287,7 +293,7 @@ Public Module clsModule
 		    	VgDB.Open
 		    	VgDBCommand.Connection = VgDB
 		    	VgDBCommand.CommandType = CommandType.Text
-		    	If Not clsModule.DBVersion Then
+		    	If Not DBVersion Then
 					VgDB.Close
 					VgDB.Dispose
 					VgDB = Nothing
@@ -296,7 +302,7 @@ Public Module clsModule
 		    		Return True
 		    	End If
 	    	Catch
-	    		clsModule.ShowWarning("Impossible d'ouvrir la base de données sélectionnée...")
+	    		ShowWarning("Impossible d'ouvrir la base de données sélectionnée...")
 	    	End Try
 	    End If
 	    Return False
@@ -406,7 +412,7 @@ Public Module clsModule
 					If CInt(VpDBVersion) < 9 Then
 						VgDBCommand.CommandText = "Create Table MyAdversairesID (AdvID Long, AdvName Text(255) With Compression);"
 						VgDBCommand.ExecuteNonQuery
-						VgDBCommand.CommandText = "Insert Into MyAdversairesID(AdvID, AdvName) Values (0, '" + clsModule.CgMe + "');"
+						VgDBCommand.CommandText = "Insert Into MyAdversairesID(AdvID, AdvName) Values (0, '" + CgMe + "');"
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Alter Table MyGamesID Add AdvID Long;"
 						VgDBCommand.ExecuteNonQuery
@@ -437,7 +443,7 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 					End If
 				Catch
-					Call clsModule.ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
+					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
 					Return False
 				End Try
 				Return True
@@ -465,7 +471,7 @@ Public Module clsModule
 	End Sub
 	Public Function DBOK As Boolean
 		If VgDB Is Nothing Then
-			Call clsModule.ShowWarning("Aucune base de données n'a été sélectionnée...")
+			Call ShowWarning("Aucune base de données n'a été sélectionnée...")
 			Return False
 		ElseIf MainForm.VgMe.IsMainReaderBusy Then
 			Return False
@@ -528,7 +534,7 @@ Public Module clsModule
 		For VpI As Integer = 0 To VpTables.Rows.Count - 1
 			VpTable = VpTables.Rows(VpI)!TABLE_NAME.ToString
 			'Si la table existe déjà dans la base mais qu'elle doit être préalablement détruite
-			If clsModule.PreDelete(VpTable) Then
+			If PreDelete(VpTable) Then
 				Try
 					VgDBCommand.CommandText = "Drop Table " + VpTable + ";"
 					VgDBCommand.ExecuteNonQuery
@@ -536,7 +542,7 @@ Public Module clsModule
 				End Try
 			End If
 			'Si la table n'existe pas (ou plus) dans la base
-			If Not clsModule.IsInDB(VpTable) Then
+			If Not IsInDB(VpTable) Then
 				'Prépare la requête de création de table (méthode SQL)
 				VpSQL = "Create Table " + VpTable + "("
 				VpSchemaTable = VpDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, VpTable, Nothing})
@@ -577,13 +583,13 @@ Public Module clsModule
 		Next VpI
 		'Informe l'utilisateur
 		If Not VpSilent Then
-			Call clsModule.ShowInformation("Mise à jour effectuée." + vbCrLf + "Assurez-vous d'avoir également la dernière version du logiciel...")
+			Call ShowInformation("Mise à jour effectuée." + vbCrLf + "Assurez-vous d'avoir également la dernière version du logiciel...")
 		End If
 		'Supprime le patch
 		VpDB.Close
 		VpDB.Dispose
 		VpDB = Nothing
-		Call clsModule.SecureDelete(VpPath)
+		Call SecureDelete(VpPath)
 	End Sub
 	Public Sub DBAdaptEncNbr
 	'--------------------------------------------------------------------------------------------------------------------------
@@ -609,7 +615,7 @@ Public Module clsModule
 			Case "MySpecialUses"
 				'Essaie d'utiliser le champ large ; si erreur => on doit recréer la table avec un champ plus grand
 				Try
-					VgDBCommand.CommandText = "Insert Into MySpecialUses Values (-1, -1, 'X', '" + clsModule.StrBuild("X", 128) + "', '" + clsModule.StrBuild("X", 128) + "', False, False);"
+					VgDBCommand.CommandText = "Insert Into MySpecialUses Values (-1, -1, 'X', '" + StrBuild("X", 128) + "', '" + StrBuild("X", 128) + "', False, False);"
 					VgDBCommand.ExecuteNonQuery
 					VgDBCommand.CommandText = "Delete * From MySpecialUses Where EffortID = -1;"		'un peu crade mais je n'ai pas trouvé plus simple !
 					VgDBCommand.ExecuteNonQuery
@@ -654,7 +660,7 @@ Public Module clsModule
 			VgImgSeries.ColorDepth = ColorDepth.Depth32Bit
 			VgImgSeries.ImageSize = New Size(21, 21)
 			VgImgSeries.TransparentColor = System.Drawing.Color.Transparent
-			For Each VpIcon As String In System.IO.Directory.GetFiles(Application.StartupPath + CgIcons, "*" + clsModule.CgIconsExt)
+			For Each VpIcon As String In System.IO.Directory.GetFiles(Application.StartupPath + CgIcons, "*" + CgIconsExt)
 				VpHandle = Image.FromFile(VpIcon)
 				VpKey = VpIcon.Substring(VpIcon.LastIndexOf("\") + 1)
 				If Not VgImgSeries.Images.Keys.Contains(VpKey) Then
@@ -919,9 +925,9 @@ Public Module clsModule
 	    Else
 	        VpColorless = Val(VpStr)
 	        If VpColorless <> 0 Then
-	            Return VpStr.Replace(VpColorless.ToString.Trim, "").Length + VpColorless - 4 * clsModule.StrCount(VpStr, "(")
+	            Return VpStr.Replace(VpColorless.ToString.Trim, "").Length + VpColorless - 4 * StrCount(VpStr, "(")
 	        Else
-	            Return VpStr.Length - 4 * clsModule.StrCount(VpStr, "(")
+	            Return VpStr.Length - 4 * StrCount(VpStr, "(")
 	        End If
 	    End If
 	End Function
@@ -1011,7 +1017,7 @@ Public Module clsModule
 		If IsNumeric(VpStr) Then
 			Return Val(VpStr)
 		Else
-			Return clsModule.FindIndex(clsModule.CgNumbers, VpStr) + 1
+			Return FindIndex(CgNumbers, VpStr) + 1
 		End If
 	End Function
 	Public Function SafeGetChecked(VpObj As Object) As Boolean
@@ -1020,6 +1026,18 @@ Public Module clsModule
 		Catch
 			Return False
 		End Try
+	End Function
+	Public Function AvoidForbiddenChr(ByVal VpIn As String, Optional VpChrSet As eForbiddenSet = eForbiddenSet.Standard) As String
+		Select Case VpChrSet
+			Case eForbiddenSet.Standard
+				Return VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "")
+			Case eForbiddenSet.BDD
+				Return AvoidForbiddenChr(VpIn.Replace("'", "''"))
+			Case eForbiddenSet.Full
+				Return AvoidForbiddenChr(VpIn.Replace("\", "").Replace("*", "").Replace("<", "").Replace(">", "").Replace("|", ""))
+			Case Else
+				Return VpIn
+		End Select
 	End Function
 	Public Function SafeGetText(VpObj As Object) As String
 		Try
@@ -1030,7 +1048,7 @@ Public Module clsModule
 	End Function
 	Public Sub InitCriteres(VpMainForm as MainForm)
 		For VpI As Integer = 0 To VpMainForm.chkClassement.Items.Count - 1
-			CgCriteres.Add(VpMainForm.chkClassement.Items(VpI), clsModule.CgCriterionsFields(VpI))
+			CgCriteres.Add(VpMainForm.chkClassement.Items(VpI), CgCriterionsFields(VpI))
 		Next VpI
 	End Sub
 	Public Function GetPictSP As String
@@ -1039,7 +1057,7 @@ Public Module clsModule
 	Dim VpAnswer As Stream
 	Dim VpBuf() As Byte
 	Dim VpStamp As String
-			VpRequest = WebRequest.Create(clsModule.CgURL1C)
+			VpRequest = WebRequest.Create(CgURL1C)
 			VpResponse = VpRequest.GetResponse
 			VpAnswer = VpResponse.GetResponseStream
 			'Lecture du fichier sur Internet
@@ -1056,38 +1074,38 @@ Public Module clsModule
 	Dim VpStr As String
 	Dim VpOldText As String
 		VpOldText = MainForm.VgMe.StatusTextGet
-		Call MainForm.VgMe.StatusText(clsModule.CgDL1, True)
+		Call MainForm.VgMe.StatusText(CgDL1, True)
 		VgTimer.Stop
 		'Vérification par la taille
 		Try
-			VpStamp = clsModule.GetPictSP
+			VpStamp = GetPictSP
 			VpStr = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length.ToString
 			If VpStamp.Contains(VpStr) Then
 				VpStr = VpStamp.Substring(VpStamp.IndexOf(VpStr) + VpStr.Length + 1)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf("#"))
 				If VpStr = "OK"  Then
-					Call clsModule.ShowInformation("Les images sont déjà à jour...")
+					Call ShowInformation("Les images sont déjà à jour...")
 					Call MainForm.VgMe.StatusText(VpOldText)
 				Else
 					'Téléchargement du fichier accompagnateur
-					Call clsModule.DownloadNow(New Uri(clsModule.CgURL10 + VpStr + clsModule.CgPicLogExt), clsModule.CgUpPic + clsModule.CgPicLogExt)
+					Call DownloadNow(New Uri(CgURL10 + VpStr + CgPicLogExt), CgUpPic + CgPicLogExt)
 					Application.DoEvents
 					'Téléchargement du service pack d'images
 					MainForm.VgMe.IsInImgDL = True
-					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + VpStr + clsModule.CgPicUpExt), clsModule.CgUpPic + clsModule.CgPicUpExt)
+					Call DownloadUpdate(New Uri(CgURL10 + VpStr + CgPicUpExt), CgUpPic + CgPicUpExt)
 				End If
 			Else
-				If clsModule.ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
+				If ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 					'Re-téléchargement complet de la base principale
 					MainForm.VgMe.IsInImgDL = True
-					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
+					Call DownloadUpdate(New Uri(CgURL10 + CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
 				Else
 					Call MainForm.VgMe.StatusText(VpOldText)
 				End If
 			End If
 		Catch
 			'En cas d'échec de connexion
-			Call clsModule.ShowWarning(clsModule.CgDL3b)
+			Call ShowWarning(CgDL3b)
 			Call MainForm.VgMe.StatusText(VpOldText)
 		End Try
 	End Sub
@@ -1102,12 +1120,12 @@ Public Module clsModule
 	Dim VpContenuUpdate As frmUpdateContenu
 	Dim VpNewContenu As New ArrayList
 		VpOldText = MainForm.VgMe.StatusTextGet
-		Call MainForm.VgMe.StatusText(clsModule.CgDL1)
+		Call MainForm.VgMe.StatusText(CgDL1)
 		'Fichier d'historique des versions
-		Call clsModule.DownloadNow(New Uri(clsModule.CgURL7), clsModule.CgHSTFile)
+		Call DownloadNow(New Uri(CgURL7), CgHSTFile)
 		'Vérification horodatage
 		Try
-			VpRequest = WebRequest.Create(If(VpBeta, clsModule.CgURL1B, clsModule.CgURL1))
+			VpRequest = WebRequest.Create(If(VpBeta, CgURL1B, CgURL1))
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			'Lecture du fichier horodaté sur Internet
 			VpAnswer.Read(VpBuf, 0, 19)
@@ -1119,9 +1137,9 @@ Public Module clsModule
 				VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + If(VpBeta, " BETA", ""), "Une mise à jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la télécharger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
 			ElseIf VpExplicit
 				If VpBeta Then
-					Call clsModule.ShowInformation("Aucune version bêta postérieure à la dernière release n'est disponible pour l'instant...")
+					Call ShowInformation("Aucune version bêta postérieure à la dernière release n'est disponible pour l'instant...")
 				Else
-					Call clsModule.ShowInformation("Vous disposez déjà de la dernière version de Magic The Gathering Manager !")
+					Call ShowInformation("Vous disposez déjà de la dernière version de Magic The Gathering Manager !")
 				End If
 			'Recherche automatique des mises à jour de contenu
 			ElseIf DBOK Then
@@ -1141,7 +1159,7 @@ Public Module clsModule
 			'En cas d'échec de connexion, inutile de continuer à checker
 			VgTimer.Stop
 			If VpExplicit Then
-				Call clsModule.ShowWarning(clsModule.CgDL3b)
+				Call ShowWarning(CgDL3b)
 			End If
 		End Try
 		Call MainForm.VgMe.StatusText(VpOldText)
@@ -1155,9 +1173,9 @@ Public Module clsModule
 		VgTimer.Stop
 		Select Case VpType
 			Case eUpdateType.Release
-				Call clsModule.DownloadUpdate(New Uri(CgURL2), clsModule.CgUpDFile)
+				Call DownloadUpdate(New Uri(CgURL2), CgUpDFile)
 			Case eUpdateType.Beta
-				Call clsModule.DownloadUpdate(New Uri(CgURL2B), clsModule.CgUpDFile)
+				Call DownloadUpdate(New Uri(CgURL2B), CgUpDFile)
 			Case eUpdateType.Contenu
 				MainForm.VgMe.MyChildren.ContenuUpdater.Show
 				MainForm.VgMe.MyChildren.ContenuUpdater.BringToFront
@@ -1179,11 +1197,11 @@ Public Module clsModule
 				End If
 			End If
 			If Not VpSilent Then
-				Call clsModule.ShowWarning(clsModule.CgDL2b)
+				Call ShowWarning(CgDL2b)
 			End If
 		Else
 			MainForm.VgMe.IsDownloadInProgress = True
-			Call MainForm.VgMe.StatusText(clsModule.CgDL2, True)
+			Call MainForm.VgMe.StatusText(CgDL2, True)
 			Try
 				VgClient.DownloadFileAsync(VpURI, If(VpBaseDir, Application.StartupPath + VpOutput, VpOutput))
 				MainForm.VgMe.btDownload.Visible = True
@@ -1200,7 +1218,7 @@ Public Module clsModule
 			VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
 		Catch' VpEx As Exception
 			'MessageBox.Show(VpEx.GetType.FullName)
-			'VgClient.DownloadFile(VpURI, clsModule.CgVirtualPath + VpOutput)
+			'VgClient.DownloadFile(VpURI, CgVirtualPath + VpOutput)
 		End Try
 	End Sub
 	Public Sub ClientDownloadProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs) Handles VgClient.DownloadProgressChanged
@@ -1225,32 +1243,32 @@ Public Module clsModule
 		'Gestion des erreurs
 		If Not VpResult Is Nothing Then
 			If VpResult.Status = WebExceptionStatus.ConnectFailure Then
-				Call clsModule.ShowWarning(clsModule.CgDL3b)
-				Call MainForm.VgMe.StatusText(clsModule.CgDL3)
+				Call ShowWarning(CgDL3b)
+				Call MainForm.VgMe.StatusText(CgDL3)
 				Exit Sub
 			ElseIf VpResult.Status = WebExceptionStatus.RequestCanceled Then
-				Call MainForm.VgMe.StatusText(clsModule.CgDL5)
+				Call MainForm.VgMe.StatusText(CgDL5)
 				Exit Sub
 			End If
 		End If
-		If MainForm.VgMe.StatusTextGet = clsModule.CgDL2 Then
-			Call MainForm.VgMe.StatusText(clsModule.CgDL4)
+		If MainForm.VgMe.StatusTextGet = CgDL2 Then
+			Call MainForm.VgMe.StatusText(CgDL4)
 		End If
 		'Maj EXE
-		If File.Exists(Application.StartupPath + clsModule.CgUpDFile) Then
+		If File.Exists(Application.StartupPath + CgUpDFile) Then
 			File.SetLastWriteTimeUtc(Application.StartupPath + CgUpDFile, VgRemoteDate)
-			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgDownDFile)
-			File.Copy(Process.GetCurrentProcess.MainModule.FileName, Application.StartupPath + clsModule.CgDownDFile)
+			Call SecureDelete(Application.StartupPath + CgDownDFile)
+			File.Copy(Process.GetCurrentProcess.MainModule.FileName, Application.StartupPath + CgDownDFile)
 			Try
-				Process.Start(New ProcessStartInfo(Application.StartupPath + clsModule.CgUpdater))
+				Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
 			Catch
-				Call clsModule.ShowWarning(clsModule.CgErr5)
+				Call ShowWarning(CgErr5)
 			End Try
 		'Maj Images
-		ElseIf File.Exists(Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicUpExt) And File.Exists(Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicLogExt) Then
-			Call MainForm.VgMe.UpdatePictures(Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicUpExt, Application.StartupPath + clsModule.CgUpPic + clsModule.CgPicLogExt, True)
+		ElseIf File.Exists(Application.StartupPath + CgUpPic + CgPicUpExt) And File.Exists(Application.StartupPath + CgUpPic + CgPicLogExt) Then
+			Call MainForm.VgMe.UpdatePictures(Application.StartupPath + CgUpPic + CgPicUpExt, Application.StartupPath + CgUpPic + CgPicLogExt, True)
 		'Maj TXTFR
-		ElseIf File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
+		ElseIf File.Exists(Application.StartupPath + CgUpTXTFR) Then
 			Call MainForm.VgMe.UpdateTxtFR
 		End If
 	End Sub
@@ -1261,31 +1279,31 @@ Public Module clsModule
 	Dim VpOpened As Boolean = False
 	Dim VpSQL As String
 		If MainForm.VgMe.IsMainReaderBusy Then
-			Call clsModule.ShowWarning(clsModule.CgErr3)
+			Call ShowWarning(CgErr3)
 		Else
 			'Le type de la carte est inconnu à priori, on suppose par défaut que c'est une créature
 			If VpSource <> "" Then
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + CaracEdition(VpEdition)
 				VpSQL = VpSQL + VpMainForm.Restriction
 			Else
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + CaracEdition(VpEdition)
 			End If
-			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
+			VgDBCommand.CommandText = TrimQuery(VpSQL)
 			VgDBReader = VgDBCommand.ExecuteReader
 			'S'il n'y a pas de réponse, c'est que ce n'est pas une créature, on supprime donc les champs force et endurance et on suppose que c'est un sort
 			If Not VgDBReader.HasRows Then
 				VgDBReader.Close
 				If VpSource <> "" Then
-					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + clsModule.CaracEdition(VpEdition)
+					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + CaracEdition(VpEdition)
 					VpSQL = VpSQL + VpMainForm.Restriction
 				Else
-					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + clsModule.CaracEdition(VpEdition)
+					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + CaracEdition(VpEdition)
 				End If
-				VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
+				VgDBCommand.CommandText = TrimQuery(VpSQL)
 				VgDBReader = VgDBCommand.ExecuteReader
 				'S'il n'y a encore pas de réponse, c'est que la carte a été supprimée dans l'intervalle
 				If Not VgDBReader.HasRows Then
-					Call clsModule.ShowWarning("Impossible d'afficher les détails de cette carte...")
+					Call ShowWarning("Impossible d'afficher les détails de cette carte...")
 					VgDBReader.Close
 					Exit Sub
 				Else
@@ -1293,7 +1311,7 @@ Public Module clsModule
 					VpForm.lblAD.Text = ""
 					VgDBReader.Read
 					VpOpened = True
-					Call clsModule.BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
+					Call BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
 				End If
 			'S'il y a des réponses c'était bien une créature
 			Else
@@ -1301,7 +1319,7 @@ Public Module clsModule
 				VpOpened = True
 				VpForm.lblAD.Text = VgDBReader.GetValue(VgDBReader.GetOrdinal("Power")).ToString + "/" + VgDBReader.GetValue(VgDBReader.GetOrdinal("Tough")).ToString
 				VpForm.lblProp6.Enabled = True
-				Call clsModule.BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
+				Call BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
 			End If
 			'Points communs quel que soit le type de carte
 			With VgDBReader
@@ -1314,13 +1332,13 @@ Public Module clsModule
 					VpForm.cboEdition.Items.Add(VpForm.cboEdition.Text)
 				End If
 				Try
-					VpForm.picEdition.Image = clsModule.VgImgSeries.Images(clsModule.VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
+					VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
 				Catch
 					VpForm.picEdition.Image = Nothing
 				End Try
 				If VpSource <> "" Then
 '					Try
-'						VpForm.picEdition.Image = clsModule.VgImgSeries.Images(clsModule.VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
+'						VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
 '					Catch
 '						VpForm.picEdition.Image = Nothing
 '					End Try
@@ -1334,9 +1352,9 @@ Public Module clsModule
 					'VpForm.lblProp5.Text = "Prix (" + .GetDateTime(VgDBReader.GetOrdinal("PriceDate")).ToShortDateString + ") :"
 					VpForm.lblPrix.Text = Format(.GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))), "0.00") + " €"
 				End If
-				VpForm.lblRarete.Text = clsModule.FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
+				VpForm.lblRarete.Text = FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
 				If VpMainForm.mnuCardsFR.Checked Then
-					VpForm.txtCardText.Text = clsModule.MyTxt(VpCard, True)
+					VpForm.txtCardText.Text = MyTxt(VpCard, True)
 				Else
 					VpForm.txtCardText.Text = .GetValue(VgDBReader.GetOrdinal("CardText")).ToString
 				End If
@@ -1370,7 +1388,7 @@ Public Module clsModule
 	Dim VpPictureBox As PictureBox			'Objet image icône courante
 	Dim VpOffset As Integer					'Décalage courant pour présenter à l'endroit le coût d'invocation
 	Dim VpInvoc As New clsManas(VpCost)		'Classe formatée correspondant au coût passé en paramètre
-		Call clsModule.DeBuildCost(VpMainForm, VpForm)
+		Call DeBuildCost(VpMainForm, VpForm)
 		If VpCost.Trim = "" Then
 			VpForm.lblProp1.Enabled = False
 		Else
@@ -1492,7 +1510,7 @@ Public Module clsModule
 	Dim VpCards As New ArrayList
 		VpSQL = "Select Distinct Card.Title From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where "
 		VpSQL = VpSQL + VpRestriction
-		VpSQL = clsModule.TrimQuery(VpSQL)
+		VpSQL = TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
@@ -1500,12 +1518,12 @@ Public Module clsModule
 				VpCards.Add(.GetString(0))
 			End While
 			.Close
-		End With	
+		End With
 		For Each VpCard As String In VpCards
-			Call clsModule.LoadScanCard(VpCard, Nothing, True, VpSaveFolder)
+			Call LoadScanCard(VpCard, Nothing, True, VpSaveFolder)
 		Next VpCard
 		Return VpCards.Count
-	End Function		
+	End Function
 	Public Sub LoadScanCard(VpTitle As String, VppicScanCard As PictureBox, Optional VpSave As Boolean = False, Optional VpSaveFolder As String = "")
 	'---------------------------------------------------------------------------------
 	'Charge l'image scannérisée de la carte recherchée dans la zone prévue à cet effet
@@ -1514,29 +1532,29 @@ Public Module clsModule
 	Dim VpEnd As Long
 	Dim VpPicturesFile As StreamReader
 	Dim VpPicturesFileB As BinaryReader
-	Dim VpTmp As String = clsModule.GetFreeTempFile
+	Dim VpTmp As String = GetFreeTempFile
 	Dim VpTmpFile As StreamWriter
 	Dim VpTmpFileB As BinaryWriter
 	Dim VpMissingTable As Boolean = False
 	Dim VpDest As String
 		If MainForm.VgMe.IsInImgDL Then
-			Call clsModule.ShowWarning(clsModule.CgDL2c)
+			Call ShowWarning(CgDL2c)
 			Exit Sub
 		ElseIf MainForm.VgMe.IsMainReaderBusy Then
 			Exit Sub
 		ElseIf File.Exists(VgOptions.VgSettings.PicturesFile) Then
-			If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < clsModule.CgImgMinLength Then
+			If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < CgImgMinLength Then
 				If Not VpSave Then
 					VppicScanCard.Image = Nothing
 				End If
-				Call clsModule.ShowWarning("La base d'images ne possède pas la taille minimale requise." + vbCrLf + "Vérifiez le fichier spécifié dans les Préférences...")
+				Call ShowWarning("La base d'images ne possède pas la taille minimale requise." + vbCrLf + "Vérifiez le fichier spécifié dans les Préférences...")
 				Exit Sub
 			End If
 			VpPicturesFile = New StreamReader(VgOptions.VgSettings.PicturesFile)
 			VpPicturesFileB = New BinaryReader(VpPicturesFile.BaseStream)
 			VpTmpFile = New StreamWriter(VpTmp)
 			VpTmpFileB = New BinaryWriter(VpTmpFile.BaseStream)
-			VgDBCommand.CommandText = "Select [Offset], [End] From CardPictures Where Title = '" + VpTitle.Replace("'", "''").Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + "' Order By [End] Desc;"
+			VgDBCommand.CommandText = "Select [Offset], [End] From CardPictures Where Title = '" + AvoidForbiddenChr(VpTitle, eForbiddenSet.BDD) + "' Order By [End] Desc;"
 			Try
 				VgDBReader = VgDBCommand.ExecuteReader
 				VgDBReader.Read
@@ -1555,14 +1573,14 @@ Public Module clsModule
 							VppicScanCard.Image = Image.FromFile(VpTmp)
 						Catch
 							If VgOptions.VgSettings.ShowCorruption Then
-								Call clsModule.ShowWarning("La base d'images semble être corrompue." + vbCrLf + "Essayez de la mettre à jour ou de la re-télécharger...")
+								Call ShowWarning("La base d'images semble être corrompue." + vbCrLf + "Essayez de la mettre à jour ou de la re-télécharger...")
 							End If
 							VppicScanCard.Image = Nothing
 							VgDBReader.Close
 							Exit Sub
 						End Try
 					Else
-						VpDest = VpSaveFolder + "\" + VpTitle + ".jpg"
+						VpDest = VpSaveFolder + "\" + AvoidForbiddenChr(VpTitle) + ".jpg"
 						If Not File.Exists(VpDest) Then
 							File.Copy(VpTmp, VpDest)
 						End If
@@ -1573,7 +1591,7 @@ Public Module clsModule
 					End If
 				End If
 			Catch VpEx As OleDbException
-				If VpEx.ErrorCode = clsModule.CgMissingTable Then
+				If VpEx.ErrorCode = CgMissingTable Then
 					VpMissingTable = True
 				End If
 				If Not VpSave Then
@@ -1583,9 +1601,9 @@ Public Module clsModule
 			VgDBReader.Close
 			'Fichier présent mais table d'index absente
 			If VpMissingTable Then
-				Select Case clsModule.ShowQuestion("Cette version du logiciel est capable de gérer les images des cartes mais la base de données n'est pas à jour." + vbCrLf + "Voulez-vous télécharger les informations manquantes maintenant ?" + vbCrLf + "Cliquez sur 'Annuler' pour ne plus afficher ce message...", MessageBoxButtons.YesNoCancel)
+				Select Case ShowQuestion("Cette version du logiciel est capable de gérer les images des cartes mais la base de données n'est pas à jour." + vbCrLf + "Voulez-vous télécharger les informations manquantes maintenant ?" + vbCrLf + "Cliquez sur 'Annuler' pour ne plus afficher ce message...", MessageBoxButtons.YesNoCancel)
 					Case DialogResult.Yes
-						Call clsModule.DownloadUpdate(New Uri(CgURL3), clsModule.CgUpDDB)
+						Call DownloadUpdate(New Uri(CgURL3), CgUpDDB)
 					Case DialogResult.Cancel
 						VgOptions.VgSettings.PicturesFile = ""
 				 	Case Else
@@ -1698,23 +1716,23 @@ Public Module clsModule
 		'Images
 		Try
 			For Each VpFile As FileInfo In (New DirectoryInfo(Path.GetTempPath)).GetFiles("mtgm~*.jpg")
-				Call clsModule.SecureDelete(VpFile.FullName)
+				Call SecureDelete(VpFile.FullName)
 			Next VpFile
 		Catch
-			Call clsModule.ShowWarning("Impossible d'accéder au répertoire temporaire...")
+			Call ShowWarning("Impossible d'accéder au répertoire temporaire...")
 		End Try
 		'Updates
-		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpTXTFR)
-		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpDFile)
-		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpDDB)
-		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpDDBb)
-		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpPrices)
-		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
+		Call SecureDelete(Application.StartupPath + CgUpTXTFR)
+		Call SecureDelete(Application.StartupPath + CgUpDFile)
+		Call SecureDelete(Application.StartupPath + CgUpDDB)
+		Call SecureDelete(Application.StartupPath + CgUpDDBb)
+		Call SecureDelete(Application.StartupPath + CgUpPrices)
+		Call SecureDelete(Application.StartupPath + CgUpSeries)
 		For Each VpFile As FileInfo In (New DirectoryInfo(Application.StartupPath)).GetFiles("*_en.txt")
-			Call clsModule.SecureDelete(VpFile.FullName)
+			Call SecureDelete(VpFile.FullName)
 		Next VpFile
 		For Each VpFile As FileInfo In (New DirectoryInfo(Application.StartupPath)).GetFiles("*_fr.txt")
-			Call clsModule.SecureDelete(VpFile.FullName)
+			Call SecureDelete(VpFile.FullName)
 		Next VpFile
 	End Sub
 	Public Sub SecureDelete(VpFile As String)
@@ -1866,22 +1884,22 @@ Public Class clsManas
 		VpCost = VpCostDB.ToLower
 		VpCost = VpCost.Replace("{", "").Replace("}", "")
 		'- either or (ex. either b or u)
-		If VpCost.Contains(clsModule.CgManaParsing(2)) Then
-			VpCost = VpCost.Replace(clsModule.CgManaParsing(2), "(").Replace(clsModule.CgManaParsing(3), "/") + ")"
+		If VpCost.Contains(CgManaParsing(2)) Then
+			VpCost = VpCost.Replace(CgManaParsing(2), "(").Replace(CgManaParsing(3), "/") + ")"
 		'- colorless mana (ex. one colorless mana)
-		ElseIf VpCost.Contains(clsModule.CgManaParsing(4)) Then
-			VpCost = VpCost.Replace(clsModule.CgManaParsing(4), "")
-			VpCost = clsModule.StrBuild("A", clsModule.FindNumber(VpCost))
+		ElseIf VpCost.Contains(CgManaParsing(4)) Then
+			VpCost = VpCost.Replace(CgManaParsing(4), "")
+			VpCost = StrBuild("A", FindNumber(VpCost))
 		'- colorless mana d'un nombre indéterminé (on en met 1 par défaut)
-		ElseIf VpCost = clsModule.CgManaParsing(4).Trim Then
+		ElseIf VpCost = CgManaParsing(4).Trim Then
 			VpCost = "A"
 		'- mana of any color (ex. one mana of any color)
-		ElseIf VpCost.Contains(clsModule.CgManaParsing(5)) Then
-			VpCost = VpCost.Replace(clsModule.CgManaParsing(5), "")
-			VpCost = clsModule.StrBuild("M", clsModule.FindNumber(VpCost))
+		ElseIf VpCost.Contains(CgManaParsing(5)) Then
+			VpCost = VpCost.Replace(CgManaParsing(5), "")
+			VpCost = StrBuild("M", FindNumber(VpCost))
 		'- mana (ex. two blue mana)
-		ElseIf VpCost.Contains(clsModule.CgManaParsing(6)) Then
-			VpCost = VpCost.Replace(clsModule.CgManaParsing(6), "")
+		ElseIf VpCost.Contains(CgManaParsing(6)) Then
+			VpCost = VpCost.Replace(CgManaParsing(6), "")
 			VpStrs = VpCost.Split(" ")
 			Try
 				Select Case VpStrs(1)
@@ -1903,7 +1921,7 @@ Public Class clsManas
 				ReDim Preserve VpStrs(0 To 1)
 				VpStrs(1) = "A"
 			End Try
-			VpCost = clsModule.StrBuild(VpStrs(1), clsModule.FindNumber(VpStrs(0)))
+			VpCost = StrBuild(VpStrs(1), FindNumber(VpStrs(0)))
 		'- XA... (ex. X2U)
 		ElseIf VpCost.StartsWith("x") AndAlso Val(VpCost.Substring(1)) <> 0 Then
 			VmX = 1
@@ -1912,7 +1930,7 @@ Public Class clsManas
 			VpCost = VpCost.Substring(1)
 		End If
 		'Gestion des cas classiques :
-		VmEffectiveLength = VmEffectiveLength + VpCost.Length - 4 * clsModule.StrCount(VpCost, "(")
+		VmEffectiveLength = VmEffectiveLength + VpCost.Length - 4 * StrCount(VpCost, "(")
 		VpColorless = Val(VpCost)
 		If VpColorless >= 10 Then
 			VmEffectiveLength = VmEffectiveLength - 1

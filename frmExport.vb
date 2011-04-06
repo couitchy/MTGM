@@ -51,7 +51,7 @@ Public Partial Class frmExport
 	'-------------------------------------------------------
 	'Exporte la table spécifiée dans le répertoire spécifiée
 	'-------------------------------------------------------
-	Dim VpOut As New StreamWriter(VpPath + "\" + VpSource.Replace("/", "").Replace("\", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("""", "").Replace("<", "").Replace(">", "").Replace("|", "") + If(Me.optApprentice.Checked, clsModule.CgFExtA, If(Me.optNormal.Checked, clsModule.CgFExtN, clsModule.CgFExtO)).ToString)
+	Dim VpOut As New StreamWriter(VpPath + "\" + clsModule.AvoidForbiddenChr(VpSource, clsModule.eForbiddenSet.Full) + If(Me.optApprentice.Checked, clsModule.CgFExtA, If(Me.optNormal.Checked, clsModule.CgFExtN, clsModule.CgFExtO)).ToString)
 		If Me.optApprentice.Checked Then
 			VpOut.WriteLine("// NAME : " + VpSource)
 			VpOut.WriteLine("// CREATOR : " + Environment.UserName)

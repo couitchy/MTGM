@@ -44,13 +44,13 @@ Partial Class frmWord
 		Me.chkSaveImg = New System.Windows.Forms.CheckBox
 		Me.chkWordShow = New System.Windows.Forms.CheckBox
 		Me.chkSingle = New System.Windows.Forms.CheckBox
+		Me.btVignettes = New TD.SandBar.ButtonItem
+		Me.btAdvance = New TD.SandBar.ButtonItem
+		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
 		Me.grpVignettes = New System.Windows.Forms.GroupBox
 		Me.chklstWord = New System.Windows.Forms.CheckedListBox
 		Me.chkAllNone = New System.Windows.Forms.CheckBox
 		Me.lblWord = New System.Windows.Forms.Label
-		Me.btVignettes = New TD.SandBar.ButtonItem
-		Me.btAdvance = New TD.SandBar.ButtonItem
-		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
 		Me.cbarWord.SuspendLayout
 		Me.pnlWord.SuspendLayout
 		Me.grpOptions.SuspendLayout
@@ -79,8 +79,8 @@ Partial Class frmWord
 		'
 		'pnlWord
 		'
-		Me.pnlWord.Controls.Add(Me.cmdWord)
 		Me.pnlWord.Controls.Add(Me.grpVignettes)
+		Me.pnlWord.Controls.Add(Me.cmdWord)
 		Me.pnlWord.Controls.Add(Me.grpOptions)
 		Me.pnlWord.Location = New System.Drawing.Point(2, 49)
 		Me.pnlWord.Name = "pnlWord"
@@ -172,6 +172,22 @@ Partial Class frmWord
 		Me.chkSingle.Text = "Vignette unique par carte"
 		Me.chkSingle.UseVisualStyleBackColor = true
 		'
+		'btVignettes
+		'
+		Me.btVignettes.Icon = CType(resources.GetObject("btVignettes.Icon"),System.Drawing.Icon)
+		Me.btVignettes.Text = "Vignettes"
+		AddHandler Me.btVignettes.Activate, AddressOf Me.BtVignettesActivate
+		'
+		'btAdvance
+		'
+		Me.btAdvance.Icon = CType(resources.GetObject("btAdvance.Icon"),System.Drawing.Icon)
+		Me.btAdvance.Text = "Options"
+		AddHandler Me.btAdvance.Activate, AddressOf Me.BtAdvanceActivate
+		'
+		'dlgBrowse
+		'
+		Me.dlgBrowse.Description = "Répertoire d'extraction des images"
+		'
 		'grpVignettes
 		'
 		Me.grpVignettes.Controls.Add(Me.chklstWord)
@@ -180,8 +196,8 @@ Partial Class frmWord
 		Me.grpVignettes.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpVignettes.Location = New System.Drawing.Point(0, 0)
 		Me.grpVignettes.Name = "grpVignettes"
-		Me.grpVignettes.Size = New System.Drawing.Size(280, 224)
-		Me.grpVignettes.TabIndex = 18
+		Me.grpVignettes.Size = New System.Drawing.Size(280, 201)
+		Me.grpVignettes.TabIndex = 19
 		Me.grpVignettes.TabStop = false
 		'
 		'chklstWord
@@ -191,7 +207,7 @@ Partial Class frmWord
 		Me.chklstWord.FormattingEnabled = true
 		Me.chklstWord.Location = New System.Drawing.Point(3, 49)
 		Me.chklstWord.Name = "chklstWord"
-		Me.chklstWord.Size = New System.Drawing.Size(274, 139)
+		Me.chklstWord.Size = New System.Drawing.Size(274, 124)
 		Me.chklstWord.TabIndex = 13
 		AddHandler Me.chklstWord.SelectedValueChanged, AddressOf Me.ChklstWordSelectedValueChanged
 		'
@@ -200,7 +216,7 @@ Partial Class frmWord
 		Me.chkAllNone.Checked = true
 		Me.chkAllNone.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.chkAllNone.Location = New System.Drawing.Point(3, 196)
+		Me.chkAllNone.Location = New System.Drawing.Point(3, 173)
 		Me.chkAllNone.Name = "chkAllNone"
 		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
 		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
@@ -219,22 +235,6 @@ Partial Class frmWord
 		Me.lblWord.TabIndex = 5
 		Me.lblWord.Text = "Sélectionnez les cartes que vous souhaitez faire apparaître en vignettes sous Wor"& _ 
 		"d :"
-		'
-		'btVignettes
-		'
-		Me.btVignettes.Icon = CType(resources.GetObject("btVignettes.Icon"),System.Drawing.Icon)
-		Me.btVignettes.Text = "Vignettes"
-		AddHandler Me.btVignettes.Activate, AddressOf Me.BtVignettesActivate
-		'
-		'btAdvance
-		'
-		Me.btAdvance.Icon = CType(resources.GetObject("btAdvance.Icon"),System.Drawing.Icon)
-		Me.btAdvance.Text = "Options"
-		AddHandler Me.btAdvance.Activate, AddressOf Me.BtAdvanceActivate
-		'
-		'dlgBrowse
-		'
-		Me.dlgBrowse.Description = "Répertoire d'extraction des images"
 		'
 		'frmWord
 		'

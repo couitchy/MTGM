@@ -15,6 +15,7 @@
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '------------------------------------------------------
+Imports System.IO
 Public Partial Class frmWord
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
@@ -24,6 +25,7 @@ Public Partial Class frmWord
 	Private VmRestrictionTXT As String
 	Private VmBusy As Boolean = False
 	Public Sub New(VpOwner As MainForm)
+	Dim VpPath As String = Path.GetTempPath + "\mtgmgr"
 		Me.InitializeComponent()
 		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
@@ -31,7 +33,10 @@ Public Partial Class frmWord
 		If VmRestrictionTXT.Length > 31 Then
 			VmRestrictionTXT = VmRestrictionTXT.Substring(0, 31)
 		End If
-		Me.txtSaveImg.Text = Application.StartupPath
+		If Not Directory.Exists(VpPath) Then
+			Directory.CreateDirectory(VpPath)
+		End If
+		Me.txtSaveImg.Text = VpPath.Replace("\\", "\")
 	End Sub
 	Private Sub WordGen
 	'-----------------------------------------------------------------------------------------------
@@ -81,7 +86,7 @@ Public Partial Class frmWord
 					Try
 						For VpI As Integer = 1 To If(Me.chkSingle.Checked, 1, .GetValue(1))
 							Application.DoEvents
-		 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + .GetString(0).Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg", False, True, 1, 1, 1, 1)
+		 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(.GetString(0)) + ".jpg", False, True, 1, 1, 1, 1)
 		 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth)
 		 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight)
 		 					VpPicture.Top = VpTop
@@ -166,9 +171,15 @@ Public Partial Class frmWord
 		End If
 	End Sub
 	Sub CmdWordClick(sender As Object, e As EventArgs)
-		Call Me.WordGen
-		If Me.chkSaveImg.Checked Then
-			Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
+		If Me.chklstWord.CheckedItems.Count > clsModule.CgMaxVignettes Then
+			Call clsModule.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + clsModule.CgMaxVignettes.ToString + ".")
+		Else
+			Me.cmdWord.Enabled = False
+			Call Me.WordGen
+			If Me.chkSaveImg.Checked Then
+				Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
+			End If
+			Me.cmdWord.Enabled = True
 		End If
 	End Sub
 	Sub ChkAllNoneCheckedChanged(sender As Object, e As EventArgs)
