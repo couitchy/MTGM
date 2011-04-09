@@ -541,7 +541,8 @@ Partial Class MainForm
 		'
 		Me.mnuDBOpen.Image = CType(resources.GetObject("mnuDBOpen.Image"),System.Drawing.Image)
 		Me.mnuDBOpen.Name = "mnuDBOpen"
-		Me.mnuDBOpen.Size = New System.Drawing.Size(166, 22)
+		Me.mnuDBOpen.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.O),System.Windows.Forms.Keys)
+		Me.mnuDBOpen.Size = New System.Drawing.Size(206, 22)
 		Me.mnuDBOpen.Text = "Ouvrir..."
 		AddHandler Me.mnuDBOpen.Click, AddressOf Me.MnuDBOpenClick
 		'
@@ -549,7 +550,8 @@ Partial Class MainForm
 		'
 		Me.mnuDBSave.Image = CType(resources.GetObject("mnuDBSave.Image"),System.Drawing.Image)
 		Me.mnuDBSave.Name = "mnuDBSave"
-		Me.mnuDBSave.Size = New System.Drawing.Size(166, 22)
+		Me.mnuDBSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S),System.Windows.Forms.Keys)
+		Me.mnuDBSave.Size = New System.Drawing.Size(206, 22)
 		Me.mnuDBSave.Text = "Enregistrer sous..."
 		AddHandler Me.mnuDBSave.Click, AddressOf Me.MnuDBSaveClick
 		'
@@ -557,6 +559,7 @@ Partial Class MainForm
 		'
 		Me.mnuExport.Image = CType(resources.GetObject("mnuExport.Image"),System.Drawing.Image)
 		Me.mnuExport.Name = "mnuExport"
+		Me.mnuExport.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.R),System.Windows.Forms.Keys)
 		Me.mnuExport.Size = New System.Drawing.Size(279, 22)
 		Me.mnuExport.Text = "Import / Export"
 		AddHandler Me.mnuExport.Click, AddressOf Me.MnuExportActivate
@@ -644,6 +647,7 @@ Partial Class MainForm
 		'
 		Me.mnuExit.Image = CType(resources.GetObject("mnuExit.Image"),System.Drawing.Image)
 		Me.mnuExit.Name = "mnuExit"
+		Me.mnuExit.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Q),System.Windows.Forms.Keys)
 		Me.mnuExit.Size = New System.Drawing.Size(279, 22)
 		Me.mnuExit.Text = "Quitter"
 		AddHandler Me.mnuExit.Click, AddressOf Me.MnuExitActivate
@@ -659,6 +663,7 @@ Partial Class MainForm
 		'
 		Me.mnuRefresh.Image = CType(resources.GetObject("mnuRefresh.Image"),System.Drawing.Image)
 		Me.mnuRefresh.Name = "mnuRefresh"
+		Me.mnuRefresh.ShortcutKeys = System.Windows.Forms.Keys.F5
 		Me.mnuRefresh.Size = New System.Drawing.Size(238, 22)
 		Me.mnuRefresh.Text = "Rafraîchir"
 		AddHandler Me.mnuRefresh.Click, AddressOf Me.MnuRefreshActivate
@@ -667,7 +672,8 @@ Partial Class MainForm
 		'
 		Me.mnuShowImage.Image = CType(resources.GetObject("mnuShowImage.Image"),System.Drawing.Image)
 		Me.mnuShowImage.Name = "mnuShowImage"
-		Me.mnuShowImage.Size = New System.Drawing.Size(238, 22)
+		Me.mnuShowImage.ShortcutKeys = System.Windows.Forms.Keys.F4
+		Me.mnuShowImage.Size = New System.Drawing.Size(257, 22)
 		Me.mnuShowImage.Text = "Ouvrir / fermer panneau image"
 		AddHandler Me.mnuShowImage.Click, AddressOf Me.MnuShowImageActivate
 		'
@@ -696,7 +702,8 @@ Partial Class MainForm
 		'
 		Me.mnuGestDecks.Image = CType(resources.GetObject("mnuGestDecks.Image"),System.Drawing.Image)
 		Me.mnuGestDecks.Name = "mnuGestDecks"
-		Me.mnuGestDecks.Size = New System.Drawing.Size(234, 22)
+		Me.mnuGestDecks.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.L),System.Windows.Forms.Keys)
+		Me.mnuGestDecks.Size = New System.Drawing.Size(277, 22)
 		Me.mnuGestDecks.Text = "Liste des decks"
 		AddHandler Me.mnuGestDecks.Click, AddressOf Me.MnuGestDecksActivate
 		'
@@ -704,7 +711,8 @@ Partial Class MainForm
 		'
 		Me.mnuGestAdv.Image = CType(resources.GetObject("mnuGestAdv.Image"),System.Drawing.Image)
 		Me.mnuGestAdv.Name = "mnuGestAdv"
-		Me.mnuGestAdv.Size = New System.Drawing.Size(234, 22)
+		Me.mnuGestAdv.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.V),System.Windows.Forms.Keys)
+		Me.mnuGestAdv.Size = New System.Drawing.Size(277, 22)
 		Me.mnuGestAdv.Text = "Liste des adversaires"
 		AddHandler Me.mnuGestAdv.Click, AddressOf Me.MnuGestAdvClick
 		'
@@ -712,7 +720,8 @@ Partial Class MainForm
 		'
 		Me.mnuAddCards.Image = CType(resources.GetObject("mnuAddCards.Image"),System.Drawing.Image)
 		Me.mnuAddCards.Name = "mnuAddCards"
-		Me.mnuAddCards.Size = New System.Drawing.Size(234, 22)
+		Me.mnuAddCards.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N),System.Windows.Forms.Keys)
+		Me.mnuAddCards.Size = New System.Drawing.Size(277, 22)
 		Me.mnuAddCards.Text = "Ajouter / Supprimer des cartes"
 		AddHandler Me.mnuAddCards.Click, AddressOf Me.MnuAddCardsActivate
 		'
@@ -721,7 +730,7 @@ Partial Class MainForm
 		Me.mnuRemCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuRemScores, Me.mnuRemCollec, Me.mnuRemGames})
 		Me.mnuRemCards.Image = CType(resources.GetObject("mnuRemCards.Image"),System.Drawing.Image)
 		Me.mnuRemCards.Name = "mnuRemCards"
-		Me.mnuRemCards.Size = New System.Drawing.Size(234, 22)
+		Me.mnuRemCards.Size = New System.Drawing.Size(277, 22)
 		Me.mnuRemCards.Text = "Purger la table..."
 		'
 		'mnuRemScores
@@ -749,7 +758,7 @@ Partial Class MainForm
 		Me.mnuFixTable.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixPrices, Me.mnuFixFR, Me.mnuFixCreatures, Me.mnuFixSerie, Me.mnuFixSerie2, Me.mnuSeparator10, Me.mnuFixCollec, Me.mnuFixGames})
 		Me.mnuFixTable.Image = CType(resources.GetObject("mnuFixTable.Image"),System.Drawing.Image)
 		Me.mnuFixTable.Name = "mnuFixTable"
-		Me.mnuFixTable.Size = New System.Drawing.Size(234, 22)
+		Me.mnuFixTable.Size = New System.Drawing.Size(277, 22)
 		Me.mnuFixTable.Text = "Réparer la table..."
 		'
 		'mnuFixPrices
@@ -809,7 +818,7 @@ Partial Class MainForm
 		Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixAssoc, Me.mnuFixPic, Me.mnuFixFR2})
 		Me.mnuFixDivers.Image = CType(resources.GetObject("mnuFixDivers.Image"),System.Drawing.Image)
 		Me.mnuFixDivers.Name = "mnuFixDivers"
-		Me.mnuFixDivers.Size = New System.Drawing.Size(234, 22)
+		Me.mnuFixDivers.Size = New System.Drawing.Size(277, 22)
 		Me.mnuFixDivers.Text = "Corrections..."
 		'
 		'mnuFixAssoc
@@ -836,13 +845,14 @@ Partial Class MainForm
 		'mnuSeparator7
 		'
 		Me.mnuSeparator7.Name = "mnuSeparator7"
-		Me.mnuSeparator7.Size = New System.Drawing.Size(231, 6)
+		Me.mnuSeparator7.Size = New System.Drawing.Size(274, 6)
 		'
 		'mnuPrefs
 		'
 		Me.mnuPrefs.Image = CType(resources.GetObject("mnuPrefs.Image"),System.Drawing.Image)
 		Me.mnuPrefs.Name = "mnuPrefs"
-		Me.mnuPrefs.Size = New System.Drawing.Size(234, 22)
+		Me.mnuPrefs.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P),System.Windows.Forms.Keys)
+		Me.mnuPrefs.Size = New System.Drawing.Size(277, 22)
 		Me.mnuPrefs.Text = "Préférences"
 		AddHandler Me.mnuPrefs.Click, AddressOf Me.MnuPrefsActivate
 		'
@@ -857,7 +867,8 @@ Partial Class MainForm
 		'
 		Me.mnuStdSearch.Image = CType(resources.GetObject("mnuStdSearch.Image"),System.Drawing.Image)
 		Me.mnuStdSearch.Name = "mnuStdSearch"
-		Me.mnuStdSearch.Size = New System.Drawing.Size(258, 22)
+		Me.mnuStdSearch.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F),System.Windows.Forms.Keys)
+		Me.mnuStdSearch.Size = New System.Drawing.Size(303, 22)
 		Me.mnuStdSearch.Text = "Rechercher dans l'explorateur"
 		AddHandler Me.mnuStdSearch.Click, AddressOf Me.MnuStdSearchActivate
 		'
@@ -865,20 +876,23 @@ Partial Class MainForm
 		'
 		Me.mnuAdvancedSearch.Image = CType(resources.GetObject("mnuAdvancedSearch.Image"),System.Drawing.Image)
 		Me.mnuAdvancedSearch.Name = "mnuAdvancedSearch"
-		Me.mnuAdvancedSearch.Size = New System.Drawing.Size(258, 22)
+		Me.mnuAdvancedSearch.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift)  _
+						Or System.Windows.Forms.Keys.F),System.Windows.Forms.Keys)
+		Me.mnuAdvancedSearch.Size = New System.Drawing.Size(303, 22)
 		Me.mnuAdvancedSearch.Text = "Recherche avancée"
 		AddHandler Me.mnuAdvancedSearch.Click, AddressOf Me.MnuAdvancedSearchActivate
 		'
 		'mnuSeparator8
 		'
 		Me.mnuSeparator8.Name = "mnuSeparator8"
-		Me.mnuSeparator8.Size = New System.Drawing.Size(255, 6)
+		Me.mnuSeparator8.Size = New System.Drawing.Size(300, 6)
 		'
 		'mnuExcelGen
 		'
 		Me.mnuExcelGen.Image = CType(resources.GetObject("mnuExcelGen.Image"),System.Drawing.Image)
 		Me.mnuExcelGen.Name = "mnuExcelGen"
-		Me.mnuExcelGen.Size = New System.Drawing.Size(258, 22)
+		Me.mnuExcelGen.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.E),System.Windows.Forms.Keys)
+		Me.mnuExcelGen.Size = New System.Drawing.Size(303, 22)
 		Me.mnuExcelGen.Text = "Génération d'une liste sous Excel"
 		AddHandler Me.mnuExcelGen.Click, AddressOf Me.MnuExcelGenActivate
 		'
@@ -886,7 +900,8 @@ Partial Class MainForm
 		'
 		Me.mnuWordGen.Image = CType(resources.GetObject("mnuWordGen.Image"),System.Drawing.Image)
 		Me.mnuWordGen.Name = "mnuWordGen"
-		Me.mnuWordGen.Size = New System.Drawing.Size(258, 22)
+		Me.mnuWordGen.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.W),System.Windows.Forms.Keys)
+		Me.mnuWordGen.Size = New System.Drawing.Size(303, 22)
 		Me.mnuWordGen.Text = "Génération de vignettes sous Word"
 		AddHandler Me.mnuWordGen.Click, AddressOf Me.MnuWordGenClick
 		'
@@ -894,7 +909,8 @@ Partial Class MainForm
 		'
 		Me.mnuPerfs.Image = CType(resources.GetObject("mnuPerfs.Image"),System.Drawing.Image)
 		Me.mnuPerfs.Name = "mnuPerfs"
-		Me.mnuPerfs.Size = New System.Drawing.Size(258, 22)
+		Me.mnuPerfs.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.J),System.Windows.Forms.Keys)
+		Me.mnuPerfs.Size = New System.Drawing.Size(303, 22)
 		Me.mnuPerfs.Text = "Comptage Victoires / Défaites"
 		AddHandler Me.mnuPerfs.Click, AddressOf Me.MnuPerfsActivate
 		'
@@ -902,7 +918,8 @@ Partial Class MainForm
 		'
 		Me.mnuSimu.Image = CType(resources.GetObject("mnuSimu.Image"),System.Drawing.Image)
 		Me.mnuSimu.Name = "mnuSimu"
-		Me.mnuSimu.Size = New System.Drawing.Size(258, 22)
+		Me.mnuSimu.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.U),System.Windows.Forms.Keys)
+		Me.mnuSimu.Size = New System.Drawing.Size(303, 22)
 		Me.mnuSimu.Text = "Simulations sur la sélection"
 		AddHandler Me.mnuSimu.Click, AddressOf Me.MnuSimuActivate
 		'
@@ -910,7 +927,8 @@ Partial Class MainForm
 		'
 		Me.mnuStats.Image = CType(resources.GetObject("mnuStats.Image"),System.Drawing.Image)
 		Me.mnuStats.Name = "mnuStats"
-		Me.mnuStats.Size = New System.Drawing.Size(258, 22)
+		Me.mnuStats.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.T),System.Windows.Forms.Keys)
+		Me.mnuStats.Size = New System.Drawing.Size(303, 22)
 		Me.mnuStats.Text = "Statistiques sur la sélection"
 		AddHandler Me.mnuStats.Click, AddressOf Me.MnuStatsActivate
 		'
@@ -918,7 +936,8 @@ Partial Class MainForm
 		'
 		Me.mnuMV.Image = CType(resources.GetObject("mnuMV.Image"),System.Drawing.Image)
 		Me.mnuMV.Name = "mnuMV"
-		Me.mnuMV.Size = New System.Drawing.Size(258, 22)
+		Me.mnuMV.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.B),System.Windows.Forms.Keys)
+		Me.mnuMV.Size = New System.Drawing.Size(303, 22)
 		Me.mnuMV.Text = "Achats sur Magic-Ville"
 		AddHandler Me.mnuMV.Click, AddressOf Me.MnuMVClick
 		'
@@ -991,6 +1010,7 @@ Partial Class MainForm
 		'
 		Me.mnuWebsite.Image = CType(resources.GetObject("mnuWebsite.Image"),System.Drawing.Image)
 		Me.mnuWebsite.Name = "mnuWebsite"
+		Me.mnuWebsite.ShortcutKeys = System.Windows.Forms.Keys.F9
 		Me.mnuWebsite.Size = New System.Drawing.Size(237, 22)
 		Me.mnuWebsite.Text = "Site Web de MTGM"
 		AddHandler Me.mnuWebsite.Click, AddressOf Me.MnuWebsiteClick
@@ -999,6 +1019,7 @@ Partial Class MainForm
 		'
 		Me.mnuHelp.Image = CType(resources.GetObject("mnuHelp.Image"),System.Drawing.Image)
 		Me.mnuHelp.Name = "mnuHelp"
+		Me.mnuHelp.ShortcutKeys = System.Windows.Forms.Keys.F1
 		Me.mnuHelp.Size = New System.Drawing.Size(237, 22)
 		Me.mnuHelp.Text = "Aide"
 		AddHandler Me.mnuHelp.Click, AddressOf Me.MnuHelpActivate
@@ -1007,6 +1028,7 @@ Partial Class MainForm
 		'
 		Me.mnuAbout.Image = CType(resources.GetObject("mnuAbout.Image"),System.Drawing.Image)
 		Me.mnuAbout.Name = "mnuAbout"
+		Me.mnuAbout.ShortcutKeys = System.Windows.Forms.Keys.F10
 		Me.mnuAbout.Size = New System.Drawing.Size(237, 22)
 		Me.mnuAbout.Text = "A propos"
 		AddHandler Me.mnuAbout.Click, AddressOf Me.MnuAboutActivate

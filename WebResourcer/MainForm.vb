@@ -217,6 +217,8 @@ Public Partial Class MainForm
 		If Me.dlgSave.FileName <> "" Then
 			VpOut = New StreamWriter(Me.dlgSave.FileName)
 			Call Me.AddToLog("La récupération des prix a commencé...", eLogType.Information, True)
+			'Inscription de la date
+			VpOut.WriteLine(Now.ToShortDateString)
 			'Récupère le nom des cartes
 			VpCards = Me.BuildListeFromDB
 			'Récupère le prix pour chaque carte
