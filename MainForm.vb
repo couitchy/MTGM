@@ -654,6 +654,9 @@ Public Partial Class MainForm
 			Return 0
 		End Try
 	End Function
+	Private Sub ShowNCards(VpSource As String)
+		Me.lblNCards.Text = "(" + Me.GetNCards(VpSource).ToString + " cartes attachées, " + Me.GetNCards(VpSource, True).ToString + " distinctes)"
+	End Sub
 	Private Function SaveNode(VpNode As TreeNode) As String
 	'-----------------------------------------------------
 	'Sauvegarder la généalogie du noeud passé en paramètre
@@ -803,7 +806,7 @@ Public Partial Class MainForm
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
 				Call Me.RecurLoadTvw(clsModule.CgSDecks, clsModule.CgSDecks, VpNode, 2)
-				Me.lblNCards.Text = "(" + Me.GetNCards(clsModule.CgSDecks).ToString + " cartes attachées, " + Me.GetNCards(clsModule.CgSDecks, True).ToString + " distinctes)"
+				Call Me.ShowNCards(clsModule.CgSDecks)
 			'Cas 3 : chargement de la collection
 			Else
 				VpNode.Text = clsModule.CgCollection
@@ -813,7 +816,7 @@ Public Partial Class MainForm
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
 				Call Me.RecurLoadTvw(clsModule.CgSCollection, clsModule.CgSCollection, VpNode, 1)
-				Me.lblNCards.Text = "(" + Me.GetNCards(clsModule.CgSCollection).ToString + " cartes attachées, " + Me.GetNCards(clsModule.CgSCollection, True).ToString + " distinctes)"
+				Call Me.ShowNCards(clsModule.CgSCollection)
 			End If
 			Me.tvwExplore.Nodes.Add(VpNode)
 			VpNode.Expand
@@ -1685,13 +1688,11 @@ Public Partial Class MainForm
 			While Not VpNode.Parent Is Nothing
 				If VpNode.Parent.Tag.Key = "Card.Series" Then
 					Me.cboEdition.SelectedItem = VpNode.Text
-					Me.scrollStock.Visible = (Not Me.IsInAdvSearch) And Me.mnuDegroupFoils.Checked
 					Exit Sub
 				End If
 				VpNode = VpNode.Parent
 			End While
 		End If
-		Me.scrollStock.Visible = False
 	End Sub
 	Sub TvwExploreAfterSelect(ByVal sender As Object, ByVal e As TreeViewEventArgs)
 	Dim VpTitle As String
@@ -1726,6 +1727,7 @@ Public Partial Class MainForm
 					Call Me.LoadAutorisations(VpTitle)
 				End If
 				Me.cmdHistPrices.Enabled = True
+				Me.scrollStock.Visible = (Not Me.IsInAdvSearch) And Me.mnuDegroupFoils.Checked And Me.IsSingleSource
 			Else
 				'Préconstruction de la requête avec les conditions sur les critères des ancêtres
 				VpParent = e.Node
@@ -2132,24 +2134,24 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuShowImageActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpDistance As Integer = Me.splitV.SplitterDistance
-	Static VpDistance2 As Integer
-	Static VpWidth2 As Integer
+	Static VsDistance2 As Integer
+	Static VsWidth2 As Integer
 		Me.SuspendLayout
 		'Si le panneau est affiché, le masque
 		If Not Me.splitV2.Panel2Collapsed Then
-			VpDistance2 = Me.splitV2.SplitterDistance
-			VpWidth2 = Me.splitV2.Panel2.Width
-			Me.Width = Me.Width - VpWidth2
+			VsDistance2 = Me.splitV2.SplitterDistance
+			VsWidth2 = Me.splitV2.Panel2.Width
+			Me.Width = Me.Width - VsWidth2
 			Me.splitV2.Panel2Collapsed = True
 		'Sinon l'affiche
 		Else
 			Me.splitV2.Panel2Collapsed = False
-			Me.Width = Me.Width + VpWidth2
+			Me.Width = Me.Width + VsWidth2
 		End If
 		Me.ResumeLayout
 		Me.splitV.SplitterDistance = VpDistance
-		If VpDistance2 <> 0 Then
-			Me.splitV2.SplitterDistance = VpDistance2
+		If VsDistance2 <> 0 Then
+			Me.splitV2.SplitterDistance = VsDistance2
 		End If
 	End Sub
 	Sub MnuCheckForBetasActivate(ByVal sender As Object, ByVal e As EventArgs)
@@ -2223,6 +2225,9 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub ScrollStockScroll(sender As Object, e As ScrollEventArgs)
+	'-----------------------------------------------------------
+	'Ajuste le nombre de cartes en stock dans la base de données
+	'-----------------------------------------------------------
 	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpEncNbr As Integer
@@ -2234,7 +2239,7 @@ Public Partial Class MainForm
 			VpFoil = False
 		End If
  		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
-		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll And Me.IsSingleSource Then
+		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll Then
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
 				If Val(Me.lblStock.Text) > 0 Then
 					Me.lblStock.Text = (Val(Me.lblStock.Text) - 1).ToString
@@ -2245,6 +2250,8 @@ Public Partial Class MainForm
 			'Mise à jour du nombre d'items présents à la destination
 			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + If(VpSource = clsModule.CgSDecks, " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 			VgDBCommand.ExecuteNonQuery
+			'Mise à jour total cartes attachées
+			Call Me.ShowNCards(VpSource)
 		End If
 	End Sub
 	Sub CmdHistPricesClick(sender As Object, e As EventArgs)

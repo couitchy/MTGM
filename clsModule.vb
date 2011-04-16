@@ -164,7 +164,12 @@ Public Module clsModule
 	Public WithEvents VgTray As NotifyIcon
 	Public WithEvents VgTimer As Timer
 	Public WithEvents VgClient As New WebClient
-	Public Enum eForbiddenSet
+	Public Enum eSearchType
+		Alpha = 0
+		Num
+		NumOverAlpha
+	End Enum
+	Public Enum eForbiddenCharset
 		Standard = 0
 		BDD
 		Full
@@ -1027,13 +1032,13 @@ Public Module clsModule
 			Return False
 		End Try
 	End Function
-	Public Function AvoidForbiddenChr(ByVal VpIn As String, Optional VpChrSet As eForbiddenSet = eForbiddenSet.Standard) As String
+	Public Function AvoidForbiddenChr(ByVal VpIn As String, Optional VpChrSet As eForbiddenCharset = eForbiddenCharset.Standard) As String
 		Select Case VpChrSet
-			Case eForbiddenSet.Standard
+			Case eForbiddenCharset.Standard
 				Return VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "")
-			Case eForbiddenSet.BDD
+			Case eForbiddenCharset.BDD
 				Return AvoidForbiddenChr(VpIn.Replace("'", "''"))
-			Case eForbiddenSet.Full
+			Case eForbiddenCharset.Full
 				Return AvoidForbiddenChr(VpIn.Replace("\", "").Replace("*", "").Replace("<", "").Replace(">", "").Replace("|", ""))
 			Case Else
 				Return VpIn
@@ -1554,7 +1559,7 @@ Public Module clsModule
 			VpPicturesFileB = New BinaryReader(VpPicturesFile.BaseStream)
 			VpTmpFile = New StreamWriter(VpTmp)
 			VpTmpFileB = New BinaryWriter(VpTmpFile.BaseStream)
-			VgDBCommand.CommandText = "Select [Offset], [End] From CardPictures Where Title = '" + AvoidForbiddenChr(VpTitle, eForbiddenSet.BDD) + "' Order By [End] Desc;"
+			VgDBCommand.CommandText = "Select [Offset], [End] From CardPictures Where Title = '" + AvoidForbiddenChr(VpTitle, eForbiddenCharset.BDD) + "' Order By [End] Desc;"
 			Try
 				VgDBReader = VgDBCommand.ExecuteReader
 				VgDBReader.Read
@@ -1703,11 +1708,15 @@ Public Module clsModule
 	'--------------------------------------------------
 	'Retourne un nom de fichier temporaire image valide
 	'--------------------------------------------------
-	Dim VpI As Integer = 0
-		Do
-			VpI = VpI + 1
-		Loop While File.Exists(Path.GetTempPath + "\mtgm~" + VpI.ToString + ".jpg")
-		Return Path.GetTempPath + "\mtgm~" + VpI.ToString + ".jpg"
+	Static VsI As Integer = -1
+		If VsI = -1 Then
+			Do
+				VsI = VsI + 1
+			Loop While File.Exists(Path.GetTempPath + "\mtgm~" + VsI.ToString + ".jpg")
+		Else
+			VsI = VsI + 1
+		End If
+		Return Path.GetTempPath + "\mtgm~" + VsI.ToString + ".jpg"
 	End Function
 	Public Sub DeleteTempFiles
 	'------------------------------------

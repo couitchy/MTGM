@@ -61,7 +61,10 @@ Public Partial Class Options
 				Call clsModule.GetPrivateProfileString("Properties", VpProperty.Name, "", VpStr, VpStr.Capacity, Application.StartupPath + clsModule.CgINIFile)
 				If VpStr.ToString <> "" Then
 					'Attention, les propriétés ne sont pas toutes du même type, il faut une fonction d'adaptation
-					VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.SetProperty, Nothing, VgSettings, New Object() {clsModule.Matching(VpStr.ToString)})
+					Try
+						VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.SetProperty, Nothing, VgSettings, New Object() {clsModule.Matching(VpStr.ToString)})
+					Catch
+					End Try
 				End If
 			End If
 		Next VpProperty

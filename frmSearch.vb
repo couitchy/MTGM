@@ -52,23 +52,27 @@ Public Partial Class frmSearch
 			Return VpQuery.Substring(0, VpQuery.Length - 4)
 		End If
 	End Function
-	Private Function Search(VpField As String, VpValue As String, VpSource As String, Optional VpIsCreature As Boolean = False, Optional VpEquals As Boolean = False) As String
+	Private Function Search(VpField As String, VpValue As String, VpSource As String, Optional VpIsCreature As Boolean = False, Optional VpMode As clsModule.eSearchType = clsModule.eSearchType.Alpha) As String
 	'------------------------------------------------------------
 	'Effectue la requête de l'utilisateur dans la base de données
 	'------------------------------------------------------------
 	Dim VpSQL As String
 	Dim VpEntry As String
 	Dim VpCriteria As String
-		'Si on effectue une recherche numérique, demande l'égalité et sinon, la simple présence dans la chaîne
-		If VpEquals Then
-			VpCriteria = VpField + " = " + VpValue.Replace(",", ".")
-		Else
-			If Not VpValue.Contains(" ") Then
-				VpCriteria = "InStr(" + VpField + ", " + VpValue + ") > 0"
-			Else
-				VpCriteria = Me.BuildSplitSearch(VpField, VpValue)
-			End If
-		End If
+		Select Case VpMode
+			Case clsModule.eSearchType.Num
+				VpCriteria = VpField + " = " + VpValue.Replace(",", ".")
+			Case clsModule.eSearchType.NumOverAlpha
+				VpCriteria = "Val(" + VpField + ") = " + VpValue
+			Case clsModule.eSearchType.Alpha
+				If Not VpValue.Contains(" ") Then
+					VpCriteria = "InStr(" + VpField + ", " + VpValue + ") > 0"
+				Else
+					VpCriteria = Me.BuildSplitSearch(VpField, VpValue)
+				End If
+			Case Else
+				VpCriteria = ""
+		End Select
 		'Recherche restreinte aux cartes présentes dans l'arborescence
 		If Me.chkRestriction.Checked Then
 			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
@@ -92,11 +96,12 @@ Public Partial Class frmSearch
 				End While
 				.Close
 			End With
+			'Retourne le résultat de la requête en tant que sous-sélection (table virtuelle) pour une utilisation ultérieure éventuelle (chargement dans le treeview)
+			Return VpSQL.Substring(0, VpSQL.Length - 1)
 		Catch
 			Call clsModule.ShowWarning("Une erreur s'est produite lors de la recherche..." + vbCrLf + "Vérifier les informations saisies et recommencer.")
 		End Try
-		'Retourne le résultat de la requête en tant que sous-sélection (table virtuelle) pour une utilisation ultérieure éventuelle (chargement dans le treeview)
-		Return VpSQL.Substring(0, VpSQL.Length - 1)
+		Return ""
 	End Function
 	Private Function FindCardNode(VpTitle As String, VpNode As TreeNode) As Boolean
 	'---------------------------------------------------------------------
@@ -123,8 +128,12 @@ Public Partial Class frmSearch
 		If Not Me.chkMerge.Checked Then
 			VmPrevSearchs.Clear
 		End If
-		VmPrevSearchs.Add(VpSQL)
-		If VmPrevSearchs.Count = 1 Then
+		If VpSQL <> "" Then
+			VmPrevSearchs.Add(VpSQL)
+		End If
+		If VmPrevSearchs.Count = 0 Then
+			Return ""
+		ElseIf VmPrevSearchs.Count = 1 Then
 			Me.cboFind.Tag = Me.cboFind.Text
 			Return "(" + VpSQL + ") As " + clsModule.CgSFromSearch
 		Else
@@ -156,10 +165,10 @@ Public Partial Class frmSearch
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + VpReq.Replace(" ", "' '") + "'", VmSource)
 			'Recherche type nombre / sur créatures
 			Case 4, 5
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, True, True)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, True, clsModule.eSearchType.NumOverAlpha)
 			'Recherche type nombre / égalité
 			Case 6, 8
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, , True)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, , clsModule.eSearchType.Num)
 			'Recherche type string / sur éditions
 			Case 7
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + clsModule.GetSerieCodeFromName(VpReq, True) + "'", VmSource)
