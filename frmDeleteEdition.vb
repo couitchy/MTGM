@@ -39,6 +39,8 @@ Public Partial Class frmDeleteEdition
 		If Me.chkHeader.Checked Then
 			VgDBCommand.CommandText = "Delete * From Series Where SeriesCD = '" + VpCD + "';"
 			VgDBCommand.ExecuteNonQuery
+			VgDBCommand.CommandText = "Update Spell Set LastPrint = 'XX' Where LastPrint = '" + VpCD + "';"
+			VgDBCommand.ExecuteNonQuery
 		End If
 	End Sub
 	Sub FrmDeleteEditionLoad(ByVal sender As Object, ByVal e As EventArgs)

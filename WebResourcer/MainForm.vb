@@ -21,7 +21,7 @@ Imports System.Net
 Imports System.IO
 Imports System.Text
 Public Partial Class MainForm
-	Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer	
+	Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
 	Private Const CmStrConn As String	= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
 	Private Const CmURL As String  		= "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
 	Private Const CmURL2 As String  	= "http://www.magiccorporation.com/gathering-cartes-view"
@@ -804,7 +804,11 @@ Public Partial Class MainForm
 			Case "R2"
 				Return "slivers#" + VpStr
 			Case "MB"
-				Return "mirrodinbesieged#" + VpStr				
+				Return "mirrodinbesieged#" + VpStr
+			Case "DS"
+				Return "darksteel#" + VpStr				
+			Case "PC"
+				Return "planarchaos#" + VpStr							
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -970,10 +974,10 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
-	Private Sub ExtractTitles	
+	Private Sub ExtractTitles
 	'-----------------------------------------
 	'Extrait les titres des cartes en français
-	'-----------------------------------------		
+	'-----------------------------------------
 	Dim VpIn As StreamReader
 	Dim VpOut As StreamWriter
 	Dim VpStr As String
@@ -984,11 +988,11 @@ Public Partial Class MainForm
 			Me.dlgSave.FileName = ""
 			Me.dlgSave.ShowDialog
 			If Me.dlgSave.FileName <> "" Then
-				VpIn = New StreamReader(Me.dlgOpen4.FileName, System.Text.Encoding.Default)
+				VpIn = New StreamReader(Me.dlgOpen4.FileName, Encoding.Default)
 				VpOut = New StreamWriter(Me.dlgSave.FileName, False, VpIn.CurrentEncoding)
 				Call Me.AddToLog("Le filtrage des titres des cartes en français a commencé...", eLogType.Information, True)
 				Me.prgAvance.Style = ProgressBarStyle.Marquee
-				Application.DoEvents		
+				Application.DoEvents
 				While Not VpIn.EndOfStream
 					VpStr = VpIn.ReadLine
 					If VpStr.StartsWith("Name:") Then
@@ -1004,7 +1008,7 @@ Public Partial Class MainForm
 				Call Me.AddToLog("Le filtrage des titres des cartes en français est terminé.", eLogType.Information, , True)
 				VpOut.Flush
 				VpOut.Close
-				VpIn.Close	
+				VpIn.Close
 			End If
 		End If
 	End Sub
@@ -1102,10 +1106,10 @@ Public Partial Class MainForm
 		If VpINIPath <> "" Then
 			VpDir = VpINIPath.Substring(0, VpINIPath.LastIndexOf("\") + 1)
 			Call Me.AddToLog("La préparation du fichier de configuration a commencé...", eLogType.Information, True)
-			Application.DoEvents			
+			Application.DoEvents
 			If File.Exists(VpDir + CmStamp) Then
 				VpStampFile = File.ReadAllLines(VpDir + CmStamp)
-				For VpI As Integer = 0 To CmIndexes.Length - 1								
+				For VpI As Integer = 0 To CmIndexes.Length - 1
 					Call WritePrivateProfileString(CmCategory, CmFields(VpI), VpStampFile(CmIndexes(VpI) - 1), VpINIPath)
 				Next VpI
 			Else
@@ -1125,7 +1129,7 @@ Public Partial Class MainForm
 	Dim VpOutFullB As BinaryWriter
 	Dim VpOutLog As StreamWriter
 	Dim VpDirIn As DirectoryInfo
-	Dim VpCumul As Long = 0	
+	Dim VpCumul As Long = 0
 		Me.dlgBrowse.SelectedPath = ""
 		Me.dlgBrowse.ShowDialog
 		If Me.dlgBrowse.SelectedPath <> "" Then
@@ -1235,13 +1239,13 @@ Public Partial Class MainForm
 	Sub MnuCardsExtractDiff3Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.ExtractCards("Select Distinct Card.Title From Card Inner Join TextesFR On Card.Title = TextesFR.CardName Where Card.CardText = TextesFR.TexteFR And Trim(Card.CardText) <> """" And Card.CardText <> Null;")
-		End If		
-	End Sub	
+		End If
+	End Sub
 	Sub MnuCardsExtractDiff4Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select Autorisations.Title From Autorisations Where Card.Title = Autorisations.Title) Order By Card.Title Asc;")
-		End If				
-	End Sub	
+		End If
+	End Sub
 	Sub MnuCardsAutClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.UpdateAutorisations

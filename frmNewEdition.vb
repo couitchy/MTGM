@@ -187,7 +187,7 @@ Public Partial Class frmNewEdition
 	Dim VpIndex As Integer
 	Dim VpLen As Integer
 		If VpCarac Is Nothing Then Return False
-		VpFile = New StreamReader(Me.txtCheckList.Text)
+		VpFile = New StreamReader(Me.txtCheckList.Text, Encoding.Default)
 		VpComplement = New ArrayList
 		'Code la nouvelle édition
 		VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.Tag)
@@ -290,7 +290,7 @@ Public Partial Class frmNewEdition
 	'---------------------------------------------------------------------------------------
 	'Ajoute à la base de données l'ensemble des cartes présentes dans les fichiers spécifiés
 	'---------------------------------------------------------------------------------------
-	Dim VpFile As New StreamReader(Me.txtSpoilerList.Text)
+	Dim VpFile As New StreamReader(Me.txtSpoilerList.Text, Encoding.Default)
 	Dim VpCounter As Integer = 0
 	Dim VpStrs() As String
 		VmEncNbr0 = -1
@@ -474,7 +474,7 @@ Public Class clsMyCard
 		'Titre, coût, type, sous-type, attaque, défense, texte détaillé
 		VmTitle = VpCarac(0).Trim
 		VmCost = VpCarac(1).Trim
-		VpStrs = VpCarac(2).Split(New String() {" - "}, StringSplitOptions.None)
+		VpStrs = VpCarac(2).Replace("—", "-").Split(New String() {" - "}, StringSplitOptions.None)
 		VmType = VpStrs(0).Trim
 		If VpStrs.Length > 1 Then
 			VmSubType = VpStrs(1).Trim
