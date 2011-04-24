@@ -794,7 +794,7 @@ Public Partial Class MainForm
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(VpLoadFromSearch, clsModule.CgSFromSearch, VpNode, 1)
+				Call Me.RecurLoadTvw(VpLoadFromSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction)
 				Me.lblNCards.Text = ""
 				Me.VmSuggestions = Nothing
 			'Cas 2 : chargement des cartes de deck(s)
@@ -805,7 +805,7 @@ Public Partial Class MainForm
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(clsModule.CgSDecks, clsModule.CgSDecks, VpNode, 2)
+				Call Me.RecurLoadTvw(clsModule.CgSDecks, clsModule.CgSDecks, VpNode, 2, Me.Restriction)
 				Call Me.ShowNCards(clsModule.CgSDecks)
 			'Cas 3 : chargement de la collection
 			Else
@@ -815,7 +815,7 @@ Public Partial Class MainForm
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(clsModule.CgSCollection, clsModule.CgSCollection, VpNode, 1)
+				Call Me.RecurLoadTvw(clsModule.CgSCollection, clsModule.CgSCollection, VpNode, 1, Me.Restriction)
 				Call Me.ShowNCards(clsModule.CgSCollection)
 			End If
 			Me.tvwExplore.Nodes.Add(VpNode)
@@ -833,11 +833,11 @@ Public Partial Class MainForm
 		End If
 		Me.VmMustReload = False
 	End Sub
-	Private Function CanAdd(VpNode As TreeNode, VpCard As String) As Boolean
+	Private Function CanAdd(VpTag As clsTag, VpCard As String) As Boolean
 	'--------------------------------------------------------------------------
 	'Si l'on est en mode suggestions, empêche l'insertion d'un noeud non validé
 	'--------------------------------------------------------------------------
-		If VpNode.Tag.Key = "Card.Title" And Not Me.VmSuggestions Is Nothing Then
+		If VpTag.Key = "Card.Title" And Not Me.VmSuggestions Is Nothing Then
 			For Each VpSugg As clsCorrelation In Me.VmSuggestions
 				If VpSugg.Card1 = VpCard Then
 					Return True
@@ -848,7 +848,7 @@ Public Partial Class MainForm
 			Return ( VpCard <> "" )
 		End If
 	End Function
-	Private Sub RecurLoadTvw(VpSource1 As String, VpSource2 As String, VpNode As TreeNode, VpRecurLevel As Integer)
+	Private Sub RecurLoadTvw(VpSource1 As String, VpSource2 As String, VpNode As TreeNode, VpRecurLevel As Integer, VpRestriction As String)
 	'---------------------------------------------------------------------------------------------------------------------
 	'Méthode de chargement récursive du treeview : à chaque niveau i, sélectionne les cartes correspondant au ième critère
 	'remplissant également les critères de la branche courante de i-1 jusqu'à 1
@@ -857,20 +857,22 @@ Public Partial Class MainForm
 	Dim VpParent As TreeNode = VpNode	'Ancêtres du noeud courant
 	Dim VpSQL As String					'Requête construite adaptativement
 	Dim VpStr As String
+	Dim VpCurTag As clsTag = VpNode.Tag	'Limite les liaisons tardives
+	Dim VpChildTag As clsTag
 		'Lorsque le niveau de récursivité courant dépasse le nombre de critères sélectionnés, c'est que l'arborescence est complète
 		If VpRecurLevel > Me.chkClassement.CheckedItems.Count Then Exit Sub
 		'La requête s'effectue dans les deux tables Card et Spell mises en correspondances sur le nom de la carte, elles-mêmes mises en correspondance avec MyGames ou MyCollection sur le numéro encyclopédique
-		If VpNode.Tag.Key = "Card.Title" Then
+		If VpCurTag.Key = "Card.Title" Then
 			If Me.mnuDegroupFoils.Checked And Not Me.IsInAdvSearch Then
 				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, " + VpSource2 + ".Foil From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
 			Else
 				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
 			End If
 		Else
-			VpSQL = "Select Distinct " + VpNode.Tag.Key + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
+			VpSQL = "Select Distinct " + VpCurTag.Key + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
 		End If
 		'Ajoute les conditions sur les identifiants des jeux
-		VpSQL = VpSQL + Me.Restriction
+		VpSQL = VpSQL + VpRestriction
 		'Ajoute les conditions sur les critères des ancêtres
 		While Not VpParent.Parent Is Nothing
 			VpSQL = VpSQL + Me.ElderCriteria(VpParent.Tag.Value, VpParent.Parent.Tag.Key)
@@ -885,34 +887,35 @@ Public Partial Class MainForm
 			While .Read
 				'Ajoute un enfant par enregistrement trouvé
 				VpStr = .GetValue(0).ToString
-				If Me.CanAdd(VpNode, VpStr) Then
+				If Me.CanAdd(VpCurTag, VpStr) Then
 					VpChild = New TreeNode
-					VpChild.Tag = New clsTag(VpStr)
+					VpChildTag = New clsTag(VpStr)
 					'Si on est au niveau du nom des cartes, l'icône est celle de la couleur de la carte
-					If VpNode.Tag.Key = "Card.Title" Then
-						VpChild.ImageIndex = Me.FindImageIndex(VpNode.Tag.Key, .GetValue(1).ToString)
+					If VpCurTag.Key = "Card.Title" Then
+						VpChild.ImageIndex = Me.FindImageIndex(VpCurTag.Key, .GetString(1))
 					'Sinon l'icône est celle du critère associé
 					Else
-						VpChild.ImageIndex = Me.FindImageIndex(VpNode.Tag.Key, VpChild.Tag.Value)
+						VpChild.ImageIndex = Me.FindImageIndex(VpCurTag.Key, VpChildTag.Value)
 					End If
 					'Icône identique lorsque l'élément est mis en surbrillance
 					VpChild.SelectedImageIndex = VpChild.ImageIndex
 					'Tant que l'on est pas au dernier niveau, on tag les éléments avec le critère requis pour leur descendance
 					If VpRecurLevel < Me.chkClassement.CheckedItems.Count Then
-						VpChild.Tag.Key = clsModule.CgCriteres.Item(Me.chkClassement.CheckedItems(VpRecurLevel))
+						VpChildTag.Key = clsModule.CgCriteres.Item(Me.chkClassement.CheckedItems(VpRecurLevel))
 						'Caption explicite
-						VpChild.Text = clsModule.FormatTitle(VpNode.Tag.Key, VpChild.Tag.Value)
+						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value)
 					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag les deux noms VO et VF
-					ElseIf VpNode.Tag.Key = "Card.Title"
-						VpChild.Tag.Value2 = .GetValue(2).ToString
+					ElseIf VpCurTag.Key = "Card.Title"
+						VpChildTag.Value2 = .GetString(2)
 						'Gestion éventuelle de la mention foil
 						If Me.mnuDegroupFoils.Checked AndAlso Not Me.IsInAdvSearch AndAlso .GetBoolean(3) Then
-							VpChild.Tag.Value = VpChild.Tag.Value + clsModule.CgFoil2
-							VpChild.Tag.Value2 = VpChild.Tag.Value2 + clsModule.CgFoil2
+							VpChildTag.Value = VpChildTag.Value + clsModule.CgFoil2
+							VpChildTag.Value2 = VpChildTag.Value2 + clsModule.CgFoil2
 						End If
-						VpChild.Text = VpChild.Tag.Value
+						VpChild.Text = VpChildTag.Value
 					End If
 					'Ajout effectif
+					VpChild.Tag = VpChildTag
 					VpNode.Nodes.Add(VpChild)
 				End If
 			End While
@@ -920,7 +923,7 @@ Public Partial Class MainForm
 		End With
 		'Appel récursif sur chaque enfant au niveau supérieur
 		For Each VpChild In VpNode.Nodes
-			Call Me.RecurLoadTvw(VpSource1, VpSource2, VpChild, VpRecurLevel + 1)
+			Call Me.RecurLoadTvw(VpSource1, VpSource2, VpChild, VpRecurLevel + 1, VpRestriction)
 		Next VpChild
 	End Sub
 	Private Function ElderCriteria(VpValue As String, VpField As String) As String
