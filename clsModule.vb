@@ -17,6 +17,7 @@
 '| - téléchargement auto des dépendances   10/10/2009 |
 '| - prévention des exécutions multiples   31/01/2010 |
 '| - gestion cartes foils				   19/12/2010 |
+'| - gestion des coûts partiels en PV	   02/05/2011 |
 '------------------------------------------------------
 Imports System.Data
 Imports System.Data.OleDb
@@ -32,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 24768
+	Public Const CgCodeLines As Integer   		= 24802
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -1866,6 +1867,11 @@ Public Class clsManas
 	Private VmU As Short = 0				'Mana bleu
 	Private VmR As Short = 0				'Mana rouge
 	Private VmW As Short = 0				'Mana blanc
+	Private VmPB As Short = 0				'Mana noir ou 2 points de vie
+	Private VmPG As Short = 0				'Mana vert ou 2 points de vie
+	Private VmPU As Short = 0				'Mana bleu ou 2 points de vie
+	Private VmPR As Short = 0				'Mana rouge ou 2 points de vie
+	Private VmPW As Short = 0				'Mana blanc ou 2 points de vie
 	Private VmBG As Short = 0				'Mana noir ou vert
 	Private VmBR As Short = 0				'Mana noir ou rouge
 	Private VmGU As Short = 0				'Mana vert ou bleu
@@ -1934,7 +1940,7 @@ Public Class clsManas
 		'- XA... (ex. X2U)
 		ElseIf VpCost.StartsWith("x") AndAlso Val(VpCost.Substring(1)) <> 0 Then
 			VmX = 1
-			VmImgIndexes.Add(15)
+			VmImgIndexes.Add(20)
 			VmEffectiveLength = 1
 			VpCost = VpCost.Substring(1)
 		End If
@@ -1948,7 +1954,7 @@ Public Class clsManas
 			VpX = VpCost.Substring(VpI, 1)
 			'Pas de couleur
 			If VpI = 0 And VpColorless <> 0 Then
-				VmImgIndexes.Add(16 + CInt(VpColorless))
+				VmImgIndexes.Add(21 + CInt(VpColorless))
 				If VpColorless >= 10 Then
 					VpI = VpI + 1 	'Très impropre en programmation structurée mais permet de gérer directement le cas des nombres à 2 chiffres
 				End If
@@ -1957,6 +1963,21 @@ Public Class clsManas
 			ElseIf VpX = "(" Then
 				VpY = VpCost.Substring(VpI + 1, 3)
 				Select Case VpY.ToUpper
+					Case "R/P", "P/R"
+						VmImgIndexes.Add(17)
+						VmPR = VmPR + 1
+					Case "B/P", "P/B"
+						VmImgIndexes.Add(15)
+						VmPB = VmPB + 1
+					Case "G/P", "P/G"
+						VmImgIndexes.Add(16)
+						VmPG = VmPG + 1
+					Case "U/P", "P/U"
+						VmImgIndexes.Add(18)
+						VmPU = VmPU + 1
+					Case "W/P", "P/W"
+						VmImgIndexes.Add(19)
+						VmPW = VmPW + 1
 					Case "B/G", "G/B"
 						VmImgIndexes.Add(1)
 						VmBG = VmBG + 1
@@ -1988,14 +2009,14 @@ Public Class clsManas
 						VmImgIndexes.Add(14)
 						VmWU = VmWU + 1
 					Case Else
-						VmImgIndexes.Add(16)
+						VmImgIndexes.Add(21)
 				End Select
 				VpI = VpI + 4 'encore impropre mais permet de passer directement à la fin de la parenthèse
 			'Couleur simple
 			Else
 				Select Case VpX.ToUpper
 					Case "X"
-						VmImgIndexes.Add(15)
+						VmImgIndexes.Add(20)
 						VmX = VmX + 1
 					Case "B"
 						VmImgIndexes.Add(0)
@@ -2013,13 +2034,13 @@ Public Class clsManas
 						VmImgIndexes.Add(12)
 						VmW = VmW + 1
 					Case "M"
-						VmImgIndexes.Add(16)
+						VmImgIndexes.Add(21)
 						VmM = VmM + 1
 					Case "A"
-						VmImgIndexes.Add(16)
+						VmImgIndexes.Add(21)
 						VmA = VmA + 1
 					Case Else
-						VmImgIndexes.Add(16)
+						VmImgIndexes.Add(21)
 				End Select
 			End If
 		Next VpI
@@ -2051,6 +2072,11 @@ Public Class clsManas
 		VmUR = VmUR + VpManas.cUR * VpSub
 		VmWB = VmWB + VpManas.cWB * VpSub
 		VmWU = VmWU	+ VpManas.cWU * VpSub
+		VmPB = VmPB + VpManas.cPB * VpSub
+		VmPG = VmPG + VpManas.cPG * VpSub
+		VmPU = VmPU + VpManas.cPU * VpSub
+		VmPR = VmPR + VpManas.cPR * VpSub
+		VmPW = VmPW + VpManas.cPW * VpSub
 	End Sub
 	Public Function ContainsEnoughFor(VpManas As clsManas) As Boolean
 	'-----------------------------------------------------------------------------------------------------------------------
@@ -2072,7 +2098,12 @@ Public Class clsManas
 							VmUB >= VpManas.cUB And _
 							VmUR >= VpManas.cUR And _
 							VmWB >= VpManas.cWB And _
-							VmWU >= VpManas.cWU		)
+							VmWU >= VpManas.cWU And _
+							VmPW >= VpManas.cPW And _
+							VmPB >= VpManas.cPB And _
+							VmPR >= VpManas.cPR And _
+							VmPG >= VpManas.cPG And _
+							VmPU >= VpManas.cPU		)
 		'Si les manas de couleurs ne peuvent être payés, c'est mort
 		If Not VpEnoughColor Then
 			Return False
@@ -2106,32 +2137,32 @@ Public Class clsManas
 	End Property
 	Public ReadOnly Property Potentiel As Integer
 		Get
-			Return ( VmX + VmM + VmA + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU )
+			Return ( VmX + VmM + VmA + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB)
 		End Get
 	End Property
 	Public ReadOnly Property HasBlack As Boolean
 		Get
-			Return ( Me.VmB > 0 Or Me.VmBG > 0 Or Me.VmBR > 0 Or Me.VmUB > 0 Or Me.VmWB > 0 )
+			Return ( Me.VmB > 0 Or Me.VmBG > 0 Or Me.VmBR > 0 Or Me.VmUB > 0 Or Me.VmWB > 0 Or Me.VmPB > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasGreen As Boolean
 		Get
-			Return ( Me.VmG > 0 Or Me.VmBG > 0 Or Me.VmGU > 0 Or Me.VmGW > 0 Or Me.VmRG > 0 )
+			Return ( Me.VmG > 0 Or Me.VmBG > 0 Or Me.VmGU > 0 Or Me.VmGW > 0 Or Me.VmRG > 0 Or Me.VmPG > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasBlue As Boolean
 		Get
-			Return ( Me.VmU > 0 Or Me.VmGU > 0 Or Me.VmUB > 0 Or Me.VmUR > 0 Or Me.VmWU > 0 )
+			Return ( Me.VmU > 0 Or Me.VmGU > 0 Or Me.VmUB > 0 Or Me.VmUR > 0 Or Me.VmWU > 0 Or Me.VmPU > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasRed As Boolean
 		Get
-			Return ( Me.VmR > 0 Or Me.VmBR > 0 Or Me.VmRG > 0 Or Me.VmRW > 0 Or Me.VmUR > 0 )
+			Return ( Me.VmR > 0 Or Me.VmBR > 0 Or Me.VmRG > 0 Or Me.VmRW > 0 Or Me.VmUR > 0 Or Me.VmPR > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasWhite As Boolean
 		Get
-			Return ( Me.VmW > 0 Or Me.VmGW > 0 Or Me.VmRW > 0 Or Me.VmWB > 0 Or Me.VmWU > 0 )
+			Return ( Me.VmW > 0 Or Me.VmGW > 0 Or Me.VmRW > 0 Or Me.VmWB > 0 Or Me.VmWU > 0 Or Me.VmPW > 0 )
 		End Get
 	End Property
 	Public Property cM As Short
@@ -2223,6 +2254,31 @@ Public Class clsManas
 	Public ReadOnly Property cWU As Short
 		Get
 			Return Me.VmWU
+		End Get
+	End Property
+	Public ReadOnly Property cPR As Short
+		Get
+			Return Me.VmPR
+		End Get
+	End Property
+	Public ReadOnly Property cPW As Short
+		Get
+			Return Me.VmPW
+		End Get
+	End Property
+	Public ReadOnly Property cPU As Short
+		Get
+			Return Me.VmPU
+		End Get
+	End Property
+	Public ReadOnly Property cPG As Short
+		Get
+			Return Me.VmPG
+		End Get
+	End Property
+	Public ReadOnly Property cPB As Short
+		Get
+			Return Me.VmPB
 		End Get
 	End Property
 End Class

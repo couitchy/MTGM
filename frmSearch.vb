@@ -15,8 +15,9 @@
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - affichage de la carte numérisée       23/09/2008 |
-'| - nouveaux critères de recherches	   15/08/2009 |
-'| - nouveaux critères de recherches	   20/12/2009 |
+'| - nouveaux critères de recherche	   	   15/08/2009 |
+'| - nouveaux critères de recherche		   20/12/2009 |
+'| - nouveau critère de recherche		   02/09/2010 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmSearch
@@ -41,17 +42,46 @@ Public Partial Class frmSearch
 	'Gère le cas d'une recherche avec plusieurs mots
 	'-----------------------------------------------
 	Dim VpValues() As String
+	Dim VpBlocs As New ArrayList
 	Dim VpQuery As String = ""
-		If VpValue.StartsWith("'""") And VpValue.EndsWith("""'") Then
-			Return "InStr(" + VpField + ", " + VpValue.Substring(1, VpValue.Length - 2).Replace("' '", " ") + ") > 0"
-		Else
-			VpValues = VpValue.Split(" ")
-			For Each VpStr As String In VpValues
-				VpQuery = "InStr(" + VpField + ", " + VpStr + ") > 0 And " + VpQuery
-			Next VpStr
+	Dim VpStart As Boolean = False
+	Dim VpIndex As Integer
+		'Gestion recherche par morceaux (avec guillemets)
+		If VpValue.Contains("""") Then
+			For VpI As Integer = 0 To VpValue.Length - 1
+				If VpValue.Substring(VpI, 1) = """" Then
+					If VpStart Then
+						VpBlocs.Add(VpValue.Substring(VpIndex, VpI - VpIndex))
+					Else
+						VpIndex = VpI + 1
+					End If
+					VpStart = Not VpStart
+				End If
+			Next VpI
+			For Each VpBloc As String In VpBlocs
+				VpValue = VpValue.Replace("""" + VpBloc + """", "")
+			Next VpBloc
+			VpValue = VpValue.Trim
+		End If
+		VpValues = VpValue.Split(" ")
+		'Mots indépendants
+		Call Me.ConcatSearch(VpField, VpQuery, VpValues)
+		'Morceaux
+		Call Me.ConcatSearch(VpField, VpQuery, VpBlocs)
+		'Troncature finale
+		If VpQuery.Length >= 4 Then
 			Return VpQuery.Substring(0, VpQuery.Length - 4)
+		Else
+			Return ""
 		End If
 	End Function
+	Private Sub ConcatSearch(VpField As String, ByRef VpQuery As String, VpValues As Object)
+		For Each VpStr As String In VpValues
+			If VpStr.Trim <> "" Then
+				VpQuery = "InStr(" + VpField + ", '" + VpStr + "') > 0 And " + VpQuery
+			End If
+		Next VpStr
+	End Sub
 	Private Function Search(VpField As String, VpValue As String, VpSource As String, Optional VpIsCreature As Boolean = False, Optional VpMode As clsModule.eSearchType = clsModule.eSearchType.Alpha) As String
 	'------------------------------------------------------------
 	'Effectue la requête de l'utilisateur dans la base de données
@@ -59,16 +89,17 @@ Public Partial Class frmSearch
 	Dim VpSQL As String
 	Dim VpEntry As String
 	Dim VpCriteria As String
+		'Gestion des différents modes de recherche
 		Select Case VpMode
 			Case clsModule.eSearchType.Num
 				VpCriteria = VpField + " = " + VpValue.Replace(",", ".")
 			Case clsModule.eSearchType.NumOverAlpha
 				VpCriteria = "Val(" + VpField + ") = " + VpValue
 			Case clsModule.eSearchType.Alpha
-				If Not VpValue.Contains(" ") Then
-					VpCriteria = "InStr(" + VpField + ", " + VpValue + ") > 0"
+				If Not VpValue.Contains(" ") And Not VpValue.Contains("""") Then
+					VpCriteria = "InStr(" + VpField + ", '" + VpValue + "') > 0"	'cas simple
 				Else
-					VpCriteria = Me.BuildSplitSearch(VpField, VpValue)
+					VpCriteria = Me.BuildSplitSearch(VpField, VpValue)				'cas composé
 				End If
 			Case Else
 				VpCriteria = ""
@@ -162,7 +193,7 @@ Public Partial Class frmSearch
 		Select Case VpType
 			'Recherche type string simple
 			Case 0, 1, 2, 3, 9
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + VpReq.Replace(" ", "' '") + "'", VmSource)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource)
 			'Recherche type nombre / sur créatures
 			Case 4, 5
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, True, clsModule.eSearchType.NumOverAlpha)
@@ -171,7 +202,7 @@ Public Partial Class frmSearch
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, , clsModule.eSearchType.Num)
 			'Recherche type string / sur éditions
 			Case 7
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), "'" + clsModule.GetSerieCodeFromName(VpReq, True) + "'", VmSource)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(VpReq, True), VmSource)
 			Case Else
 		End Select
 		'Nombre de réponses

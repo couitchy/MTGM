@@ -808,7 +808,9 @@ Public Partial Class MainForm
 			Case "DS"
 				Return "darksteel#" + VpStr				
 			Case "PC"
-				Return "planarchaos#" + VpStr							
+				Return "planarchaos#" + VpStr		
+			Case "NP"
+				Return "newphyrexia#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select

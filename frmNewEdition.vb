@@ -564,7 +564,7 @@ Public Class clsMyCard
 		End If
 	End Function
 	Public Function MyColor As String
-		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact ou d'un terrain
+		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact ou d'un terrain (ou d'un jeton ou d'un arpenteur incolore ?!)
 			Return Me.MyType
 		Else
 			Select Case VmColor

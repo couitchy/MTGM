@@ -663,15 +663,19 @@ Public Partial Class MainForm
 	'-----------------------------------------------------
 	Dim VpHistory As String = ""
 	Dim VpStr As String
-		Do
-			VpStr = VpNode.Text
-			'If ( Not VpNode.Parent Is Nothing ) AndAlso ( VpNode.Parent.Tag = "Card.Title" ) AndAlso Me.mnuCardsFR.Checked Then
-			'	VpStr = VpNode.Tag
-			'End If
-			VpHistory = "#" + VpStr + VpHistory
-			VpNode = VpNode.Parent
-		Loop Until VpNode Is Me.tvwExplore.Nodes(0)
-		Return VpHistory.Substring(1)
+		If VpNode Is Me.tvwExplore.Nodes(0) Then
+			Return ""
+		Else
+			Do
+				VpStr = VpNode.Text
+				'If ( Not VpNode.Parent Is Nothing ) AndAlso ( VpNode.Parent.Tag = "Card.Title" ) AndAlso Me.mnuCardsFR.Checked Then
+				'	VpStr = VpNode.Tag
+				'End If
+				VpHistory = "#" + VpStr + VpHistory
+				VpNode = VpNode.Parent
+			Loop Until VpNode Is Me.tvwExplore.Nodes(0)
+			Return VpHistory.Substring(1)
+		End If
 	End Function
 	Private Sub RecurRestoreNode(VpHistory As String, VpNode As TreeNode)
 	'-------------------------------------------------------------------

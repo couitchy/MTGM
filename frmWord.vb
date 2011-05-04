@@ -71,6 +71,7 @@ Public Partial Class frmWord
 		End With
 		VpWordApp.Visible = Me.chkWordShow.Checked
 		'Récupération de la liste
+		MainForm.VgMe.IsMainReaderBusy = True
 		VpSQL = "Select Card.Title, Sum(Items) From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where "
 		VpSQL = VpSQL + VmRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By Card.Title")
@@ -112,6 +113,7 @@ Public Partial Class frmWord
 			End While
 			.Close
 		End With
+		MainForm.VgMe.IsMainReaderBusy = False
 		Me.prgAvance.Value = 0
 		VpWordApp.Visible = True
 		VpWordApp.DisplayAlerts = True

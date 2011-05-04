@@ -350,24 +350,29 @@ Partial Class MainForm
 		Me.imglstCarac.Images.SetKeyName(12, "_lw.gif")
 		Me.imglstCarac.Images.SetKeyName(13, "_lwb.gif")
 		Me.imglstCarac.Images.SetKeyName(14, "_lwu.gif")
-		Me.imglstCarac.Images.SetKeyName(15, "_mx.gif")
-		Me.imglstCarac.Images.SetKeyName(16, "_m0.gif")
-		Me.imglstCarac.Images.SetKeyName(17, "_m1.gif")
-		Me.imglstCarac.Images.SetKeyName(18, "_m2.gif")
-		Me.imglstCarac.Images.SetKeyName(19, "_m3.gif")
-		Me.imglstCarac.Images.SetKeyName(20, "_m4.gif")
-		Me.imglstCarac.Images.SetKeyName(21, "_m5.gif")
-		Me.imglstCarac.Images.SetKeyName(22, "_m6.gif")
-		Me.imglstCarac.Images.SetKeyName(23, "_m7.gif")
-		Me.imglstCarac.Images.SetKeyName(24, "_m8.gif")
-		Me.imglstCarac.Images.SetKeyName(25, "_m9.gif")
-		Me.imglstCarac.Images.SetKeyName(26, "_m10.gif")
-		Me.imglstCarac.Images.SetKeyName(27, "_m11.gif")
-		Me.imglstCarac.Images.SetKeyName(28, "_m12.gif")
-		Me.imglstCarac.Images.SetKeyName(29, "_m13.gif")
-		Me.imglstCarac.Images.SetKeyName(30, "_m14.gif")
-		Me.imglstCarac.Images.SetKeyName(31, "_m15.gif")
-		Me.imglstCarac.Images.SetKeyName(32, "_m16.gif")
+		Me.imglstCarac.Images.SetKeyName(15, "_lpb.gif")
+		Me.imglstCarac.Images.SetKeyName(16, "_lpg.gif")
+		Me.imglstCarac.Images.SetKeyName(17, "_lpr.gif")
+		Me.imglstCarac.Images.SetKeyName(18, "_lpu.gif")
+		Me.imglstCarac.Images.SetKeyName(19, "_lpw.gif")
+		Me.imglstCarac.Images.SetKeyName(20, "_mx.gif")
+		Me.imglstCarac.Images.SetKeyName(21, "_m0.gif")
+		Me.imglstCarac.Images.SetKeyName(22, "_m1.gif")
+		Me.imglstCarac.Images.SetKeyName(23, "_m2.gif")
+		Me.imglstCarac.Images.SetKeyName(24, "_m3.gif")
+		Me.imglstCarac.Images.SetKeyName(25, "_m4.gif")
+		Me.imglstCarac.Images.SetKeyName(26, "_m5.gif")
+		Me.imglstCarac.Images.SetKeyName(27, "_m6.gif")
+		Me.imglstCarac.Images.SetKeyName(28, "_m7.gif")
+		Me.imglstCarac.Images.SetKeyName(29, "_m8.gif")
+		Me.imglstCarac.Images.SetKeyName(30, "_m9.gif")
+		Me.imglstCarac.Images.SetKeyName(31, "_m10.gif")
+		Me.imglstCarac.Images.SetKeyName(32, "_m11.gif")
+		Me.imglstCarac.Images.SetKeyName(33, "_m12.gif")
+		Me.imglstCarac.Images.SetKeyName(34, "_m13.gif")
+		Me.imglstCarac.Images.SetKeyName(35, "_m14.gif")
+		Me.imglstCarac.Images.SetKeyName(36, "_m15.gif")
+		Me.imglstCarac.Images.SetKeyName(37, "_m16.gif")
 		'
 		'cmnuTvw
 		'
@@ -664,7 +669,7 @@ Partial Class MainForm
 		Me.mnuRefresh.Image = CType(resources.GetObject("mnuRefresh.Image"),System.Drawing.Image)
 		Me.mnuRefresh.Name = "mnuRefresh"
 		Me.mnuRefresh.ShortcutKeys = System.Windows.Forms.Keys.F5
-		Me.mnuRefresh.Size = New System.Drawing.Size(238, 22)
+		Me.mnuRefresh.Size = New System.Drawing.Size(257, 22)
 		Me.mnuRefresh.Text = "Rafraîchir"
 		AddHandler Me.mnuRefresh.Click, AddressOf Me.MnuRefreshActivate
 		'
@@ -680,14 +685,14 @@ Partial Class MainForm
 		'mnuSeparator6
 		'
 		Me.mnuSeparator6.Name = "mnuSeparator6"
-		Me.mnuSeparator6.Size = New System.Drawing.Size(235, 6)
+		Me.mnuSeparator6.Size = New System.Drawing.Size(254, 6)
 		'
 		'mnuDispCollection
 		'
 		Me.mnuDispCollection.Checked = true
 		Me.mnuDispCollection.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.mnuDispCollection.Name = "mnuDispCollection"
-		Me.mnuDispCollection.Size = New System.Drawing.Size(238, 22)
+		Me.mnuDispCollection.Size = New System.Drawing.Size(257, 22)
 		Me.mnuDispCollection.Text = "Collection"
 		AddHandler Me.mnuDispCollection.Click, AddressOf Me.MnuDispCollectionActivate
 		'
