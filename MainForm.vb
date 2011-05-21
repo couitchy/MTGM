@@ -1181,9 +1181,9 @@ Public Partial Class MainForm
 		End Select
 	End Function
 	Private Function ManageTransfert(VpNode As TreeNode, VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "") As Boolean
-	'----------------------------------------------------------------------------------------------------------
-	'Gère la suppression d'une carte ou son transfert dans un autre deck/collection, ou encore son simple ajout
-	'----------------------------------------------------------------------------------------------------------
+	'---------------------------------------------------------------------------------------------------------------------------------------------
+	'Gère la suppression d'une carte ou son transfert dans un autre deck/collection, ou encore son simple ajout, ou enfin son changement d'édition
+	'---------------------------------------------------------------------------------------------------------------------------------------------
 	Dim VpPreciseTransfert As frmTransfert
 	Dim VpTransfertResult As New clsTransfertResult
 	Dim VpCardName As String = VpNode.Tag.Value
@@ -1215,17 +1215,23 @@ Public Partial Class MainForm
 			VpPreciseTransfert.ShowDialog
 		Else
 			VpTransfertResult.NCartes = 1
-			VpTransfertResult.IDSerie = frmTransfert.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
-			VpTransfertResult.Foil = VpFoil
+			VpTransfertResult.IDSerieFrom = frmTransfert.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
+			VpTransfertResult.IDSerieTo = VpTransfertResult.IDSerieFrom
+			VpTransfertResult.FoilFrom = VpFoil
+			VpTransfertResult.FoilTo = VpFoil
 		End If
 		'Si pas d'annulation utilisateur
 		If VpTransfertResult.NCartes <> 0 Then
 			'Récupération du numéro encyclopédique de la carte concernée
-			VpTransfertResult.EncNbr = clsModule.GetEncNbr(VpCardName, VpTransfertResult.IDSerie)
+			VpTransfertResult.EncNbrFrom = clsModule.GetEncNbr(VpCardName, VpTransfertResult.IDSerieFrom)
+			VpTransfertResult.EncNbrTo = clsModule.GetEncNbr(VpCardName, VpTransfertResult.IDSerieTo)
 			'Lieux des modifications
 			VpTransfertResult.TFrom = Me.GetSelectedSource
 			VpTransfertResult.SFrom = VpSource
-			If VpTransfertType = clsTransfertResult.EgTransfertType.Move Or VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
+			If VpTransfertType = clsTransfertResult.EgTransfertType.Swap Then
+				VpTransfertResult.TTo = VpTransfertResult.TFrom
+				VpTransfertResult.STo = VpTransfertResult.SFrom			
+			ElseIf VpTransfertType = clsTransfertResult.EgTransfertType.Move Or VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
 				VpTransfertResult.TTo = VpTo
 				VpTransfertResult.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
 			End If
@@ -1233,7 +1239,7 @@ Public Partial Class MainForm
 			If Me.IsInAdvSearch Or (VpTransfertResult.TFrom <> VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy) Then
 				Call frmTransfert.CommitAction(VpTransfertResult)
 				Return False
-			ElseIf VpTransfertResult.TFrom <> VpTransfertResult.TTo Or (VpTransfertResult.TFrom = VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+			ElseIf (VpTransfertResult.TFrom <> VpTransfertResult.TTo Or (VpTransfertResult.TFrom = VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (VpTransfertType = clsTransfertResult.EgTransfertType.Swap And (VpTransfertResult.EncNbrFrom <> VpTransfertResult.EncNbrTo Or VpTransfertResult.FoilFrom <> VpTransfertResult.FoilTo)) Then
 				Call frmTransfert.CommitAction(VpTransfertResult)
 				Return True
 			Else
@@ -1667,6 +1673,7 @@ Public Partial Class MainForm
 			If Not VpNode Is Nothing AndAlso Not VpNode.Parent Is Nothing Then
 				VpEN = ( VpNode.Parent.Tag.Key = "Card.Title" )
 			End If
+			Me.mnuSwapSerie.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
 			Me.mnuDeleteACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
 			Me.mnuMoveACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
 			Me.mnuCopyACard.Enabled = VpEN
@@ -2067,6 +2074,9 @@ Public Partial Class MainForm
 	Sub MnuCopyACardActivate(sender As Object, e As EventArgs)
 		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Copy, sender.Text)
 	End Sub
+	Sub MnuSwapSerieClick(sender As Object, e As EventArgs)
+		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Swap)
+	End Sub	
 	Sub MnuExcelGenActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpXL As frmXL
 		If clsModule.DBOK Then
@@ -2255,7 +2265,7 @@ Public Partial Class MainForm
 				Me.lblStock.Text = (Val(Me.lblStock.Text) + 1).ToString
 			End If
 			'Mise à jour du nombre d'items présents à la destination
-			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + If(VpSource = clsModule.CgSDecks, " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VpSource = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 			VgDBCommand.ExecuteNonQuery
 			'Mise à jour total cartes attachées
 			Call Me.ShowNCards(VpSource)

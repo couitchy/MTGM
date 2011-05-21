@@ -1230,7 +1230,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsExtractDiffClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where Card.Title = CardPictures.Title) Order By Card.Title Asc;")
+			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '""', ''), '?', '')) Order By Card.Title Asc;")
 		End If
 	End Sub
 	Sub MnuCardsExtractDiff2Click(sender As Object, e As EventArgs)

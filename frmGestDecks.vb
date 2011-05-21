@@ -16,6 +16,7 @@
 '| Modifications :                                    |
 '| - gestion de la suppression			   09/01/2009 |
 '| - renvoi cartes vers collection		   29/08/2010 |
+'| - gestion suppressions multiples		   09/05/2011 |
 '------------------------------------------------------
 Public Partial Class frmGestDecks
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
@@ -61,59 +62,10 @@ Public Partial Class frmGestDecks
 		Call Me.SwapDeckId("MyGames", VpId1, VpId2)
 		Call Me.LoadDecks(VpDirection)
 	End Sub
-	Sub CbarDecksManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
-		VmFormMove = True
-		VmCanClose = True
-		VmMousePos = New Point(e.X, e.Y)
-	End Sub
-	Sub CbarDecksManagerMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
-		If VmFormMove Then
-			Me.Location = New Point(MousePosition.X - VmMousePos.X, MousePosition.Y - VmMousePos.Y)
-		End If
-	End Sub
-	Sub CbarDecksManagerMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
-		VmFormMove = False
-	End Sub
-	Sub CbarDecksManagerVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
-		If VmCanClose Then
-			Me.Close
-		End If
-	End Sub
-	Sub FrmGestDecksLoad(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.LoadDecks
-	End Sub
-	Sub LstDecksSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
-		Me.btRemove.Enabled = True
-		Me.btRename.Enabled = True
-		Me.btUp.Enabled = ( Me.lstDecks.SelectedIndex > 0 )
-		Me.btDown.Enabled = ( Me.lstDecks.SelectedIndex < Me.lstDecks.Items.Count - 1 )
-	End Sub
-	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
-		If e.CloseReason = CloseReason.UserClosing Then
-			Me.Visible = False
-			Call VmOwner.LoadMnu
-			Call VmOwner.LoadTvw
-		End If
-	End Sub
-	Sub BtAddActivate(sender As Object, e As EventArgs)
-	Dim VpDeckName As String
-	Dim VpId As Integer
-		VpDeckName = InputBox("Entrer le nom du deck :", "Nouveau deck", "(Deck)")
-		If VpDeckName <> "" Then
-			For Each VpD As String In Me.lstDecks.Items
-				If VpD.ToLower = VpDeckName.ToLower Then
-					Call clsModule.ShowWarning("Un deck portant ce nom existe déjà...")
-					Exit Sub
-				End If
-			Next VpD
-			VpId = clsModule.GetNewDeckId
-			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0);"
-			VgDBCommand.ExecuteNonQuery
-			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpId + 1))
-		End If
-	End Sub
-	Sub BtRemoveActivate(sender As Object, e As EventArgs)
-	Dim VpDeckName As String = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
+	Private Sub RemoveDeck(VpDeckName As String)
+	'-----------------------------------
+	'Gestion de la suppression d'un deck
+	'-----------------------------------
 	Dim VpDeckId As Integer = clsModule.GetDeckIndex(VpDeckName)
 	Dim VpQuestion As DialogResult = clsModule.ShowQuestion("Le deck " + VpDeckName + " va être supprimé." + vbCrLf + "Souhaitez-vous déplacer les cartes qu'il contenait vers la collection ?", MessageBoxButtons.YesNoCancel)
 	Dim VpContenu As Hashtable
@@ -149,9 +101,77 @@ Public Partial Class frmGestDecks
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From MyGamesId Where GameID = " + VpDeckId.ToString + ";"
 		VgDBCommand.ExecuteNonQuery
-		Me.lstDecks.Items.RemoveAt(Me.lstDecks.SelectedIndex)
+	End Sub
+	Sub CbarDecksManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
+		VmFormMove = True
+		VmCanClose = True
+		VmMousePos = New Point(e.X, e.Y)
+	End Sub
+	Sub CbarDecksManagerMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
+		If VmFormMove Then
+			Me.Location = New Point(MousePosition.X - VmMousePos.X, MousePosition.Y - VmMousePos.Y)
+		End If
+	End Sub
+	Sub CbarDecksManagerMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
+		VmFormMove = False
+	End Sub
+	Sub CbarDecksManagerVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
+		If VmCanClose Then
+			Me.Close
+		End If
+	End Sub
+	Sub FrmGestDecksLoad(ByVal sender As Object, ByVal e As EventArgs)
+		Call Me.LoadDecks
+	End Sub
+	Sub LstDecksSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
+		Me.btRemove.Enabled = True
+		If Me.lstDecks.SelectedIndices.Count > 1 Then
+			Me.btRename.Enabled = False
+			Me.btUp.Enabled = False
+			Me.btDown.Enabled = False
+		Else			
+			Me.btRename.Enabled = True
+			Me.btUp.Enabled = ( Me.lstDecks.SelectedIndex > 0 )
+			Me.btDown.Enabled = ( Me.lstDecks.SelectedIndex < Me.lstDecks.Items.Count - 1 )
+		End If
+	End Sub
+	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
+		If e.CloseReason = CloseReason.UserClosing Then
+			Me.Visible = False
+			Call VmOwner.LoadMnu
+			Call VmOwner.LoadTvw
+		End If
+	End Sub
+	Sub BtAddActivate(sender As Object, e As EventArgs)
+	Dim VpDeckName As String
+	Dim VpId As Integer
+		VpDeckName = InputBox("Entrer le nom du deck :", "Nouveau deck", "(Deck)")
+		If VpDeckName <> "" Then
+			For Each VpD As String In Me.lstDecks.Items
+				If VpD.ToLower = VpDeckName.ToLower Then
+					Call clsModule.ShowWarning("Un deck portant ce nom existe déjà...")
+					Exit Sub
+				End If
+			Next VpD
+			VpId = clsModule.GetNewDeckId
+			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0);"
+			VgDBCommand.ExecuteNonQuery
+			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpId + 1))
+		End If
+	End Sub
+	Sub BtRemoveActivate(sender As Object, e As EventArgs)
+	Dim VpToRemove As New ArrayList
+		For Each VpI As Integer In Me.lstDecks.SelectedIndices	
+			Call Me.RemoveDeck(clsModule.GetDeckName(VpI + 1))
+			VpToRemove.Add(Me.lstDecks.Items.Item(VpI))		'liste temporaire car on ne peut pas toucher à la collection qu'on est en train d'énumérer
+		Next VpI
+		For Each VpItem As String In VpToRemove
+			Me.lstDecks.Items.Remove(VpItem)
+		Next VpItem
 		Me.btRemove.Enabled = False
 		Me.btRename.Enabled = False
+		Me.btUp.Enabled = False
+		Me.btDown.Enabled = False
 	End Sub
 	Sub BtRenameActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String

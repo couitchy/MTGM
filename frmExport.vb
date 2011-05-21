@@ -95,8 +95,7 @@ Public Partial Class frmExport
 			VpStrs = VpIn.ReadLine.Split("#")
 			'Pré-traitement 1 : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et sa série
 			If VpStrs.Length > 2 Then
-				VgDBCommand.CommandText = "Select EncNbr From Card Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
-				VpStrs(0) = VgDBCommand.ExecuteScalar
+				VpStrs(0) = clsModule.GetEncNbr(VpStrs(0), VpStrs(1))
 				VpStrs(1) = VpStrs(2)
 			End If
 			'Pré-traitement 2 : gestion éventuelle de la mention foil

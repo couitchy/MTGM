@@ -16,6 +16,8 @@
 '| Modifications :                                    |
 '| - gestion cartes foils				   19/12/2010 |
 '| - gestion transferts type 'copie'	   26/02/2011 |
+'| - quantité à copier ajustable		   09/05/2011 |
+'| - gestion transferts type 'swap'		   21/05/2011 |
 '------------------------------------------------------
 Public Partial Class frmTransfert
 	Private VmCardName As String
@@ -30,33 +32,46 @@ Public Partial Class frmTransfert
 		VmSource2 = VpSource2
 		VmOwner = VpOwner
 		VmTransfertResult = VpTransfertResult
-		Call Me.GetEditionsDispo
+		Call Me.GetEditionsDispo(Me.cboSerie)
+		If VpTransfertResult.TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+			Call Me.GetEditionsDispo(Me.cboSerie2, True)
+			Me.cboSerie2.Text = Me.cboSerie2.Items(0)
+			Me.grpDest.Visible = True
+		Else
+			Me.grpDest.Visible = False
+			Me.cmdCancel.Top = Me.cmdCancel.Top - Me.grpDest.Height
+			Me.cmdOK.Top = Me.cmdOK.Top - Me.grpDest.Height
+			Me.Height = Me.Height - Me.grpDest.Height
+		End If
 		Me.cboSerie.Text = Me.cboSerie.Items(0)
 		Me.sldQuant.Minimum = 1
 		Me.lblCard.Text = VpCardName
 	End Sub
-	Private Sub GetEditionsDispo
+	Private Sub GetEditionsDispo(VpCboSerie As ComboBox, Optional SwapTo As Boolean = False)
 	'--------------------------------------------------------------------------------------
 	'Charge la liste des éditions disponibles pour la carte courante sur la source courante
 	'--------------------------------------------------------------------------------------
 	Dim VpSQL As String
-		If VmSource = clsModule.CgSFromSearch Then
+		If SwapTo Then
+			VpSQL = "Select SeriesNM From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VmCardName.Replace("'", "''") + "'"
+		ElseIf VmSource = clsModule.CgSFromSearch Then
 			VpSQL = "Select SeriesNM From ((" + VmSource2 + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
+			VpSQL = VpSQL + VmOwner.Restriction
 		Else
 			VpSQL = "Select SeriesNM, Foil From ((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
+			VpSQL = VpSQL + VmOwner.Restriction
 		End If
-		VpSQL = VpSQL + VmOwner.Restriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
-			If VmSource = clsModule.CgSFromSearch Then
+			If VmSource = clsModule.CgSFromSearch Or SwapTo Then
 				While .Read
-					Me.cboSerie.Items.Add(.GetString(0))
+					VpCboSerie.Items.Add(.GetString(0))
 				End While
 			Else
 				While .Read
-					Me.cboSerie.Items.Add(.GetString(0) + If(.GetBoolean(1), clsModule.CgFoil2, ""))
+					VpCboSerie.Items.Add(.GetString(0) + If(.GetBoolean(1), clsModule.CgFoil2, ""))
 				End While
 			End If
 			.Close
@@ -68,14 +83,19 @@ Public Partial Class frmTransfert
 	'----------------------------------------------------------------------------------
 	Dim VpSQL As String
 	Dim VpRet As Boolean
+		'Si on fait un échange d'édition, on a systématiquement besoin d'afficher le formulaire de transfert
+		If VpTransfertType = clsTransfertResult.EgTransfertType.Swap Then
+			Return True
+		End If
 		'Cas 1 : plusieurs éditions disponibles ou bien même édition mais avec foil(s) et non foil(s)
 		VpSQL = "Select Count(*) From ((" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
 		VpSQL = VpSQL + VpOwner.Restriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VpRet = ( VgDBCommand.ExecuteScalar > 1 )
+		'Si c'est une copie que l'on fait, on n'a pas besoin de savoir combien d'items il y a (ie. pas besoin d'évaluer le cas 2 ci-dessous), cela dépend si l'utilisateur a choisi dans les options de pouvoir régler manuellement le nombre de cartes à copier
 		If VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
-			Return VpRet	'dans le cas de la copie, on n'a pas besoin de savoir combien d'items il y a
+			Return If(VgOptions.VgSettings.CopyRange > 1, True, VpRet)
 		End If
 		'Cas 2 : Si une seule édition mais plusieurs items
 		VpSQL = "Select Items From ((" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
@@ -102,60 +122,68 @@ Public Partial Class frmTransfert
 	Dim VpNItemsAtSource As Integer
 	Dim VpNItemsAtDest As Integer
 		With VpTransfertResult
-			'Dans le cas d'un déplacement ou d'une suppression : suppression à la source
-			If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Deletion Then
+			'Dans le cas d'un déplacement ou d'une suppression ou d'un swap : suppression à la source
+			If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Deletion Or .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
 				'Nombre d'items déjà présents à la source
-				VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .Foil.ToString + " And EncNbr = " + .EncNbr.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
+				VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
 				VpNItemsAtSource = VgDBCommand.ExecuteScalar
 				'-NCartes à la source
 				If VpNItemsAtSource - .NCartes > 0 Then
-					VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where Foil = " + .Foil.ToString + " And EncNbr = " + .EncNbr.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
+					VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
 					VgDBCommand.ExecuteNonQuery
 				Else
-					VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where Foil = " + .Foil.ToString + " And EncNbr = " + .EncNbr.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
+					VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + ";", ";")
 					VgDBCommand.ExecuteNonQuery
 				End If
 			End If
-			'Dans le cas d'un déplacement ou d'une copie : ajout à destination
-			If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+			'Dans le cas d'un déplacement ou d'une copie ou d'un swap : ajout à destination
+			If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Or .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
 				'Nombre d'items déjà présents à la destination
-				VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .Foil.ToString + " And EncNbr = " + .EncNbr.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + ";", ";")
+				VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + ";", ";")
 				VpNItemsAtDest = VgDBCommand.ExecuteScalar
 				'+NCartes à la destination
 				If VpNItemsAtDest > 0 Then
-					VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where Foil = " + .Foil.ToString + " And EncNbr = " + .EncNbr.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + ";", ";")
+					VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + ";", ";")
 					VgDBCommand.ExecuteNonQuery
 				Else
-					VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + If(.STo = clsModule.CgSDecks, clsModule.GetDeckIndex(.TTo) + ", ", "") + .EncNbr.ToString + ", " + .NCartes.ToString + ", " + .Foil.ToString + ");"
+					VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + If(.STo = clsModule.CgSDecks, clsModule.GetDeckIndex(.TTo) + ", ", "") + .EncNbrTo.ToString + ", " + .NCartes.ToString + ", " + .FoilTo.ToString + ");"
 					VgDBCommand.ExecuteNonQuery
 				End If
 			End If
 		End With
 	End Sub
-	Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
+	Private Sub ChangeLogo(VpCboSerie As ComboBox, VpPicSerie As PictureBox, Optional ByRef VpEdition As String = "", Optional ByRef VpFoil As Boolean = False)
 	'-----------------------------------------
 	'Affiche le logo de l'édition sélectionnée
 	'-----------------------------------------
-	Dim VpEdition As String
 	Dim VpKey As Integer
-	Dim VpSQL As String
-	Dim VpFoil As Boolean
-		If Me.cboSerie.Text.EndsWith(clsModule.CgFoil2) Then
-			VpEdition = clsModule.GetSerieCodeFromName(Me.cboSerie.Text.Replace(clsModule.CgFoil2, ""))
+		If VpCboSerie.Text.EndsWith(clsModule.CgFoil2) Then
+			VpEdition = clsModule.GetSerieCodeFromName(VpCboSerie.Text.Replace(clsModule.CgFoil2, ""))
 			VpFoil = True
 		Else
-			VpEdition = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
+			VpEdition = clsModule.GetSerieCodeFromName(VpCboSerie.Text)
 			VpFoil = False
 		End If
 		VpKey = clsModule.VgImgSeries.Images.IndexOfKey("_e" + VpEdition + CgIconsExt)
 		If VpKey <> -1 Then
-			Me.picSerie.Image = clsModule.VgImgSeries.Images(VpKey)
+			VpPicSerie.Image = clsModule.VgImgSeries.Images(VpKey)
 		Else
-			Me.picSerie.Image = Nothing
+			VpPicSerie.Image = Nothing
 		End If
+	End Sub
+	Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
+	'-----------------------------------------------------------
+	'Réajustement des paramètres en fonction de l'édition source
+	'-----------------------------------------------------------
+	Dim VpSQL As String
+	Dim VpEdition As String = ""
+	Dim VpFoil As Boolean = False
+		'Logo édition source
+		Call Me.ChangeLogo(Me.cboSerie, Me.picSerie, VpEdition, VpFoil)
+		Me.chkFoil.Checked = VpFoil
 		'Réajuste le nombre de cartes disponibles dans l'édition sélectionnée
 		If VmTransfertResult.TransfertType = clsTransfertResult.EgTransfertType.Copy Then
-			Me.sldQuant.Maximum = 1
+			Me.sldQuant.Maximum = VgOptions.VgSettings.CopyRange
 		Else
 			VpSQL = "Select " + VmSource + ".Items From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And Foil = " + VpFoil.ToString + " And Card.Series = '" + VpEdition + "' And "
 			VpSQL = VpSQL + VmOwner.Restriction
@@ -163,6 +191,10 @@ Public Partial Class frmTransfert
 			VgDBCommand.CommandText = VpSQL
 			Me.sldQuant.Maximum = CInt(VgDBCommand.ExecuteScalar)
 		End If
+	End Sub
+	Sub CboSerie2SelectedIndexChanged(sender As Object, e As EventArgs)
+		'Logo édition destination
+		Call Me.ChangeLogo(Me.cboSerie2, Me.picSerie2)
 	End Sub
 	Sub CmdCancelClick(ByVal sender As Object, ByVal e As EventArgs)
 		VmTransfertResult.NCartes = 0
@@ -172,11 +204,18 @@ Public Partial Class frmTransfert
 		If Me.cboSerie.Items.Contains(Me.cboSerie.Text) Then
 			VmTransfertResult.NCartes = Me.sldQuant.Value
 			If Me.cboSerie.Text.EndsWith(clsModule.CgFoil2) Then
-				VmTransfertResult.IDSerie = clsModule.GetSerieCodeFromName(Me.cboSerie.Text.Replace(clsModule.CgFoil2, ""))
-				VmTransfertResult.Foil = True
+				VmTransfertResult.IDSerieFrom = clsModule.GetSerieCodeFromName(Me.cboSerie.Text.Replace(clsModule.CgFoil2, ""))
+				VmTransfertResult.FoilFrom = True
 			Else
-				VmTransfertResult.IDSerie = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
-				VmTransfertResult.Foil = False
+				VmTransfertResult.IDSerieFrom = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
+				VmTransfertResult.FoilFrom = False
+			End If
+			If VmTransfertResult.TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+				VmTransfertResult.IDSerieTo = clsModule.GetSerieCodeFromName(Me.cboSerie2.Text)
+				VmTransfertResult.FoilTo = Me.chkFoil.Checked
+			Else
+				VmTransfertResult.IDSerieTo = VmTransfertResult.IDSerieFrom
+				VmTransfertResult.FoilTo = VmTransfertResult.FoilFrom
 			End If
 		End If
 		Me.Close
@@ -190,12 +229,16 @@ Public Class clsTransfertResult
 		Deletion
 		Move
 		Copy
+		Swap
 	End Enum
-	Public NCartes As Integer = 0										'Nombre de cartes concernées
-	Public IDSerie As String = ""										'Edition correspondante
-	Public EncNbr As Integer = 0										'Numéro encyclopédique des cartes concernées
-	Public Foil As Boolean = False										'Mention éventuelle foil pour les cartes concernées
 	Public TransfertType As EgTransfertType = EgTransfertType.Move		'Type d'opération
+	Public NCartes As Integer = 0										'Nombre de cartes concernées
+	Public IDSerieFrom As String = ""									'Edition source
+	Public IDSerieTo As String = ""										'Edition destination
+	Public EncNbrFrom As Integer = 0									'Numéro encyclopédique source
+	Public EncNbrTo As Integer = 0										'Numéro encyclopédique destination
+	Public FoilFrom As Boolean = False									'Mention éventuelle foil source
+	Public FoilTo As Boolean = False									'Mention éventuelle foil destination
 	Public TFrom As String = ""											'Deck source
 	Public TTo As String = ""											'Deck destination
 	Public SFrom As String = ""											'Nom de la table source

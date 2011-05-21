@@ -48,7 +48,7 @@ Partial Class Options
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(538, 400)
+		Me.ClientSize = New System.Drawing.Size(538, 415)
 		Me.Controls.Add(Me.propOptions)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
 		Me.Name = "Options"

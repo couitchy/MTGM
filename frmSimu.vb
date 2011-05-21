@@ -18,6 +18,7 @@
 '| - levée de l'ambiguité sur les sources  03/10/2009 |
 '| - déploiement - effets spéciaux		   08/11/2009 |
 '| - suggestions de cartes adaptées		   25/02/2010 |
+'| - cartes suivantes après tirage mains   09/05/2011 |
 '------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
@@ -166,13 +167,40 @@ Public Partial Class frmSimu
 		If Me.cboTourSimple.Items.Count > 0 Then Me.cboTourSimple.SelectedIndex = 0
 		If Me.cboTourCumul.Items.Count > 0 Then Me.cboTourCumul.SelectedIndex = 0
 	End Sub
+	Private Sub ShowMain
+	'------------------------
+	'Affiche la main courante
+	'------------------------
+	Dim VpPartie As clsPartie
+	Dim VpCell As Cells.Cell
+	Dim VpCellBehavior As BehaviorModels.CustomEvents
+		VpCellBehavior = New BehaviorModels.CustomEvents
+		AddHandler VpCellBehavior.Click, AddressOf CellMouseClick
+		AddHandler VpCellBehavior.DoubleClick, AddressOf CellMouseDoubleClick
+		AddHandler VpCellBehavior.KeyUp, AddressOf CellKeyUp	
+		With Me.grdMainsTirage
+			VpPartie = .Tag
+			'Nettoyage
+			If .Rows.Count > 0 Then
+				.Rows.RemoveRange(0, .Rows.Count)
+			End If
+			.ColumnsCount = 1
+			.FixedRows = 0
+			For Each VpCard As clsCard In VpPartie.CardsDrawn
+				.Rows.Insert(.RowsCount)
+				VpCell = New Cells.Cell(VpCard.CardNameFR + " (" + VpCard.CardName + ")")
+				VpCell.Behaviors.Add(VpCellBehavior)
+				VpCell.Tag = VpCard
+				Me.grdMainsTirage(.RowsCount - 1, 0) = VpCell
+			Next VpCard
+			.Columns(0).Width = .Width
+		End With	
+	End Sub
 	Private Sub MainsSimu
 	'---------------------------------------
 	'Tire aléatoirement une main de 7 cartes
 	'---------------------------------------
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL)
-	Dim VpCell As Cells.Cell
-	Dim VpCellBehavior As New BehaviorModels.CustomEvents
+	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL)	
 		If VpPartie.CardsCount < clsModule.CgNMain Then
 			Call clsModule.ShowWarning("Il faut avoir au moins " + clsModule.CgNMain.ToString + " cartes saisies pour tirer une main...")
 		Else
@@ -181,23 +209,9 @@ Public Partial Class frmSimu
 			'Tire les 7 cartes
 			Call VpPartie.Draw(clsModule.CgNMain)
 			'Les inscrit dans la grille
-			AddHandler VpCellBehavior.Click, AddressOf CellMouseClick
-			AddHandler VpCellBehavior.KeyUp, AddressOf CellKeyUp
-			With Me.grdMainsTirage
-				'Nettoyage
-				If .Rows.Count > 0 Then
-					.Rows.RemoveRange(0, .Rows.Count)
-				End If
-				.ColumnsCount = 1
-				.FixedRows = 0
-				For Each VpCard As clsCard In VpPartie.CardsDrawn
-					.Rows.Insert(.RowsCount)
-					VpCell = New Cells.Cell(VpCard.CardNameFR + " (" + VpCard.CardName + ")")
-					VpCell.Behaviors.Add(VpCellBehavior)
-					Me.grdMainsTirage(.RowsCount - 1, 0) = VpCell
-				Next VpCard
-				.Columns(0).Width = .Width
-			End With
+			Me.grdMainsTirage.Tag = VpPartie
+			Call Me.ShowMain
+			'Force l'affichage de la première carte
 			Call Me.CellMouseClick(Nothing, New PositionEventArgs(New Position(0, 0), Me.grdMainsTirage(0, 0)))
 		End If
 	End Sub
@@ -539,6 +553,14 @@ Public Partial Class frmSimu
 	End Sub
 	Sub CellMouseClick(sender As Object, e As SourceGrid2.PositionEventArgs)
 		Call clsModule.LoadScanCard(clsModule.ExtractENName(e.Cell.GetValue(e.Position)), Me.picScanCard)
+	End Sub
+	Sub CellMouseDoubleClick(sender As Object, e As SourceGrid2.PositionEventArgs)
+	Dim VpPartie As clsPartie = Me.grdMainsTirage.Tag
+	Dim VpCell As Cells.Cell = e.Cell
+	Dim VpCard As clsCard = VpCell.Tag
+		Call VpPartie.AddToInPlay(VpCard)
+		Call VpPartie.Draw
+		Call Me.ShowMain
 	End Sub
 	Sub CellKeyUp(sender As Object, e As SourceGrid2.PositionKeyEventArgs)
 		Call clsModule.LoadScanCard(clsModule.ExtractENName(e.Cell.GetValue(e.Position)), Me.picScanCard)

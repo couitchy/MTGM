@@ -196,6 +196,7 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
+		Me.mnuSwapSerie = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -376,9 +377,9 @@ Partial Class MainForm
 		'
 		'cmnuTvw
 		'
-		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
+		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 214)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 258)
 		'
 		'mnuCardsFR
 		'
@@ -457,7 +458,7 @@ Partial Class MainForm
 		'mnuMoveToCollection
 		'
 		Me.mnuMoveToCollection.Name = "mnuMoveToCollection"
-		Me.mnuMoveToCollection.Size = New System.Drawing.Size(128, 22)
+		Me.mnuMoveToCollection.Size = New System.Drawing.Size(152, 22)
 		Me.mnuMoveToCollection.Text = "Collection"
 		AddHandler Me.mnuMoveToCollection.Click, AddressOf Me.MnuMoveACardActivate
 		'
@@ -473,7 +474,7 @@ Partial Class MainForm
 		'mnuCopyToCollection
 		'
 		Me.mnuCopyToCollection.Name = "mnuCopyToCollection"
-		Me.mnuCopyToCollection.Size = New System.Drawing.Size(128, 22)
+		Me.mnuCopyToCollection.Size = New System.Drawing.Size(152, 22)
 		Me.mnuCopyToCollection.Text = "Collection"
 		AddHandler Me.mnuCopyToCollection.Click, AddressOf Me.MnuCopyACardActivate
 		'
@@ -1754,6 +1755,15 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
 		'
+		'mnuSwapSerie
+		'
+		Me.mnuSwapSerie.Enabled = false
+		Me.mnuSwapSerie.Image = CType(resources.GetObject("mnuSwapSerie.Image"),System.Drawing.Image)
+		Me.mnuSwapSerie.Name = "mnuSwapSerie"
+		Me.mnuSwapSerie.Size = New System.Drawing.Size(233, 22)
+		Me.mnuSwapSerie.Text = "Modifier l'édition..."
+		AddHandler Me.mnuSwapSerie.Click, AddressOf Me.MnuSwapSerieClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1808,6 +1818,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuSwapSerie As System.Windows.Forms.ToolStripMenuItem
 	Private btWordGen As System.Windows.Forms.ToolStripButton
 	Private mnuWordGen As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCopyToCollection As System.Windows.Forms.ToolStripMenuItem

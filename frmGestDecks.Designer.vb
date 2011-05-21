@@ -78,8 +78,10 @@ Partial Class frmGestDecks
 		'
 		Me.lstDecks.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.lstDecks.FormattingEnabled = true
+		Me.lstDecks.HorizontalScrollbar = true
 		Me.lstDecks.Location = New System.Drawing.Point(0, 0)
 		Me.lstDecks.Name = "lstDecks"
+		Me.lstDecks.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
 		Me.lstDecks.Size = New System.Drawing.Size(354, 160)
 		Me.lstDecks.TabIndex = 0
 		AddHandler Me.lstDecks.SelectedIndexChanged, AddressOf Me.LstDecksSelectedIndexChanged

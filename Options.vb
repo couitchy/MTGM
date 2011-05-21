@@ -121,6 +121,7 @@ Public Class clsSettings
 	Private VmPrevSearches As String = ""
 	Private VmVFDefault As Boolean = True
 	Private VmShowCorruption As Boolean = True
+	Private VmCopyRange As Integer = 1
 	<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 	Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 		Get
@@ -294,6 +295,15 @@ Public Class clsSettings
 		End Get
 		Set (VpAutoHideAutorisations As Boolean)
 			VmAutoHideAutorisations = VpAutoHideAutorisations
+		End Set
+	End Property
+	<DisplayName("Limite pour les cartes à copier"), Category("Explorateur"), DefaultValue(1), Description("Nombre maximal de cartes que l'on peut copier avec 'Copier vers...'. Si cette valeur est réglée sur 1, la fenêtre permettant d'ajuster la quantité de cartes ne s'affichera pas systématiquement.")> _
+	Public Property CopyRange As Integer
+		Get
+			Return VmCopyRange
+		End Get
+		Set (VpCopyRange As Integer)
+			VmCopyRange = Math.Max(VpCopyRange, 1)
 		End Set
 	End Property
 	<DisplayName("Base des images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _

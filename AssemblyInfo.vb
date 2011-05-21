@@ -9,11 +9,11 @@ Imports System.Runtime.InteropServices
 ' you compile.
 
 <assembly: AssemblyTitle("Magic The Gathering Manager")>
-<assembly: AssemblyDescription("Manage your Magic cards the easy way.")>
+<assembly: AssemblyDescription("Manage your Magic The Gathering cards the easy way.")>
 <assembly: AssemblyConfiguration(".NET Framework 2.0")>
 <assembly: AssemblyCompany("Couitchy Corp.")>
 <assembly: AssemblyProduct("Magic The Gathering Manager")>
-<assembly: AssemblyCopyright("Copyright (c) 2008-2010 Couitchy Corp.")>
+<assembly: AssemblyCopyright("Copyright (c) 2008-2011 Couitchy Corp.")>
 <assembly: AssemblyTrademark("MTGM")>
 <assembly: AssemblyCulture("")>
 
