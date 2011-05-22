@@ -913,8 +913,7 @@ Public Partial Class MainForm
 						VpChildTag.Value2 = .GetString(2)
 						'Gestion éventuelle de la mention foil
 						If Me.mnuDegroupFoils.Checked AndAlso Not Me.IsInAdvSearch AndAlso .GetBoolean(3) Then
-							VpChildTag.Value = VpChildTag.Value + clsModule.CgFoil2
-							VpChildTag.Value2 = VpChildTag.Value2 + clsModule.CgFoil2
+							VpChild.NodeFont = New Font(Me.tvwExplore.Font, FontStyle.Bold)
 						End If
 						VpChild.Text = VpChildTag.Value
 					End If
@@ -1089,6 +1088,16 @@ Public Partial Class MainForm
 			End With
 		End If
 	End Sub
+	Private Function IsFoil(VpCard As TreeNode) As Boolean
+	'--------------------------------------------
+	'Renvoie si la carte a la mention foil ou non
+	'--------------------------------------------
+		If VpCard.NodeFont Is Nothing Then
+			Return False
+		Else
+			Return VpCard.NodeFont.Bold		'pas forcément super classe mais la carte est foil si et seulement si sa police est en gras
+		End If
+	End Function
 	Public Function GetSelectedSource As String
 	'--------------------------------------------------
 	'Retourne le nom de la première source sélectionnée
@@ -1187,9 +1196,9 @@ Public Partial Class MainForm
 	Dim VpPreciseTransfert As frmTransfert
 	Dim VpTransfertResult As New clsTransfertResult
 	Dim VpCardName As String = VpNode.Tag.Value
+	Dim VpFoil As Boolean = Me.IsFoil(VpNode)
 	Dim VpSource As String
 	Dim VpSource2 As String
-	Dim VpFoil As Boolean
 		'Source
 		If Me.IsInAdvSearch Then
 			VpSource = clsModule.CgSFromSearch
@@ -1201,52 +1210,48 @@ Public Partial Class MainForm
 			VpSource = clsModule.CgSCollection
 			VpSource2 = clsModule.CgSCollection
 		End If
-		If VpCardName.EndsWith(clsModule.CgFoil2) Then
-			VpCardName = VpCardName.Replace(clsModule.CgFoil2, "")
-			VpFoil = True
-		Else
-			VpFoil = False
-		End If
-		'Type d'opération
-		VpTransfertResult.TransfertType = VpTransfertType
-		'Gestion des cas multiples / foils
-		If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType) Then
-			VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
-			VpPreciseTransfert.ShowDialog
-		Else
-			VpTransfertResult.NCartes = 1
-			VpTransfertResult.IDSerieFrom = frmTransfert.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
-			VpTransfertResult.IDSerieTo = VpTransfertResult.IDSerieFrom
-			VpTransfertResult.FoilFrom = VpFoil
-			VpTransfertResult.FoilTo = VpFoil
-		End If
-		'Si pas d'annulation utilisateur
-		If VpTransfertResult.NCartes <> 0 Then
-			'Récupération du numéro encyclopédique de la carte concernée
-			VpTransfertResult.EncNbrFrom = clsModule.GetEncNbr(VpCardName, VpTransfertResult.IDSerieFrom)
-			VpTransfertResult.EncNbrTo = clsModule.GetEncNbr(VpCardName, VpTransfertResult.IDSerieTo)
-			'Lieux des modifications
-			VpTransfertResult.TFrom = Me.GetSelectedSource
-			VpTransfertResult.SFrom = VpSource
-			If VpTransfertType = clsTransfertResult.EgTransfertType.Swap Then
-				VpTransfertResult.TTo = VpTransfertResult.TFrom
-				VpTransfertResult.STo = VpTransfertResult.SFrom			
-			ElseIf VpTransfertType = clsTransfertResult.EgTransfertType.Move Or VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
-				VpTransfertResult.TTo = VpTo
-				VpTransfertResult.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
-			End If
-			'Opération effective
-			If Me.IsInAdvSearch Or (VpTransfertResult.TFrom <> VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy) Then
-				Call frmTransfert.CommitAction(VpTransfertResult)
-				Return False
-			ElseIf (VpTransfertResult.TFrom <> VpTransfertResult.TTo Or (VpTransfertResult.TFrom = VpTransfertResult.TTo And VpTransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (VpTransfertType = clsTransfertResult.EgTransfertType.Swap And (VpTransfertResult.EncNbrFrom <> VpTransfertResult.EncNbrTo Or VpTransfertResult.FoilFrom <> VpTransfertResult.FoilTo)) Then
-				Call frmTransfert.CommitAction(VpTransfertResult)
-				Return True
+		With VpTransfertResult
+			'Type d'opération
+			.TransfertType = VpTransfertType
+			'Gestion des cas multiples / foils
+			If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType) Then
+				VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
+				VpPreciseTransfert.ShowDialog
 			Else
-				Call clsModule.ShowWarning("La source et la destination sont identiques !")
-				Return False
+				.NCartes = 1
+				.IDSerieFrom = frmTransfert.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
+				.IDSerieTo = .IDSerieFrom
+				.FoilFrom = VpFoil
+				.FoilTo = VpFoil
 			End If
-		End If
+			'Si pas d'annulation utilisateur
+			If .NCartes <> 0 Then
+				'Récupération du numéro encyclopédique de la carte concernée
+				.EncNbrFrom = clsModule.GetEncNbr(VpCardName, .IDSerieFrom)
+				.EncNbrTo = clsModule.GetEncNbr(VpCardName, .IDSerieTo)
+				'Lieux des modifications
+				.TFrom = Me.GetSelectedSource
+				.SFrom = VpSource
+				If .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+					.TTo = .TFrom
+					.STo = .SFrom
+				ElseIf .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+					.TTo = VpTo
+					.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
+				End If
+				'Opération effective
+				If Me.IsInAdvSearch Or (.TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+					Call frmTransfert.CommitAction(VpTransfertResult)
+					Return False
+				ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
+					Call frmTransfert.CommitAction(VpTransfertResult)
+					Return True
+				Else
+					Call clsModule.ShowWarning("La source et la destination sont identiques !")
+					Return False
+				End If
+			End If
+		End With
 	End Function
 	Private Sub ManageMultipleTransferts(VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "")
 	'-------------------------------------------------------------------------------------------------------------
@@ -1294,7 +1299,7 @@ Public Partial Class MainForm
 			VpBuy.LoadGrid(clsModule.eBasketMode.Local)
 		ElseIf VpLoad Then
 			For Each VpNode As TreeNode In Me.tvwExplore.SelectedNodes
-				VpBuy.AddToBasket(VpNode.Text.Replace(clsModule.CgFoil2, ""))
+				VpBuy.AddToBasket(VpNode.Text)
 			Next VpNode
 			VpBuy.LoadGrid(clsModule.eBasketMode.Local)
 		End If
@@ -1719,12 +1724,7 @@ Public Partial Class MainForm
 			'Sélection d'un élément de type 'carte'
 			If e.Node.Parent.Tag.Key = "Card.Title" Then
 				VpTitle = e.Node.Tag.Value
-				If VpTitle.EndsWith(clsModule.CgFoil2) Then
-					VpTitle = VpTitle.Replace(clsModule.CgFoil2, "")
-					VpFoil = True
-				Else
-					VpFoil = False
-				End If
+				VpFoil = Me.IsFoil(e.Node)
 				Call Me.ManageSerieGrp(Me.grpSerie, Me.grpSerie2)
 				If Me.IsInAdvSearch Then
 					Call clsModule.LoadCarac(Me, Me, VpTitle, False)
@@ -1789,14 +1789,8 @@ Public Partial Class MainForm
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpTitle As String = Me.tvwExplore.SelectedNode.Tag.Value
+	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
 	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
-	Dim VpFoil As Boolean
-		If VpTitle.EndsWith(clsModule.CgFoil2) Then
-			VpTitle = VpTitle.Replace(clsModule.CgFoil2, "")
-			VpFoil = True
-		Else
-			VpFoil = False
-		End If
 		Me.SuspendLayout
 		If Me.IsInAdvSearch Then
 			Call clsModule.LoadCarac(Me, Me, VpTitle, False, , VpSerie)
@@ -2076,7 +2070,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuSwapSerieClick(sender As Object, e As EventArgs)
 		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Swap)
-	End Sub	
+	End Sub
 	Sub MnuExcelGenActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpXL As frmXL
 		If clsModule.DBOK Then
@@ -2247,18 +2241,12 @@ Public Partial Class MainForm
 	'-----------------------------------------------------------
 	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
+	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
 	Dim VpEncNbr As Integer
-	Dim VpFoil As Boolean
-		If VpCard.EndsWith(clsModule.CgFoil2) Then
-			VpCard = VpCard.Replace(clsModule.CgFoil2, "")
-			VpFoil = True
-		Else
-			VpFoil = False
-		End If
  		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll Then
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
-				If Val(Me.lblStock.Text) > 0 Then
+				If Val(Me.lblStock.Text) > 1 Then
 					Me.lblStock.Text = (Val(Me.lblStock.Text) - 1).ToString
 				End If
 			Else
@@ -2274,7 +2262,7 @@ Public Partial Class MainForm
 	Sub CmdHistPricesClick(sender As Object, e As EventArgs)
 	Dim VpPricesHistory As frmGrapher
 	Dim VpCardName As String = Me.tvwExplore.SelectedNode.Tag.Value
-	Dim VpFoil As Boolean
+	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
 		If clsModule.DBOK Then
 			If clsModule.HasPriceHistory Then
 				If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.PricesHistory) Then
@@ -2282,12 +2270,6 @@ Public Partial Class MainForm
 					Me.VmMyChildren.PricesHistory = VpPricesHistory
 				Else
 					VpPricesHistory = Me.VmMyChildren.PricesHistory
-				End If
-				If VpCardName.EndsWith(clsModule.CgFoil2) Then
-					VpCardName = VpCardName.Replace(clsModule.CgFoil2, "")
-					VpFoil = True
-				Else
-					VpFoil = False
 				End If
 				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
 				VpPricesHistory.Show
