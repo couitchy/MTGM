@@ -275,9 +275,13 @@ Public Partial Class MainForm
 		For Each VpTxtFR As clsTxtFR In VpTrad
 			If VpTxtFR.Texte.Trim <> "" Then
 				If VpTxtFR.Already = clsTxtFR.eTxtState.Neww Then	'cas où le correctif porte sur des cartes d'une édition pas encore présente dans la base courante
-					VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpTxtFR.CardName.Replace("'", "''") + "', '" + VpTxtFR.Texte.Replace("'", "''") + "');"
-					VgDBCommand.ExecuteNonQuery
-					VpCount = VpCount + 1
+					Try
+						VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpTxtFR.CardName.Replace("'", "''") + "', '" + VpTxtFR.Texte.Replace("'", "''") + "');"
+						VgDBCommand.ExecuteNonQuery
+						VpCount = VpCount + 1
+					Catch
+						Call clsModule.ShowWarning("Erreur lors de la mise à jour de la carte " + VpTxtFR.CardName + "...")
+					End Try
 				ElseIf VpTxtFR.Already = clsTxtFR.eTxtState.Update Then
 					VgDBCommand.CommandText = "Update TextesFR Set TexteFR = '" + VpTxtFR.Texte.Replace("'", "''") + "' Where CardName = '" + VpTxtFR.CardName.Replace("'", "''") + "';"
 					VgDBCommand.ExecuteNonQuery
@@ -617,6 +621,7 @@ Public Partial Class MainForm
 		Me.lblPrix.Text = ""
 		Me.lblRarete.Text = ""
 		Me.lblStock.Text = ""
+		Me.lblStock3.Text = ""
 		Me.txtCardText.Text = ""
 		Me.lblSerieTot.Text = ""
 		Me.lblSerieMyTot.Text = ""
@@ -759,7 +764,6 @@ Public Partial Class MainForm
 	'Tri le treeview dans l'ordre alphabétique
 	'-----------------------------------------
 	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
-		Me.mnuSort.Tag = True
 		Me.tvwExplore.Sort
 		If Not VpNode Is Nothing Then
 			Me.tvwExplore.SelectedNode = VpNode
@@ -829,10 +833,8 @@ Public Partial Class MainForm
 			If Me.mnuCardsFR.Checked Then
 				Me.tvwExplore.BeginUpdate
 				Call Me.ChangeLanguage(Me.tvwExplore.Nodes.Item(0))
-				Me.tvwExplore.EndUpdate
-			End If
-			If Me.mnuSort.Tag = True Then
 				Call Me.SortTvw
+				Me.tvwExplore.EndUpdate
 			End If
 		End If
 		Me.VmMustReload = False
@@ -1500,7 +1502,6 @@ Public Partial Class MainForm
 		End If
 		'Divers
 		Call Me.LoadAutorisations("")
-		Me.mnuSort.Tag = False
 '		Me.VgBar = New Windows7ProgressBar(Me)
 		'Argument éventuel
 		If VmStartup.EndsWith(clsModule.CgFExtN) Or VmStartup.EndsWith(clsModule.CgFExtO) Then
@@ -1662,7 +1663,6 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsFRActivate(ByVal sender As Object, ByVal e As MouseEventArgs)
 		Me.mnuCardsFR.Checked = Not Me.mnuCardsFR.Checked
-		Me.mnuSort.Tag = False
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
 			Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked)
 		End If
@@ -2248,9 +2248,11 @@ Public Partial Class MainForm
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
 				If Val(Me.lblStock.Text) > 1 Then
 					Me.lblStock.Text = (Val(Me.lblStock.Text) - 1).ToString
+					Me.lblStock3.Text = (Val(Me.lblStock3.Text) - 1).ToString
 				End If
 			Else
 				Me.lblStock.Text = (Val(Me.lblStock.Text) + 1).ToString
+				Me.lblStock3.Text = (Val(Me.lblStock3.Text) + 1).ToString
 			End If
 			'Mise à jour du nombre d'items présents à la destination
 			VgDBCommand.CommandText = "Update " + VpSource + " Set Items = " + Me.lblStock.Text + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VpSource = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")

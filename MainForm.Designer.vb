@@ -57,6 +57,7 @@ Partial Class MainForm
 		Me.mnuMoveToCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCopyACard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCopyToCollection = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuSwapSerie = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuDeleteACard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator2 = New System.Windows.Forms.ToolStripSeparator
 		Me.mnuBuy = New System.Windows.Forms.ToolStripMenuItem
@@ -166,6 +167,8 @@ Partial Class MainForm
 		Me.picAutT2 = New System.Windows.Forms.PictureBox
 		Me.picAutBloc = New System.Windows.Forms.PictureBox
 		Me.grpSerie = New System.Windows.Forms.GroupBox
+		Me.lblStock2 = New System.Windows.Forms.Label
+		Me.lblStock3 = New System.Windows.Forms.Label
 		Me.cmdHistPrices = New System.Windows.Forms.Button
 		Me.scrollStock = New System.Windows.Forms.VScrollBar
 		Me.cboEdition = New System.Windows.Forms.ComboBox
@@ -196,7 +199,6 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.mnuSwapSerie = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -379,7 +381,7 @@ Partial Class MainForm
 		'
 		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 258)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 236)
 		'
 		'mnuCardsFR
 		'
@@ -458,7 +460,7 @@ Partial Class MainForm
 		'mnuMoveToCollection
 		'
 		Me.mnuMoveToCollection.Name = "mnuMoveToCollection"
-		Me.mnuMoveToCollection.Size = New System.Drawing.Size(152, 22)
+		Me.mnuMoveToCollection.Size = New System.Drawing.Size(128, 22)
 		Me.mnuMoveToCollection.Text = "Collection"
 		AddHandler Me.mnuMoveToCollection.Click, AddressOf Me.MnuMoveACardActivate
 		'
@@ -474,9 +476,18 @@ Partial Class MainForm
 		'mnuCopyToCollection
 		'
 		Me.mnuCopyToCollection.Name = "mnuCopyToCollection"
-		Me.mnuCopyToCollection.Size = New System.Drawing.Size(152, 22)
+		Me.mnuCopyToCollection.Size = New System.Drawing.Size(128, 22)
 		Me.mnuCopyToCollection.Text = "Collection"
 		AddHandler Me.mnuCopyToCollection.Click, AddressOf Me.MnuCopyACardActivate
+		'
+		'mnuSwapSerie
+		'
+		Me.mnuSwapSerie.Enabled = false
+		Me.mnuSwapSerie.Image = CType(resources.GetObject("mnuSwapSerie.Image"),System.Drawing.Image)
+		Me.mnuSwapSerie.Name = "mnuSwapSerie"
+		Me.mnuSwapSerie.Size = New System.Drawing.Size(233, 22)
+		Me.mnuSwapSerie.Text = "Modifier l'édition..."
+		AddHandler Me.mnuSwapSerie.Click, AddressOf Me.MnuSwapSerieClick
 		'
 		'mnuDeleteACard
 		'
@@ -1410,6 +1421,8 @@ Partial Class MainForm
 		'grpSerie
 		'
 		Me.grpSerie.BackColor = System.Drawing.Color.Transparent
+		Me.grpSerie.Controls.Add(Me.lblStock2)
+		Me.grpSerie.Controls.Add(Me.lblStock3)
 		Me.grpSerie.Controls.Add(Me.cmdHistPrices)
 		Me.grpSerie.Controls.Add(Me.scrollStock)
 		Me.grpSerie.Controls.Add(Me.cboEdition)
@@ -1431,6 +1444,28 @@ Partial Class MainForm
 		Me.grpSerie.TabIndex = 8
 		Me.grpSerie.TabStop = false
 		'
+		'lblStock2
+		'
+		Me.lblStock2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+		Me.lblStock2.AutoSize = true
+		Me.lblStock2.BackColor = System.Drawing.Color.Transparent
+		Me.lblStock2.Location = New System.Drawing.Point(198, 75)
+		Me.lblStock2.Name = "lblStock2"
+		Me.lblStock2.Size = New System.Drawing.Size(12, 13)
+		Me.lblStock2.TabIndex = 24
+		Me.lblStock2.Text = "/"
+		Me.lblStock2.TextAlign = System.Drawing.ContentAlignment.TopRight
+		'
+		'lblStock3
+		'
+		Me.lblStock3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+		Me.lblStock3.BackColor = System.Drawing.Color.Transparent
+		Me.lblStock3.Location = New System.Drawing.Point(200, 75)
+		Me.lblStock3.Name = "lblStock3"
+		Me.lblStock3.Size = New System.Drawing.Size(19, 20)
+		Me.lblStock3.TabIndex = 23
+		Me.lblStock3.TextAlign = System.Drawing.ContentAlignment.TopRight
+		'
 		'cmdHistPrices
 		'
 		Me.cmdHistPrices.BackgroundImage = CType(resources.GetObject("cmdHistPrices.BackgroundImage"),System.Drawing.Image)
@@ -1446,7 +1481,7 @@ Partial Class MainForm
 		'
 		Me.scrollStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.scrollStock.LargeChange = 1
-		Me.scrollStock.Location = New System.Drawing.Point(180, 70)
+		Me.scrollStock.Location = New System.Drawing.Point(157, 70)
 		Me.scrollStock.Maximum = 0
 		Me.scrollStock.Name = "scrollStock"
 		Me.scrollStock.Size = New System.Drawing.Size(17, 25)
@@ -1569,7 +1604,7 @@ Partial Class MainForm
 		'
 		Me.lblStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblStock.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock.Location = New System.Drawing.Point(174, 75)
+		Me.lblStock.Location = New System.Drawing.Point(151, 75)
 		Me.lblStock.Name = "lblStock"
 		Me.lblStock.Size = New System.Drawing.Size(45, 13)
 		Me.lblStock.TabIndex = 14
@@ -1755,15 +1790,6 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
 		'
-		'mnuSwapSerie
-		'
-		Me.mnuSwapSerie.Enabled = false
-		Me.mnuSwapSerie.Image = CType(resources.GetObject("mnuSwapSerie.Image"),System.Drawing.Image)
-		Me.mnuSwapSerie.Name = "mnuSwapSerie"
-		Me.mnuSwapSerie.Size = New System.Drawing.Size(233, 22)
-		Me.mnuSwapSerie.Text = "Modifier l'édition..."
-		AddHandler Me.mnuSwapSerie.Click, AddressOf Me.MnuSwapSerieClick
-		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1818,6 +1844,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Public lblStock3 As System.Windows.Forms.Label
+	Private lblStock2 As System.Windows.Forms.Label
 	Private mnuSwapSerie As System.Windows.Forms.ToolStripMenuItem
 	Private btWordGen As System.Windows.Forms.ToolStripButton
 	Private mnuWordGen As System.Windows.Forms.ToolStripMenuItem

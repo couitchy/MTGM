@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 25039
+	Public Const CgCodeLines As Integer   		= 25102
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -1351,6 +1351,7 @@ Public Module clsModule
 					VpForm.lblStock.Text = .GetValue(VgDBReader.GetOrdinal("Items")).ToString
 				Else
 					VpForm.lblStock.Text = ""
+					VpForm.lblStock3.Text = ""
 				End If
 				If .GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) Is DBNull.Value OrElse .GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) = 0 Then
 					VpForm.lblPrix.Text = "N/C"
@@ -1369,7 +1370,10 @@ Public Module clsModule
 					'- 1 - soit la carte existe dans une autre édition et dans ce cas il faut inclure cette dernière dans la liste déroulante
 					'- 2 - soit dans la même édition mais d'un autre deck (cas où la source vaut MyGames) et dans ce cas il faut sommer les items en stock
 					'- 3 - soit dans la même édition et c'est alors un doublon (cas d'une recherche avancée sur une carte doublonnée)
-					'- 4 - soit dans la même édition et c'est alors une version foil qu'on doit sommer (car on est en mode de non distinction foil)
+					'- 4 - soit dans la même édition et c'est alors une version foil qu'on doit sommer (car on est en mode de non distinction foil)					
+					If VpEdition = "" Then
+						VpForm.lblStock3.Text = VpForm.lblStock.Text
+					End If
 					While .Read
 						'Gestion cas 2, 4
 						If VpForm.cboEdition.Items.Contains(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString) Then
@@ -1380,6 +1384,9 @@ Public Module clsModule
 						'Gestion cas 1
 						Else
 							VpForm.cboEdition.Items.Add(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString)
+						End If
+						If VpSource <> "" And VpEdition = "" Then
+							VpForm.lblStock3.Text = (CInt(VpForm.lblStock3.Text) + .GetValue(VgDBReader.GetOrdinal("Items"))).ToString
 						End If
 					End While
 				End If
