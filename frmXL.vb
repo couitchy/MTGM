@@ -47,8 +47,8 @@ Public Partial Class frmXL
 	Dim VpX As Integer					'Numéro de colonne courante
 	Dim VpForceCurrency As Integer = -1
 	Dim VpForceText As Integer = -1
-	Dim VpElements As New ArrayList
-	Dim VpElementsGroupes As New ArrayList
+	Dim VpElements As New List(Of clsXLItem)
+	Dim VpElementsGroupes As New List(Of clsXLItem)
 	Dim VpCur As clsXLItem
 		System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US")
 		Try
@@ -66,7 +66,7 @@ Public Partial Class frmXL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal("SeriesNM")).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetString(.GetOrdinal("CardText")).Trim))
+				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal("SeriesNM")).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal("CardText")).ToString.Trim))
 			End While
 			.Close
 		End With

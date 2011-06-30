@@ -62,7 +62,7 @@ Public Partial Class frmCorrExpr
 		End If
 	End Sub
 	Sub CmdOkClick(sender As Object, e As EventArgs)
-	Dim VpToRemove As New ArrayList
+	Dim VpToRemove As New List(Of clsCorrelation)
 		For VpI As Integer = 0 To Me.chklstExpr.Items.Count - 1
 			If Not Me.chklstExpr.GetItemChecked(VpI) Then
 				For Each VpCorr As clsCorrelation In VmOwner.Expressions

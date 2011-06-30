@@ -622,33 +622,33 @@ Public Partial Class frmPerfs
 	#End Region
 End Class
 Public Class clsGameCounter
-	Private VmGames As New ArrayList
+	Private VmGames As New List(Of clsGame)
 	Public Sub AddGame(VpLocaleVersion As Date, VpAdverseVersion As Date, VpVicLocale As Boolean)
-		Me.VmGames.Add(New clsGame(VpLocaleVersion, VpAdverseVersion, VpVicLocale))
+		VmGames.Add(New clsGame(VpLocaleVersion, VpAdverseVersion, VpVicLocale))
 	End Sub
 	Public Function GetDistinctLocalVersions As Date()
-	Dim VpDates As New ArrayList
-		For Each VpGame As clsGame In Me.VmGames
+	Dim VpDates As New List(Of Date)
+		For Each VpGame As clsGame In VmGames
 			If Not VpDates.Contains(VpGame.LocaleVersion) Then
 				VpDates.Add(VpGame.LocaleVersion)
 			End If
 		Next VpGame
 		VpDates.Sort(New clsDateComparer)
-		Return VpDates.ToArray(System.Type.GetType("System.DateTime"))
+		Return VpDates.ToArray
 	End Function
 	Public Function GetDistinctAdverseVersions As Date()
-	Dim VpDates As New ArrayList
-		For Each VpGame As clsGame In Me.VmGames
+	Dim VpDates As New List(Of Date)
+		For Each VpGame As clsGame In VmGames
 			If Not VpDates.Contains(VpGame.AdverseVersion) Then
 				VpDates.Add(VpGame.AdverseVersion)
 			End If
 		Next VpGame
 		VpDates.Sort(New clsDateComparer)
-		Return VpDates.ToArray(System.Type.GetType("System.DateTime"))
+		Return VpDates.ToArray
 	End Function
 	Public Function GetNLocal(VpLocalVersion As Date) As Integer
 	Dim VpN As Integer = 0
-		For Each VpGame As clsGame In Me.VmGames
+		For Each VpGame As clsGame In VmGames
 			If VpGame.LocaleVersion = VpLocalVersion Then
 				VpN = VpN + 1
 			End If
@@ -657,7 +657,7 @@ Public Class clsGameCounter
 	End Function
 	Public Function GetNVicLocal(VpLocalVersion As Date) As Integer
 	Dim VpN As Integer = 0
-		For Each VpGame As clsGame In Me.VmGames
+		For Each VpGame As clsGame In VmGames
 			If VpGame.LocaleVersion = VpLocalVersion And VpGame.VicLocale = True Then
 				VpN = VpN + 1
 			End If
@@ -666,7 +666,7 @@ Public Class clsGameCounter
 	End Function
 	Public Function GetNAdverse(VpAdverseVersion As Date) As Integer
 	Dim VpN As Integer = 0
-		For Each VpGame As clsGame In Me.VmGames
+		For Each VpGame As clsGame In VmGames
 			If VpGame.AdverseVersion = VpAdverseVersion Then
 				VpN = VpN + 1
 			End If
@@ -675,7 +675,7 @@ Public Class clsGameCounter
 	End Function
 	Public Function GetNVicAdverse(VpAdverseVersion As Date) As Integer
 	Dim VpN As Integer = 0
-		For Each VpGame As clsGame In Me.VmGames
+		For Each VpGame As clsGame In VmGames
 			If VpGame.AdverseVersion = VpAdverseVersion And VpGame.VicLocale = False Then
 				VpN = VpN + 1
 			End If
@@ -694,9 +694,9 @@ Public Class clsGame
 	End Sub
 End Class
 Public Class clsDateComparer
-	Implements IComparer
-	Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
-		Return Date.Compare(CDate(x), CDate(y))
+	Implements IComparer(Of Date)
+	Public Function Compare(ByVal x As Date, ByVal y As Date) As Integer Implements IComparer(Of Date).Compare
+		Return Date.Compare(x, y)
 	End Function
 End Class
 Public Class clsPerformances
@@ -704,7 +704,7 @@ Public Class clsPerformances
 	'-----------------------------------------------------------------
 	'Retourne le nom de tous les jeux en présence (locaux et adverses)
 	'-----------------------------------------------------------------
-	Dim VpGames As New ArrayList
+	Dim VpGames As New List(Of String)
 		VgDBCommand.CommandText = "Select JeuLocal, JeuAdverse From MyScores;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
@@ -720,7 +720,7 @@ Public Class clsPerformances
 			End While
 			.Close
 		End With
-		Return VpGames.ToArray(System.Type.GetType("System.String"))
+		Return VpGames.ToArray
 	End Function
 	Public Shared Function GetNPlayed(VpGame1 As String, Optional VpGame2 As String = "") As Integer
 	'---------------------------------------------------------------------------------------------------------------------

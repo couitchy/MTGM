@@ -37,8 +37,8 @@ Partial Class frmSearch
 		Me.cbarSearch = New TD.SandBar.ContainerBar
 		Me.pnlSearch = New TD.SandBar.ContainerBarClientPanel
 		Me.grpSerie = New System.Windows.Forms.GroupBox
-		Me.lblStock3 = New System.Windows.Forms.Label
 		Me.lblStock2 = New System.Windows.Forms.Label
+		Me.lblStock3 = New System.Windows.Forms.Label
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.lblAD = New System.Windows.Forms.Label
 		Me.lblStock = New System.Windows.Forms.Label
@@ -134,15 +134,6 @@ Partial Class frmSearch
 		Me.grpSerie.TabStop = false
 		Me.grpSerie.Visible = false
 		'
-		'lblStock3
-		'
-		Me.lblStock3.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock3.Location = New System.Drawing.Point(163, 83)
-		Me.lblStock3.Name = "lblStock3"
-		Me.lblStock3.Size = New System.Drawing.Size(19, 20)
-		Me.lblStock3.TabIndex = 39
-		Me.lblStock3.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
 		'lblStock2
 		'
 		Me.lblStock2.AutoSize = true
@@ -153,6 +144,15 @@ Partial Class frmSearch
 		Me.lblStock2.TabIndex = 38
 		Me.lblStock2.Text = "/"
 		Me.lblStock2.TextAlign = System.Drawing.ContentAlignment.TopRight
+		'
+		'lblStock3
+		'
+		Me.lblStock3.BackColor = System.Drawing.Color.Transparent
+		Me.lblStock3.Location = New System.Drawing.Point(163, 83)
+		Me.lblStock3.Name = "lblStock3"
+		Me.lblStock3.Size = New System.Drawing.Size(19, 20)
+		Me.lblStock3.TabIndex = 39
+		Me.lblStock3.TextAlign = System.Drawing.ContentAlignment.TopRight
 		'
 		'picScanCard
 		'
@@ -204,6 +204,7 @@ Partial Class frmSearch
 		Me.txtCardText.Location = New System.Drawing.Point(31, 159)
 		Me.txtCardText.Multiline = true
 		Me.txtCardText.Name = "txtCardText"
+		Me.txtCardText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
 		Me.txtCardText.Size = New System.Drawing.Size(194, 67)
 		Me.txtCardText.TabIndex = 31
 		'

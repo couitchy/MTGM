@@ -40,23 +40,23 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.Targets" />
   <ItemGroup>
     <Reference Include="ChartFX.Lite, Version=6.0.839.0, Culture=neutral, PublicKeyToken=a1878e2052c08dce">
-      <HintPath>..\_LIBRAIRIES\ChartFX.Lite.dll</HintPath>
+      <HintPath>..\__LIBRAIRIES\ChartFX.Lite.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NPlot">
-      <HintPath>..\_LIBRAIRIES\NPlot.dll</HintPath>
+      <HintPath>..\__LIBRAIRIES\NPlot.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SandBar">
-      <HintPath>..\_LIBRAIRIES\SandBar.dll</HintPath>
+      <HintPath>..\__LIBRAIRIES\SandBar.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SourceGrid2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=ad929b4064585aea">
-      <HintPath>..\_LIBRAIRIES\SourceGrid2.dll</HintPath>
+      <HintPath>..\__LIBRAIRIES\SourceGrid2.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SourceLibrary">
-      <HintPath>..\_LIBRAIRIES\SourceLibrary.dll</HintPath>
+      <HintPath>..\__LIBRAIRIES\SourceLibrary.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
@@ -66,7 +66,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TreeViewMS">
-      <HintPath>..\_LIBRAIRIES\TreeViewMS.dll</HintPath>
+      <HintPath>..\__LIBRAIRIES\TreeViewMS.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>

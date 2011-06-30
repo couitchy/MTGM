@@ -22,7 +22,7 @@ Imports System.ComponentModel
 Imports System.Text
 Public Partial Class frmNewEdition
 	Private VmEditionHeader As New clsEditionHeader
-	Private VmEncNbr0 As Integer = -1
+	Private VmEncNbr0 As Long = -1
 	Public Sub New()
 		Me.InitializeComponent()
 		Me.picMagic.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
@@ -32,7 +32,7 @@ Public Partial Class frmNewEdition
 	'Inscrit l'en-tête de la nouvelle série dans la base de données
 	'--------------------------------------------------------------
 		Try
-			With Me.VmEditionHeader
+			With VmEditionHeader
 				'(SeriesCD, SeriesNM, SeriesNM_MtG, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Nullx13, Notes)
 				VgDBCommand.CommandText = "Insert Into Series Values ('" + .SeriesCD + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', Null, Null, True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", Null, " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, '" + .NotesEdition.Replace("'", "''") + "');"
 				VgDBCommand.ExecuteNonQuery
@@ -55,7 +55,7 @@ Public Partial Class frmNewEdition
 	'-------------------------------------------------------------------------
 	'Remplit l'objet en-tête à partir du tableau de chaînes passé en paramètre
 	'-------------------------------------------------------------------------
-		With Me.VmEditionHeader
+		With VmEditionHeader
 			.SeriesCD = VpInfos(1)
 			.SeriesNM = VpInfos(2)
 			.SeriesNM_MtG = VpInfos(3)
@@ -116,12 +116,12 @@ Public Partial Class frmNewEdition
 					VpInfos = VpLine.Split("#")
 					Call Me.FillHeader(VpInfos)
 					Try
-						With Me.VmEditionHeader
+						With VmEditionHeader
 							VgDBCommand.CommandText = "Update Series Set SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
 							VgDBCommand.ExecuteNonQuery
 						End With
 					Catch
-						Call clsModule.ShowWarning("Impossible de mettre à jour l'en-tête " + Me.VmEditionHeader.SeriesNM + " de la base de données...")
+						Call clsModule.ShowWarning("Impossible de mettre à jour l'en-tête " + VmEditionHeader.SeriesNM + " de la base de données...")
 					End Try
 				End If
 			Loop
@@ -131,15 +131,15 @@ Public Partial Class frmNewEdition
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
 		End If
 	End Sub
-	Private Function QuerySeries As ArrayList
+	Private Function QuerySeries As List(Of String)
 	'------------------------------------------
 	'Récupère la liste des éditions disponibles
 	'------------------------------------------
 	Dim VpSeriesInfos As StreamReader
 	Dim VpInfos() As String
 	Dim VpLine As String
-	Dim VpAlready As ArrayList
-	Dim VpNew As New ArrayList
+	Dim VpAlready As List(Of String)
+	Dim VpNew As New List(Of String)
 	Dim VpMustAdd As Boolean
 		Call clsModule.DownloadNow(New Uri(clsModule.CgURL12), clsModule.CgUpSeries)
 		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
@@ -177,7 +177,7 @@ Public Partial Class frmNewEdition
 	Dim VpFile As StreamReader
 	Dim VpLine As String
 	Dim VpFLine As String
-	Dim VpComplement As ArrayList
+	Dim VpComplement As List(Of String)
 	Dim VpMyCard As clsMyCard
 	Dim VpSerieCD As String
 	Dim VpEncNbr As Long
@@ -188,7 +188,7 @@ Public Partial Class frmNewEdition
 	Dim VpLen As Integer
 		If VpCarac Is Nothing Then Return False
 		VpFile = New StreamReader(Me.txtCheckList.Text, Encoding.Default)
-		VpComplement = New ArrayList
+		VpComplement = New List(Of String)
 		'Code la nouvelle édition
 		VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.Tag)
 		'Dernier numéro d'identification de carte utilisé
@@ -319,11 +319,11 @@ Public Partial Class frmNewEdition
 		Me.txtSpoilerList.Text = ""
 		Call Me.CheckLoad
 	End Sub
-	Private Function BuildList(VpSQL As String) As ArrayList
+	Private Function BuildList(VpSQL As String) As List(Of String)
 	'-------------------------------------------------------------------------
 	'Renvoie une liste des éléments répondant à la requête passée en paramètre
 	'-------------------------------------------------------------------------
-	Dim VpList As New ArrayList
+	Dim VpList As New List(Of String)
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
@@ -338,8 +338,8 @@ Public Partial Class frmNewEdition
 	'--------------------------------------------------------------------------------------------------------------------------------------
 	'Ajoute dans la checkboxlist l'ensemble des séries présentes dans la table des éditions mais pas dans celle des cartes déjà référencées
 	'--------------------------------------------------------------------------------------------------------------------------------------
-	Dim VpAlready As ArrayList
-	Dim VpAll As ArrayList
+	Dim VpAlready As List(Of String)
+	Dim VpAll As List(Of String)
 		Me.chkNewEdition.Items.Clear
 		VpAlready = Me.BuildList("Select Distinct Series.SeriesNM From Card Inner Join Series On Card.Series = Series.SeriesCD;")
 		VpAll = Me.BuildList("Select SeriesNM From Series;")
@@ -350,7 +350,7 @@ Public Partial Class frmNewEdition
 		Next VpItem
 	End Sub
 	Sub FrmNewEditionLoad(ByVal sender As Object, ByVal e As EventArgs)
-		Me.propEdition.SelectedObject = Me.VmEditionHeader
+		Me.propEdition.SelectedObject = VmEditionHeader
 	End Sub
 	Sub ChkNewEditionItemCheck(ByVal sender As Object, ByVal e As ItemCheckEventArgs)
 	'---------------------------------------------------------
@@ -386,7 +386,7 @@ Public Partial Class frmNewEdition
 	Sub CmdHeaderNextClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Not Me.chkHeaderAlready.Checked Then
 			If Me.InsertHeader Then
-				With Me.VmEditionHeader
+				With VmEditionHeader
 					'Copie du fichier logo
 					If File.Exists(.LogoEdition) Then
 						Try
@@ -468,7 +468,7 @@ Public Class clsMyCard
 	Private VmAuthor As String
 	Private VmColor As String
 	Private VmRarity As String
-	Public Sub New(VpCarac() As String, Optional VpComplement As ArrayList = Nothing)
+	Public Sub New(VpCarac() As String, Optional VpComplement As List(Of String) = Nothing)
 	Dim VpStrs() As String
 		If VpCarac Is Nothing Then Exit Sub
 		'Titre, coût, type, sous-type, attaque, défense, texte détaillé

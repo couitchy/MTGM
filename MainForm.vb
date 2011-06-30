@@ -54,7 +54,7 @@ Public Partial Class MainForm
 	Private VmSearch As New clsSearch
 	Private VmAdvSearch As String = ""
 	Private VmAdvSearchLabel As String = ""
-	Private VmSuggestions As ArrayList = Nothing
+	Private VmSuggestions As List(Of clsCorrelation) = Nothing
 	Private VmDownloadInProgress As Boolean = False
 	Private VmMustReload As Boolean = False
 	Private VmImgDL As Boolean = False
@@ -219,7 +219,7 @@ Public Partial Class MainForm
 		End If
 		Me.prgAvance.Visible = False
 	End Sub
-	Private Sub MarkAs(VpTrad As ArrayList, VpState As clsTxtFR.eTxtState)
+	Private Sub MarkAs(VpTrad As List(Of clsTxtFR), VpState As clsTxtFR.eTxtState)
 	'------------------------------------------------
 	'Détermine l'état des traductions VO/VF courantes
 	'------------------------------------------------
@@ -245,7 +245,7 @@ Public Partial Class MainForm
 	Dim VpTxt As New StreamReader(Application.StartupPath + clsModule.CgUpTXTFR)
 	Dim VpStrs() As String = VpTxt.ReadToEnd.Split(New String() {"##"}, StringSplitOptions.None)
 	Dim VpItem() As String
-	Dim VpTrad As New ArrayList
+	Dim VpTrad As New List(Of clsTxtFR)
 	Dim VpCount As Integer = 0
 		'Parse le contenu du fichier
 		For VpI As Integer = 1 To VpStrs.Length - 1
@@ -280,7 +280,7 @@ Public Partial Class MainForm
 						VgDBCommand.ExecuteNonQuery
 						VpCount = VpCount + 1
 					Catch
-						Call clsModule.ShowWarning("Erreur lors de la mise à jour de la carte " + VpTxtFR.CardName + "...")
+						'Call clsModule.ShowWarning("Erreur lors de la mise à jour de la carte " + VpTxtFR.CardName + "...")
 					End Try
 				ElseIf VpTxtFR.Already = clsTxtFR.eTxtState.Update Then
 					VgDBCommand.CommandText = "Update TextesFR Set TexteFR = '" + VpTxtFR.Texte.Replace("'", "''") + "' Where CardName = '" + VpTxtFR.CardName.Replace("'", "''") + "';"
@@ -487,7 +487,7 @@ Public Partial Class MainForm
 	'-----------------------------------------------------------------------------------------------------------------------------------------------------
 	'Correction a posteriori d'un bug initial lors de l'ajout dans la base de nouvelles cartes de créatures-artefacts dont le sous-type n'est pas Creature
 	'-----------------------------------------------------------------------------------------------------------------------------------------------------
-	Dim VpArtefacts As New ArrayList
+	Dim VpArtefacts As New List(Of String)
 	Dim VpFile As StreamReader
 	Dim VpCheckCard As clsMyCard
 	Dim VpCounter As Integer = 0
@@ -633,8 +633,8 @@ Public Partial Class MainForm
 		Me.cmdHistPrices.Enabled = False
 	End Sub
 	Private Sub ClearAll
-		Me.VmAdvSearch = ""
-		Me.VmAdvSearchLabel = ""
+		VmAdvSearch = ""
+		VmAdvSearchLabel = ""
 		Me.tvwExplore.Nodes.Clear
 		Me.mnuFindNext.Enabled = False
 		Me.mnuSearchText.Text = clsModule.CgCard
@@ -776,8 +776,8 @@ Public Partial Class MainForm
 	'-----------------------------------------------------------------------------------------------------------------------------------
 	Dim VpNode As TreeNode
 		If Not clsModule.DBOK Then Exit Sub
-		Me.VmAdvSearch = VpLoadFromSearch
-		Me.VmAdvSearchLabel = VpSearchName
+		VmAdvSearch = VpLoadFromSearch
+		VmAdvSearchLabel = VpSearchName
 		Me.tvwExplore.SelectedNodes.Clear
 		If VpClear Then
 			Me.tvwExplore.Nodes.Clear
@@ -804,7 +804,7 @@ Public Partial Class MainForm
 				End Try
 				Call Me.RecurLoadTvw(VpLoadFromSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction)
 				Me.lblNCards.Text = ""
-				Me.VmSuggestions = Nothing
+				VmSuggestions = Nothing
 			'Cas 2 : chargement des cartes de deck(s)
 			ElseIf Me.chkClassement.GetItemChecked(0) Then
 				VpNode.Text = clsModule.CgDecks
@@ -837,14 +837,14 @@ Public Partial Class MainForm
 				Me.tvwExplore.EndUpdate
 			End If
 		End If
-		Me.VmMustReload = False
+		VmMustReload = False
 	End Sub
 	Private Function CanAdd(VpTag As clsTag, VpCard As String) As Boolean
 	'--------------------------------------------------------------------------
 	'Si l'on est en mode suggestions, empêche l'insertion d'un noeud non validé
 	'--------------------------------------------------------------------------
-		If VpTag.Key = "Card.Title" And Not Me.VmSuggestions Is Nothing Then
-			For Each VpSugg As clsCorrelation In Me.VmSuggestions
+		If VpTag.Key = "Card.Title" And Not VmSuggestions Is Nothing Then
+			For Each VpSugg As clsCorrelation In VmSuggestions
 				If VpSugg.Card1 = VpCard Then
 					Return True
 				End If
@@ -1006,7 +1006,7 @@ Public Partial Class MainForm
 		Me.lblSerieMyTotDist.Text = Me.QueryInfo("Select Count(*) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", VpElderCriteria)
 		Me.lblSerieMyTotDist.Text = Me.lblSerieMyTotDist.Text + " (" + Format(100 * CInt(Me.lblSerieMyTotDist.Text) / CInt(Me.lblSerieTot.Text), "0") + "%)"
 		'Cote de toutes les cartes répondant aux critères
-		VgDBCommand.CommandText = "Select Sum(Price) From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria)
+		VgDBCommand.CommandText = "Select Sum(Price * Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria)
 		VpO = VgDBCommand.ExecuteScalar
 		If Not VpO Is Nothing AndAlso IsNumeric(VpO) Then
 			Me.lblSerieCote.Text = Format(VpO, "0.00") + " €"
@@ -1279,11 +1279,11 @@ Public Partial Class MainForm
 	Dim VpBuy As frmBuyMV
 	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpSQL As String
-		If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.MVBuyer) Then
+		If VmMyChildren.DoesntExist(VmMyChildren.MVBuyer) Then
 			VpBuy = New frmBuyMV
-			Me.VmMyChildren.MVBuyer = VpBuy
+			VmMyChildren.MVBuyer = VpBuy
 		Else
-			VpBuy = Me.VmMyChildren.MVBuyer
+			VpBuy = VmMyChildren.MVBuyer
 		End If
 		VpBuy.Show
 		VpBuy.BringToFront
@@ -1308,9 +1308,9 @@ Public Partial Class MainForm
 	End Sub
 	#End Region
 	#Region "Propriétés"
-	Public WriteOnly Property Suggestions As ArrayList
-		Set (VpSuggestions As ArrayList)
-			Me.VmSuggestions = VpSuggestions
+	Public WriteOnly Property Suggestions As List(Of clsCorrelation)
+		Set (VpSuggestions As List(Of clsCorrelation))
+			VmSuggestions = VpSuggestions
 		End Set
 	End Property
 	Public Property IsDownloadInProgress As Boolean
@@ -1377,10 +1377,10 @@ Public Partial Class MainForm
 	'Collection des enfants
 	'----------------------
 		Get
-			Return Me.VmMyChildren
+			Return VmMyChildren
 		End Get
 		Set (VpMyChildren As clsChildren)
-			Me.VmMyChildren = VpMyChildren
+			VmMyChildren = VpMyChildren
 		End Set
 	End Property
 	#End Region
@@ -1449,9 +1449,12 @@ Public Partial Class MainForm
 		Call VgOptions.LoadSettings
 		'Taille par défaut
 		If VgOptions.VgSettings.RestoreSize Then
-			Me.Size = New Size(VgOptions.VgSettings.RestoredWidth, VgOptions.VgSettings.RestoredHeight)
-			Me.WindowState = VgOptions.VgSettings.RestoredState
-			Me.splitH.SplitterDistance = VgOptions.VgSettings.RestoredSplitterDistance
+			Try
+				Me.Size = New Size(VgOptions.VgSettings.RestoredWidth, VgOptions.VgSettings.RestoredHeight)
+				Me.WindowState = VgOptions.VgSettings.RestoredState
+				Me.splitH.SplitterDistance = VgOptions.VgSettings.RestoredSplitterDistance
+			Catch
+			End Try
 		End If
 		'Anciens menus de mises à jour
 		If Not VgOptions.VgSettings.ShowUpdateMenus Then
@@ -1506,8 +1509,8 @@ Public Partial Class MainForm
 		'Argument éventuel
 		If VmStartup.EndsWith(clsModule.CgFExtN) Or VmStartup.EndsWith(clsModule.CgFExtO) Then
 			Call Me.MnuExportActivate(sender, Nothing)
-			If Not Me.VmMyChildren.DoesntExist(Me.VmMyChildren.ImporterExporter) Then
-				Me.VmMyChildren.ImporterExporter.InitImport(VmStartup)
+			If Not VmMyChildren.DoesntExist(VmMyChildren.ImporterExporter) Then
+				VmMyChildren.ImporterExporter.InitImport(VmStartup)
 			End If
 		End If
 	End Sub
@@ -1630,7 +1633,7 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub MnuRefreshActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.LoadTvw(Me.VmAdvSearch, , Me.VmAdvSearchLabel)
+		Call Me.LoadTvw(VmAdvSearch, , VmAdvSearchLabel)
 	End Sub
 	Sub BtUpActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.ManageOrder(1, 0, -1)
@@ -1641,7 +1644,7 @@ Public Partial Class MainForm
 	Sub ChkClassementSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Me.btUp.Enabled = (Me.chkClassement.SelectedIndex > 1 And Me.chkClassement.SelectedIndex <> Me.chkClassement.Items.Count - 1)
 		Me.btDown.Enabled = (Me.chkClassement.SelectedIndex > 0 And Me.chkClassement.SelectedIndex < Me.chkClassement.Items.Count - 2)
-		If Me.VmMustReload Then
+		If VmMustReload Then
 			Call Me.LoadTvw
 		End If
 	End Sub
@@ -1658,7 +1661,7 @@ Public Partial Class MainForm
 				End If
 			Next VpItem
 			Me.chkClassement.SelectedItems.Clear
-			Me.VmMustReload = True	'un peu crade mais l'appel direct à LoadTvw est impossible car les checkboxes ne sont mises à jour qu'à la fin du présent évènement
+			VmMustReload = True	'un peu crade mais l'appel direct à LoadTvw est impossible car les checkboxes ne sont mises à jour qu'à la fin du présent évènement
 		End If
 	End Sub
 	Sub MnuCardsFRActivate(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -1960,11 +1963,11 @@ Public Partial Class MainForm
 	Sub MnuAdvancedSearchActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpSearch As frmSearch
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.Searcher) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.Searcher) Then
 				VpSearch = New frmSearch(Me)
-				Me.VmMyChildren.Searcher = VpSearch
+				VmMyChildren.Searcher = VpSearch
 			Else
-				VpSearch = Me.VmMyChildren.Searcher
+				VpSearch = VmMyChildren.Searcher
 			End If
 			VpSearch.Show
 			VpSearch.BringToFront
@@ -2036,11 +2039,11 @@ Public Partial Class MainForm
 	Sub MnuContenuUpdateClick(sender As Object, e As EventArgs)
 	Dim VpContenuUpdate As frmUpdateContenu
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.ContenuUpdater) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.ContenuUpdater) Then
 				VpContenuUpdate = New frmUpdateContenu
-				Me.VmMyChildren.ContenuUpdater = VpContenuUpdate
+				VmMyChildren.ContenuUpdater = VpContenuUpdate
 			Else
-				VpContenuUpdate = Me.VmMyChildren.ContenuUpdater
+				VpContenuUpdate = VmMyChildren.ContenuUpdater
 			End If
 			VpContenuUpdate.Show
 			VpContenuUpdate.BringToFront
@@ -2049,11 +2052,11 @@ Public Partial Class MainForm
 	Sub MnuPerfsActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpPerfs As frmPerfs
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.PerfsCounter) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.PerfsCounter) Then
 				VpPerfs = New frmPerfs(Me)
-				Me.VmMyChildren.PerfsCounter = VpPerfs
+				VmMyChildren.PerfsCounter = VpPerfs
 			Else
-				VpPerfs = Me.VmMyChildren.PerfsCounter
+				VpPerfs = VmMyChildren.PerfsCounter
 			End If
 			VpPerfs.Show
 			VpPerfs.BringToFront
@@ -2088,11 +2091,11 @@ Public Partial Class MainForm
 	Sub MnuRemEditionActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpDeletor As frmDeleteEdition
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.EditionDeleter) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.EditionDeleter) Then
 				VpDeletor = New frmDeleteEdition(Me)
-				Me.VmMyChildren.EditionDeleter = VpDeletor
+				VmMyChildren.EditionDeleter = VpDeletor
 			Else
-				VpDeletor = Me.VmMyChildren.EditionDeleter
+				VpDeletor = VmMyChildren.EditionDeleter
 			End If
 			VpDeletor.Show
 			VpDeletor.BringToFront
@@ -2107,11 +2110,11 @@ Public Partial Class MainForm
 	Sub MnuExportActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpImporterExporter As frmExport
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.ImporterExporter) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.ImporterExporter) Then
 				VpImporterExporter = New frmExport(Me)
-				Me.VmMyChildren.ImporterExporter = VpImporterExporter
+				VmMyChildren.ImporterExporter = VpImporterExporter
 			Else
-				VpImporterExporter = Me.VmMyChildren.ImporterExporter
+				VpImporterExporter = VmMyChildren.ImporterExporter
 			End If
 			VpImporterExporter.Show
 			VpImporterExporter.BringToFront
@@ -2120,11 +2123,11 @@ Public Partial Class MainForm
 	Sub MnuGestDecksActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpGestDecks As frmGestDecks
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.DecksManager) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.DecksManager) Then
 				VpGestDecks = New frmGestDecks(Me)
-				Me.VmMyChildren.DecksManager = VpGestDecks
+				VmMyChildren.DecksManager = VpGestDecks
 			Else
-				VpGestDecks = Me.VmMyChildren.DecksManager
+				VpGestDecks = VmMyChildren.DecksManager
 			End If
 			VpGestDecks.Show
 			VpGestDecks.BringToFront
@@ -2133,11 +2136,11 @@ Public Partial Class MainForm
 	Sub MnuGestAdvClick(sender As Object, e As EventArgs)
 	Dim VpGestAdv As frmGestAdv
 		If clsModule.DBOK Then
-			If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.AdversairesManager) Then
+			If VmMyChildren.DoesntExist(VmMyChildren.AdversairesManager) Then
 				VpGestAdv = New frmGestAdv
-				Me.VmMyChildren.AdversairesManager = VpGestAdv
+				VmMyChildren.AdversairesManager = VpGestAdv
 			Else
-				VpGestAdv = Me.VmMyChildren.AdversairesManager
+				VpGestAdv = VmMyChildren.AdversairesManager
 			End If
 			VpGestAdv.Show
 			VpGestAdv.BringToFront
@@ -2242,7 +2245,7 @@ Public Partial Class MainForm
 	Dim VpSource As String = If(Me.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
 	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
-	Dim VpEncNbr As Integer
+	Dim VpEncNbr As Long
  		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll Then
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
@@ -2267,11 +2270,11 @@ Public Partial Class MainForm
 	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
 		If clsModule.DBOK Then
 			If clsModule.HasPriceHistory Then
-				If Me.VmMyChildren.DoesntExist(Me.VmMyChildren.PricesHistory) Then
+				If VmMyChildren.DoesntExist(VmMyChildren.PricesHistory) Then
 					VpPricesHistory = New frmGrapher
-					Me.VmMyChildren.PricesHistory = VpPricesHistory
+					VmMyChildren.PricesHistory = VpPricesHistory
 				Else
-					VpPricesHistory = Me.VmMyChildren.PricesHistory
+					VpPricesHistory = VmMyChildren.PricesHistory
 				End If
 				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
 				VpPricesHistory.Show
@@ -2296,8 +2299,8 @@ Public Partial Class MainForm
 	Dim VpStr As String = e.Data.GetData(DataFormats.FileDrop)(0)
 		If VpStr.EndsWith(clsModule.CgFExtN) Or VpStr.EndsWith(clsModule.CgFExtO) Then
 			Call Me.MnuExportActivate(sender, Nothing)
-			If Not Me.VmMyChildren.DoesntExist(Me.VmMyChildren.ImporterExporter) Then
-				Me.VmMyChildren.ImporterExporter.InitImport(VpStr)
+			If Not VmMyChildren.DoesntExist(VmMyChildren.ImporterExporter) Then
+				VmMyChildren.ImporterExporter.InitImport(VpStr)
 			End If
 		ElseIf VpStr.EndsWith(clsModule.CgFExtD) Then
 			Call Me.DBOpenInit(VpStr)
@@ -2309,7 +2312,7 @@ Public Partial Class MainForm
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
 			VpHistory = Me.SaveNode(Me.tvwExplore.SelectedNode)
 		End If
-		Call Me.LoadTvw(Me.VmAdvSearch, , Me.VmAdvSearchLabel)
+		Call Me.LoadTvw(VmAdvSearch, , VmAdvSearchLabel)
 		If VpHistory <> "" Then
 			Me.tvwExplore.BeginUpdate
 			Call Me.RestoreNode(VpHistory, Me.tvwExplore.Nodes(0))

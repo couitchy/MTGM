@@ -104,7 +104,7 @@ Public Partial Class frmExport
 			Else
 				VpFoil = False
 			End If
-			If IsNumeric(VpStrs(0)) Then
+			If IsNumeric(VpStrs(0)) AndAlso CInt(VpStrs(0)) <> 0 Then
 				'Cas 1 : nouveau deck
 				If VpIsNew Then
 					VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VpId.ToString + ", " + VpFoil.ToString + ");"

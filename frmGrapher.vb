@@ -21,7 +21,7 @@ Imports System.Drawing
 Imports System.ComponentModel
 Public Partial Class frmGrapher
 	Private VmColors() As String
-	Private VmPlots As New ArrayList
+	Private VmPlots As New List(Of clsGrapherSettings)
 	Private VmBusy As Boolean = False
 	Private Const CmColorBase As Integer = 46
 	Public Sub New()

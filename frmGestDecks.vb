@@ -18,6 +18,7 @@
 '| - renvoi cartes vers collection		   29/08/2010 |
 '| - gestion suppressions multiples		   09/05/2011 |
 '------------------------------------------------------
+Imports System.Collections.Generic
 Public Partial Class frmGestDecks
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
@@ -68,34 +69,34 @@ Public Partial Class frmGestDecks
 	'-----------------------------------
 	Dim VpDeckId As Integer = clsModule.GetDeckIndex(VpDeckName)
 	Dim VpQuestion As DialogResult = clsModule.ShowQuestion("Le deck " + VpDeckName + " va être supprimé." + vbCrLf + "Souhaitez-vous déplacer les cartes qu'il contenait vers la collection ?", MessageBoxButtons.YesNoCancel)
-	Dim VpContenu As Hashtable
+	Dim VpContenu As List(Of clsItemRecup)
 	Dim VpO As Object
 		If VpQuestion = System.Windows.Forms.DialogResult.Cancel Then Exit Sub
 		'Recopie avant suppression
 		If VpQuestion = System.Windows.Forms.DialogResult.Yes Then
 			'Récupération du contenu du deck
-			VpContenu = New Hashtable
-			VgDBCommand.CommandText = "Select EncNbr, Items From MyGames Where GameID = " + VpDeckId.ToString + ";"
+			VpContenu = New List(Of clsItemRecup)
+			VgDBCommand.CommandText = "Select EncNbr, Items, Foil From MyGames Where GameID = " + VpDeckId.ToString + ";"
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				While .Read
-					VpContenu.Add(.GetInt32(0), .GetInt32(1))
+					VpContenu.Add(New clsItemRecup(.GetInt32(0), .GetInt32(1), .GetBoolean(2)))
 				End While
 				.Close
 			End With
 			'Insertion ou mise à jour dans la collection
-			For Each VpEncNbr As Integer In VpContenu.Keys
-				VgDBCommand.CommandText = "Select Items From MyCollection Where EncNbr = " + VpEncNbr.ToString + ";"
+			For Each VpRecup As clsItemRecup In VpContenu
+				VgDBCommand.CommandText = "Select Items From MyCollection Where EncNbr = " + VpRecup.EncNbr.ToString + " And Foil = " + VpRecup.Foil.ToString + ";"
 				VpO = VgDBCommand.ExecuteScalar
 				'Cas 1 : la carte a ajouté existe déjà => mise à jour de la quantité somme
 				If Not VpO Is Nothing AndAlso CInt(VpO) > 0 Then
-					VgDBCommand.CommandText = "Update MyCollection Set Items = " + (CInt(VpO) + VpContenu.Item(VpEncNbr)).ToString + " Where EncNbr = " + VpEncNbr.ToString + ";"
+					VgDBCommand.CommandText = "Update MyCollection Set Items = " + (CInt(VpO) + VpRecup.Quant).ToString + " Where EncNbr = " + VpRecup.EncNbr.ToString + " And Foil = " + VpRecup.Foil.ToString + ";"
 				'Cas 2 : nouvelle carte => insertion
 				Else
-					VgDBCommand.CommandText = "Insert Into MyCollection(EncNbr, Items) Values (" + VpEncNbr.ToString + ", " + VpContenu.Item(VpEncNbr).ToString + ");"
+					VgDBCommand.CommandText = "Insert Into MyCollection(EncNbr, Items, Foil) Values (" + VpRecup.EncNbr.ToString + ", " + VpRecup.Quant.ToString + ", " + VpRecup.Foil.ToString + ");"
 				End If
 				VgDBCommand.ExecuteNonQuery
-			Next VpEncNbr
+			Next VpRecup
 		End If
 		VgDBCommand.CommandText = "Delete * From MyGames Where GameID = " + VpDeckId.ToString + ";"
 		VgDBCommand.ExecuteNonQuery
@@ -160,7 +161,7 @@ Public Partial Class frmGestDecks
 		End If
 	End Sub
 	Sub BtRemoveActivate(sender As Object, e As EventArgs)
-	Dim VpToRemove As New ArrayList
+	Dim VpToRemove As New List(Of String)
 		For Each VpI As Integer In Me.lstDecks.SelectedIndices	
 			Call Me.RemoveDeck(clsModule.GetDeckName(VpI + 1))
 			VpToRemove.Add(Me.lstDecks.Items.Item(VpI))		'liste temporaire car on ne peut pas toucher à la collection qu'on est en train d'énumérer
@@ -211,4 +212,29 @@ Public Partial Class frmGestDecks
 	Sub BtUpActivate(sender As Object, e As EventArgs)
 		Call Me.ManageSwap(-1)
 	End Sub
+End Class
+Public Class clsItemRecup
+	Private VmEncNbr As Long
+	Private VmQuant As Integer
+	Private VmFoil As Boolean
+	Public Sub New(VpEncNbr As Long, VpQuant As Integer, VpFoil As Boolean)
+		VmEncNbr = VpEncNbr
+		VmQuant = VpQuant
+		VmFoil = VpFoil
+	End Sub
+	Public ReadOnly Property EncNbr As Long
+		Get
+			Return VmEncNbr
+		End Get
+	End Property
+	Public ReadOnly Property Quant As Integer
+		Get
+			Return VmQuant
+		End Get
+	End Property
+	Public ReadOnly Property Foil As Boolean
+		Get
+			Return VmFoil
+		End Get
+	End Property
 End Class

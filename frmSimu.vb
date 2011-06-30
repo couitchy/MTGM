@@ -30,7 +30,7 @@ Public Partial Class frmSimu
 	Private VmRestrictionSQL As String
 	Private VmRestrictionTXT As String
 	Private VmSimuOut As StreamWriter
-	Private VmExpr As ArrayList
+	Private VmExpr As List(Of clsCorrelation)
 	#Region "Méthodes"
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
@@ -118,7 +118,7 @@ Public Partial Class frmSimu
 	Dim VpEspSimple As New clsEsperance(Me.txtN.Text)
 	Dim VpEspCumul As New clsEsperance(Me.txtN.Text)
 	Dim VpCombo() As String
-	Dim VpComboL As New ArrayList
+	Dim VpComboL As New List(Of String)
 	Dim VpStr As String
 		Me.prgSimu.Maximum = CInt(Me.txtN.Text)
 		Me.prgSimu.Value = 0
@@ -131,7 +131,7 @@ Public Partial Class frmSimu
 				VpComboL.Add(VpStr)
 			Next VpJ
 		Next VpI
-		VpCombo = VpComboL.ToArray(System.Type.GetType("System.String"))
+		VpCombo = VpComboL.ToArray
 		'Simulation des N parties
 		For VpI As Integer = 1 To CInt(Me.txtN.Text)
 			'Mélange le jeu
@@ -223,8 +223,8 @@ Public Partial Class frmSimu
 	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL, True, VpVerbose, VmSimuOut)	'Partie en simulation
 	Dim VpEspDeploy As New clsEsperance(Me.txtN2.Text)										'Résultats
 	Dim VpEspInvoc As New clsEsperance(Me.txtN2.Text)										'Références
-	Dim VpTmpInPlay As New ArrayList														'Support liste temporaire 1
-	Dim VpTmpInRound As New ArrayList														'Support liste temporaire 2
+	Dim VpTmpInPlay As New List(Of clsCard)													'Support liste temporaire 1
+	Dim VpTmpInRound As New List(Of clsCard)												'Support liste temporaire 2
 	Dim VpSomething As Boolean																'Au moins une action spéciale exécutée
 	Dim VpPrevious As Integer																'Réserve de manas au tour précédent
 		If VpPartie.CardsCount < clsModule.CgNMain Then Exit Sub
@@ -351,10 +351,10 @@ Public Partial Class frmSimu
 	'Essaie d'analyser le thème du jeu en cours
 	'------------------------------------------
 	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL, True)
-	Dim VpCards As ArrayList
+	Dim VpCards As List(Of clsCard)
 	Dim VpX() As String
 	Dim VpY() As String
-	Dim VpS As New ArrayList
+	Dim VpS As New List(Of clsCorrelation)
 	Dim VpSQL As String
 	Dim VpM As Single
 	Dim VpV As Single
@@ -427,15 +427,15 @@ Public Partial Class frmSimu
 		Next VpStr
 		VpSQL = VpSQL.Substring(0, VpSQL.Length - 4) + ") And "
 	End Sub
-	Private Sub FullCorrelation(VpS As ArrayList)
+	Private Sub FullCorrelation(VpS As List(Of clsCorrelation))
 	'------------------------------------------------------------------------------------------------------------------------
 	'Corrélation entre les séquences extraites lors de la détection précédente et les textes des cartes de la base de données
 	'------------------------------------------------------------------------------------------------------------------------
 	Dim VpX() As String
 	Dim VpSQL As String
 	Dim VpCorrCoeff As Single
-	Dim VpSuggest As New ArrayList
-	Dim VpAlready As New ArrayList
+	Dim VpSuggest As New List(Of clsCorrelation)
+	Dim VpAlready As New List(Of clsCorrelation)
 	Dim VpN As Integer
 	Dim VpSeq As String
 		'Croisement avec les cartes de la base de données restreintes aux critères sélectionnés par l'utilisateur
@@ -692,11 +692,11 @@ Public Partial Class frmSimu
 	End Sub
 	#End Region
 	#Region "Propriétés"
-	Public Property Expressions As ArrayList
+	Public Property Expressions As List(Of clsCorrelation)
 		Get
 			Return VmExpr
 		End Get
-		Set (VpExpr As ArrayList)
+		Set (VpExpr As List(Of clsCorrelation))
 			VmExpr = VpExpr
 		End Set
 	End Property
@@ -705,11 +705,11 @@ End Class
 Public Class clsPartie
 	Private VmVerbose As Boolean					'Verbosité
 	Private VmSimuOut As StreamWriter				'Sortie de verbosité
-	Private VmDeck As New ArrayList					'Bibliothèque
-	Private VmDeckCopy As New ArrayList				'Copie de la bibliothèque (restaurée à chaque nouvelle partie)
-	Private VmDrawn As New ArrayList				'Cartes piochées / en main
-	Private VmInPlay As New ArrayList				'Cartes en jeu (permanents)
-	Private VmInRound As New ArrayList				'Cartes en jeu pour le tour courant (éphémères)
+	Private VmDeck As New List(Of clsCard)			'Bibliothèque
+	Private VmDeckCopy As New List(Of clsCard)		'Copie de la bibliothèque (restaurée à chaque nouvelle partie)
+	Private VmDrawn As New List(Of clsCard)			'Cartes piochées / en main
+	Private VmInPlay As New List(Of clsCard)		'Cartes en jeu (permanents)
+	Private VmInRound As New List(Of clsCard)		'Cartes en jeu pour le tour courant (éphémères)
 	Private VmReserve As clsManas					'Réserve de manas pour le tour courant
 	Private VmLives As Integer = clsModule.CgNLives	'Nombre de points de vie
 	Public Sub New(VpSource As String, VpRestriction As String, Optional VpGestDeploy As Boolean = False, Optional VpVerbose As Boolean = False, Optional VpSimuOut As StreamWriter = Nothing)
@@ -755,16 +755,16 @@ Public Class clsPartie
 	Dim VpRnd2 As New Random(VpRndSeed * Now.Second / 2)
 		VmDrawn.Clear
 		VmInPlay.Clear
-		VmDeck = VmDeckCopy.Clone
+		VmDeck = New List(Of clsCard)(VmDeckCopy)
 		For VpI As Integer = 1 To clsModule.CgShuffleDepth * Me.CardsCount
-			Me.DeckSwap(VpRnd1.NextDouble * (Me.CardsCount - 1), VpRnd2.NextDouble * (Me.CardsCount - 1))
+			Call Me.DeckSwap(VpRnd1.NextDouble * (Me.CardsCount - 1), VpRnd2.NextDouble * (Me.CardsCount - 1))
 		Next VpI
 	End Sub
 	Public Sub UntapAll
 	'---------------------------
 	'Désengage toutes les cartes
 	'---------------------------
-		For Each VpCard As clsCard In Me.VmDeckCopy		'Le faire sur VmDeckCopy permet de n'oublier aucune carte
+		For Each VpCard As clsCard In VmDeckCopy		'Le faire sur VmDeckCopy permet de n'oublier aucune carte
 			If Not (VpCard.IsSpecial AndAlso VpCard.Speciality.DoesntUntap) Then
 				VpCard.Tapped = False
 			End If
@@ -774,7 +774,7 @@ Public Class clsPartie
 	'--------------------------
 	'Démarque toutes les cartes
 	'--------------------------
-		For Each VpCard As clsCard In Me.VmDeckCopy		'Le faire sur VmDeckCopy permet de n'oublier aucune carte
+		For Each VpCard As clsCard In VmDeckCopy		'Le faire sur VmDeckCopy permet de n'oublier aucune carte
 			VpCard.Tagged = False
 		Next VpCard
 	End Sub
@@ -814,15 +814,15 @@ Public Class clsPartie
 	'-------------------------------------------------------------------------------
 	'Renvoie vrai si le deck contient la carte dont le nom est spécifié en paramètre
 	'-------------------------------------------------------------------------------
-		Return Me.IsInList(VpCardName, Me.VmDeckCopy)
+		Return Me.IsInList(VpCardName, VmDeckCopy)
 	End Function
 	Public Function IsInPlay(VpCardName As String) As Boolean
 	'--------------------------------------------------------------------------------------------
 	'Renvoie vrai si le champ de bataille contient la carte dont le nom est spécifié en paramètre
 	'--------------------------------------------------------------------------------------------
-		Return Me.IsInList(VpCardName, Me.VmInPlay)
+		Return Me.IsInList(VpCardName, VmInPlay)
 	End Function
-	Private Function IsInList(VpCardName As String, VpList As ArrayList) As Boolean
+	Private Function IsInList(VpCardName As String, VpList As List(Of clsCard)) As Boolean
 		For Each VpCard As clsCard In VpList
 			If VpCard.CardName = VpCardName Then
 				Return True
@@ -834,7 +834,7 @@ Public Class clsPartie
 	'------------------------------------
 	'Préparation d'un nouveau tour de jeu
 	'------------------------------------
-		Me.VmInRound.Clear
+		VmInRound.Clear
 		VmReserve = New clsManas
 		Call Me.FollowRound
 	End Sub
@@ -855,18 +855,18 @@ Public Class clsPartie
 	'Pose en jeu un permanent de la main
 	'-----------------------------------
 		If Not VpCard Is Nothing Then
-			Me.VmInPlay.Add(VpCard)
-			Me.VmDrawn.Remove(VpCard)
+			VmInPlay.Add(VpCard)
+			VmDrawn.Remove(VpCard)
 		End If
 	End Sub
 	Public Sub AddToInRound(VpCard As clsCard)
 	'----------------------------------
 	'Pose en jeu un éphémère de la main
 	'----------------------------------
-		Me.VmInRound.Add(VpCard)
-		Me.VmDrawn.Remove(VpCard)
+		VmInRound.Add(VpCard)
+		VmDrawn.Remove(VpCard)
 	End Sub
-	Public Sub CommitChange(VpSrc As ArrayList, VpDest As ArrayList, Optional VpRemove As Boolean = False, Optional VpRemoveDrawn As Boolean = True)
+	Public Sub CommitChange(VpSrc As List(Of clsCard), VpDest As List(Of clsCard), Optional VpRemove As Boolean = False, Optional VpRemoveDrawn As Boolean = True)
 	'--------------------------------------------------------------------------------------------------
 	'Synthèse des deux routines précédentes utile pour ne pas perturber lors de l'énumération des items
 	'--------------------------------------------------------------------------------------------------
@@ -877,26 +877,26 @@ Public Class clsPartie
 				VpDest.Add(VpCard)
 			End If
 			If VpRemoveDrawn Then
-				Me.VmDrawn.Remove(VpCard)
+				VmDrawn.Remove(VpCard)
 			End If
 		Next VpCard
 	End Sub
-	Public Function DoSpecialEffects(VpSrc As ArrayList) As Boolean
+	Public Function DoSpecialEffects(VpSrc As List(Of clsCard)) As Boolean
 	'------------------------------------------------------------------------------------------------------------------------------------------------------------
 	'Si des cartes possèdent des propriétés particulières spécifiées par l'utilisateur permettant de générer directement ou indirectement du mana, l'effectue ici
 	'(renvoie vrai si un effet spécial a effectivement été utilisé)
 	'------------------------------------------------------------------------------------------------------------------------------------------------------------
-	Dim VpSomething As Boolean = False		'Passe à vrai si au moins un effet a été utilisé
-	Dim VpNext As Boolean = False			'Passe à vrai si l'effet courant ne peut pas être utilisé
-	Dim VpAbort As Boolean = False			'Passe à vrai si l'effet a été avorté (cible illégale etc...) auquel cas il faut annuler l'effort
-	Dim VpManasInvoc As clsManas = Nothing	'Manas nécessaires pour activer l'effet spécial
-	Dim VpMyTarget As clsCard = Nothing		'Carte support
-	Dim VpInt As Integer					'Entier support
-	Dim VpStrs() As String					'Chaîne support
-	Dim VpTmpInPlay1 As New ArrayList		'Liste support ajout
-	Dim VpTmpInPlay2 As New ArrayList		'Liste support suppression
-	Dim VpTmpInPlay3 As New ArrayList		'Liste support défausse
-	Dim VpTmpInPlay4 As New ArrayList		'Liste support pioche
+	Dim VpSomething As Boolean = False			'Passe à vrai si au moins un effet a été utilisé
+	Dim VpNext As Boolean = False				'Passe à vrai si l'effet courant ne peut pas être utilisé
+	Dim VpAbort As Boolean = False				'Passe à vrai si l'effet a été avorté (cible illégale etc...) auquel cas il faut annuler l'effort
+	Dim VpManasInvoc As clsManas = Nothing		'Manas nécessaires pour activer l'effet spécial
+	Dim VpMyTarget As clsCard = Nothing			'Carte support
+	Dim VpInt As Integer						'Entier support
+	Dim VpStrs() As String						'Chaîne support
+	Dim VpTmpInPlay1 As New List(Of clsCard)	'Liste support ajout
+	Dim VpTmpInPlay2 As New List(Of clsCard)	'Liste support suppression
+	Dim VpTmpInPlay3 As New List(Of clsCard)	'Liste support défausse
+	Dim VpTmpInPlay4 As New List(Of clsCard)	'Liste support pioche
 		For Each VpCard As clsCard In VpSrc
 			If VpCard.IsSpecial Then
 				VpNext = False
@@ -1217,7 +1217,7 @@ Public Class clsPartie
 	'-------------------------------------------------
 	'Renvoie vrai si la cartes spécifiée a été piochée
 	'-------------------------------------------------
-		For Each VpCard As clsCard In Me.VmDrawn
+		For Each VpCard As clsCard In VmDrawn
 			If VpCard.CardName = VpName And Not VpCard.Tagged Then
 				VpCard.Tagged = VpComboCare
 				Return True
@@ -1234,7 +1234,7 @@ Public Class clsPartie
 		VmDeck.Item(VpI) = VmDeck.Item(VpJ)
 		VmDeck.Item(VpJ) = VpTmp
 	End Sub
-	Public Function ManasPotentielIn(VpList As ArrayList) As Integer
+	Public Function ManasPotentielIn(VpList As List(Of clsCard)) As Integer
 	'-----------------------------------------------------------------------------
 	'Retourne le nombre de manas potentiellement générables avec les cartes en jeu
 	'-----------------------------------------------------------------------------
@@ -1246,7 +1246,7 @@ Public Class clsPartie
 		Next VpCard
 		Return VpPot
 	End Function
-	Public Function GetMissingCost(VpList As ArrayList, VpPrev As Integer) As Integer
+	Public Function GetMissingCost(VpList As List(Of clsCard), VpPrev As Integer) As Integer
 	'-----------------------------------------------------------------
 	'Retourne le nombre de manas dont on manque pour le tour précédent
 	'-----------------------------------------------------------------
@@ -1262,11 +1262,11 @@ Public Class clsPartie
 		Next VpI
 		Return Math.Max(VpSum - VpPrev, 0)
 	End Function
-	Public Function GetDistinctCards As ArrayList
+	Public Function GetDistinctCards As List(Of clsCard)
 	'-----------------------------------------------------
 	'Retourne une liste des cartes distinctes dans le deck
 	'-----------------------------------------------------
-	Dim VpDistincts As New ArrayList
+	Dim VpDistincts As New List(Of clsCard)
 	Dim VpAlready As Boolean
 		For Each VpCard As clsCard In Me.CardsInFullDeck
 			VpAlready = False
@@ -1284,37 +1284,37 @@ Public Class clsPartie
 	End Function
 	Public ReadOnly Property CardsCount As Integer
 		Get
-			Return Me.VmDeckCopy.Count
+			Return VmDeckCopy.Count
 		End Get
 	End Property
-	Public ReadOnly Property CardsDrawn As ArrayList
+	Public ReadOnly Property CardsDrawn As List(Of clsCard)
 		Get
-			Return Me.VmDrawn
+			Return VmDrawn
 		End Get
 	End Property
-	Public ReadOnly Property CardsInDeck As ArrayList
+	Public ReadOnly Property CardsInDeck As List(Of clsCard)
 		Get
-			Return Me.VmDeck
+			Return VmDeck
 		End Get
 	End Property
-	Public ReadOnly Property CardsInFullDeck As ArrayList
+	Public ReadOnly Property CardsInFullDeck As List(Of clsCard)
 		Get
-			Return Me.VmDeckCopy
+			Return VmDeckCopy
 		End Get
 	End Property
-	Public ReadOnly Property CardsInPlay As ArrayList
+	Public ReadOnly Property CardsInPlay As List(Of clsCard)
 		Get
-			Return Me.VmInPlay
+			Return VmInPlay
 		End Get
 	End Property
-	Public ReadOnly Property CardsInRound As ArrayList
+	Public ReadOnly Property CardsInRound As List(Of clsCard)
 		Get
-			Return Me.VmInRound
+			Return VmInRound
 		End Get
 	End Property
 	Public ReadOnly Property Reserve As clsManas
 		Get
-			Return Me.VmReserve
+			Return VmReserve
 		End Get
 	End Property
 End Class
@@ -1366,42 +1366,42 @@ Public Class clsCard
 	End Function
 	Public ReadOnly Property CardName As String
 		Get
-			Return Me.VmCardName
+			Return VmCardName
 		End Get
 	End Property
 	Public ReadOnly Property CardNameFR As String
 		Get
-			Return Me.VmCardNameFR
+			Return VmCardNameFR
 		End Get
 	End Property
 	Public ReadOnly Property CardType As String
 		Get
-			Return Me.VmCardType
+			Return VmCardType
 		End Get
 	End Property
 	Public ReadOnly Property ManaAble As Boolean
 		Get
-			Return Not ( Me.VmManasGen Is Nothing )
+			Return Not ( VmManasGen Is Nothing )
 		End Get
 	End Property
 	Public ReadOnly Property ManasPot As Integer
 		Get
-			Return Me.VmManasGen.Potentiel
+			Return VmManasGen.Potentiel
 		End Get
 	End Property
 	Public ReadOnly Property ManasGen As clsManas
 		Get
-			Return Me.VmManasGen
+			Return VmManasGen
 		End Get
 	End Property
 	Public ReadOnly Property ManasInvoc As clsManas
 		Get
-			Return Me.VmManasInvoc
+			Return VmManasInvoc
 		End Get
 	End Property
 	Public ReadOnly Property IsALand As Boolean
 		Get
-			Return Me.VmCardType = "L"
+			Return VmCardType = "L"
 		End Get
 	End Property
 	Public Property Tapped As Boolean
@@ -1508,7 +1508,7 @@ Public Class clsCorrelation
 			End If
 		End If
 	End Function
-	Public Shared Function GetMean(VpS As ArrayList) As Single
+	Public Shared Function GetMean(VpS As List(Of clsCorrelation)) As Single
 	'----------------------------------------------------
 	'Retourne la longueur moyenne des séquences non vides
 	'----------------------------------------------------
@@ -1522,7 +1522,7 @@ Public Class clsCorrelation
 		Next VpCorr
 		Return VpTot / VpN
 	End Function
-	Public Shared Function MyContains(VpS As ArrayList, VpCard As String) As Boolean
+	Public Shared Function MyContains(VpS As List(Of clsCorrelation), VpCard As String) As Boolean
 	'--------------------------------------------------------------------------------------------------------------------------
 	'Retourne vrai si la carte passée en paramètre est référencée dans au moins un des éléments de la liste passée en paramètre
 	'--------------------------------------------------------------------------------------------------------------------------
@@ -1550,10 +1550,8 @@ Public Class clsCorrelation
 	End Property
 End Class
 Public Class clsCorrelationComparer
-	Implements IComparer
-	Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
-	Dim VpS1 As clsCorrelation = x
-	Dim VpS2 As clsCorrelation = y
-		Return VpS2.Seq.Length - VpS1.Seq.Length
+	Implements IComparer(Of clsCorrelation)
+	Public Function Compare(ByVal x As clsCorrelation, ByVal y As clsCorrelation) As Integer Implements IComparer(Of clsCorrelation).Compare
+		Return x.Seq.Length - y.Seq.Length
 	End Function
 End Class

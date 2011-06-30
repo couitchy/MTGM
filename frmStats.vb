@@ -39,7 +39,7 @@ Public Partial Class frmStats
 	'Récupère les différentes valeurs possibles du critère demandé ainsi que le nombre de cartes y correspondant
 	'-----------------------------------------------------------------------------------------------------------
 	Dim VpSQL As String
-	Dim VpValues As New ArrayList
+	Dim VpValues As New List(Of String)
 		'Préparation de la grille
 		With Me.grdDetails
 			'Nettoyage
@@ -183,7 +183,7 @@ Public Partial Class frmStats
 	'------------------------------------------------------------------------------------------------------------------------
 	Dim VpGranted As Boolean = True
 	Dim VpSQL As String
-	Dim VpControl1Item As New ArrayList
+	Dim VpControl1Item As New List(Of String)
 		VpSQL = "Select " + VpTournoiType + ", T1r, Items, Card.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where "
 		VpSQL = VpSQL + VmRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
@@ -451,8 +451,8 @@ Public Partial Class frmStats
 	End Sub
 End Class
 Public Class clsNumComparer
-	Implements IComparer
-	Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
+	Implements IComparer(Of String)
+	Public Function Compare(ByVal x As String, ByVal y As String) As Integer Implements IComparer(Of String).Compare
 		Return CInt(x) - CInt(y)
 	End Function
 End Class

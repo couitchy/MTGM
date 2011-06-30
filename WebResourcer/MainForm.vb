@@ -180,23 +180,28 @@ Public Partial Class MainForm
 		Next VpI
 		Return 1
 	End Function
-	Private Function BuildListeFromDB As ArrayList
-	Dim VpCards As New ArrayList
+	Private Function BuildListeFromDB(Optional VpStartAfter As String = "") As List(Of String)
+	Dim VpCards As New List(Of String)
+	Dim VpCanAdd As Boolean = ( VpStartAfter = "" )
 		Me.prgAvance.Style = ProgressBarStyle.Marquee
 		VmDBCommand.CommandText = "Select Distinct Title From Card Order By Title Asc;"
 		VmDBReader = VmDBCommand.ExecuteReader
 		With VmDBReader
-			While .Read
-				VpCards.Add(.GetString(0))
+			While .Read				
+				If VpCanAdd Then
+					VpCards.Add(.GetString(0))
+				Else
+					VpCanAdd = ( .GetString(0) = VpStartAfter )
+				End If
 				Application.DoEvents
 			End While
 			.Close
 		End With
 		Return VpCards
 	End Function
-	Private Function BuildListeFromFile As ArrayList
+	Private Function BuildListeFromFile As List(Of String)
 	Dim VpCards As New StreamReader(Me.dlgOpen4.FileName)
-	Dim VpListe As New ArrayList
+	Dim VpListe As New List(Of String)
 		Me.prgAvance.Style = ProgressBarStyle.Marquee
 		While Not VpCards.EndOfStream
 			VpListe.Add(VpCards.ReadLine)
@@ -209,18 +214,40 @@ Public Partial Class MainForm
 	'------------------------------------------------
 	'Mise à jour de la liste des prix depuis Internet
 	'------------------------------------------------
-	Dim VpCards As ArrayList
+	Dim VpCards As List(Of String)
 	Dim VpOut As StreamWriter
 	Dim VpPrices As String
+	Dim VpAppend As Boolean
+	Dim VpAlready() As String
+	Dim VpLast As String = ""
 		Me.dlgSave.FileName = ""
 		Me.dlgSave.ShowDialog
 		If Me.dlgSave.FileName <> "" Then
-			VpOut = New StreamWriter(Me.dlgSave.FileName)
-			Call Me.AddToLog("La récupération des prix a commencé...", eLogType.Information, True)
-			'Inscription de la date
-			VpOut.WriteLine(Now.ToShortDateString)
-			'Récupère le nom des cartes
-			VpCards = Me.BuildListeFromDB
+			VpAppend = File.Exists(Me.dlgSave.FileName)			
+			If VpAppend Then
+				'Si le fichier existe déjà, regarde la dernière carte qui a été traitée
+				VpAlready = File.ReadAllLines(Me.dlgSave.FileName)
+				If VpAlready.Length > 2 Then
+					If VpAlready(VpAlready.Length - 1).Contains("#") Then
+						VpLast = VpAlready(VpAlready.Length - 1)
+					Else
+						VpLast = VpAlready(VpAlready.Length - 2)
+					End If
+					VpLast = VpLast.Substring(0, VpLast.IndexOf("#"))
+				Else
+					VpAppend = False
+				End If
+			End If
+			VpOut = New StreamWriter(Me.dlgSave.FileName, VpAppend)
+			If VpAppend Then
+				Call Me.AddToLog("La récupération des prix se poursuit...", eLogType.Information, True)	
+			Else
+				Call Me.AddToLog("La récupération des prix a commencé...", eLogType.Information, True)
+				'Inscription de la date
+				VpOut.WriteLine(Now.ToShortDateString)
+			End If
+			'Récupère la liste des cartes
+			VpCards = Me.BuildListeFromDB(VpLast)
 			'Récupère le prix pour chaque carte
 			Me.prgAvance.Maximum = VpCards.Count
 			Me.prgAvance.Value = 0
@@ -570,7 +597,7 @@ Public Partial Class MainForm
 	'---------------------------------------------------------------
 	Dim VpOut As StreamWriter
 	Dim VpStr As String
-	Dim VpListe As ArrayList
+	Dim VpListe As List(Of String)
 		Me.dlgOpen4.FileName = ""
 		Me.dlgOpen4.ShowDialog
 		If Me.dlgOpen4.FileName <> "" Then
@@ -680,7 +707,7 @@ Public Partial Class MainForm
 	'Mise à jour des autorisations des cartes en tournois
 	'----------------------------------------------------
 	Dim VpOut As StreamWriter
-	Dim VpCards As ArrayList
+	Dim VpCards As List(Of String)
 	Dim VpAut As String
 		Me.dlgSave.FileName = ""
 		Me.dlgSave.ShowDialog
@@ -806,9 +833,9 @@ Public Partial Class MainForm
 			Case "MB"
 				Return "mirrodinbesieged#" + VpStr
 			Case "DS"
-				Return "darksteel#" + VpStr				
+				Return "darksteel#" + VpStr
 			Case "PC"
-				Return "planarchaos#" + VpStr		
+				Return "planarchaos#" + VpStr
 			Case "NP"
 				Return "newphyrexia#" + VpStr
 			Case Else
@@ -904,7 +931,7 @@ Public Partial Class MainForm
 	'----------------------------------------------------------------------------
 	'Télécharge les images  associées aux cartes listées dans le fichier spécifié
 	'----------------------------------------------------------------------------
-	Dim VpListe As ArrayList
+	Dim VpListe As List(Of String)
 		Me.dlgOpen4.FileName = ""
 		Me.dlgOpen4.ShowDialog
 		If Me.dlgOpen4.FileName <> "" Then

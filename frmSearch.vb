@@ -27,7 +27,7 @@ Public Partial Class frmSearch
 	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
 	Private VmSource As String
 	Private VmRestriction As String
-	Private VmPrevSearchs As New ArrayList
+	Private VmPrevSearchs As New List(Of String)
 	Private VmKeyChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
@@ -42,7 +42,7 @@ Public Partial Class frmSearch
 	'Gère le cas d'une recherche avec plusieurs mots
 	'-----------------------------------------------
 	Dim VpValues() As String
-	Dim VpBlocs As New ArrayList
+	Dim VpBlocs As New List(Of String)
 	Dim VpQuery As String = ""
 	Dim VpStart As Boolean = False
 	Dim VpIndex As Integer

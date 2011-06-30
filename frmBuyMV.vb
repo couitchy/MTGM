@@ -22,8 +22,8 @@ Imports System.IO
 Public Partial Class frmBuyMV
 	Private Const CmURL As String = "http://magic-ville.fr/fr/"
 	Private VmIsComplete As Boolean = False
-	Private VmToBuy As New ArrayList
-	Private VmToSell As New ArrayList	
+	Private VmToBuy As New List(Of clsLocalCard)
+	Private VmToSell As New List(Of clsMVCard)	
 	Public Sub New()
 		Me.InitializeComponent()
 	End Sub
@@ -32,14 +32,14 @@ Public Partial Class frmBuyMV
 	'Incrémente la quantité du panier pour la carte passée en paramètre
 	'------------------------------------------------------------------
 		'Carte déjà mise au panier
-		For Each VpCard As clsLocalCard In Me.VmToBuy
+		For Each VpCard As clsLocalCard In VmToBuy
 			If VpCard.Name = VpName Then
 				VpCard.Quantite = VpCard.Quantite + 1
 				Return
 			End If
 		Next
 		'Nouvelle carte
-		Me.VmToBuy.Add(New clsLocalCard(VpName))
+		VmToBuy.Add(New clsLocalCard(VpName))
 	End Sub
 	Public Sub AddToBasket(VpName As String, VpQuant As Integer)
 		For VpI As Integer = 1 To VpQuant
@@ -51,14 +51,14 @@ Public Partial Class frmBuyMV
 	'Navigue sur la page passée en paramètre en respectant le délai d'expiration
 	'---------------------------------------------------------------------------
 	Dim VpStart As Date = Now
-		Me.VmIsComplete = False
+		VmIsComplete = False
 		If VpURL <> "" Then
 			Me.wbMV.Navigate(VpURL)		
 		End If
-		While Not Me.VmIsComplete
+		While Not VmIsComplete
 			If Now.Subtract(VpStart).TotalSeconds > clsModule.CgTimeOut Then
 				Me.wbMV.Stop
-				Me.VmIsComplete = True
+				VmIsComplete = True
 			End If
 			Application.DoEvents
 		End While
@@ -67,7 +67,7 @@ Public Partial Class frmBuyMV
 	'--------------------------------------------------------
 	'Supprime les entrées de la liste dont la quantité vaut 0
 	'--------------------------------------------------------
-	Dim VpToRemove As New ArrayList
+	Dim VpToRemove As New List(Of clsMVCard)
 		'Récupération des éléments à supprimer
 		For Each VpProposition As clsMVCard In VmToSell
 			If VpProposition.Quantite = 0 Then
@@ -126,7 +126,7 @@ Public Partial Class frmBuyMV
 				VpCurId = Val(VpElement.Name.Substring(VpElement.Name.IndexOf("[") + 1))
 				If VpCurId <> VpLastId Then
 					VpProposition = New clsMVCard(VpCard)
-					Me.VmToSell.Add(VpProposition)
+					VmToSell.Add(VpProposition)
 					VpLastId = VpCurId
 				End If
 				With VpProposition
@@ -147,13 +147,13 @@ Public Partial Class frmBuyMV
 			End If
 		Next VpElement
 	End Sub
-	Private Function SortBySellers(VpToSell As ArrayList) As ArrayList
+	Private Function SortBySellers(VpToSell As List(Of clsMVCard)) As ArrayList
 	'------------------------------------------------------------------------
-	'Retourne une arraylist d'arraylist des cartes vendues par chaque vendeur
+	'Retourne une List(Of ) d'List(Of ) des cartes vendues par chaque vendeur
 	'------------------------------------------------------------------------
 	Dim VpTable As New ArrayList
-	Dim VpSellers As New ArrayList
-	Dim VpL As ArrayList
+	Dim VpSellers As New List(Of String)
+	Dim VpL As List(Of clsMVCard)
 		'Identifie les vendeurs en présence
 		For Each VpCard As clsMVCard In VpToSell
 			If Not VpSellers.Contains(VpCard.Vendeur) Then
@@ -162,7 +162,7 @@ Public Partial Class frmBuyMV
 		Next VpCard
 		'Pour chaque vendeur
 		For Each VpSeller As String In VpSellers
-			VpL = New ArrayList
+			VpL = New List(Of clsMVCard)
 			'Lui associe les cartes qu'il vend
 			For Each VpCard As clsMVCard In VpToSell
 				If VpCard.Vendeur = VpSeller Then
@@ -174,17 +174,17 @@ Public Partial Class frmBuyMV
 			VpTable.Add(VpL)
 		Next VpSeller
 		'Tri selon le critère sélectionné par l'utilisateur
-		VpTable.Sort(New clsSellerComparer(Me.VmToBuy, Me.pnlGestion.Tag))
+		VpTable.Sort(New clsSellerComparer(VmToBuy, Me.pnlGestion.Tag))
 		Return VpTable
 	End Function	
 	Private Function CalcTransactions As String
 	'--------------------------------------------------------------------------------------------------
 	'Détermine les transactions nécessaires pour acheter toutes les cartes désirées de manière optimale
 	'--------------------------------------------------------------------------------------------------
-	Dim VpToBuy As ArrayList = clsModule.MyClone(Me.VmToBuy)
-	Dim VpToSell As ArrayList = clsModule.MyClone2(Me.VmToSell)
-	Dim VpToRemove As New ArrayList
-	Dim VpToRemove2 As New ArrayList
+	Dim VpToBuy As List(Of clsLocalCard) = clsModule.MyClone(VmToBuy)
+	Dim VpToSell As List(Of clsMVCard) = clsModule.MyClone2(VmToSell)
+	Dim VpToRemove As New List(Of clsLocalCard)
+	Dim VpToRemove2 As New List(Of clsMVCard)
 	Dim VpTable As ArrayList
 	Dim VpN As Integer
 	Dim VpStr As String = clsModule.CgTransactionsMV + vbCrLf
@@ -263,14 +263,14 @@ Public Partial Class frmBuyMV
 				Me.grdBasket(0, 4) = New Cells.ColumnHeader("Quantité")
 				Me.grdBasket(0, 5) = New Cells.ColumnHeader("Prix unitaire")
 				'Remplissage offres
-				For VpI As Integer = 0 To Me.VmToSell.Count - 1
+				For VpI As Integer = 0 To VmToSell.Count - 1
 					.Rows.Insert(VpI + 1)
-					Me.grdBasket(VpI + 1, 0) = New Cells.Cell(Me.VmToSell.Item(VpI).Name)
-					Me.grdBasket(VpI + 1, 1) = New Cells.Cell(Me.VmToSell.Item(VpI).Vendeur)
-					Me.grdBasket(VpI + 1, 2) = New Cells.Cell(Me.VmToSell.Item(VpI).Edition)
-					Me.grdBasket(VpI + 1, 3) = New Cells.Cell(Me.VmToSell.Item(VpI).Etat)
-					Me.grdBasket(VpI + 1, 4) = New Cells.Cell(Me.VmToSell.Item(VpI).Quantite)
-					Me.grdBasket(VpI + 1, 5) = New Cells.Cell(Me.VmToSell.Item(VpI).Prix.ToString + " €")
+					Me.grdBasket(VpI + 1, 0) = New Cells.Cell(VmToSell.Item(VpI).Name)
+					Me.grdBasket(VpI + 1, 1) = New Cells.Cell(VmToSell.Item(VpI).Vendeur)
+					Me.grdBasket(VpI + 1, 2) = New Cells.Cell(VmToSell.Item(VpI).Edition)
+					Me.grdBasket(VpI + 1, 3) = New Cells.Cell(VmToSell.Item(VpI).Etat)
+					Me.grdBasket(VpI + 1, 4) = New Cells.Cell(VmToSell.Item(VpI).Quantite)
+					Me.grdBasket(VpI + 1, 5) = New Cells.Cell(VmToSell.Item(VpI).Prix.ToString + " €")
 				Next VpI
 				.AutoSize
 			End With			
@@ -292,7 +292,7 @@ Public Partial Class frmBuyMV
 				Me.grdBasket(0, 0) = New Cells.ColumnHeader("Nom de la carte")
 				Me.grdBasket(0, 1) = New Cells.ColumnHeader("Quantité")
 				'Remplissage panier
-				For Each VpCard As clsLocalCard In Me.VmToBuy
+				For Each VpCard As clsLocalCard In VmToBuy
 					Call Me.InsertRow(VpCard.Name, VpCard.Quantite, VpCellModel)
 				Next VpCard
 				.AutoSize
@@ -304,7 +304,7 @@ Public Partial Class frmBuyMV
 	'Sauvegarde du panier
 	'--------------------
 	Dim VpBasket As New StreamWriter(VpFile)
-		For Each VpCard As clsLocalCard In Me.VmToBuy
+		For Each VpCard As clsLocalCard In VmToBuy
 			VpBasket.WriteLine(VpCard.Name + "#" + VpCard.Quantite.ToString)
 		Next VpCard
 		VpBasket.Close
@@ -327,12 +327,12 @@ Public Partial Class frmBuyMV
 	Dim VpQ As Short
 		If Not VsClearing Then
 			VsClearing = True
-			Me.VmToBuy.Clear
-			'Mise à jour de la quantité dans la grille et dans l'arraylist
+			VmToBuy.Clear
+			'Mise à jour de la quantité dans la grille et dans l'List(Of )
 			For VpI As Integer = 1 To Me.grdBasket.RowsCount - 1
 				VpQ = Me.grdBasket(VpI, 1).Value
 				If VpQ > 0 Then
-					Me.VmToBuy.Add(New clsLocalCard(Me.grdBasket(VpI, 0).Value, VpQ))
+					VmToBuy.Add(New clsLocalCard(Me.grdBasket(VpI, 0).Value, VpQ))
 				End If
 			Next VpI
 			Call Me.LoadGrid(clsModule.eBasketMode.Local)
@@ -349,11 +349,11 @@ Public Partial Class frmBuyMV
 		Me.cmdRefresh.Visible = False
 		Me.cmdCancelMV.Tag = False
 		Me.cmdCancelMV.Visible = True
-		Me.prgRefresh.Maximum = Me.VmToBuy.Count
+		Me.prgRefresh.Maximum = VmToBuy.Count
 		Me.prgRefresh.Value = 0
 		'Récupère les informations pour chaque carte
 		Try
-			For Each VpCard As clsLocalCard In Me.VmToBuy
+			For Each VpCard As clsLocalCard In VmToBuy
 				If Me.cmdCancelMV.Tag = True Then Exit For
 				Call Me.DownloadMVInfos(VpCard.Name)
 				Me.prgRefresh.Increment(1)
@@ -368,7 +368,7 @@ Public Partial Class frmBuyMV
 		Me.cmdCancelMV.Visible = False
 	End Sub	
 	Sub WbMVDocumentCompleted(ByVal sender As Object, ByVal e As WebBrowserDocumentCompletedEventArgs)
-		Me.VmIsComplete = True
+		VmIsComplete = True
 	End Sub
 	Sub CmdCalcClick(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpStr As String = Me.CalcTransactions
@@ -529,14 +529,14 @@ Public Class clsMVCard
 End Class
 Public Class clsSellerComparer 
 	Implements IComparer
-	Private VmToBuy As ArrayList	
+	Private VmToBuy As List(Of clsLocalCard)	
 	Private VmCriterion As clsModule.eSortCriteria
-	Private Function GetCommon(VpToSell As ArrayList) As ArrayList
+	Private Function GetCommon(VpToSell As List(Of clsMVCard)) As List(Of clsMVCard)
 	'--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	'Retourne les cartes communes entre les cartes à acheter et celles à vendre dont la liste est passée en paramètre en privilégiant le critère choisi par l'utilisateur
 	'--------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	Dim VpCommon As New ArrayList
-	Dim VpToBuy As ArrayList = clsModule.MyClone(Me.VmToBuy)
+	Dim VpCommon As New List(Of clsMVCard)
+	Dim VpToBuy As List(Of clsLocalCard) = clsModule.MyClone(VmToBuy)
 	Dim VpN As Integer
 		'Détermine les cartes en commun
 		For Each VpMVCard As clsMVCard In VpToSell
@@ -550,7 +550,7 @@ Public Class clsSellerComparer
 		Next VpMVCard
 		Return VpCommon
 	End Function
-	Private Function GetNCommon(VpToSell As ArrayList) As Integer
+	Private Function GetNCommon(VpToSell As List(Of clsMVCard)) As Integer
 	'--------------------------------------------------------------------------------------------------------------------------
 	'Retourne le nombre de cartes en commun entre les cartes à acheter et celles à vendre dont la liste est passée en paramètre
 	'--------------------------------------------------------------------------------------------------------------------------
@@ -560,7 +560,7 @@ Public Class clsSellerComparer
 		Next VpCard
 		Return VpN
 	End Function	
-	Private Function PackPrice(VpToSell As ArrayList) As Single
+	Private Function PackPrice(VpToSell As List(Of clsMVCard)) As Single
 	'--------------------------------------------------------------------------------------------------------------------------
 	'Retourne le prix total des cartes communes entre les cartes désirées et celles proposées dans la liste passée en paramètre
 	'- à minimiser -
@@ -571,7 +571,7 @@ Public Class clsSellerComparer
 		Next VpCard	
 		Return VpP
 	End Function
-	Private Function PackQuality(VpToSell As ArrayList) As Integer
+	Private Function PackQuality(VpToSell As List(Of clsMVCard)) As Integer
 	'-------------------------------------------------------------------------------------------------------------------------
 	'Retourne l'état total des cartes communes entre les cartes désirées et celles proposées dans la liste passée en paramètre
 	'- à minimiser (car Mint->0) -
@@ -598,7 +598,7 @@ Public Class clsSellerComparer
 		ElseIf VpN1 < VpN2 Then
 			Return 1
 		Else
-			Select Case Me.VmCriterion
+			Select Case VmCriterion
 				Case clsModule.eSortCriteria.Price
 					Return If((Me.PackPrice(x) - Me.PackPrice(y)) < 0, -1, 1)
 				Case clsModule.eSortCriteria.Quality
@@ -608,21 +608,21 @@ Public Class clsSellerComparer
 			End Select
 		End If
 	End Function	
-	Public Sub New(VpToBuy As ArrayList, VpCriterion As clsModule.eSortCriteria)
+	Public Sub New(VpToBuy As List(Of clsLocalCard), VpCriterion As clsModule.eSortCriteria)
 		VmToBuy = VpToBuy
 		VmCriterion = VpCriterion
 	End Sub
 End Class
 Public Class clsMVCardComparer
-	Implements IComparer	
+	Implements IComparer(Of clsMVCard)
 	Private VmCriterion As clsModule.eSortCriteria	
-	Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
+	Public Function Compare(ByVal x As clsMVCard, ByVal y As clsMVCard) As Integer Implements IComparer(Of clsMVCard).Compare
 	'---------------------------------------------------------------------------
 	'Tri selon le critère passé au constructeur
 	'La fonction doit retourner < 0 pour faire monter x, > 0 pour faire monter y
 	'---------------------------------------------------------------------------
 		If x Is y Then Return 0
-		If Me.VmCriterion = clsModule.eSortCriteria.Quality Then
+		If VmCriterion = clsModule.eSortCriteria.Quality Then
 			If CInt(x.Etat) < CInt(y.Etat) Then
 				Return -1
 			Else

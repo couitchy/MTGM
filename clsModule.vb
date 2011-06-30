@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 25102
+	Public Const CgCodeLines As Integer   		= 25155
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -957,21 +957,21 @@ Public Module clsModule
 			Return ""
 		End If
 	End Function
-	Public Function MyClone(VpA As ArrayList) As ArrayList
+	Public Function MyClone(VpA As List(Of clsLocalCard)) As List(Of clsLocalCard)
 	'-------------------------------------------
 	'Duplication de la liste des cartes désirées
 	'-------------------------------------------
-	Dim VpB As New ArrayList
+	Dim VpB As New List(Of clsLocalCard)
 		For Each VpLocalCard As clsLocalCard In VpA
 			VpB.Add(New clsLocalCard(VpLocalCard.Name, VpLocalCard.Quantite))
 		Next VpLocalCard
 		Return VpB
 	End Function
-	Public Function MyClone2(VpA As ArrayList) As ArrayList
+	Public Function MyClone2(VpA As List(Of clsMVCard)) As List(Of clsMVCard)
 	'-------------------------------------------
 	'Duplication de la liste des cartes désirées
 	'-------------------------------------------
-	Dim VpB As New ArrayList
+	Dim VpB As New List(Of clsMVCard)
 		For Each VpMVCard As clsMVCard In VpA
 			VpB.Add(New clsMVCard(VpMVCard.Name, VpMVCard.Vendeur, VpMVCard.Edition, VpMVCard.Etat, VpMVCard.Quantite, VpMVCard.Prix))
 		Next VpMVCard
@@ -1124,7 +1124,7 @@ Public Module clsModule
 	Dim VpBuf(0 To 18) As Byte
 	Dim VpOldText As String
 	Dim VpContenuUpdate As frmUpdateContenu
-	Dim VpNewContenu As New ArrayList
+	Dim VpNewContenu As New List(Of clsMAJContenu)
 		VpOldText = MainForm.VgMe.StatusTextGet
 		Call MainForm.VgMe.StatusText(CgDL1)
 		'Fichier d'historique des versions
@@ -1323,7 +1323,7 @@ Public Module clsModule
 			Else
 				VgDBReader.Read
 				VpOpened = True
-				VpForm.lblAD.Text = VgDBReader.GetValue(VgDBReader.GetOrdinal("Power")).ToString + "/" + VgDBReader.GetValue(VgDBReader.GetOrdinal("Tough")).ToString
+				VpForm.lblAD.Text = VgDBReader.GetValue(VgDBReader.GetOrdinal("Power")).ToString + "  /  " + VgDBReader.GetValue(VgDBReader.GetOrdinal("Tough")).ToString
 				VpForm.lblProp6.Enabled = True
 				Call BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
 			End If
@@ -1426,7 +1426,7 @@ Public Module clsModule
 	'Efface le coût d'invocation précédemment affiché
 	'------------------------------------------------
 	Dim VpPictureBox As PictureBox
-	Dim VpToRemove As New ArrayList
+	Dim VpToRemove As New List(Of Control)
 		For Each VpControl As Control In VpForm.grpSerie.Controls
 			Try
 				VpPictureBox = CType(VpControl, PictureBox)
@@ -1447,9 +1447,9 @@ Public Module clsModule
 			Return " And "
 		End If
 	End Function
-	Public Function GetEncNbr(VpCardName As String, VpIDSerie As String) As Integer
+	Public Function GetEncNbr(VpCardName As String, VpIDSerie As String) As Long
 		VgDBCommand.CommandText = "Select Card.EncNbr From Card Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And Card.Series = '" + VpIDSerie + "';"
-		Return CInt(VgDBCommand.ExecuteScalar)
+		Return CLng(VgDBCommand.ExecuteScalar)
 	End Function
 	Public Function GetSerieCodeFromName(VpName As String, Optional VpApprox As Boolean = False) As String
 	Dim VpO As Object
@@ -1520,7 +1520,7 @@ Public Module clsModule
 	'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection
 	'-------------------------------------------------------------------------------------------------
 	Dim VpSQL As String
-	Dim VpCards As New ArrayList
+	Dim VpCards As New List(Of String)
 		VpSQL = "Select Distinct Card.Title From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where "
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = TrimQuery(VpSQL)
@@ -1862,35 +1862,35 @@ Public Class clsChildren
 	End Property
 End Class
 Public Class clsSearch
-	Public ItemsFound As New ArrayList
+	Public ItemsFound As New List(Of TreeNode)
 	Public CurItem As Integer
 End Class
 Public Class clsManas
-	Private VmX As Short = 0				'Mana variable
-	Private VmM As Short = 0				'Mana de n'importe quelle couleur
-	Private VmA As Short = 0				'Mana sans couleur
-	Private VmB As Short = 0				'Mana noir
-	Private VmG As Short = 0				'Mana vert
-	Private VmU As Short = 0				'Mana bleu
-	Private VmR As Short = 0				'Mana rouge
-	Private VmW As Short = 0				'Mana blanc
-	Private VmPB As Short = 0				'Mana noir ou 2 points de vie
-	Private VmPG As Short = 0				'Mana vert ou 2 points de vie
-	Private VmPU As Short = 0				'Mana bleu ou 2 points de vie
-	Private VmPR As Short = 0				'Mana rouge ou 2 points de vie
-	Private VmPW As Short = 0				'Mana blanc ou 2 points de vie
-	Private VmBG As Short = 0				'Mana noir ou vert
-	Private VmBR As Short = 0				'Mana noir ou rouge
-	Private VmGU As Short = 0				'Mana vert ou bleu
-	Private VmGW As Short = 0				'Mana vert ou blanc
-	Private VmRG As Short = 0				'Mana rouge ou vert
-	Private VmRW As Short = 0				'Mana rouge ou blanc
-	Private VmUB As Short = 0				'Mana bleu ou noir
-	Private VmUR As Short = 0				'Mana bleu ou rouge
-	Private VmWB As Short = 0				'Mana blanc ou noir
-	Private VmWU As Short = 0				'Mana blanc ou bleu
-	Private VmEffectiveLength As Short = 0	'Longueur effective (~coût converti)
-	Private VmImgIndexes As New ArrayList	'Repères icônes (1=BG,2=BR,3=G,4=GU,5=GW,6=R,7=RG,8=RW,9=U,10=UB,11=UR,12=W,13=WB,14=WU,15=X,16=)
+	Private VmX As Short = 0						'Mana variable
+	Private VmM As Short = 0						'Mana de n'importe quelle couleur
+	Private VmA As Short = 0						'Mana sans couleur
+	Private VmB As Short = 0						'Mana noir
+	Private VmG As Short = 0						'Mana vert
+	Private VmU As Short = 0						'Mana bleu
+	Private VmR As Short = 0						'Mana rouge
+	Private VmW As Short = 0						'Mana blanc
+	Private VmPB As Short = 0						'Mana noir ou 2 points de vie
+	Private VmPG As Short = 0						'Mana vert ou 2 points de vie
+	Private VmPU As Short = 0						'Mana bleu ou 2 points de vie
+	Private VmPR As Short = 0						'Mana rouge ou 2 points de vie
+	Private VmPW As Short = 0						'Mana blanc ou 2 points de vie
+	Private VmBG As Short = 0						'Mana noir ou vert
+	Private VmBR As Short = 0						'Mana noir ou rouge
+	Private VmGU As Short = 0						'Mana vert ou bleu
+	Private VmGW As Short = 0						'Mana vert ou blanc
+	Private VmRG As Short = 0						'Mana rouge ou vert
+	Private VmRW As Short = 0						'Mana rouge ou blanc
+	Private VmUB As Short = 0						'Mana bleu ou noir
+	Private VmUR As Short = 0						'Mana bleu ou rouge
+	Private VmWB As Short = 0						'Mana blanc ou noir
+	Private VmWU As Short = 0						'Mana blanc ou bleu
+	Private VmEffectiveLength As Short = 0			'Longueur effective (~coût converti)
+	Private VmImgIndexes As New List(Of Integer)	'Repères icônes (1=BG,2=BR,3=G,4=GU,5=GW,6=R,7=RG,8=RW,9=U,10=UB,11=UR,12=W,13=WB,14=WU,15=X,16=)
 	Public Sub New(Optional VpCostDB As String = "")
 	'----------------------------------------------
 	'Effectue un parsing du coût passé en paramètre
@@ -2132,14 +2132,14 @@ Public Class clsManas
 			End If
 		End If
 	End Function
-	Public ReadOnly Property ImgIndexes As ArrayList
+	Public ReadOnly Property ImgIndexes As List(Of Integer)
 		Get
-			Return Me.VmImgIndexes
+			Return VmImgIndexes
 		End Get
 	End Property
 	Public ReadOnly Property EffectiveLength As Integer
 		Get
-			Return Me.VmEffectiveLength
+			Return VmEffectiveLength
 		End Get
 	End Property
 	Public ReadOnly Property Potentiel As Integer
@@ -2149,32 +2149,32 @@ Public Class clsManas
 	End Property
 	Public ReadOnly Property HasBlack As Boolean
 		Get
-			Return ( Me.VmB > 0 Or Me.VmBG > 0 Or Me.VmBR > 0 Or Me.VmUB > 0 Or Me.VmWB > 0 Or Me.VmPB > 0 )
+			Return ( VmB > 0 Or VmBG > 0 Or VmBR > 0 Or VmUB > 0 Or VmWB > 0 Or VmPB > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasGreen As Boolean
 		Get
-			Return ( Me.VmG > 0 Or Me.VmBG > 0 Or Me.VmGU > 0 Or Me.VmGW > 0 Or Me.VmRG > 0 Or Me.VmPG > 0 )
+			Return ( VmG > 0 Or VmBG > 0 Or VmGU > 0 Or VmGW > 0 Or VmRG > 0 Or VmPG > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasBlue As Boolean
 		Get
-			Return ( Me.VmU > 0 Or Me.VmGU > 0 Or Me.VmUB > 0 Or Me.VmUR > 0 Or Me.VmWU > 0 Or Me.VmPU > 0 )
+			Return ( VmU > 0 Or VmGU > 0 Or VmUB > 0 Or VmUR > 0 Or VmWU > 0 Or VmPU > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasRed As Boolean
 		Get
-			Return ( Me.VmR > 0 Or Me.VmBR > 0 Or Me.VmRG > 0 Or Me.VmRW > 0 Or Me.VmUR > 0 Or Me.VmPR > 0 )
+			Return ( VmR > 0 Or VmBR > 0 Or VmRG > 0 Or VmRW > 0 Or VmUR > 0 Or VmPR > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasWhite As Boolean
 		Get
-			Return ( Me.VmW > 0 Or Me.VmGW > 0 Or Me.VmRW > 0 Or Me.VmWB > 0 Or Me.VmWU > 0 Or Me.VmPW > 0 )
+			Return ( VmW > 0 Or VmGW > 0 Or VmRW > 0 Or VmWB > 0 Or VmWU > 0 Or VmPW > 0 )
 		End Get
 	End Property
 	Public Property cM As Short
 		Get
-			Return Me.VmM
+			Return VmM
 		End Get
 		Set (VpM As Short)
 			VmM = VpM
@@ -2182,7 +2182,7 @@ Public Class clsManas
 	End Property
 	Public Property cA As Short
 		Get
-			Return Me.VmA
+			Return VmA
 		End Get
 		Set (VpA As Short)
 			VmA = VpA
@@ -2190,120 +2190,118 @@ Public Class clsManas
 	End Property
 	Public ReadOnly Property cB As Short
 		Get
-			Return Me.VmB
+			Return VmB
 		End Get
 	End Property
 	Public ReadOnly Property cG As Short
 		Get
-			Return Me.VmG
+			Return VmG
 		End Get
 	End Property
 	Public ReadOnly Property cU As Short
 		Get
-			Return Me.VmU
+			Return VmU
 		End Get
 	End Property
 	Public ReadOnly Property cR As Short
 		Get
-			Return Me.VmR
+			Return VmR
 		End Get
 	End Property
 	Public ReadOnly Property cW As Short
 		Get
-			Return Me.VmW
+			Return VmW
 		End Get
 	End Property
 	Public ReadOnly Property cBG As Short
 		Get
-			Return Me.VmBG
+			Return VmBG
 		End Get
 	End Property
 	Public ReadOnly Property cBR As Short
 		Get
-			Return Me.VmBR
+			Return VmBR
 		End Get
 	End Property
 	Public ReadOnly Property cGU As Short
 		Get
-			Return Me.VmGU
+			Return VmGU
 		End Get
 	End Property
 	Public ReadOnly Property cGW As Short
 		Get
-			Return Me.VmGW
+			Return VmGW
 		End Get
 	End Property
 	Public ReadOnly Property cRG As Short
 		Get
-			Return Me.VmRG
+			Return VmRG
 		End Get
 	End Property
 	Public ReadOnly Property cRW As Short
 		Get
-			Return Me.VmRW
+			Return VmRW
 		End Get
 	End Property
 	Public ReadOnly Property cUB As Short
 		Get
-			Return Me.VmUB
+			Return VmUB
 		End Get
 	End Property
 	Public ReadOnly Property cUR As Short
 		Get
-			Return Me.VmUR
+			Return VmUR
 		End Get
 	End Property
 	Public ReadOnly Property cWB As Short
 		Get
-			Return Me.VmWB
+			Return VmWB
 		End Get
 	End Property
 	Public ReadOnly Property cWU As Short
 		Get
-			Return Me.VmWU
+			Return VmWU
 		End Get
 	End Property
 	Public ReadOnly Property cPR As Short
 		Get
-			Return Me.VmPR
+			Return VmPR
 		End Get
 	End Property
 	Public ReadOnly Property cPW As Short
 		Get
-			Return Me.VmPW
+			Return VmPW
 		End Get
 	End Property
 	Public ReadOnly Property cPU As Short
 		Get
-			Return Me.VmPU
+			Return VmPU
 		End Get
 	End Property
 	Public ReadOnly Property cPG As Short
 		Get
-			Return Me.VmPG
+			Return VmPG
 		End Get
 	End Property
 	Public ReadOnly Property cPB As Short
 		Get
-			Return Me.VmPB
+			Return VmPB
 		End Get
 	End Property
 End Class
 Public Class clsManasPotComparer
-	Implements IComparer
+	Implements IComparer(Of clsCard)
 	Private VmUserList As CheckedListBox
 	Public Sub New(VpUserList As CheckedListBox)
 		VmUserList = VpUserList
 	End Sub
-	Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
+	Public Function Compare(ByVal x As clsCard, ByVal y As clsCard) As Integer Implements IComparer(Of clsCard).Compare
 	'---------------------------------------------------------------------------------------------------------------------
 	'Permet le tri des cartes dans l'ordre de préférence d'invocation, selon le mana qu'elles sont susceptibles de générer
 	'Favorise également l'invocation des cartes spéciales selon l'ordre spécifié par l'utilisateur
 	'---------------------------------------------------------------------------------------------------------------------
-	Dim VpCard1 As clsCard = x
-	Dim VpCard2 As clsCard = y
-	Dim VpPot1 As Integer = Me.GetMiniPot(VpCard1)
-	Dim VpPot2 As Integer = Me.GetMiniPot(VpCard2)
+	Dim VpPot1 As Integer = Me.GetMiniPot(x)
+	Dim VpPot2 As Integer = Me.GetMiniPot(y)
 		Return VpPot2 - VpPot1
 	End Function
 	Private Function GetMiniPot(VpCard As clsCard) As Integer

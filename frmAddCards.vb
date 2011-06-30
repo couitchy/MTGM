@@ -125,14 +125,14 @@ Public Partial Class frmAddCards
 			Return VpStr + "0 (total)"
 		End If
 	End Function
-	Private Function FindInfos(VpTitle As String, VpTable As String, VpField As String) As Integer
+	Private Function FindInfos(VpTitle As String, VpTable As String, VpField As String) As Long
 	'-------------------------------------------------------------------------------------------------------------
 	'Retourne le numéro encyclopédique de la carte spécifiée en paramètre, en plus de l'inscrire sur le formulaire
 	'-------------------------------------------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Select EncNbr From " + VpTable + " Where " + VpField + " = '" + VpTitle.Replace("'", "''") + "';"
 		Try
 			Me.lblEncNbr.Text = VgDBCommand.ExecuteScalar.ToString
-			Return CInt(Me.lblEncNbr.Text)
+			Return CLng(Me.lblEncNbr.Text)
 		Catch
 			Return 0
 		End Try

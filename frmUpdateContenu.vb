@@ -19,10 +19,10 @@ Imports System.Text
 Imports System.Net
 Imports System.IO
 Public Partial Class frmUpdateContenu
-	Private VmFormMove As Boolean = False	'Formulaire en déplacement
-	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
-	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
-	Private VmNewContenu As ArrayList		'Eléments de mise à jour
+	Private VmFormMove As Boolean = False			'Formulaire en déplacement
+	Private VmMousePos As Point						'Position initiale de la souris sur la barre de titre
+	Private VmCanClose As Boolean = False   		'Formulaire peut être fermé
+	Private VmNewContenu As List(Of clsMAJContenu)	'Eléments de mise à jour
 	Private VmPassiveUpdate As Magic_The_Gathering_Manager.frmUpdateContenu.EgPassiveUpdate = EgPassiveUpdate.NotNow
 	Public Enum EgPassiveUpdate
 		NotNow = 0
@@ -224,7 +224,7 @@ Public Partial Class frmUpdateContenu
 		End Select
 		Return True
 	End Function
-	Public Function CheckForContenu(ByRef VpNewContenu As ArrayList) As Boolean
+	Public Function CheckForContenu(ByRef VpNewContenu As List(Of clsMAJContenu)) As Boolean
 	'-------------------------------------------------------
 	'Regarde s'il existe des mises à jour disponibles pour :
 	'- les prix (bdd)
@@ -288,7 +288,7 @@ Public Partial Class frmUpdateContenu
 		End If
 	End Sub
 	Sub FrmUpdateContenuActivated(sender As Object, e As EventArgs)
-	Dim VpNewContenu As New ArrayList
+	Dim VpNewContenu As New List(Of clsMAJContenu)
 	Dim VpItem As ListViewItem
 		If Me.chklstContenus.Items.Count = 0 Then
 			Me.chklstContenus.Items.Add("Vérification en cours...")
