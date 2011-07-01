@@ -10,7 +10,7 @@
 '| Release 6      |       							17/04/2010 |
 '| Release 7      |									29/07/2010 |
 '| Release 8      |       							03/10/2010 |
-'| Release 9      |                        05/02/2011 |
+'| Release 9      |                       			05/02/2011 |
 '| Auteur         |      							  Couitchy |
 '|-------------------------------------------------------------|
 '| Modifications :               							   |
@@ -187,7 +187,7 @@ Public Partial Class MainForm
 		VmDBCommand.CommandText = "Select Distinct Title From Card Order By Title Asc;"
 		VmDBReader = VmDBCommand.ExecuteReader
 		With VmDBReader
-			While .Read				
+			While .Read
 				If VpCanAdd Then
 					VpCards.Add(.GetString(0))
 				Else
@@ -223,7 +223,7 @@ Public Partial Class MainForm
 		Me.dlgSave.FileName = ""
 		Me.dlgSave.ShowDialog
 		If Me.dlgSave.FileName <> "" Then
-			VpAppend = File.Exists(Me.dlgSave.FileName)			
+			VpAppend = File.Exists(Me.dlgSave.FileName)
 			If VpAppend Then
 				'Si le fichier existe déjà, regarde la dernière carte qui a été traitée
 				VpAlready = File.ReadAllLines(Me.dlgSave.FileName)
@@ -240,7 +240,7 @@ Public Partial Class MainForm
 			End If
 			VpOut = New StreamWriter(Me.dlgSave.FileName, VpAppend)
 			If VpAppend Then
-				Call Me.AddToLog("La récupération des prix se poursuit...", eLogType.Information, True)	
+				Call Me.AddToLog("La récupération des prix se poursuit...", eLogType.Information, True)
 			Else
 				Call Me.AddToLog("La récupération des prix a commencé...", eLogType.Information, True)
 				'Inscription de la date
@@ -838,6 +838,8 @@ Public Partial Class MainForm
 				Return "planarchaos#" + VpStr
 			Case "NP"
 				Return "newphyrexia#" + VpStr
+			Case "M3"
+				Return "magic2012#" + VpStr				
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1025,12 +1027,17 @@ Public Partial Class MainForm
 				While Not VpIn.EndOfStream
 					VpStr = VpIn.ReadLine
 					If VpStr.StartsWith("Name:") Then
-						VpStr2 = VpStr.Substring(VpStr.IndexOf("(") + 1)
-						If VpStr2.Contains("(") Then
-							VpStr2 = VpStr2.Substring(VpStr2.IndexOf("(") + 1)
+						If VpStr.Contains("(") Then
+							VpStr2 = VpStr.Substring(VpStr.IndexOf("(") + 1)
+							If VpStr2.Contains("(") Then
+								VpStr2 = VpStr2.Substring(VpStr2.IndexOf("(") + 1)
+							End If
+							VpStr2 = VpStr2.Substring(0, VpStr2.Length - 1)
+							VpStr = VpStr.Replace("Name:", "").Replace("(" + VpStr2 + ")", "").Trim
+						Else
+							VpStr = VpStr.Replace("Name:", "").Trim
+							VpStr2 = VpStr
 						End If
-						VpStr2 = VpStr2.Substring(0, VpStr2.Length - 1)
-						VpStr = VpStr.Replace("Name:", "").Replace("(" + VpStr2 + ")", "").Trim
 						VpOut.WriteLine(VpStr2 + "#" + VpStr)
 					End If
 				End While
@@ -1257,7 +1264,8 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsExtractDiffClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '""', ''), '?', '')) Order By Card.Title Asc;")
+			'Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '""', ''), '?', '')) Order By Card.Title Asc;")
+			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Card.Title) Order By Card.Title Asc;")
 		End If
 	End Sub
 	Sub MnuCardsExtractDiff2Click(sender As Object, e As EventArgs)

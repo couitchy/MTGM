@@ -27,7 +27,7 @@ Public Partial Class frmXL
 	Private VmBusy As Boolean = False	
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		If VmRestrictionTXT.Length > 31 Then

@@ -108,6 +108,10 @@
       <DependentUpon>frmExceptionBox.vb</DependentUpon>
     </Compile>
     <Compile Include="frmExceptionBox.vb" />
+    <Compile Include="frmExploSettings.Designer.vb">
+      <DependentUpon>frmExploSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmExploSettings.vb" />
     <Compile Include="frmExport.Designer.vb">
       <DependentUpon>frmExport.vb</DependentUpon>
     </Compile>
@@ -197,6 +201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmExceptionBox.resx">
       <DependentUpon>frmExceptionBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExploSettings.resx">
+      <DependentUpon>frmExploSettings.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmExport.resx">
       <DependentUpon>frmExport.vb</DependentUpon>

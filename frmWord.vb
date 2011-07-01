@@ -27,7 +27,7 @@ Public Partial Class frmWord
 	Public Sub New(VpOwner As MainForm)
 	Dim VpPath As String = Path.GetTempPath + "\mtgmgr"
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		If VmRestrictionTXT.Length > 31 Then

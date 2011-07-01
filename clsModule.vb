@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 25155
+	Public Const CgCodeLines As Integer   		= 25395
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -855,16 +855,26 @@ Public Module clsModule
 				End Select
 			Case "Card.Rarity"
 				Select Case VpStr.Substring(0, 1).ToUpper
+'					Case "M"
+'						Return ("Mythiques (" + VpStr.Substring(1) + ")").Replace("()","")
+'					Case "R"
+'						Return ("Rares (" + VpStr.Substring(1) + ")").Replace("()","")
+'					Case "U"
+'						Return ("Peu communes (" + VpStr.Substring(1) + ")").Replace("()","")
+'					Case "C"
+'						Return ("Communes (" + VpStr.Substring(1) + ")").Replace("()","")
+'					Case "D", "L", "S"
+'						Return ("Sans valeur (" + VpStr.Substring(1) + ")").Replace("()","")
 					Case "M"
-						Return ("Mythiques (" + VpStr.Substring(1) + ")").Replace("()","")
+						Return "Mythiques"
 					Case "R"
-						Return ("Rares (" + VpStr.Substring(1) + ")").Replace("()","")
+						Return "Rares"
 					Case "U"
-						Return ("Peu communes (" + VpStr.Substring(1) + ")").Replace("()","")
+						Return "Peu communes"
 					Case "C"
-						Return ("Communes (" + VpStr.Substring(1) + ")").Replace("()","")
+						Return "Communes"
 					Case "D", "L", "S"
-						Return ("Sans valeur (" + VpStr.Substring(1) + ")").Replace("()","")
+						Return "Sans valeur"
 					Case Else
 						Return VpStr
 				End Select
@@ -1052,9 +1062,9 @@ Public Module clsModule
 			Return ""
 		End Try
 	End Function
-	Public Sub InitCriteres(VpMainForm as MainForm)
-		For VpI As Integer = 0 To VpMainForm.chkClassement.Items.Count - 1
-			CgCriteres.Add(VpMainForm.chkClassement.Items(VpI), CgCriterionsFields(VpI))
+	Public Sub InitCriteres(VpMainForm As MainForm)
+		For VpI As Integer = 0 To VpMainForm.FilterCriteria.NCriteria - 1
+			CgCriteres.Add(VpMainForm.FilterCriteria.MyList.Items(VpI), CgCriterionsFields(VpI))
 		Next VpI
 	End Sub
 	Public Function GetPictSP As String

@@ -108,6 +108,7 @@ Partial Class MainForm
 		Me.mnuFixAssoc = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixPic = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixFR2 = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCollapseRarete = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator7 = New System.Windows.Forms.ToolStripSeparator
 		Me.mnuPrefs = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBigSearch = New System.Windows.Forms.ToolStripMenuItem
@@ -147,14 +148,15 @@ Partial Class MainForm
 		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton
 		Me.btWebsite = New System.Windows.Forms.ToolStripButton
 		Me.splitV = New System.Windows.Forms.SplitContainer
-		Me.CBarTvw = New TD.SandBar.ContainerBar
+		Me.cbarTvw = New TD.SandBar.ContainerBar
 		Me.pnlTvw = New TD.SandBar.ContainerBarClientPanel
-		Me.splitH = New System.Windows.Forms.SplitContainer
-		Me.chkClassement = New System.Windows.Forms.CheckedListBox
 		Me.tvwExplore = New TreeViewMS.TreeViewMS
-		Me.btUp = New TD.SandBar.ButtonItem
-		Me.btDown = New TD.SandBar.ButtonItem
-		Me.btRefresh = New TD.SandBar.ButtonItem
+		Me.toolSubStrip = New System.Windows.Forms.ToolStrip
+		Me.btCriteria = New System.Windows.Forms.ToolStripButton
+		Me.btSeparator = New System.Windows.Forms.ToolStripSeparator
+		Me.btCardsFR = New System.Windows.Forms.ToolStripButton
+		Me.btSort = New System.Windows.Forms.ToolStripButton
+		Me.btDegroupFoils = New System.Windows.Forms.ToolStripButton
 		Me.splitV2 = New System.Windows.Forms.SplitContainer
 		Me.CBarProperties = New TD.SandBar.ContainerBar
 		Me.pnlProperties = New TD.SandBar.ContainerBarClientPanel
@@ -206,11 +208,9 @@ Partial Class MainForm
 		Me.splitV.Panel1.SuspendLayout
 		Me.splitV.Panel2.SuspendLayout
 		Me.splitV.SuspendLayout
-		Me.CBarTvw.SuspendLayout
+		Me.cbarTvw.SuspendLayout
 		Me.pnlTvw.SuspendLayout
-		Me.splitH.Panel1.SuspendLayout
-		Me.splitH.Panel2.SuspendLayout
-		Me.splitH.SuspendLayout
+		Me.toolSubStrip.SuspendLayout
 		Me.splitV2.Panel1.SuspendLayout
 		Me.splitV2.Panel2.SuspendLayout
 		Me.splitV2.SuspendLayout
@@ -322,17 +322,19 @@ Partial Class MainForm
 		Me.imglstTvw.Images.SetKeyName(27, "_m14.gif")
 		Me.imglstTvw.Images.SetKeyName(28, "_m15.gif")
 		Me.imglstTvw.Images.SetKeyName(29, "_m16.gif")
-		Me.imglstTvw.Images.SetKeyName(30, "_rco.gif")
-		Me.imglstTvw.Images.SetKeyName(31, "_runco.gif")
-		Me.imglstTvw.Images.SetKeyName(32, "_rrare.gif")
-		Me.imglstTvw.Images.SetKeyName(33, "_p0.png")
-		Me.imglstTvw.Images.SetKeyName(34, "_p1.png")
-		Me.imglstTvw.Images.SetKeyName(35, "_p2.png")
-		Me.imglstTvw.Images.SetKeyName(36, "_p3.png")
-		Me.imglstTvw.Images.SetKeyName(37, "_p4.png")
-		Me.imglstTvw.Images.SetKeyName(38, "_p5.png")
-		Me.imglstTvw.Images.SetKeyName(39, "_p6.png")
-		Me.imglstTvw.Images.SetKeyName(40, "_p7.png")
+		Me.imglstTvw.Images.SetKeyName(30, "_rdirt.ico")
+		Me.imglstTvw.Images.SetKeyName(31, "_rco.ico")
+		Me.imglstTvw.Images.SetKeyName(32, "_runco.ico")
+		Me.imglstTvw.Images.SetKeyName(33, "_rrare.ico")
+		Me.imglstTvw.Images.SetKeyName(34, "_rmystic.ico")
+		Me.imglstTvw.Images.SetKeyName(35, "_p0.png")
+		Me.imglstTvw.Images.SetKeyName(36, "_p1.png")
+		Me.imglstTvw.Images.SetKeyName(37, "_p2.png")
+		Me.imglstTvw.Images.SetKeyName(38, "_p3.png")
+		Me.imglstTvw.Images.SetKeyName(39, "_p4.png")
+		Me.imglstTvw.Images.SetKeyName(40, "_p5.png")
+		Me.imglstTvw.Images.SetKeyName(41, "_p6.png")
+		Me.imglstTvw.Images.SetKeyName(42, "_p7.png")
 		'
 		'imglstCarac
 		'
@@ -832,7 +834,7 @@ Partial Class MainForm
 		'
 		'mnuFixDivers
 		'
-		Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixAssoc, Me.mnuFixPic, Me.mnuFixFR2})
+		Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixAssoc, Me.mnuFixPic, Me.mnuFixFR2, Me.mnuCollapseRarete})
 		Me.mnuFixDivers.Image = CType(resources.GetObject("mnuFixDivers.Image"),System.Drawing.Image)
 		Me.mnuFixDivers.Name = "mnuFixDivers"
 		Me.mnuFixDivers.Size = New System.Drawing.Size(277, 22)
@@ -841,23 +843,30 @@ Partial Class MainForm
 		'mnuFixAssoc
 		'
 		Me.mnuFixAssoc.Name = "mnuFixAssoc"
-		Me.mnuFixAssoc.Size = New System.Drawing.Size(140, 22)
+		Me.mnuFixAssoc.Size = New System.Drawing.Size(233, 22)
 		Me.mnuFixAssoc.Text = "Associations"
 		AddHandler Me.mnuFixAssoc.Click, AddressOf Me.MnuFixAssocClick
 		'
 		'mnuFixPic
 		'
 		Me.mnuFixPic.Name = "mnuFixPic"
-		Me.mnuFixPic.Size = New System.Drawing.Size(140, 22)
+		Me.mnuFixPic.Size = New System.Drawing.Size(233, 22)
 		Me.mnuFixPic.Text = "Images"
 		AddHandler Me.mnuFixPic.Click, AddressOf Me.MnuFixPicClick
 		'
 		'mnuFixFR2
 		'
 		Me.mnuFixFR2.Name = "mnuFixFR2"
-		Me.mnuFixFR2.Size = New System.Drawing.Size(140, 22)
+		Me.mnuFixFR2.Size = New System.Drawing.Size(233, 22)
 		Me.mnuFixFR2.Text = "Traductions"
 		AddHandler Me.mnuFixFR2.Click, AddressOf Me.MnuFixFR2Click
+		'
+		'mnuCollapseRarete
+		'
+		Me.mnuCollapseRarete.Name = "mnuCollapseRarete"
+		Me.mnuCollapseRarete.Size = New System.Drawing.Size(233, 22)
+		Me.mnuCollapseRarete.Text = "Supprimer les degrés de rareté"
+		AddHandler Me.mnuCollapseRarete.Click, AddressOf Me.MnuCollapseRareteClick
 		'
 		'mnuSeparator7
 		'
@@ -1057,7 +1066,6 @@ Partial Class MainForm
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(757, 25)
 		Me.toolStrip.TabIndex = 7
-		Me.toolStrip.Text = "toolStrip1"
 		'
 		'btDBSelect
 		'
@@ -1189,7 +1197,7 @@ Partial Class MainForm
 		'
 		'splitV.Panel1
 		'
-		Me.splitV.Panel1.Controls.Add(Me.CBarTvw)
+		Me.splitV.Panel1.Controls.Add(Me.cbarTvw)
 		'
 		'splitV.Panel2
 		'
@@ -1199,60 +1207,29 @@ Partial Class MainForm
 		Me.splitV.TabIndex = 8
 		Me.splitV.TabStop = false
 		'
-		'CBarTvw
+		'cbarTvw
 		'
-		Me.CBarTvw.Closable = false
-		Me.CBarTvw.Controls.Add(Me.pnlTvw)
-		Me.CBarTvw.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.CBarTvw.DrawActionsButton = false
-		Me.CBarTvw.Flow = TD.SandBar.ToolBarLayout.Horizontal
-		Me.CBarTvw.Guid = New System.Guid("219cb30a-3b04-4474-8157-17accfec97d2")
-		Me.CBarTvw.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btUp, Me.btDown, Me.btRefresh})
-		Me.CBarTvw.Location = New System.Drawing.Point(0, 0)
-		Me.CBarTvw.Movable = false
-		Me.CBarTvw.Name = "CBarTvw"
-		Me.CBarTvw.Size = New System.Drawing.Size(294, 326)
-		Me.CBarTvw.TabIndex = 0
-		Me.CBarTvw.Text = "Explorateur"
+		Me.cbarTvw.Closable = false
+		Me.cbarTvw.Controls.Add(Me.pnlTvw)
+		Me.cbarTvw.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.cbarTvw.DrawActionsButton = false
+		Me.cbarTvw.Flow = TD.SandBar.ToolBarLayout.Horizontal
+		Me.cbarTvw.Guid = New System.Guid("219cb30a-3b04-4474-8157-17accfec97d2")
+		Me.cbarTvw.Location = New System.Drawing.Point(0, 0)
+		Me.cbarTvw.Movable = false
+		Me.cbarTvw.Name = "cbarTvw"
+		Me.cbarTvw.Size = New System.Drawing.Size(294, 326)
+		Me.cbarTvw.TabIndex = 0
+		Me.cbarTvw.Text = "Explorateur"
 		'
 		'pnlTvw
 		'
-		Me.pnlTvw.Controls.Add(Me.splitH)
-		Me.pnlTvw.Location = New System.Drawing.Point(2, 46)
+		Me.pnlTvw.Controls.Add(Me.tvwExplore)
+		Me.pnlTvw.Controls.Add(Me.toolSubStrip)
+		Me.pnlTvw.Location = New System.Drawing.Point(2, 27)
 		Me.pnlTvw.Name = "pnlTvw"
-		Me.pnlTvw.Size = New System.Drawing.Size(290, 278)
+		Me.pnlTvw.Size = New System.Drawing.Size(290, 297)
 		Me.pnlTvw.TabIndex = 0
-		'
-		'splitH
-		'
-		Me.splitH.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitH.Location = New System.Drawing.Point(0, 0)
-		Me.splitH.Name = "splitH"
-		Me.splitH.Orientation = System.Windows.Forms.Orientation.Horizontal
-		'
-		'splitH.Panel1
-		'
-		Me.splitH.Panel1.Controls.Add(Me.chkClassement)
-		'
-		'splitH.Panel2
-		'
-		Me.splitH.Panel2.Controls.Add(Me.tvwExplore)
-		Me.splitH.Size = New System.Drawing.Size(290, 278)
-		Me.splitH.SplitterDistance = 68
-		Me.splitH.TabIndex = 3
-		'
-		'chkClassement
-		'
-		Me.chkClassement.CheckOnClick = true
-		Me.chkClassement.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.chkClassement.FormattingEnabled = true
-		Me.chkClassement.Items.AddRange(New Object() {"Decks", "Type", "Couleur", "Edition", "Coût d'invocation", "Rareté", "Prix", "Carte"})
-		Me.chkClassement.Location = New System.Drawing.Point(0, 0)
-		Me.chkClassement.Name = "chkClassement"
-		Me.chkClassement.Size = New System.Drawing.Size(290, 64)
-		Me.chkClassement.TabIndex = 3
-		AddHandler Me.chkClassement.SelectedIndexChanged, AddressOf Me.ChkClassementSelectedIndexChanged
-		AddHandler Me.chkClassement.ItemCheck, AddressOf Me.ChkClassementItemCheck
 		'
 		'tvwExplore
 		'
@@ -1265,34 +1242,70 @@ Partial Class MainForm
 		Me.tvwExplore.Name = "tvwExplore"
 		Me.tvwExplore.SelectedImageIndex = 0
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
-		Me.tvwExplore.Size = New System.Drawing.Size(290, 206)
-		Me.tvwExplore.TabIndex = 4
+		Me.tvwExplore.Size = New System.Drawing.Size(290, 272)
+		Me.tvwExplore.TabIndex = 6
 		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
 		AddHandler Me.tvwExplore.AfterSelect, AddressOf Me.TvwExploreAfterSelect
 		AddHandler Me.tvwExplore.DragEnter, AddressOf Me.TvwExploreDragEnter
 		AddHandler Me.tvwExplore.KeyUp, AddressOf Me.TvwExploreKeyUp
 		'
-		'btUp
+		'toolSubStrip
 		'
-		Me.btUp.Enabled = false
-		Me.btUp.Image = CType(resources.GetObject("btUp.Image"),System.Drawing.Image)
-		Me.btUp.Text = "Monter"
-		AddHandler Me.btUp.Activate, AddressOf Me.BtUpActivate
+		Me.toolSubStrip.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.toolSubStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btSeparator, Me.btCardsFR, Me.btSort, Me.btDegroupFoils})
+		Me.toolSubStrip.Location = New System.Drawing.Point(0, 272)
+		Me.toolSubStrip.Name = "toolSubStrip"
+		Me.toolSubStrip.Size = New System.Drawing.Size(290, 25)
+		Me.toolSubStrip.TabIndex = 0
 		'
-		'btDown
+		'btCriteria
 		'
-		Me.btDown.Enabled = false
-		Me.btDown.Image = CType(resources.GetObject("btDown.Image"),System.Drawing.Image)
-		Me.btDown.Text = "Descendre"
-		AddHandler Me.btDown.Activate, AddressOf Me.BtDownActivate
+		Me.btCriteria.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btCriteria.Image = CType(resources.GetObject("btCriteria.Image"),System.Drawing.Image)
+		Me.btCriteria.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btCriteria.Name = "btCriteria"
+		Me.btCriteria.Size = New System.Drawing.Size(23, 22)
+		Me.btCriteria.Text = "Filtres d'affichage"
+		AddHandler Me.btCriteria.Click, AddressOf Me.BtCriteriaClick
 		'
-		'btRefresh
+		'btSeparator
 		'
-		Me.btRefresh.Icon = CType(resources.GetObject("btRefresh.Icon"),System.Drawing.Icon)
-		Me.btRefresh.IconSize = New System.Drawing.Size(13, 13)
-		Me.btRefresh.Text = "Rafraîchir"
-		AddHandler Me.btRefresh.Activate, AddressOf Me.BtRefreshActivate
+		Me.btSeparator.Name = "btSeparator"
+		Me.btSeparator.Size = New System.Drawing.Size(6, 25)
+		'
+		'btCardsFR
+		'
+		Me.btCardsFR.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btCardsFR.Image = CType(resources.GetObject("btCardsFR.Image"),System.Drawing.Image)
+		Me.btCardsFR.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btCardsFR.Name = "btCardsFR"
+		Me.btCardsFR.Size = New System.Drawing.Size(23, 22)
+		Me.btCardsFR.Text = "Titre des cartes en français"
+		AddHandler Me.btCardsFR.MouseUp, AddressOf Me.MnuCardsFRActivate
+		'
+		'btSort
+		'
+		Me.btSort.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btSort.Image = CType(resources.GetObject("btSort.Image"),System.Drawing.Image)
+		Me.btSort.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btSort.Name = "btSort"
+		Me.btSort.Size = New System.Drawing.Size(23, 22)
+		Me.btSort.Text = "Trier par ordre alphabétique"
+		AddHandler Me.btSort.Click, AddressOf Me.MnuSortClick
+		'
+		'btDegroupFoils
+		'
+		Me.btDegroupFoils.Checked = true
+		Me.btDegroupFoils.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.btDegroupFoils.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btDegroupFoils.Image = CType(resources.GetObject("btDegroupFoils.Image"),System.Drawing.Image)
+		Me.btDegroupFoils.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btDegroupFoils.Name = "btDegroupFoils"
+		Me.btDegroupFoils.Size = New System.Drawing.Size(23, 22)
+		Me.btDegroupFoils.Text = "Dissocier les cartes foils"
+		AddHandler Me.btDegroupFoils.Click, AddressOf Me.MnuDegroupFoilsClick
 		'
 		'splitV2
 		'
@@ -1815,11 +1828,11 @@ Partial Class MainForm
 		Me.splitV.Panel1.ResumeLayout(false)
 		Me.splitV.Panel2.ResumeLayout(false)
 		Me.splitV.ResumeLayout(false)
-		Me.CBarTvw.ResumeLayout(false)
+		Me.cbarTvw.ResumeLayout(false)
 		Me.pnlTvw.ResumeLayout(false)
-		Me.splitH.Panel1.ResumeLayout(false)
-		Me.splitH.Panel2.ResumeLayout(false)
-		Me.splitH.ResumeLayout(false)
+		Me.pnlTvw.PerformLayout
+		Me.toolSubStrip.ResumeLayout(false)
+		Me.toolSubStrip.PerformLayout
 		Me.splitV2.Panel1.ResumeLayout(false)
 		Me.splitV2.Panel2.ResumeLayout(false)
 		Me.splitV2.ResumeLayout(false)
@@ -1844,6 +1857,14 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btDegroupFoils As System.Windows.Forms.ToolStripButton
+	Private btSort As System.Windows.Forms.ToolStripButton
+	Private btSeparator As System.Windows.Forms.ToolStripSeparator
+	Private toolSubStrip As System.Windows.Forms.ToolStrip
+	Private cbarTvw As TD.SandBar.ContainerBar
+	Private btCriteria As System.Windows.Forms.ToolStripButton
+	Private btCardsFR As System.Windows.Forms.ToolStripButton
+	Private mnuCollapseRarete As System.Windows.Forms.ToolStripMenuItem
 	Public lblStock3 As System.Windows.Forms.Label
 	Private lblStock2 As System.Windows.Forms.Label
 	Private mnuSwapSerie As System.Windows.Forms.ToolStripMenuItem
@@ -1885,7 +1906,6 @@ Partial Class MainForm
 	Private lblProp8 As System.Windows.Forms.Label
 	Public lblSerieDate As System.Windows.Forms.Label
 	Public grpSerie2 As System.Windows.Forms.GroupBox
-	Private splitH As System.Windows.Forms.SplitContainer
 	Private mnuRestorePrev As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeparator10 As System.Windows.Forms.ToolStripSeparator
 	Private mnuFixAssoc As System.Windows.Forms.ToolStripMenuItem
@@ -1966,7 +1986,6 @@ Partial Class MainForm
 	Private mnuSearchCard As System.Windows.Forms.ToolStripMenuItem
 	Public cboEdition As System.Windows.Forms.ComboBox
 	Private lblNCards As System.Windows.Forms.ToolStripStatusLabel
-	Private btRefresh As TD.SandBar.ButtonItem
 	Public picEdition As System.Windows.Forms.PictureBox
 	Public imglstCarac As System.Windows.Forms.ImageList
 	Public lblRarete As System.Windows.Forms.Label
@@ -1984,9 +2003,6 @@ Partial Class MainForm
 	Public lblProp6 As System.Windows.Forms.Label
 	Public mnuCardsFR As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuTvw As System.Windows.Forms.ContextMenuStrip
-	Private btDown As TD.SandBar.ButtonItem
-	Private btUp As TD.SandBar.ButtonItem
-	Public chkClassement As System.Windows.Forms.CheckedListBox
 	Private mnuRefresh As System.Windows.Forms.ToolStripMenuItem
 	Private mnuDispCollection As System.Windows.Forms.ToolStripMenuItem
 	Public mnuDisp As System.Windows.Forms.ToolStripMenuItem
@@ -1994,7 +2010,6 @@ Partial Class MainForm
 	Private pnlProperties As TD.SandBar.ContainerBarClientPanel
 	Private CBarProperties As TD.SandBar.ContainerBar
 	Private pnlTvw As TD.SandBar.ContainerBarClientPanel
-	Private CBarTvw As TD.SandBar.ContainerBar
 	Private splitV As System.Windows.Forms.SplitContainer
 	Private mnuRemGames As System.Windows.Forms.ToolStripMenuItem
 	Private mnuRemCollec As System.Windows.Forms.ToolStripMenuItem

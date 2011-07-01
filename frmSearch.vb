@@ -31,7 +31,7 @@ Public Partial Class frmSearch
 	Private VmKeyChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction
 		VmOwner = VpOwner
 		Me.cboSearchType.SelectedIndex = CInt(VgOptions.VgSettings.DefaultSearchCriterion)
@@ -233,7 +233,7 @@ Public Partial Class frmSearch
 		If Not Me.chkRestriction.Checked Then
 			VpSource = ""
 		Else
-			VpSource = If(VmOwner.chkClassement.GetItemChecked(0), clsModule.CgSDecks, clsModule.CgSCollection)
+			VpSource = If(VmOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		End If
 		Me.lstResult.Tag = VpTitle
 		Me.grpSerie.Tag = VpSource
