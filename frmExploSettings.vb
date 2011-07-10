@@ -74,6 +74,12 @@ Public Partial Class frmExploSettings
 			Me.Hide
 		End If
 	End Sub	
+	Sub FrmExploSettingsFormClosing(sender As Object, e As FormClosingEventArgs)
+		If e.CloseReason = CloseReason.UserClosing Then
+			e.Cancel = True
+			Me.Hide
+		End If
+	End Sub	
 	Sub BtUpClick(sender As Object, e As EventArgs)
 		Call Me.ManageOrder(1, 0, -1)
 	End Sub

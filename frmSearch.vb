@@ -104,11 +104,14 @@ Public Partial Class frmSearch
 			Case Else
 				VpCriteria = ""
 		End Select
-		'Recherche restreinte aux cartes présentes dans l'arborescence
+		'Recherche restreinte aux cartes possédées
 		If Me.chkRestriction.Checked Then
 			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
 			VpSQL = VpSQL + VmRestriction
 			VpSQL = clsModule.TrimQuery(VpSQL)
+		'Recherche restreinte aux cartes non possédées
+		ElseIf Me.chkRestrictionInv.Checked Then
+			
 		'Recherche étendue (toutes les cartes de la base de données)
 		Else
 			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
@@ -176,7 +179,7 @@ Public Partial Class frmSearch
 		End If
 	End Function
 	#End Region
-	#Region " Evènements "
+	#Region "Evènements"
 	Private Sub CmdGoClick(sender As System.Object, e As System.EventArgs)
 	Dim VpSQL As String = ""
 	Dim VpReq As String = Me.cboFind.Text.Replace("'", "''")
@@ -283,6 +286,15 @@ Public Partial Class frmSearch
 	End Sub
 	Sub ChkRestrictionCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear
+		If Me.chkRestriction.Checked Then
+			Me.chkRestrictionInv.Checked = False
+		End If
+	End Sub
+	Sub ChkRestrictionInvCheckedChanged(sender As Object, e As EventArgs)
+		Me.lstResult.Items.Clear
+		If Me.chkRestrictionInv.Checked Then
+			Me.chkRestriction.Checked = False
+		End If
 	End Sub
 	Sub ChkShowExternalCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear

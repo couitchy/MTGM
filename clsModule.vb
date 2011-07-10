@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 25395
+	Public Const CgCodeLines As Integer   		= 25403
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -1957,7 +1957,7 @@ Public Class clsManas
 		'- XA... (ex. X2U)
 		ElseIf VpCost.StartsWith("x") AndAlso Val(VpCost.Substring(1)) <> 0 Then
 			VmX = 1
-			VmImgIndexes.Add(20)
+			VmImgIndexes.Add(30)
 			VmEffectiveLength = 1
 			VpCost = VpCost.Substring(1)
 		End If
@@ -1971,7 +1971,7 @@ Public Class clsManas
 			VpX = VpCost.Substring(VpI, 1)
 			'Pas de couleur
 			If VpI = 0 And VpColorless <> 0 Then
-				VmImgIndexes.Add(21 + CInt(VpColorless))
+				VmImgIndexes.Add(31 + CInt(VpColorless))
 				If VpColorless >= 10 Then
 					VpI = VpI + 1 	'Très impropre en programmation structurée mais permet de gérer directement le cas des nombres à 2 chiffres
 				End If
@@ -1980,84 +1980,114 @@ Public Class clsManas
 			ElseIf VpX = "(" Then
 				VpY = VpCost.Substring(VpI + 1, 3)
 				Select Case VpY.ToUpper
-					Case "R/P", "P/R"
-						VmImgIndexes.Add(17)
-						VmPR = VmPR + 1
-					Case "B/P", "P/B"
-						VmImgIndexes.Add(15)
-						VmPB = VmPB + 1
-					Case "G/P", "P/G"
-						VmImgIndexes.Add(16)
-						VmPG = VmPG + 1
-					Case "U/P", "P/U"
-						VmImgIndexes.Add(18)
-						VmPU = VmPU + 1
-					Case "W/P", "P/W"
-						VmImgIndexes.Add(19)
-						VmPW = VmPW + 1
-					Case "B/G", "G/B"
-						VmImgIndexes.Add(1)
-						VmBG = VmBG + 1
-					Case "B/R", "R/B"
+					Case "P/R"
 						VmImgIndexes.Add(2)
-						VmBR = VmBR + 1
-					Case "G/U", "U/G"
+						VmPR = VmPR + 1
+					Case "P/B"
+						VmImgIndexes.Add(0)
+						VmPB = VmPB + 1
+					Case "P/G"
+						VmImgIndexes.Add(1)
+						VmPG = VmPG + 1
+					Case "P/U"
+						VmImgIndexes.Add(3)
+						VmPU = VmPU + 1
+					Case "P/W"
 						VmImgIndexes.Add(4)
-						VmGU = VmGU + 1
-					Case "G/W", "W/G"
-						VmImgIndexes.Add(5)
-						VmGW = VmGW + 1
-					Case "R/G", "G/R"
-						VmImgIndexes.Add(7)
-						VmRG = VmRG + 1
-					Case "R/W", "W/R"
-						VmImgIndexes.Add(8)
-						VmRW = VmRW + 1
-					Case "U/B", "B/U"
-						VmImgIndexes.Add(10)
-						VmUB = VmUB + 1
-					Case "U/R", "R/U"
+						VmPW = VmPW + 1
+					Case "G/B"
 						VmImgIndexes.Add(11)
+						VmBG = VmBG + 1
+					Case "R/B"
+						VmImgIndexes.Add(16)
+						VmBR = VmBR + 1
+					Case "U/G"
+						VmImgIndexes.Add(22)
+						VmGU = VmGU + 1
+					Case "W/G"
+						VmImgIndexes.Add(27)
+						VmGW = VmGW + 1
+					Case "G/R"
+						VmImgIndexes.Add(12)
+						VmRG = VmRG + 1
+					Case "W/R"
+						VmImgIndexes.Add(28)
+						VmRW = VmRW + 1
+					Case "B/U"
+						VmImgIndexes.Add(8)
+						VmUB = VmUB + 1
+					Case "R/U"
+						VmImgIndexes.Add(18)
 						VmUR = VmUR + 1
-					Case "W/B", "B/W"
-						VmImgIndexes.Add(13)
+					Case "B/W"
+						VmImgIndexes.Add(9)
 						VmWB = VmWB + 1
-					Case "W/U", "U/W"
+					Case "U/W"
+						VmImgIndexes.Add(24)
+						VmWU = VmWU + 1
+					Case "B/G"
+						VmImgIndexes.Add(6)
+						VmBG = VmBG + 1
+					Case "B/R"
+						VmImgIndexes.Add(7)
+						VmBR = VmBR + 1
+					Case "G/U"
+						VmImgIndexes.Add(13)
+						VmGU = VmGU + 1
+					Case "G/W"
 						VmImgIndexes.Add(14)
+						VmGW = VmGW + 1
+					Case "R/G"
+						VmImgIndexes.Add(17)
+						VmRG = VmRG + 1
+					Case "R/W"
+						VmImgIndexes.Add(19)
+						VmRW = VmRW + 1
+					Case "U/B"
+						VmImgIndexes.Add(21)
+						VmUB = VmUB + 1
+					Case "U/R"
+						VmImgIndexes.Add(23)
+						VmUR = VmUR + 1
+					Case "W/B"
+						VmImgIndexes.Add(26)
+						VmWB = VmWB + 1
+					Case "W/U"
+						VmImgIndexes.Add(29)
 						VmWU = VmWU + 1
 					Case Else
-						VmImgIndexes.Add(21)
+						VmImgIndexes.Add(31)
 				End Select
 				VpI = VpI + 4 'encore impropre mais permet de passer directement à la fin de la parenthèse
 			'Couleur simple
 			Else
 				Select Case VpX.ToUpper
 					Case "X"
-						VmImgIndexes.Add(20)
+						VmImgIndexes.Add(30)
 						VmX = VmX + 1
 					Case "B"
-						VmImgIndexes.Add(0)
+						VmImgIndexes.Add(5)
 						VmB = VmB + 1
 					Case "G"
-						VmImgIndexes.Add(3)
+						VmImgIndexes.Add(10)
 						VmG = VmG + 1
 					Case "R"
-						VmImgIndexes.Add(6)
+						VmImgIndexes.Add(15)
 						VmR = VmR + 1
 					Case "U"
-						VmImgIndexes.Add(9)
+						VmImgIndexes.Add(20)
 						VmU = VmU + 1
 					Case "W"
-						VmImgIndexes.Add(12)
+						VmImgIndexes.Add(25)
 						VmW = VmW + 1
 					Case "M"
-						VmImgIndexes.Add(21)
+						VmImgIndexes.Add(31)
 						VmM = VmM + 1
 					Case "A"
-						VmImgIndexes.Add(21)
+						VmImgIndexes.Add(31)
 						VmA = VmA + 1
 					Case Else
-						VmImgIndexes.Add(21)
+						VmImgIndexes.Add(31)
 				End Select
 			End If
 		Next VpI

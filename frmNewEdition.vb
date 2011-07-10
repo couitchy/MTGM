@@ -20,6 +20,7 @@
 Imports System.IO
 Imports System.ComponentModel
 Imports System.Text
+Imports System.Globalization
 Public Partial Class frmNewEdition
 	Private VmEditionHeader As New clsEditionHeader
 	Private VmEncNbr0 As Long = -1
@@ -60,7 +61,7 @@ Public Partial Class frmNewEdition
 			.SeriesNM = VpInfos(2)
 			.SeriesNM_MtG = VpInfos(3)
 			.Border = .SetBorder(VpInfos(8))
-			.Release = CDate(VpInfos(9))
+			.Release = Date.Parse(VpInfos(9), New CultureInfo("fr-FR", True), DateTimeStyles.NoCurrentDateDefault)
 			.TotCards = Val(VpInfos(11))
 			.Rare = Val(VpInfos(13))
 			.Uncommon = Val(VpInfos(14))

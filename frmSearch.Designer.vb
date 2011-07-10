@@ -55,6 +55,7 @@ Partial Class frmSearch
 		Me.lblProp4 = New System.Windows.Forms.Label
 		Me.lblProp3 = New System.Windows.Forms.Label
 		Me.grpSearch = New System.Windows.Forms.GroupBox
+		Me.chkRestrictionInv = New System.Windows.Forms.CheckBox
 		Me.cmdClearSearches = New System.Windows.Forms.Button
 		Me.cboFind = New System.Windows.Forms.ComboBox
 		Me.lblOccur = New System.Windows.Forms.Label
@@ -89,7 +90,7 @@ Partial Class frmSearch
 		Me.cbarSearch.Location = New System.Drawing.Point(0, 0)
 		Me.cbarSearch.Movable = false
 		Me.cbarSearch.Name = "cbarSearch"
-		Me.cbarSearch.Size = New System.Drawing.Size(379, 335)
+		Me.cbarSearch.Size = New System.Drawing.Size(379, 356)
 		Me.cbarSearch.TabIndex = 7
 		Me.cbarSearch.Text = "Recherche avancée"
 		AddHandler Me.cbarSearch.VisibleChanged, AddressOf Me.CbarSearchVisibleChanged
@@ -99,11 +100,11 @@ Partial Class frmSearch
 		'
 		'pnlSearch
 		'
-		Me.pnlSearch.Controls.Add(Me.grpSerie)
 		Me.pnlSearch.Controls.Add(Me.grpSearch)
+		Me.pnlSearch.Controls.Add(Me.grpSerie)
 		Me.pnlSearch.Location = New System.Drawing.Point(2, 46)
 		Me.pnlSearch.Name = "pnlSearch"
-		Me.pnlSearch.Size = New System.Drawing.Size(375, 287)
+		Me.pnlSearch.Size = New System.Drawing.Size(375, 308)
 		Me.pnlSearch.TabIndex = 0
 		'
 		'grpSerie
@@ -129,7 +130,7 @@ Partial Class frmSearch
 		Me.grpSerie.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpSerie.Location = New System.Drawing.Point(0, 0)
 		Me.grpSerie.Name = "grpSerie"
-		Me.grpSerie.Size = New System.Drawing.Size(375, 287)
+		Me.grpSerie.Size = New System.Drawing.Size(375, 308)
 		Me.grpSerie.TabIndex = 1
 		Me.grpSerie.TabStop = false
 		Me.grpSerie.Visible = false
@@ -138,7 +139,7 @@ Partial Class frmSearch
 		'
 		Me.lblStock2.AutoSize = true
 		Me.lblStock2.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock2.Location = New System.Drawing.Point(161, 83)
+		Me.lblStock2.Location = New System.Drawing.Point(161, 128)
 		Me.lblStock2.Name = "lblStock2"
 		Me.lblStock2.Size = New System.Drawing.Size(12, 13)
 		Me.lblStock2.TabIndex = 38
@@ -148,7 +149,7 @@ Partial Class frmSearch
 		'lblStock3
 		'
 		Me.lblStock3.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock3.Location = New System.Drawing.Point(163, 83)
+		Me.lblStock3.Location = New System.Drawing.Point(163, 128)
 		Me.lblStock3.Name = "lblStock3"
 		Me.lblStock3.Size = New System.Drawing.Size(19, 20)
 		Me.lblStock3.TabIndex = 39
@@ -166,7 +167,7 @@ Partial Class frmSearch
 		'lblAD
 		'
 		Me.lblAD.BackColor = System.Drawing.Color.Transparent
-		Me.lblAD.Location = New System.Drawing.Point(135, 103)
+		Me.lblAD.Location = New System.Drawing.Point(135, 152)
 		Me.lblAD.Name = "lblAD"
 		Me.lblAD.Size = New System.Drawing.Size(45, 13)
 		Me.lblAD.TabIndex = 35
@@ -175,7 +176,7 @@ Partial Class frmSearch
 		'lblStock
 		'
 		Me.lblStock.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock.Location = New System.Drawing.Point(114, 83)
+		Me.lblStock.Location = New System.Drawing.Point(114, 128)
 		Me.lblStock.Name = "lblStock"
 		Me.lblStock.Size = New System.Drawing.Size(45, 13)
 		Me.lblStock.TabIndex = 34
@@ -184,7 +185,7 @@ Partial Class frmSearch
 		'lblPrix
 		'
 		Me.lblPrix.BackColor = System.Drawing.Color.Transparent
-		Me.lblPrix.Location = New System.Drawing.Point(135, 63)
+		Me.lblPrix.Location = New System.Drawing.Point(135, 104)
 		Me.lblPrix.Name = "lblPrix"
 		Me.lblPrix.Size = New System.Drawing.Size(45, 13)
 		Me.lblPrix.TabIndex = 33
@@ -193,7 +194,7 @@ Partial Class frmSearch
 		'lblRarete
 		'
 		Me.lblRarete.BackColor = System.Drawing.Color.Transparent
-		Me.lblRarete.Location = New System.Drawing.Point(81, 42)
+		Me.lblRarete.Location = New System.Drawing.Point(81, 79)
 		Me.lblRarete.Name = "lblRarete"
 		Me.lblRarete.Size = New System.Drawing.Size(99, 13)
 		Me.lblRarete.TabIndex = 32
@@ -201,18 +202,18 @@ Partial Class frmSearch
 		'
 		'txtCardText
 		'
-		Me.txtCardText.Location = New System.Drawing.Point(31, 159)
+		Me.txtCardText.Location = New System.Drawing.Point(31, 233)
 		Me.txtCardText.Multiline = true
 		Me.txtCardText.Name = "txtCardText"
 		Me.txtCardText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(194, 67)
+		Me.txtCardText.Size = New System.Drawing.Size(338, 67)
 		Me.txtCardText.TabIndex = 31
 		'
 		'lblProp7
 		'
 		Me.lblProp7.AutoSize = true
 		Me.lblProp7.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp7.Location = New System.Drawing.Point(28, 143)
+		Me.lblProp7.Location = New System.Drawing.Point(28, 217)
 		Me.lblProp7.Name = "lblProp7"
 		Me.lblProp7.Size = New System.Drawing.Size(40, 13)
 		Me.lblProp7.TabIndex = 30
@@ -221,15 +222,15 @@ Partial Class frmSearch
 		'cboEdition
 		'
 		Me.cboEdition.FormattingEnabled = true
-		Me.cboEdition.Location = New System.Drawing.Point(98, 20)
+		Me.cboEdition.Location = New System.Drawing.Point(53, 43)
 		Me.cboEdition.Name = "cboEdition"
-		Me.cboEdition.Size = New System.Drawing.Size(80, 21)
+		Me.cboEdition.Size = New System.Drawing.Size(129, 21)
 		Me.cboEdition.TabIndex = 29
 		AddHandler Me.cboEdition.SelectedValueChanged, AddressOf Me.CboEditionSelectedValueChanged
 		'
 		'picEdition
 		'
-		Me.picEdition.Location = New System.Drawing.Point(75, 21)
+		Me.picEdition.Location = New System.Drawing.Point(30, 44)
 		Me.picEdition.Name = "picEdition"
 		Me.picEdition.Size = New System.Drawing.Size(18, 18)
 		Me.picEdition.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -240,7 +241,7 @@ Partial Class frmSearch
 		'
 		Me.lblProp6.AutoSize = true
 		Me.lblProp6.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp6.Location = New System.Drawing.Point(28, 103)
+		Me.lblProp6.Location = New System.Drawing.Point(28, 152)
 		Me.lblProp6.Name = "lblProp6"
 		Me.lblProp6.Size = New System.Drawing.Size(101, 13)
 		Me.lblProp6.TabIndex = 27
@@ -250,7 +251,7 @@ Partial Class frmSearch
 		'
 		Me.lblProp1.AutoSize = true
 		Me.lblProp1.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp1.Location = New System.Drawing.Point(28, 123)
+		Me.lblProp1.Location = New System.Drawing.Point(28, 176)
 		Me.lblProp1.Name = "lblProp1"
 		Me.lblProp1.Size = New System.Drawing.Size(63, 13)
 		Me.lblProp1.TabIndex = 26
@@ -260,7 +261,7 @@ Partial Class frmSearch
 		'
 		Me.lblProp2.AutoSize = true
 		Me.lblProp2.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp2.Location = New System.Drawing.Point(28, 83)
+		Me.lblProp2.Location = New System.Drawing.Point(28, 128)
 		Me.lblProp2.Name = "lblProp2"
 		Me.lblProp2.Size = New System.Drawing.Size(41, 13)
 		Me.lblProp2.TabIndex = 25
@@ -270,7 +271,7 @@ Partial Class frmSearch
 		'
 		Me.lblProp5.AutoSize = true
 		Me.lblProp5.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp5.Location = New System.Drawing.Point(28, 63)
+		Me.lblProp5.Location = New System.Drawing.Point(28, 104)
 		Me.lblProp5.Name = "lblProp5"
 		Me.lblProp5.Size = New System.Drawing.Size(30, 13)
 		Me.lblProp5.TabIndex = 24
@@ -280,7 +281,7 @@ Partial Class frmSearch
 		'
 		Me.lblProp4.AutoSize = true
 		Me.lblProp4.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp4.Location = New System.Drawing.Point(28, 43)
+		Me.lblProp4.Location = New System.Drawing.Point(28, 80)
 		Me.lblProp4.Name = "lblProp4"
 		Me.lblProp4.Size = New System.Drawing.Size(45, 13)
 		Me.lblProp4.TabIndex = 23
@@ -299,6 +300,7 @@ Partial Class frmSearch
 		'grpSearch
 		'
 		Me.grpSearch.BackColor = System.Drawing.Color.Transparent
+		Me.grpSearch.Controls.Add(Me.chkRestrictionInv)
 		Me.grpSearch.Controls.Add(Me.cmdClearSearches)
 		Me.grpSearch.Controls.Add(Me.cboFind)
 		Me.grpSearch.Controls.Add(Me.lblOccur)
@@ -313,9 +315,21 @@ Partial Class frmSearch
 		Me.grpSearch.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpSearch.Location = New System.Drawing.Point(0, 0)
 		Me.grpSearch.Name = "grpSearch"
-		Me.grpSearch.Size = New System.Drawing.Size(375, 287)
+		Me.grpSearch.Size = New System.Drawing.Size(375, 308)
 		Me.grpSearch.TabIndex = 0
 		Me.grpSearch.TabStop = false
+		'
+		'chkRestrictionInv
+		'
+		Me.chkRestrictionInv.AutoSize = true
+		Me.chkRestrictionInv.BackColor = System.Drawing.Color.Transparent
+		Me.chkRestrictionInv.Location = New System.Drawing.Point(31, 215)
+		Me.chkRestrictionInv.Name = "chkRestrictionInv"
+		Me.chkRestrictionInv.Size = New System.Drawing.Size(282, 17)
+		Me.chkRestrictionInv.TabIndex = 27
+		Me.chkRestrictionInv.Text = "Rechercher seulement dans les cartes non possédées"
+		Me.chkRestrictionInv.UseVisualStyleBackColor = false
+		AddHandler Me.chkRestrictionInv.CheckedChanged, AddressOf Me.ChkRestrictionInvCheckedChanged
 		'
 		'cmdClearSearches
 		'
@@ -353,11 +367,11 @@ Partial Class frmSearch
 		Me.chkMerge.AutoSize = true
 		Me.chkMerge.BackColor = System.Drawing.Color.Transparent
 		Me.chkMerge.Enabled = false
-		Me.chkMerge.Location = New System.Drawing.Point(48, 261)
+		Me.chkMerge.Location = New System.Drawing.Point(48, 284)
 		Me.chkMerge.Name = "chkMerge"
-		Me.chkMerge.Size = New System.Drawing.Size(291, 17)
+		Me.chkMerge.Size = New System.Drawing.Size(218, 17)
 		Me.chkMerge.TabIndex = 22
-		Me.chkMerge.Text = "Fusionner avec les résultats de la recherche précédente"
+		Me.chkMerge.Text = "Fusionner avec la recherche précédente"
 		Me.chkMerge.UseVisualStyleBackColor = false
 		'
 		'chkClearPrev
@@ -367,22 +381,22 @@ Partial Class frmSearch
 		Me.chkClearPrev.Checked = true
 		Me.chkClearPrev.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkClearPrev.Enabled = false
-		Me.chkClearPrev.Location = New System.Drawing.Point(48, 238)
+		Me.chkClearPrev.Location = New System.Drawing.Point(48, 261)
 		Me.chkClearPrev.Name = "chkClearPrev"
-		Me.chkClearPrev.Size = New System.Drawing.Size(189, 17)
+		Me.chkClearPrev.Size = New System.Drawing.Size(164, 17)
 		Me.chkClearPrev.TabIndex = 21
-		Me.chkClearPrev.Text = "Effacer l'arborescence précédente"
+		Me.chkClearPrev.Text = "Effacer le contenu précédent"
 		Me.chkClearPrev.UseVisualStyleBackColor = false
 		'
 		'chkShowExternal
 		'
 		Me.chkShowExternal.AutoSize = true
 		Me.chkShowExternal.BackColor = System.Drawing.Color.Transparent
-		Me.chkShowExternal.Location = New System.Drawing.Point(31, 215)
+		Me.chkShowExternal.Location = New System.Drawing.Point(31, 238)
 		Me.chkShowExternal.Name = "chkShowExternal"
-		Me.chkShowExternal.Size = New System.Drawing.Size(267, 17)
+		Me.chkShowExternal.Size = New System.Drawing.Size(206, 17)
 		Me.chkShowExternal.TabIndex = 20
-		Me.chkShowExternal.Text = "Charger les résultats dans l'arborescence principale"
+		Me.chkShowExternal.Text = "Charger les résultats dans l'explorateur"
 		Me.chkShowExternal.UseVisualStyleBackColor = false
 		AddHandler Me.chkShowExternal.CheckedChanged, AddressOf Me.ChkShowExternalCheckedChanged
 		'
@@ -392,9 +406,9 @@ Partial Class frmSearch
 		Me.chkRestriction.BackColor = System.Drawing.Color.Transparent
 		Me.chkRestriction.Location = New System.Drawing.Point(31, 192)
 		Me.chkRestriction.Name = "chkRestriction"
-		Me.chkRestriction.Size = New System.Drawing.Size(278, 17)
+		Me.chkRestriction.Size = New System.Drawing.Size(261, 17)
 		Me.chkRestriction.TabIndex = 19
-		Me.chkRestriction.Text = "Rechercher seulement dans les cartes de la sélection"
+		Me.chkRestriction.Text = "Rechercher seulement dans les cartes possédées"
 		Me.chkRestriction.UseVisualStyleBackColor = false
 		AddHandler Me.chkRestriction.CheckedChanged, AddressOf Me.ChkRestrictionCheckedChanged
 		'
@@ -453,7 +467,7 @@ Partial Class frmSearch
 		Me.AcceptButton = Me.cmdGo
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(379, 335)
+		Me.ClientSize = New System.Drawing.Size(379, 356)
 		Me.Controls.Add(Me.cbarSearch)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -473,6 +487,7 @@ Partial Class frmSearch
 		CType(Me.imgSearch,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private chkRestrictionInv As System.Windows.Forms.CheckBox
 	Public lblStock2 As System.Windows.Forms.Label
 	Public lblStock3 As System.Windows.Forms.Label
 	Private cmdClearSearches As System.Windows.Forms.Button

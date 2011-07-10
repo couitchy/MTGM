@@ -108,6 +108,7 @@ Partial Class frmExploSettings
 		Me.Name = "frmExploSettings"
 		Me.Text = "frmExploSettings"
 		AddHandler KeyUp, AddressOf Me.FrmExploSettingsKeyUp
+		AddHandler FormClosing, AddressOf Me.FrmExploSettingsFormClosing
 		Me.toolStrip.ResumeLayout(false)
 		Me.toolStrip.PerformLayout
 		Me.ResumeLayout(false)

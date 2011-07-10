@@ -131,7 +131,7 @@ Public Partial Class frmGestDecks
 			Me.btUp.Enabled = False
 			Me.btDown.Enabled = False
 		Else			
-			Me.btRename.Enabled = True
+			Me.btRename.Enabled = ( Me.lstDecks.SelectedIndices.Count = 1 )
 			Me.btUp.Enabled = ( Me.lstDecks.SelectedIndex > 0 )
 			Me.btDown.Enabled = ( Me.lstDecks.SelectedIndex < Me.lstDecks.Items.Count - 1 )
 		End If
