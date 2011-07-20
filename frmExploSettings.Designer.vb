@@ -54,6 +54,7 @@ Partial Class frmExploSettings
 		'btUp
 		'
 		Me.btUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btUp.Enabled = false
 		Me.btUp.Image = CType(resources.GetObject("btUp.Image"),System.Drawing.Image)
 		Me.btUp.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btUp.Name = "btUp"
@@ -64,6 +65,7 @@ Partial Class frmExploSettings
 		'btDown
 		'
 		Me.btDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btDown.Enabled = false
 		Me.btDown.Image = CType(resources.GetObject("btDown.Image"),System.Drawing.Image)
 		Me.btDown.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btDown.Name = "btDown"
@@ -107,6 +109,7 @@ Partial Class frmExploSettings
 		Me.KeyPreview = true
 		Me.Name = "frmExploSettings"
 		Me.Text = "frmExploSettings"
+		Me.TopMost = true
 		AddHandler KeyUp, AddressOf Me.FrmExploSettingsKeyUp
 		AddHandler FormClosing, AddressOf Me.FrmExploSettingsFormClosing
 		Me.toolStrip.ResumeLayout(false)

@@ -36,6 +36,10 @@ Partial Class frmXL
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmXL))
 		Me.cbarXL = New TD.SandBar.ContainerBar
 		Me.pnlXL = New TD.SandBar.ContainerBarClientPanel
+		Me.grpColumns = New System.Windows.Forms.GroupBox
+		Me.chklstXL = New System.Windows.Forms.CheckedListBox
+		Me.chkAllNone = New System.Windows.Forms.CheckBox
+		Me.lblXL = New System.Windows.Forms.Label
 		Me.cmdXL = New System.Windows.Forms.Button
 		Me.grpOptions = New System.Windows.Forms.GroupBox
 		Me.cmdSaveImg = New System.Windows.Forms.Button
@@ -48,14 +52,10 @@ Partial Class frmXL
 		Me.btColumns = New TD.SandBar.ButtonItem
 		Me.btAdvance = New TD.SandBar.ButtonItem
 		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
-		Me.grpColumns = New System.Windows.Forms.GroupBox
-		Me.chklstXL = New System.Windows.Forms.CheckedListBox
-		Me.chkAllNone = New System.Windows.Forms.CheckBox
-		Me.lblXL = New System.Windows.Forms.Label
 		Me.cbarXL.SuspendLayout
 		Me.pnlXL.SuspendLayout
-		Me.grpOptions.SuspendLayout
 		Me.grpColumns.SuspendLayout
+		Me.grpOptions.SuspendLayout
 		Me.SuspendLayout
 		'
 		'cbarXL
@@ -87,6 +87,53 @@ Partial Class frmXL
 		Me.pnlXL.Name = "pnlXL"
 		Me.pnlXL.Size = New System.Drawing.Size(280, 224)
 		Me.pnlXL.TabIndex = 0
+		'
+		'grpColumns
+		'
+		Me.grpColumns.Controls.Add(Me.chklstXL)
+		Me.grpColumns.Controls.Add(Me.chkAllNone)
+		Me.grpColumns.Controls.Add(Me.lblXL)
+		Me.grpColumns.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grpColumns.Location = New System.Drawing.Point(0, 0)
+		Me.grpColumns.Name = "grpColumns"
+		Me.grpColumns.Size = New System.Drawing.Size(280, 201)
+		Me.grpColumns.TabIndex = 13
+		Me.grpColumns.TabStop = false
+		'
+		'chklstXL
+		'
+		Me.chklstXL.CheckOnClick = true
+		Me.chklstXL.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chklstXL.FormattingEnabled = true
+		Me.chklstXL.Items.AddRange(New Object() {"Couleur", "Coût d'invocation", "Edition", "Prix", "Rareté", "Sous-type", "Type", "Texte"})
+		Me.chklstXL.Location = New System.Drawing.Point(3, 49)
+		Me.chklstXL.Name = "chklstXL"
+		Me.chklstXL.Size = New System.Drawing.Size(274, 124)
+		Me.chklstXL.TabIndex = 8
+		AddHandler Me.chklstXL.SelectedValueChanged, AddressOf Me.ChklstXLSelectedValueChanged
+		'
+		'chkAllNone
+		'
+		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.chkAllNone.Location = New System.Drawing.Point(3, 173)
+		Me.chkAllNone.Name = "chkAllNone"
+		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
+		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
+		Me.chkAllNone.TabIndex = 7
+		Me.chkAllNone.Text = "Sélectionner tout"
+		Me.chkAllNone.UseVisualStyleBackColor = true
+		AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
+		'
+		'lblXL
+		'
+		Me.lblXL.BackColor = System.Drawing.Color.Transparent
+		Me.lblXL.Dock = System.Windows.Forms.DockStyle.Top
+		Me.lblXL.Location = New System.Drawing.Point(3, 16)
+		Me.lblXL.Name = "lblXL"
+		Me.lblXL.Size = New System.Drawing.Size(274, 33)
+		Me.lblXL.TabIndex = 5
+		Me.lblXL.Text = "Sélectionnez les colonnes optionnelles que vous souhaitez faire apparaître dans l"& _ 
+		"a feuille Excel :"
 		'
 		'cmdXL
 		'
@@ -206,53 +253,6 @@ Partial Class frmXL
 		'
 		Me.dlgBrowse.Description = "Répertoire d'extraction des images"
 		'
-		'grpColumns
-		'
-		Me.grpColumns.Controls.Add(Me.chklstXL)
-		Me.grpColumns.Controls.Add(Me.chkAllNone)
-		Me.grpColumns.Controls.Add(Me.lblXL)
-		Me.grpColumns.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpColumns.Location = New System.Drawing.Point(0, 0)
-		Me.grpColumns.Name = "grpColumns"
-		Me.grpColumns.Size = New System.Drawing.Size(280, 201)
-		Me.grpColumns.TabIndex = 13
-		Me.grpColumns.TabStop = false
-		'
-		'chklstXL
-		'
-		Me.chklstXL.CheckOnClick = true
-		Me.chklstXL.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.chklstXL.FormattingEnabled = true
-		Me.chklstXL.Items.AddRange(New Object() {"Couleur", "Coût d'invocation", "Edition", "Prix", "Rareté", "Sous-type", "Type", "Texte"})
-		Me.chklstXL.Location = New System.Drawing.Point(3, 49)
-		Me.chklstXL.Name = "chklstXL"
-		Me.chklstXL.Size = New System.Drawing.Size(274, 124)
-		Me.chklstXL.TabIndex = 8
-		AddHandler Me.chklstXL.SelectedValueChanged, AddressOf Me.ChklstXLSelectedValueChanged
-		'
-		'chkAllNone
-		'
-		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.chkAllNone.Location = New System.Drawing.Point(3, 173)
-		Me.chkAllNone.Name = "chkAllNone"
-		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
-		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
-		Me.chkAllNone.TabIndex = 7
-		Me.chkAllNone.Text = "Sélectionner tout"
-		Me.chkAllNone.UseVisualStyleBackColor = true
-		AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
-		'
-		'lblXL
-		'
-		Me.lblXL.BackColor = System.Drawing.Color.Transparent
-		Me.lblXL.Dock = System.Windows.Forms.DockStyle.Top
-		Me.lblXL.Location = New System.Drawing.Point(3, 16)
-		Me.lblXL.Name = "lblXL"
-		Me.lblXL.Size = New System.Drawing.Size(274, 33)
-		Me.lblXL.TabIndex = 5
-		Me.lblXL.Text = "Sélectionnez les colonnes optionnelles que vous souhaitez faire apparaître dans l"& _ 
-		"a feuille Excel :"
-		'
 		'frmXL
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -260,15 +260,16 @@ Partial Class frmXL
 		Me.ClientSize = New System.Drawing.Size(284, 275)
 		Me.Controls.Add(Me.cbarXL)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmXL"
 		Me.ShowInTaskbar = false
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Génération Excel"
 		Me.cbarXL.ResumeLayout(false)
 		Me.pnlXL.ResumeLayout(false)
+		Me.grpColumns.ResumeLayout(false)
 		Me.grpOptions.ResumeLayout(false)
 		Me.grpOptions.PerformLayout
-		Me.grpColumns.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
 	Private dlgBrowse As System.Windows.Forms.FolderBrowserDialog

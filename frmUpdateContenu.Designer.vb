@@ -42,8 +42,8 @@ Partial Class frmUpdateContenu
 		Me.colContenu = New System.Windows.Forms.ColumnHeader
 		Me.colLocal = New System.Windows.Forms.ColumnHeader
 		Me.colServeur = New System.Windows.Forms.ColumnHeader
-		Me.cmdUpdate = New System.Windows.Forms.Button
 		Me.colSize = New System.Windows.Forms.ColumnHeader
+		Me.cmdUpdate = New System.Windows.Forms.Button
 		Me.cbarUpdate.SuspendLayout
 		Me.pnlUpdate.SuspendLayout
 		Me.grpUpdate.SuspendLayout
@@ -122,6 +122,11 @@ Partial Class frmUpdateContenu
 		Me.colServeur.Text = "Version serveur"
 		Me.colServeur.Width = 90
 		'
+		'colSize
+		'
+		Me.colSize.Text = "Taille"
+		Me.colSize.Width = 78
+		'
 		'cmdUpdate
 		'
 		Me.cmdUpdate.Dock = System.Windows.Forms.DockStyle.Bottom
@@ -132,11 +137,6 @@ Partial Class frmUpdateContenu
 		Me.cmdUpdate.Text = "Mettre à jour les éléments sélectionnés"
 		Me.cmdUpdate.UseVisualStyleBackColor = true
 		AddHandler Me.cmdUpdate.Click, AddressOf Me.CmdUpdateClick
-		'
-		'colSize
-		'
-		Me.colSize.Text = "Taille"
-		Me.colSize.Width = 78
 		'
 		'frmUpdateContenu
 		'

@@ -319,6 +319,7 @@ Partial Class About
 		Me.Controls.Add(Me.groupBox1)
 		Me.Controls.Add(Me.button1)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "About"
 		Me.ShowIcon = false
 		Me.ShowInTaskbar = false

@@ -83,8 +83,8 @@ Partial Class frmExport
 		'
 		'pnlImpExp
 		'
-		Me.pnlImpExp.Controls.Add(Me.grpExport)
 		Me.pnlImpExp.Controls.Add(Me.grpImport)
+		Me.pnlImpExp.Controls.Add(Me.grpExport)
 		Me.pnlImpExp.Location = New System.Drawing.Point(2, 49)
 		Me.pnlImpExp.Name = "pnlImpExp"
 		Me.pnlImpExp.Size = New System.Drawing.Size(324, 173)
@@ -283,7 +283,8 @@ Partial Class frmExport
 		'
 		'dlgFileBrowser
 		'
-		Me.dlgFileBrowser.Filter = "Fichiers de deck v2 (*.dk2) | *.dk2|Fichiers de deck (*.dck) | *.dck"
+		Me.dlgFileBrowser.Filter = "Fichiers de deck v2 (*.dk2) | *.dk2|Fichiers de deck (*.dck) | *.dck|Magic Master"& _ 
+		" deck (*.xml) | *.xml"
 		Me.dlgFileBrowser.Title = "Sélectionner le fichier à importer"
 		'
 		'frmExport

@@ -36,11 +36,11 @@ Partial Class frmCorrExpr
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCorrExpr))
 		Me.cbarExpr = New TD.SandBar.ContainerBar
 		Me.pnlExpr = New TD.SandBar.ContainerBarClientPanel
+		Me.chklstExpr = New System.Windows.Forms.CheckedListBox
 		Me.chkAllNone = New System.Windows.Forms.CheckBox
 		Me.cmdKeep = New System.Windows.Forms.Button
 		Me.cmdRemove = New System.Windows.Forms.Button
 		Me.cmdOk = New System.Windows.Forms.Button
-		Me.chklstExpr = New System.Windows.Forms.CheckedListBox
 		Me.cbarExpr.SuspendLayout
 		Me.pnlExpr.SuspendLayout
 		Me.SuspendLayout
@@ -75,6 +75,17 @@ Partial Class frmCorrExpr
 		Me.pnlExpr.Name = "pnlExpr"
 		Me.pnlExpr.Size = New System.Drawing.Size(263, 254)
 		Me.pnlExpr.TabIndex = 0
+		'
+		'chklstExpr
+		'
+		Me.chklstExpr.CheckOnClick = true
+		Me.chklstExpr.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chklstExpr.FormattingEnabled = true
+		Me.chklstExpr.HorizontalScrollbar = true
+		Me.chklstExpr.Location = New System.Drawing.Point(0, 0)
+		Me.chklstExpr.Name = "chklstExpr"
+		Me.chklstExpr.Size = New System.Drawing.Size(263, 154)
+		Me.chklstExpr.TabIndex = 12
 		'
 		'chkAllNone
 		'
@@ -121,17 +132,6 @@ Partial Class frmCorrExpr
 		Me.cmdOk.Text = "Valider"
 		Me.cmdOk.UseVisualStyleBackColor = true
 		AddHandler Me.cmdOk.Click, AddressOf Me.CmdOkClick
-		'
-		'chklstExpr
-		'
-		Me.chklstExpr.CheckOnClick = true
-		Me.chklstExpr.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.chklstExpr.FormattingEnabled = true
-		Me.chklstExpr.HorizontalScrollbar = true
-		Me.chklstExpr.Location = New System.Drawing.Point(0, 0)
-		Me.chklstExpr.Name = "chklstExpr"
-		Me.chklstExpr.Size = New System.Drawing.Size(263, 154)
-		Me.chklstExpr.TabIndex = 12
 		'
 		'frmCorrExpr
 		'

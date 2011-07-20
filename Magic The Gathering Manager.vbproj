@@ -7,7 +7,6 @@
     <MyType>WindowsForms</MyType>
     <RootNamespace>Magic_The_Gathering_Manager</RootNamespace>
     <AssemblyName>Magic The Gathering Manager</AssemblyName>
-    <ApplicationIcon>Ressources\MTG.ico</ApplicationIcon>
     <StartupObject>Magic_The_Gathering_Manager.clsModule</StartupObject>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <OptionExplicit>On</OptionExplicit>
@@ -22,17 +21,19 @@
     <SourceAnalysisOverrideSettingsFile>C:\Users\Couitchy\AppData\Roaming\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <NoWin32Manifest>True</NoWin32Manifest>
+    <OptionInfer>Off</OptionInfer>
+    <ApplicationIcon>Ressources\MTGM_hd.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug-x86\</OutputPath>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>Full</DebugType>
     <Optimize>False</Optimize>
     <DefineConstants>DEBUG=1,TRACE=1</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <DebugSymbols>False</DebugSymbols>
+    <OutputPath>bin\Release-x86\</OutputPath>
+    <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
     <DefineConstants>TRACE=1</DefineConstants>

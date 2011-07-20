@@ -39,10 +39,10 @@ Partial Class frmStats
 		Me.cbarChart = New TD.SandBar.ContainerBar
 		Me.pnlChart = New TD.SandBar.ContainerBarClientPanel
 		Me.chartManaCurve = New NPlot.Windows.PlotSurface2D
-		Me.chartBreakDown = New SoftwareFX.ChartFX.Lite.Chart
 		Me.cmnuChart = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.cmnuBreakDown = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuCurve = New System.Windows.Forms.ToolStripMenuItem
+		Me.chartBreakDown = New SoftwareFX.ChartFX.Lite.Chart
 		Me.cboCriterion = New TD.SandBar.ComboBoxItem
 		Me.cbarInfos = New TD.SandBar.ContainerBar
 		Me.pnlInfos = New TD.SandBar.ContainerBarClientPanel
@@ -211,21 +211,6 @@ Partial Class frmStats
 		Me.chartManaCurve.YAxis1 = Nothing
 		Me.chartManaCurve.YAxis2 = Nothing
 		'
-		'chartBreakDown
-		'
-		Me.chartBreakDown.BackColor = System.Drawing.Color.Transparent
-		Me.chartBreakDown.Chart3D = true
-		Me.chartBreakDown.ContextMenuStrip = Me.cmnuChart
-		Me.chartBreakDown.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.chartBreakDown.Font = New System.Drawing.Font("Arial", 7!)
-		Me.chartBreakDown.Gallery = SoftwareFX.ChartFX.Lite.Gallery.Pie
-		Me.chartBreakDown.Location = New System.Drawing.Point(0, 0)
-		Me.chartBreakDown.Name = "chartBreakDown"
-		Me.chartBreakDown.NSeries = 1
-		Me.chartBreakDown.NValues = 1
-		Me.chartBreakDown.Size = New System.Drawing.Size(534, 169)
-		Me.chartBreakDown.TabIndex = 1
-		'
 		'cmnuChart
 		'
 		Me.cmnuChart.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuBreakDown, Me.cmnuCurve})
@@ -248,6 +233,21 @@ Partial Class frmStats
 		Me.cmnuCurve.Size = New System.Drawing.Size(152, 22)
 		Me.cmnuCurve.Text = "Mana curve"
 		AddHandler Me.cmnuCurve.Click, AddressOf Me.CmnuCurveClick
+		'
+		'chartBreakDown
+		'
+		Me.chartBreakDown.BackColor = System.Drawing.Color.Transparent
+		Me.chartBreakDown.Chart3D = true
+		Me.chartBreakDown.ContextMenuStrip = Me.cmnuChart
+		Me.chartBreakDown.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chartBreakDown.Font = New System.Drawing.Font("Arial", 7!)
+		Me.chartBreakDown.Gallery = SoftwareFX.ChartFX.Lite.Gallery.Pie
+		Me.chartBreakDown.Location = New System.Drawing.Point(0, 0)
+		Me.chartBreakDown.Name = "chartBreakDown"
+		Me.chartBreakDown.NSeries = 1
+		Me.chartBreakDown.NValues = 1
+		Me.chartBreakDown.Size = New System.Drawing.Size(534, 169)
+		Me.chartBreakDown.TabIndex = 1
 		'
 		'cboCriterion
 		'

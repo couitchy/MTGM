@@ -33,6 +33,7 @@ Partial Class frmTranslate
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
+		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmTranslate))
 		Me.grpSerie = New System.Windows.Forms.GroupBox
 		Me.chkAlert = New System.Windows.Forms.CheckBox
 		Me.cmdGo = New System.Windows.Forms.Button
@@ -191,12 +192,13 @@ Partial Class frmTranslate
 		Me.Controls.Add(Me.grpTranslate)
 		Me.Controls.Add(Me.grpSerie)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmTranslate"
 		Me.ShowInTaskbar = false
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Traduction des cartes d'une série"
-		AddHandler FormClosing, AddressOf Me.FrmTranslateFormClosing
 		AddHandler Load, AddressOf Me.FrmTranslateLoad
+		AddHandler FormClosing, AddressOf Me.FrmTranslateFormClosing
 		Me.grpSerie.ResumeLayout(false)
 		Me.grpSerie.PerformLayout
 		CType(Me.picSerie,System.ComponentModel.ISupportInitialize).EndInit

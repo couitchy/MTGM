@@ -56,9 +56,9 @@ Public Partial Class frmExploSettings
 				VpStr = clsModule.SafeGetText(VpItem)
 				If VpStr = clsModule.CgCollection Then
 					VpItem.Checked = Not ( e.NewValue = CheckState.Checked )
-				ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
-				Else
-					VpItem.Checked = ( e.NewValue = CheckState.Checked )
+'				ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
+'				Else
+'					VpItem.Checked = ( e.NewValue = CheckState.Checked )
 				End If
 			Next VpItem
 			Me.chklstClassement.SelectedItems.Clear

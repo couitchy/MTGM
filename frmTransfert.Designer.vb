@@ -33,6 +33,7 @@ Partial Class frmTransfert
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
+		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmTransfert))
 		Me.cmdOK = New System.Windows.Forms.Button
 		Me.cmdCancel = New System.Windows.Forms.Button
 		Me.grpSource = New System.Windows.Forms.GroupBox
@@ -195,6 +196,7 @@ Partial Class frmTransfert
 		Me.Controls.Add(Me.cmdCancel)
 		Me.Controls.Add(Me.cmdOK)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmTransfert"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Transfert"

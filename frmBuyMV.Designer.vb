@@ -46,6 +46,7 @@ Partial Class frmBuyMV
 		Me.splitV2 = New System.Windows.Forms.SplitContainer
 		Me.lblSeller = New System.Windows.Forms.Label
 		Me.lstSeller = New System.Windows.Forms.ListBox
+		Me.cmdCancelMV = New System.Windows.Forms.Button
 		Me.cmdCalc = New System.Windows.Forms.Button
 		Me.prgRefresh = New System.Windows.Forms.ProgressBar
 		Me.cmdRefresh = New System.Windows.Forms.Button
@@ -64,7 +65,6 @@ Partial Class frmBuyMV
 		Me.mnuRemoveSeller = New System.Windows.Forms.ToolStripMenuItem
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
-		Me.cmdCancelMV = New System.Windows.Forms.Button
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
 		Me.splitH.SuspendLayout
@@ -237,6 +237,17 @@ Partial Class frmBuyMV
 		Me.lstSeller.TabIndex = 0
 		AddHandler Me.lstSeller.MouseUp, AddressOf Me.LstSellerMouseUp
 		'
+		'cmdCancelMV
+		'
+		Me.cmdCancelMV.Location = New System.Drawing.Point(8, 26)
+		Me.cmdCancelMV.Name = "cmdCancelMV"
+		Me.cmdCancelMV.Size = New System.Drawing.Size(141, 23)
+		Me.cmdCancelMV.TabIndex = 3
+		Me.cmdCancelMV.Text = "Annuler"
+		Me.cmdCancelMV.UseVisualStyleBackColor = true
+		Me.cmdCancelMV.Visible = false
+		AddHandler Me.cmdCancelMV.Click, AddressOf Me.CmdCancelMVClick
+		'
 		'cmdCalc
 		'
 		Me.cmdCalc.Location = New System.Drawing.Point(8, 51)
@@ -403,17 +414,6 @@ Partial Class frmBuyMV
 		Me.dlgOpen.DefaultExt = "mvb"
 		Me.dlgOpen.Filter = "Magic-Ville Baskets (*.mvb) | *.mvb"
 		Me.dlgOpen.Title = "Chargement du panier Magic-Ville"
-		'
-		'cmdCancelMV
-		'
-		Me.cmdCancelMV.Location = New System.Drawing.Point(8, 26)
-		Me.cmdCancelMV.Name = "cmdCancelMV"
-		Me.cmdCancelMV.Size = New System.Drawing.Size(141, 23)
-		Me.cmdCancelMV.TabIndex = 3
-		Me.cmdCancelMV.Text = "Annuler"
-		Me.cmdCancelMV.UseVisualStyleBackColor = true
-		Me.cmdCancelMV.Visible = false
-		AddHandler Me.cmdCancelMV.Click, AddressOf Me.CmdCancelMVClick
 		'
 		'frmBuyMV
 		'

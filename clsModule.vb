@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 25403
+	Public Const CgCodeLines As Integer   		= 25600
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgShuffleDepth As Integer		= 4
@@ -114,6 +114,7 @@ Public Module clsModule
 	Public Const CgFExtO As String				= ".dck"
 	Public Const CgFExtN As String				= ".dk2"
 	Public Const CgFExtA As String				= ".dec"
+	Public Const CgFExtM As String				= ".xml"
 	Public Const CgFExtD As String				= ".mdb"
 	Public Const CgIconsExt As String			= ".png"
 	Public Const CgPicUpExt As String			= ".dat"
@@ -1380,7 +1381,7 @@ Public Module clsModule
 					'- 1 - soit la carte existe dans une autre édition et dans ce cas il faut inclure cette dernière dans la liste déroulante
 					'- 2 - soit dans la même édition mais d'un autre deck (cas où la source vaut MyGames) et dans ce cas il faut sommer les items en stock
 					'- 3 - soit dans la même édition et c'est alors un doublon (cas d'une recherche avancée sur une carte doublonnée)
-					'- 4 - soit dans la même édition et c'est alors une version foil qu'on doit sommer (car on est en mode de non distinction foil)					
+					'- 4 - soit dans la même édition et c'est alors une version foil qu'on doit sommer (car on est en mode de non distinction foil)
 					If VpEdition = "" Then
 						VpForm.lblStock3.Text = VpForm.lblStock.Text
 					End If
@@ -1889,6 +1890,11 @@ Public Class clsManas
 	Private VmPU As Short = 0						'Mana bleu ou 2 points de vie
 	Private VmPR As Short = 0						'Mana rouge ou 2 points de vie
 	Private VmPW As Short = 0						'Mana blanc ou 2 points de vie
+	Private Vm2W As Short = 0						'Mana blanc ou 2 de n'importe quelle couleur
+	Private Vm2R As Short = 0						'Mana rouge ou 2 de n'importe quelle couleur
+	Private Vm2G As Short = 0						'Mana vert ou 2 de n'importe quelle couleur
+	Private Vm2B As Short = 0						'Mana noir ou 2 de n'importe quelle couleur
+	Private Vm2U As Short = 0						'Mana bleu ou 2 de n'importe quelle couleur
 	Private VmBG As Short = 0						'Mana noir ou vert
 	Private VmBR As Short = 0						'Mana noir ou rouge
 	Private VmGU As Short = 0						'Mana vert ou bleu
@@ -1957,7 +1963,7 @@ Public Class clsManas
 		'- XA... (ex. X2U)
 		ElseIf VpCost.StartsWith("x") AndAlso Val(VpCost.Substring(1)) <> 0 Then
 			VmX = 1
-			VmImgIndexes.Add(30)
+			VmImgIndexes.Add(0)
 			VmEffectiveLength = 1
 			VpCost = VpCost.Substring(1)
 		End If
@@ -1971,7 +1977,7 @@ Public Class clsManas
 			VpX = VpCost.Substring(VpI, 1)
 			'Pas de couleur
 			If VpI = 0 And VpColorless <> 0 Then
-				VmImgIndexes.Add(31 + CInt(VpColorless))
+				VmImgIndexes.Add(1 + CInt(VpColorless))
 				If VpColorless >= 10 Then
 					VpI = VpI + 1 	'Très impropre en programmation structurée mais permet de gérer directement le cas des nombres à 2 chiffres
 				End If
@@ -1981,113 +1987,128 @@ Public Class clsManas
 				VpY = VpCost.Substring(VpI + 1, 3)
 				Select Case VpY.ToUpper
 					Case "P/R"
-						VmImgIndexes.Add(2)
+						VmImgIndexes.Add(35)
 						VmPR = VmPR + 1
 					Case "P/B"
-						VmImgIndexes.Add(0)
+						VmImgIndexes.Add(33)
 						VmPB = VmPB + 1
 					Case "P/G"
-						VmImgIndexes.Add(1)
+						VmImgIndexes.Add(34)
 						VmPG = VmPG + 1
 					Case "P/U"
-						VmImgIndexes.Add(3)
+						VmImgIndexes.Add(36)
 						VmPU = VmPU + 1
 					Case "P/W"
-						VmImgIndexes.Add(4)
+						VmImgIndexes.Add(37)
 						VmPW = VmPW + 1
 					Case "G/B"
-						VmImgIndexes.Add(11)
+						VmImgIndexes.Add(29)
 						VmBG = VmBG + 1
 					Case "R/B"
-						VmImgIndexes.Add(16)
+						VmImgIndexes.Add(39)
 						VmBR = VmBR + 1
 					Case "U/G"
-						VmImgIndexes.Add(22)
+						VmImgIndexes.Add(45)
 						VmGU = VmGU + 1
 					Case "W/G"
-						VmImgIndexes.Add(27)
+						VmImgIndexes.Add(50)
 						VmGW = VmGW + 1
 					Case "G/R"
-						VmImgIndexes.Add(12)
+						VmImgIndexes.Add(30)
 						VmRG = VmRG + 1
 					Case "W/R"
-						VmImgIndexes.Add(28)
+						VmImgIndexes.Add(51)
 						VmRW = VmRW + 1
 					Case "B/U"
-						VmImgIndexes.Add(8)
+						VmImgIndexes.Add(26)
 						VmUB = VmUB + 1
 					Case "R/U"
-						VmImgIndexes.Add(18)
+						VmImgIndexes.Add(41)
 						VmUR = VmUR + 1
 					Case "B/W"
-						VmImgIndexes.Add(9)
+						VmImgIndexes.Add(27)
 						VmWB = VmWB + 1
 					Case "U/W"
-						VmImgIndexes.Add(24)
+						VmImgIndexes.Add(47)
 						VmWU = VmWU + 1
 					Case "B/G"
-						VmImgIndexes.Add(6)
+						VmImgIndexes.Add(24)
 						VmBG = VmBG + 1
 					Case "B/R"
-						VmImgIndexes.Add(7)
+						VmImgIndexes.Add(25)
 						VmBR = VmBR + 1
 					Case "G/U"
-						VmImgIndexes.Add(13)
+						VmImgIndexes.Add(31)
 						VmGU = VmGU + 1
 					Case "G/W"
-						VmImgIndexes.Add(14)
+						VmImgIndexes.Add(32)
 						VmGW = VmGW + 1
 					Case "R/G"
-						VmImgIndexes.Add(17)
+						VmImgIndexes.Add(40)
 						VmRG = VmRG + 1
 					Case "R/W"
-						VmImgIndexes.Add(19)
+						VmImgIndexes.Add(42)
 						VmRW = VmRW + 1
 					Case "U/B"
-						VmImgIndexes.Add(21)
+						VmImgIndexes.Add(44)
 						VmUB = VmUB + 1
 					Case "U/R"
-						VmImgIndexes.Add(23)
+						VmImgIndexes.Add(46)
 						VmUR = VmUR + 1
 					Case "W/B"
-						VmImgIndexes.Add(26)
+						VmImgIndexes.Add(49)
 						VmWB = VmWB + 1
 					Case "W/U"
-						VmImgIndexes.Add(29)
+						VmImgIndexes.Add(52)
 						VmWU = VmWU + 1
+					Case "2/W", "W/2"
+						VmImgIndexes.Add(22)
+						Vm2W = Vm2W + 1
+					Case "2/B", "B/2"
+						VmImgIndexes.Add(18)
+						Vm2B = Vm2B + 1
+					Case "2/G", "G/2"
+						VmImgIndexes.Add(19)
+						Vm2G = Vm2G + 1
+					Case "2/R", "R/2"
+						VmImgIndexes.Add(20)
+						Vm2R = Vm2R + 1
+					Case "2/U", "U/2"
+						VmImgIndexes.Add(21)
+						Vm2U = Vm2U + 1
 					Case Else
-						VmImgIndexes.Add(31)
+						VmImgIndexes.Add(0)
 				End Select
 				VpI = VpI + 4 'encore impropre mais permet de passer directement à la fin de la parenthèse
 			'Couleur simple
 			Else
 				Select Case VpX.ToUpper
 					Case "X"
-						VmImgIndexes.Add(30)
+						VmImgIndexes.Add(0)
 						VmX = VmX + 1
 					Case "B"
-						VmImgIndexes.Add(5)
+						VmImgIndexes.Add(23)
 						VmB = VmB + 1
 					Case "G"
-						VmImgIndexes.Add(10)
+						VmImgIndexes.Add(28)
 						VmG = VmG + 1
 					Case "R"
-						VmImgIndexes.Add(15)
+						VmImgIndexes.Add(38)
 						VmR = VmR + 1
 					Case "U"
-						VmImgIndexes.Add(20)
+						VmImgIndexes.Add(43)
 						VmU = VmU + 1
 					Case "W"
-						VmImgIndexes.Add(25)
+						VmImgIndexes.Add(48)
 						VmW = VmW + 1
 					Case "M"
-						VmImgIndexes.Add(31)
+						VmImgIndexes.Add(1)
 						VmM = VmM + 1
 					Case "A"
-						VmImgIndexes.Add(31)
+						VmImgIndexes.Add(1)
 						VmA = VmA + 1
 					Case Else
-						VmImgIndexes.Add(31)
+						VmImgIndexes.Add(1)
 				End Select
 			End If
 		Next VpI
@@ -2124,6 +2145,11 @@ Public Class clsManas
 		VmPU = VmPU + VpManas.cPU * VpSub
 		VmPR = VmPR + VpManas.cPR * VpSub
 		VmPW = VmPW + VpManas.cPW * VpSub
+		Vm2B = Vm2B + VpManas.c2B * VpSub
+		Vm2G = Vm2G + VpManas.c2G * VpSub
+		Vm2U = Vm2U + VpManas.c2U * VpSub
+		Vm2R = Vm2R + VpManas.c2R * VpSub
+		Vm2W = Vm2W + VpManas.c2W * VpSub
 	End Sub
 	Public Function ContainsEnoughFor(VpManas As clsManas) As Boolean
 	'-----------------------------------------------------------------------------------------------------------------------
@@ -2146,6 +2172,11 @@ Public Class clsManas
 							VmUR >= VpManas.cUR And _
 							VmWB >= VpManas.cWB And _
 							VmWU >= VpManas.cWU And _
+							Vm2W >= VpManas.c2W And _
+							Vm2B >= VpManas.c2B And _
+							Vm2R >= VpManas.c2R And _
+							Vm2G >= VpManas.c2G And _
+							Vm2U >= VpManas.c2U	And _
 							VmPW >= VpManas.cPW And _
 							VmPB >= VpManas.cPB And _
 							VmPR >= VpManas.cPR And _
@@ -2184,32 +2215,32 @@ Public Class clsManas
 	End Property
 	Public ReadOnly Property Potentiel As Integer
 		Get
-			Return ( VmX + VmM + VmA + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB)
+			Return ( VmX + VmM + VmA + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB + Vm2R + Vm2G + Vm2U + Vm2W + Vm2B)
 		End Get
 	End Property
 	Public ReadOnly Property HasBlack As Boolean
 		Get
-			Return ( VmB > 0 Or VmBG > 0 Or VmBR > 0 Or VmUB > 0 Or VmWB > 0 Or VmPB > 0 )
+			Return ( VmB > 0 Or VmBG > 0 Or VmBR > 0 Or VmUB > 0 Or VmWB > 0 Or VmPB > 0 Or Vm2B > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasGreen As Boolean
 		Get
-			Return ( VmG > 0 Or VmBG > 0 Or VmGU > 0 Or VmGW > 0 Or VmRG > 0 Or VmPG > 0 )
+			Return ( VmG > 0 Or VmBG > 0 Or VmGU > 0 Or VmGW > 0 Or VmRG > 0 Or VmPG > 0 Or Vm2G > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasBlue As Boolean
 		Get
-			Return ( VmU > 0 Or VmGU > 0 Or VmUB > 0 Or VmUR > 0 Or VmWU > 0 Or VmPU > 0 )
+			Return ( VmU > 0 Or VmGU > 0 Or VmUB > 0 Or VmUR > 0 Or VmWU > 0 Or VmPU > 0 Or Vm2U > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasRed As Boolean
 		Get
-			Return ( VmR > 0 Or VmBR > 0 Or VmRG > 0 Or VmRW > 0 Or VmUR > 0 Or VmPR > 0 )
+			Return ( VmR > 0 Or VmBR > 0 Or VmRG > 0 Or VmRW > 0 Or VmUR > 0 Or VmPR > 0 Or Vm2R > 0 )
 		End Get
 	End Property
 	Public ReadOnly Property HasWhite As Boolean
 		Get
-			Return ( VmW > 0 Or VmGW > 0 Or VmRW > 0 Or VmWB > 0 Or VmWU > 0 Or VmPW > 0 )
+			Return ( VmW > 0 Or VmGW > 0 Or VmRW > 0 Or VmWB > 0 Or VmWU > 0 Or VmPW > 0 Or Vm2W > 0 )
 		End Get
 	End Property
 	Public Property cM As Short
@@ -2324,6 +2355,31 @@ Public Class clsManas
 		End Get
 	End Property
 	Public ReadOnly Property cPB As Short
+		Get
+			Return VmPB
+		End Get
+	End Property
+	Public ReadOnly Property c2R As Short
+		Get
+			Return VmPR
+		End Get
+	End Property
+	Public ReadOnly Property c2W As Short
+		Get
+			Return VmPW
+		End Get
+	End Property
+	Public ReadOnly Property c2U As Short
+		Get
+			Return VmPU
+		End Get
+	End Property
+	Public ReadOnly Property c2G As Short
+		Get
+			Return VmPG
+		End Get
+	End Property
+	Public ReadOnly Property c2B As Short
 		Get
 			Return VmPB
 		End Get
