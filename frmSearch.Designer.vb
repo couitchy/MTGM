@@ -159,7 +159,7 @@ Partial Class frmSearch
 		Me.cboFind.Location = New System.Drawing.Point(79, 16)
 		Me.cboFind.Name = "cboFind"
 		Me.cboFind.Size = New System.Drawing.Size(232, 21)
-		Me.cboFind.TabIndex = 25
+		Me.cboFind.TabIndex = 15
 		AddHandler Me.cboFind.KeyUp, AddressOf Me.CboFindKeyUp
 		AddHandler Me.cboFind.KeyDown, AddressOf Me.CboFindKeyDown
 		'

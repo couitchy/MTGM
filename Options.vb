@@ -122,6 +122,7 @@ Public Class clsSettings
 	Private VmVFDefault As Boolean = True
 	Private VmShowCorruption As Boolean = True
 	Private VmCopyRange As Integer = 1
+	Private VmShowLines As Boolean = False
 	<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 	Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 		Get
@@ -237,6 +238,15 @@ Public Class clsSettings
 		End Get
 		Set (VpRestoreCriteria As Boolean)
 			VmRestoreCriteria = VpRestoreCriteria
+		End Set
+	End Property
+	<DisplayName("Afficher les pointillés"), Category("Explorateur"), DefaultValue(False), Description("Afficher les pointillés dans l'arborescence")> _
+	Public Property ShowLines As Boolean
+		Get
+			Return VmShowLines
+		End Get
+		Set (VpShowLines As Boolean)
+			VmShowLines = VpShowLines
 		End Set
 	End Property
 	<Browsable(False), Category("Explorateur"), Description("Critères activés par défaut (à séparer par un dièse, Type = 1, Couleur = 2, Edition = 3, Coût d'invocation = 4 etc.)")> _

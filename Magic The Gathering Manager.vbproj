@@ -22,7 +22,7 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <NoWin32Manifest>True</NoWin32Manifest>
     <OptionInfer>Off</OptionInfer>
-    <ApplicationIcon>Ressources\MTGM_hd.ico</ApplicationIcon>
+    <ApplicationIcon>Ressources\MTGM_bleu_hd.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug-x86\</OutputPath>

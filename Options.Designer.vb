@@ -33,6 +33,7 @@ Partial Class Options
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
+		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Options))
 		Me.propOptions = New System.Windows.Forms.PropertyGrid
 		Me.SuspendLayout
 		'
@@ -41,16 +42,17 @@ Partial Class Options
 		Me.propOptions.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.propOptions.Location = New System.Drawing.Point(0, 0)
 		Me.propOptions.Name = "propOptions"
-		Me.propOptions.Size = New System.Drawing.Size(538, 400)
+		Me.propOptions.Size = New System.Drawing.Size(538, 291)
 		Me.propOptions.TabIndex = 0
 		'
 		'Options
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(538, 415)
+		Me.ClientSize = New System.Drawing.Size(538, 291)
 		Me.Controls.Add(Me.propOptions)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "Options"
 		Me.ShowInTaskbar = false
 		Me.Text = "Options"

@@ -37,13 +37,6 @@ Partial Class frmExport
 		Me.dlgBrowser = New System.Windows.Forms.FolderBrowserDialog
 		Me.cbarImpExp = New TD.SandBar.ContainerBar
 		Me.pnlImpExp = New TD.SandBar.ContainerBarClientPanel
-		Me.grpExport = New System.Windows.Forms.GroupBox
-		Me.optNormal = New System.Windows.Forms.RadioButton
-		Me.lblFormat = New System.Windows.Forms.Label
-		Me.optOld = New System.Windows.Forms.RadioButton
-		Me.optApprentice = New System.Windows.Forms.RadioButton
-		Me.cmdExport = New System.Windows.Forms.Button
-		Me.lstchkSources = New System.Windows.Forms.CheckedListBox
 		Me.grpImport = New System.Windows.Forms.GroupBox
 		Me.lstImp = New System.Windows.Forms.ListBox
 		Me.optImpAdd = New System.Windows.Forms.RadioButton
@@ -53,13 +46,20 @@ Partial Class frmExport
 		Me.txtFileImp = New System.Windows.Forms.TextBox
 		Me.lblImp = New System.Windows.Forms.Label
 		Me.cmdImport = New System.Windows.Forms.Button
+		Me.grpExport = New System.Windows.Forms.GroupBox
+		Me.optNormal = New System.Windows.Forms.RadioButton
+		Me.lblFormat = New System.Windows.Forms.Label
+		Me.optOld = New System.Windows.Forms.RadioButton
+		Me.optApprentice = New System.Windows.Forms.RadioButton
+		Me.cmdExport = New System.Windows.Forms.Button
+		Me.lstchkSources = New System.Windows.Forms.CheckedListBox
 		Me.btExport = New TD.SandBar.ButtonItem
 		Me.btImport = New TD.SandBar.ButtonItem
 		Me.dlgFileBrowser = New System.Windows.Forms.OpenFileDialog
 		Me.cbarImpExp.SuspendLayout
 		Me.pnlImpExp.SuspendLayout
-		Me.grpExport.SuspendLayout
 		Me.grpImport.SuspendLayout
+		Me.grpExport.SuspendLayout
 		Me.SuspendLayout
 		'
 		'cbarImpExp
@@ -89,88 +89,6 @@ Partial Class frmExport
 		Me.pnlImpExp.Name = "pnlImpExp"
 		Me.pnlImpExp.Size = New System.Drawing.Size(324, 173)
 		Me.pnlImpExp.TabIndex = 0
-		'
-		'grpExport
-		'
-		Me.grpExport.BackColor = System.Drawing.Color.Transparent
-		Me.grpExport.Controls.Add(Me.optNormal)
-		Me.grpExport.Controls.Add(Me.lblFormat)
-		Me.grpExport.Controls.Add(Me.optOld)
-		Me.grpExport.Controls.Add(Me.optApprentice)
-		Me.grpExport.Controls.Add(Me.cmdExport)
-		Me.grpExport.Controls.Add(Me.lstchkSources)
-		Me.grpExport.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpExport.Location = New System.Drawing.Point(0, 0)
-		Me.grpExport.Name = "grpExport"
-		Me.grpExport.Size = New System.Drawing.Size(324, 173)
-		Me.grpExport.TabIndex = 0
-		Me.grpExport.TabStop = false
-		'
-		'optNormal
-		'
-		Me.optNormal.AutoSize = true
-		Me.optNormal.Checked = true
-		Me.optNormal.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optNormal.Location = New System.Drawing.Point(114, 125)
-		Me.optNormal.Name = "optNormal"
-		Me.optNormal.Size = New System.Drawing.Size(73, 22)
-		Me.optNormal.TabIndex = 11
-		Me.optNormal.TabStop = true
-		Me.optNormal.Text = "MTGM v2"
-		Me.optNormal.UseVisualStyleBackColor = true
-		'
-		'lblFormat
-		'
-		Me.lblFormat.Dock = System.Windows.Forms.DockStyle.Left
-		Me.lblFormat.Location = New System.Drawing.Point(3, 125)
-		Me.lblFormat.Name = "lblFormat"
-		Me.lblFormat.Size = New System.Drawing.Size(100, 22)
-		Me.lblFormat.TabIndex = 10
-		Me.lblFormat.Text = "Format de sortie :"
-		Me.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-		'
-		'optOld
-		'
-		Me.optOld.AutoSize = true
-		Me.optOld.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optOld.Location = New System.Drawing.Point(187, 125)
-		Me.optOld.Name = "optOld"
-		Me.optOld.Size = New System.Drawing.Size(58, 22)
-		Me.optOld.TabIndex = 9
-		Me.optOld.Text = "MTGM"
-		Me.optOld.UseVisualStyleBackColor = true
-		'
-		'optApprentice
-		'
-		Me.optApprentice.AutoSize = true
-		Me.optApprentice.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optApprentice.Location = New System.Drawing.Point(245, 125)
-		Me.optApprentice.Name = "optApprentice"
-		Me.optApprentice.Size = New System.Drawing.Size(76, 22)
-		Me.optApprentice.TabIndex = 8
-		Me.optApprentice.Text = "Apprentice"
-		Me.optApprentice.UseVisualStyleBackColor = true
-		'
-		'cmdExport
-		'
-		Me.cmdExport.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdExport.Location = New System.Drawing.Point(3, 147)
-		Me.cmdExport.Name = "cmdExport"
-		Me.cmdExport.Size = New System.Drawing.Size(318, 23)
-		Me.cmdExport.TabIndex = 6
-		Me.cmdExport.Text = "Exporter"
-		Me.cmdExport.UseVisualStyleBackColor = true
-		AddHandler Me.cmdExport.Click, AddressOf Me.CmdExportClick
-		'
-		'lstchkSources
-		'
-		Me.lstchkSources.CheckOnClick = true
-		Me.lstchkSources.Dock = System.Windows.Forms.DockStyle.Top
-		Me.lstchkSources.FormattingEnabled = true
-		Me.lstchkSources.Location = New System.Drawing.Point(3, 16)
-		Me.lstchkSources.Name = "lstchkSources"
-		Me.lstchkSources.Size = New System.Drawing.Size(318, 109)
-		Me.lstchkSources.TabIndex = 5
 		'
 		'grpImport
 		'
@@ -269,6 +187,88 @@ Partial Class frmExport
 		Me.cmdImport.UseVisualStyleBackColor = true
 		AddHandler Me.cmdImport.Click, AddressOf Me.CmdImportClick
 		'
+		'grpExport
+		'
+		Me.grpExport.BackColor = System.Drawing.Color.Transparent
+		Me.grpExport.Controls.Add(Me.optNormal)
+		Me.grpExport.Controls.Add(Me.lblFormat)
+		Me.grpExport.Controls.Add(Me.optOld)
+		Me.grpExport.Controls.Add(Me.optApprentice)
+		Me.grpExport.Controls.Add(Me.cmdExport)
+		Me.grpExport.Controls.Add(Me.lstchkSources)
+		Me.grpExport.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grpExport.Location = New System.Drawing.Point(0, 0)
+		Me.grpExport.Name = "grpExport"
+		Me.grpExport.Size = New System.Drawing.Size(324, 173)
+		Me.grpExport.TabIndex = 0
+		Me.grpExport.TabStop = false
+		'
+		'optNormal
+		'
+		Me.optNormal.AutoSize = true
+		Me.optNormal.Checked = true
+		Me.optNormal.Dock = System.Windows.Forms.DockStyle.Right
+		Me.optNormal.Location = New System.Drawing.Point(114, 125)
+		Me.optNormal.Name = "optNormal"
+		Me.optNormal.Size = New System.Drawing.Size(73, 22)
+		Me.optNormal.TabIndex = 11
+		Me.optNormal.TabStop = true
+		Me.optNormal.Text = "MTGM v2"
+		Me.optNormal.UseVisualStyleBackColor = true
+		'
+		'lblFormat
+		'
+		Me.lblFormat.Dock = System.Windows.Forms.DockStyle.Left
+		Me.lblFormat.Location = New System.Drawing.Point(3, 125)
+		Me.lblFormat.Name = "lblFormat"
+		Me.lblFormat.Size = New System.Drawing.Size(100, 22)
+		Me.lblFormat.TabIndex = 10
+		Me.lblFormat.Text = "Format de sortie :"
+		Me.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+		'
+		'optOld
+		'
+		Me.optOld.AutoSize = true
+		Me.optOld.Dock = System.Windows.Forms.DockStyle.Right
+		Me.optOld.Location = New System.Drawing.Point(187, 125)
+		Me.optOld.Name = "optOld"
+		Me.optOld.Size = New System.Drawing.Size(58, 22)
+		Me.optOld.TabIndex = 9
+		Me.optOld.Text = "MTGM"
+		Me.optOld.UseVisualStyleBackColor = true
+		'
+		'optApprentice
+		'
+		Me.optApprentice.AutoSize = true
+		Me.optApprentice.Dock = System.Windows.Forms.DockStyle.Right
+		Me.optApprentice.Location = New System.Drawing.Point(245, 125)
+		Me.optApprentice.Name = "optApprentice"
+		Me.optApprentice.Size = New System.Drawing.Size(76, 22)
+		Me.optApprentice.TabIndex = 8
+		Me.optApprentice.Text = "Apprentice"
+		Me.optApprentice.UseVisualStyleBackColor = true
+		'
+		'cmdExport
+		'
+		Me.cmdExport.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.cmdExport.Location = New System.Drawing.Point(3, 147)
+		Me.cmdExport.Name = "cmdExport"
+		Me.cmdExport.Size = New System.Drawing.Size(318, 23)
+		Me.cmdExport.TabIndex = 6
+		Me.cmdExport.Text = "Exporter"
+		Me.cmdExport.UseVisualStyleBackColor = true
+		AddHandler Me.cmdExport.Click, AddressOf Me.CmdExportClick
+		'
+		'lstchkSources
+		'
+		Me.lstchkSources.CheckOnClick = true
+		Me.lstchkSources.Dock = System.Windows.Forms.DockStyle.Top
+		Me.lstchkSources.FormattingEnabled = true
+		Me.lstchkSources.Location = New System.Drawing.Point(3, 16)
+		Me.lstchkSources.Name = "lstchkSources"
+		Me.lstchkSources.Size = New System.Drawing.Size(318, 109)
+		Me.lstchkSources.TabIndex = 5
+		'
 		'btExport
 		'
 		Me.btExport.Icon = CType(resources.GetObject("btExport.Icon"),System.Drawing.Icon)
@@ -300,10 +300,10 @@ Partial Class frmExport
 		AddHandler FormClosing, AddressOf Me.FrmExportFormClosing
 		Me.cbarImpExp.ResumeLayout(false)
 		Me.pnlImpExp.ResumeLayout(false)
-		Me.grpExport.ResumeLayout(false)
-		Me.grpExport.PerformLayout
 		Me.grpImport.ResumeLayout(false)
 		Me.grpImport.PerformLayout
+		Me.grpExport.ResumeLayout(false)
+		Me.grpExport.PerformLayout
 		Me.ResumeLayout(false)
 	End Sub
 	Private optOld As System.Windows.Forms.RadioButton

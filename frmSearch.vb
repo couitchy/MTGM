@@ -25,14 +25,10 @@ Public Partial Class frmSearch
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
-	Private VmSource As String
-	Private VmRestriction As String
 	Private VmPrevSearchs As New List(Of String)
 	Private VmKeyChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
-		VmRestriction = VpOwner.Restriction
 		VmOwner = VpOwner
 		Me.cboSearchType.SelectedIndex = CInt(VgOptions.VgSettings.DefaultSearchCriterion)
 	End Sub
@@ -82,7 +78,7 @@ Public Partial Class frmSearch
 			End If
 		Next VpStr
 	End Sub
-	Private Function Search(VpField As String, VpValue As String, VpSource As String, Optional VpIsCreature As Boolean = False, Optional VpMode As clsModule.eSearchType = clsModule.eSearchType.Alpha) As String
+	Private Function Search(VpField As String, VpValue As String, Optional VpIsCreature As Boolean = False, Optional VpMode As clsModule.eSearchType = clsModule.eSearchType.Alpha) As String
 	'------------------------------------------------------------
 	'Effectue la requête de l'utilisateur dans la base de données
 	'------------------------------------------------------------
@@ -106,12 +102,15 @@ Public Partial Class frmSearch
 		End Select
 		'Recherche restreinte aux cartes possédées
 		If Me.chkRestriction.Checked Then
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And "
-			VpSQL = VpSQL + VmRestriction
+			'Possédées dans la collection
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyCollection On MyCollection.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Union "
+			'Possédées dans les decks
+			VpSQL = VpSQL + "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyGames On MyGames.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche restreinte aux cartes non possédées
 		ElseIf Me.chkRestrictionInv.Checked Then
-			
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And Card.EncNbr Not In (Select EncNbr From MyCollection) And Card.EncNbr Not In (Select EncNbr From MyGames)"
+			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche étendue (toutes les cartes de la base de données)
 		Else
 			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
@@ -196,16 +195,16 @@ Public Partial Class frmSearch
 		Select Case VpType
 			'Recherche type string simple
 			Case 0, 1, 2, 3, 9
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq)
 			'Recherche type nombre / sur créatures
 			Case 4, 5
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, True, clsModule.eSearchType.NumOverAlpha)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, True, clsModule.eSearchType.NumOverAlpha)
 			'Recherche type nombre / égalité
 			Case 6, 8
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, VmSource, , clsModule.eSearchType.Num)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, , clsModule.eSearchType.Num)
 			'Recherche type string / sur éditions
 			Case 7
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(VpReq, True), VmSource)
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(VpReq, True))
 			Case Else
 		End Select
 		'Nombre de réponses
@@ -214,39 +213,22 @@ Public Partial Class frmSearch
 		If Me.chkShowExternal.Checked Then
 			Call VmOwner.LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, clsModule.CgFromSearch + " (" + Me.cboFind.Tag +")")
 		End If
+		Me.cboFind.Focus
 	End Sub
-	Private Function GetLastSearchNode As TreeNode
-	'----------------------------------------------------------------------------
-	'Retourne le noeud correspondant à la dernière recherche (ie. celle en cours)
-	'----------------------------------------------------------------------------
-	Dim VpNode As TreeNode = VmOwner.tvwExplore.Nodes.Item(0)
-		While Not VpNode.NextNode Is Nothing
-			VpNode = VpNode.NextNode
-		End While
-		Return VpNode
-	End Function
 	Private Sub LstResultDoubleClick(sender As System.Object, e As System.EventArgs)
 	'------------------------------------------------------------------------------------------------------------------------------------
 	'Affiche le détail de la carte sélectionnée après la recherche, soit dans l'arborescence principale, soit dans l'onglet des résultats
 	'------------------------------------------------------------------------------------------------------------------------------------
 	Dim VpTitle As String
-	Dim VpSource As String
 		If Me.lstResult.SelectedItem Is Nothing Then Exit Sub
 		VpTitle = clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString)
-		If Not Me.chkRestriction.Checked Then
-			VpSource = ""
-		Else
-			VpSource = If(VmOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
-		End If
-		Me.lstResult.Tag = VpTitle
-		Me.grpSerie.Tag = VpSource
 		If Me.chkShowExternal.Checked Then
-			Call Me.FindCardNode(VpTitle, Me.GetLastSearchNode)
+			Call Me.FindCardNode(VpTitle, VmOwner.LastRoot)
 			Me.btResult.Enabled = False
 			'VmOwner.tvwExplore.Focus
 		Else
 			Me.SuspendLayout
-			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, False, VpSource)
+			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, False)
 			Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
 			Me.btResult.Enabled = True
 			Call Me.BtResultActivate(sender, e)
@@ -254,9 +236,8 @@ Public Partial Class frmSearch
 		End If
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
-		'Astuce un peu crade : nom de la carte sauvé dans lstresult.tag et source dans grpserie.tag
 		Me.SuspendLayout
-		Call clsModule.LoadCarac(VmOwner, Me, Me.lstResult.Tag, False, Me.grpSerie.Tag, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+		Call clsModule.LoadCarac(VmOwner, Me, clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), False, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		Me.ResumeLayout
 	End Sub
 	Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -279,6 +260,7 @@ Public Partial Class frmSearch
 	Sub BtSearchActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpSearch.Visible = True
 		Me.grpSerie.Visible = False
+		Me.cboFind.Focus
 	End Sub
 	Sub BtResultActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpSerie.Visible = True

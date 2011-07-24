@@ -221,7 +221,7 @@ Partial Class frmPerfs
 		'dropAddGameOther
 		'
 		Me.dropAddGameOther.Name = "dropAddGameOther"
-		Me.dropAddGameOther.Size = New System.Drawing.Size(152, 22)
+		Me.dropAddGameOther.Size = New System.Drawing.Size(103, 22)
 		Me.dropAddGameOther.Text = "Autre"
 		AddHandler Me.dropAddGameOther.Click, AddressOf Me.DropAddGameOtherClick
 		'

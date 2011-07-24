@@ -567,10 +567,15 @@ Public Partial Class MainForm
 		If Me.tvwExplore.Nodes.Count > 0 Then
 			Me.mnuFindNext.Enabled = True
 			VmSearch.ItemsFound.Clear
-			Call Me.FindCard(Me.tvwExplore.Nodes.Item(0))
+			Call Me.RecurFindCard
 			VmSearch.CurItem = -1
 			Call Me.FindNextCard
 		End If
+	End Sub
+	Private Sub RecurFindCard
+		For Each VpNode As TreeNode In Me.tvwExplore.Nodes
+			Call Me.FindCard(VpNode)
+		Next VpNode
 	End Sub
 	Private Sub FindCard(VpNode As TreeNode)
 	'-------------------------------------------------------------------------------
@@ -783,6 +788,7 @@ Public Partial Class MainForm
 		Me.tvwExplore.SelectedNodes.Clear
 		If VpClear Then
 			Me.tvwExplore.Nodes.Clear
+			Me.tvwExplore.ShowLines = VgOptions.VgSettings.ShowLines
 		End If
 		Me.mnuFindNext.Enabled = False
 		Me.mnuSearchText.Text = clsModule.CgCard
@@ -834,7 +840,7 @@ Public Partial Class MainForm
 			'Restauration des paramètres langue / tri (NB. Si on est en VO on est toujours en ordre alphabétique)
 			If Me.mnuCardsFR.Checked Then
 				Me.tvwExplore.BeginUpdate
-				Call Me.ChangeLanguage(Me.tvwExplore.Nodes.Item(0))
+				Call Me.RecurChangeLanguage
 				Call Me.SortTvw
 				Me.tvwExplore.EndUpdate
 			End If
@@ -1134,6 +1140,11 @@ Public Partial Class MainForm
 			Next VpChild
 		End If
 	End Sub
+	Private Sub RecurChangeLanguage
+		For Each VpNode As TreeNode In Me.tvwExplore.Nodes
+			Call Me.ChangeLanguage(VpNode)
+		Next VpNode
+	End Sub
 	Private Function FindImageIndex(VpTag As String, VpStr As String) As Integer
 	'-------------------------------------------------------------------------
 	'Retourne les numéros d'icônes à utiliser comme symboles dans le treeview)
@@ -1394,6 +1405,20 @@ Public Partial Class MainForm
 			Return VmFilterCriteria
 		End Get
 	End Property
+	Public ReadOnly Property FirstRoot As TreeNode
+		Get
+			Return Me.tvwExplore.Nodes.Item(0)
+		End Get
+	End Property
+	Public ReadOnly Property LastRoot As TreeNode
+		Get
+		Dim VpNode As TreeNode = Me.tvwExplore.Nodes.Item(0)
+			While Not VpNode.NextNode Is Nothing
+				VpNode = VpNode.NextNode
+			End While
+			Return VpNode
+		End Get
+	End Property
 	#End Region
 	#Region "Evènements"
 	Sub MnuExitActivate(ByVal sender As Object, ByVal e As EventArgs)
@@ -1644,7 +1669,7 @@ Public Partial Class MainForm
 			Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked)	'change de suite la traduction de la carte courante
 		End If
 		Me.tvwExplore.BeginUpdate
-		Call Me.ChangeLanguage(Me.tvwExplore.Nodes.Item(0))
+		Call Me.RecurChangeLanguage
 		Me.tvwExplore.EndUpdate
 	End Sub
 	Sub TvwExploreMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -2304,7 +2329,7 @@ Public Partial Class MainForm
 	End Sub	
 	Sub BtCriteriaClick(sender As Object, e As EventArgs)		
 		VmFilterCriteria.Show
-		VmFilterCriteria.Location = MousePosition
+		VmFilterCriteria.Location = New Point(MousePosition.X, MousePosition.Y - Math.Max(0, MousePosition.Y + VmFilterCriteria.Height - Screen.PrimaryScreen.Bounds.Height))
 	End Sub	
 	#End Region
 End Class
