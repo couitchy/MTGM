@@ -234,7 +234,7 @@ Partial Class MainForm
 		'statusStrip
 		'
 		Me.statusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblDB, Me.lblNCards, Me.prgAvance, Me.btDownload})
-		Me.statusStrip.Location = New System.Drawing.Point(0, 375)
+		Me.statusStrip.Location = New System.Drawing.Point(0, 402)
 		Me.statusStrip.Name = "statusStrip"
 		Me.statusStrip.Size = New System.Drawing.Size(757, 22)
 		Me.statusStrip.TabIndex = 2
@@ -1076,110 +1076,112 @@ Partial Class MainForm
 		'
 		'toolStrip
 		'
+		Me.toolStrip.ImageScalingSize = New System.Drawing.Size(32, 32)
 		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBSelect, Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
-		Me.toolStrip.Size = New System.Drawing.Size(757, 25)
+		Me.toolStrip.Size = New System.Drawing.Size(757, 54)
 		Me.toolStrip.TabIndex = 7
 		'
 		'btDBSelect
 		'
-		Me.btDBSelect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btDBSelect.Image = CType(resources.GetObject("btDBSelect.Image"),System.Drawing.Image)
 		Me.btDBSelect.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btDBSelect.Name = "btDBSelect"
-		Me.btDBSelect.Size = New System.Drawing.Size(23, 22)
-		Me.btDBSelect.Text = "Ouvrir une base de données"
+		Me.btDBSelect.Size = New System.Drawing.Size(44, 51)
+		Me.btDBSelect.Text = "Ouvrir"
+		Me.btDBSelect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btDBSelect.Click, AddressOf Me.MnuDBOpenClick
 		'
 		'btExport
 		'
-		Me.btExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btExport.Image = CType(resources.GetObject("btExport.Image"),System.Drawing.Image)
 		Me.btExport.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btExport.Name = "btExport"
-		Me.btExport.Size = New System.Drawing.Size(23, 22)
+		Me.btExport.Size = New System.Drawing.Size(91, 51)
 		Me.btExport.Text = "Import / Export"
+		Me.btExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btExport.Click, AddressOf Me.MnuExportActivate
 		'
 		'btSeparator1
 		'
 		Me.btSeparator1.Name = "btSeparator1"
-		Me.btSeparator1.Size = New System.Drawing.Size(6, 25)
+		Me.btSeparator1.Size = New System.Drawing.Size(6, 54)
 		'
 		'btGestDecks
 		'
-		Me.btGestDecks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btGestDecks.Image = CType(resources.GetObject("btGestDecks.Image"),System.Drawing.Image)
 		Me.btGestDecks.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btGestDecks.Name = "btGestDecks"
-		Me.btGestDecks.Size = New System.Drawing.Size(23, 22)
-		Me.btGestDecks.Text = "Liste des decks"
+		Me.btGestDecks.Size = New System.Drawing.Size(42, 51)
+		Me.btGestDecks.Text = "Decks"
+		Me.btGestDecks.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btGestDecks.Click, AddressOf Me.MnuGestDecksActivate
 		'
 		'btAddCards
 		'
-		Me.btAddCards.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btAddCards.Image = CType(resources.GetObject("btAddCards.Image"),System.Drawing.Image)
 		Me.btAddCards.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btAddCards.Name = "btAddCards"
-		Me.btAddCards.Size = New System.Drawing.Size(23, 22)
-		Me.btAddCards.Text = "Ajouter / Supprimer des cartes"
+		Me.btAddCards.Size = New System.Drawing.Size(90, 51)
+		Me.btAddCards.Text = "Saisie de cartes"
+		Me.btAddCards.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btAddCards.ToolTipText = "Ajouter des cartes à la collection ou aux decks"
 		AddHandler Me.btAddCards.Click, AddressOf Me.MnuAddCardsActivate
 		'
 		'btAdvancedSearch
 		'
-		Me.btAdvancedSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btAdvancedSearch.Image = CType(resources.GetObject("btAdvancedSearch.Image"),System.Drawing.Image)
 		Me.btAdvancedSearch.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btAdvancedSearch.Name = "btAdvancedSearch"
-		Me.btAdvancedSearch.Size = New System.Drawing.Size(23, 22)
-		Me.btAdvancedSearch.Text = "Recherche avancée"
+		Me.btAdvancedSearch.Size = New System.Drawing.Size(66, 51)
+		Me.btAdvancedSearch.Text = "Recherche"
+		Me.btAdvancedSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btAdvancedSearch.Click, AddressOf Me.MnuAdvancedSearchActivate
 		'
 		'btSeparator2
 		'
 		Me.btSeparator2.Name = "btSeparator2"
-		Me.btSeparator2.Size = New System.Drawing.Size(6, 25)
+		Me.btSeparator2.Size = New System.Drawing.Size(6, 54)
 		'
 		'btExcelGen
 		'
-		Me.btExcelGen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btExcelGen.Image = CType(resources.GetObject("btExcelGen.Image"),System.Drawing.Image)
 		Me.btExcelGen.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btExcelGen.Name = "btExcelGen"
-		Me.btExcelGen.Size = New System.Drawing.Size(23, 22)
-		Me.btExcelGen.Text = "Génération d'une liste sous Excel"
+		Me.btExcelGen.Size = New System.Drawing.Size(75, 51)
+		Me.btExcelGen.Text = "Listing Excel"
+		Me.btExcelGen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btExcelGen.Click, AddressOf Me.MnuExcelGenActivate
 		'
 		'btWordGen
 		'
-		Me.btWordGen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btWordGen.Image = CType(resources.GetObject("btWordGen.Image"),System.Drawing.Image)
 		Me.btWordGen.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btWordGen.Name = "btWordGen"
-		Me.btWordGen.Size = New System.Drawing.Size(23, 22)
-		Me.btWordGen.Text = "Génération de vignettes sous Word"
+		Me.btWordGen.Size = New System.Drawing.Size(92, 51)
+		Me.btWordGen.Text = "Vignettes Word"
+		Me.btWordGen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btWordGen.Click, AddressOf Me.MnuWordGenClick
 		'
 		'btSimu
 		'
-		Me.btSimu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btSimu.Image = CType(resources.GetObject("btSimu.Image"),System.Drawing.Image)
 		Me.btSimu.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btSimu.Name = "btSimu"
-		Me.btSimu.Size = New System.Drawing.Size(23, 22)
-		Me.btSimu.Text = "Simulations sur la sélection"
+		Me.btSimu.Size = New System.Drawing.Size(73, 51)
+		Me.btSimu.Text = "Simulations"
+		Me.btSimu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btSimu.Click, AddressOf Me.MnuSimuActivate
 		'
 		'btStats
 		'
-		Me.btStats.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btStats.Image = CType(resources.GetObject("btStats.Image"),System.Drawing.Image)
 		Me.btStats.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btStats.Name = "btStats"
-		Me.btStats.Size = New System.Drawing.Size(23, 22)
-		Me.btStats.Text = "Statistiques sur la sélection"
+		Me.btStats.Size = New System.Drawing.Size(71, 51)
+		Me.btStats.Text = "Statistiques"
+		Me.btStats.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btStats.Click, AddressOf Me.MnuStatsActivate
 		'
 		'btCheckForUpdates
@@ -1189,7 +1191,7 @@ Partial Class MainForm
 		Me.btCheckForUpdates.Image = CType(resources.GetObject("btCheckForUpdates.Image"),System.Drawing.Image)
 		Me.btCheckForUpdates.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCheckForUpdates.Name = "btCheckForUpdates"
-		Me.btCheckForUpdates.Size = New System.Drawing.Size(23, 22)
+		Me.btCheckForUpdates.Size = New System.Drawing.Size(36, 51)
 		Me.btCheckForUpdates.Text = "Vérifier les mises à jour"
 		AddHandler Me.btCheckForUpdates.Click, AddressOf Me.MnuCheckForUpdatesActivate
 		'
@@ -1200,14 +1202,14 @@ Partial Class MainForm
 		Me.btWebsite.Image = CType(resources.GetObject("btWebsite.Image"),System.Drawing.Image)
 		Me.btWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btWebsite.Name = "btWebsite"
-		Me.btWebsite.Size = New System.Drawing.Size(23, 22)
+		Me.btWebsite.Size = New System.Drawing.Size(36, 51)
 		Me.btWebsite.Text = "Site Web de MTGM"
 		AddHandler Me.btWebsite.Click, AddressOf Me.MnuWebsiteClick
 		'
 		'splitV
 		'
 		Me.splitV.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitV.Location = New System.Drawing.Point(0, 49)
+		Me.splitV.Location = New System.Drawing.Point(0, 78)
 		Me.splitV.Name = "splitV"
 		'
 		'splitV.Panel1
@@ -1217,7 +1219,7 @@ Partial Class MainForm
 		'splitV.Panel2
 		'
 		Me.splitV.Panel2.Controls.Add(Me.splitV2)
-		Me.splitV.Size = New System.Drawing.Size(757, 326)
+		Me.splitV.Size = New System.Drawing.Size(757, 324)
 		Me.splitV.SplitterDistance = 294
 		Me.splitV.TabIndex = 8
 		Me.splitV.TabStop = false
@@ -1233,7 +1235,7 @@ Partial Class MainForm
 		Me.cbarTvw.Location = New System.Drawing.Point(0, 0)
 		Me.cbarTvw.Movable = false
 		Me.cbarTvw.Name = "cbarTvw"
-		Me.cbarTvw.Size = New System.Drawing.Size(294, 326)
+		Me.cbarTvw.Size = New System.Drawing.Size(294, 324)
 		Me.cbarTvw.TabIndex = 0
 		Me.cbarTvw.Text = "Explorateur"
 		'
@@ -1243,7 +1245,7 @@ Partial Class MainForm
 		Me.pnlTvw.Controls.Add(Me.toolSubStrip)
 		Me.pnlTvw.Location = New System.Drawing.Point(2, 27)
 		Me.pnlTvw.Name = "pnlTvw"
-		Me.pnlTvw.Size = New System.Drawing.Size(290, 297)
+		Me.pnlTvw.Size = New System.Drawing.Size(290, 295)
 		Me.pnlTvw.TabIndex = 0
 		'
 		'tvwExplore
@@ -1253,11 +1255,11 @@ Partial Class MainForm
 		Me.tvwExplore.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.tvwExplore.ImageIndex = 0
 		Me.tvwExplore.ImageList = Me.imglstTvw
-		Me.tvwExplore.Location = New System.Drawing.Point(0, 0)
+		Me.tvwExplore.Location = New System.Drawing.Point(24, 0)
 		Me.tvwExplore.Name = "tvwExplore"
 		Me.tvwExplore.SelectedImageIndex = 0
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
-		Me.tvwExplore.Size = New System.Drawing.Size(290, 272)
+		Me.tvwExplore.Size = New System.Drawing.Size(266, 295)
 		Me.tvwExplore.TabIndex = 6
 		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
@@ -1267,12 +1269,12 @@ Partial Class MainForm
 		'
 		'toolSubStrip
 		'
-		Me.toolSubStrip.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.toolSubStrip.Dock = System.Windows.Forms.DockStyle.Left
 		Me.toolSubStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
 		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btSeparator, Me.btCardsFR, Me.btSort, Me.btDegroupFoils})
-		Me.toolSubStrip.Location = New System.Drawing.Point(0, 272)
+		Me.toolSubStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolSubStrip.Name = "toolSubStrip"
-		Me.toolSubStrip.Size = New System.Drawing.Size(290, 25)
+		Me.toolSubStrip.Size = New System.Drawing.Size(24, 295)
 		Me.toolSubStrip.TabIndex = 0
 		'
 		'btCriteria
@@ -1281,14 +1283,14 @@ Partial Class MainForm
 		Me.btCriteria.Image = CType(resources.GetObject("btCriteria.Image"),System.Drawing.Image)
 		Me.btCriteria.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCriteria.Name = "btCriteria"
-		Me.btCriteria.Size = New System.Drawing.Size(23, 22)
+		Me.btCriteria.Size = New System.Drawing.Size(21, 20)
 		Me.btCriteria.Text = "Filtres d'affichage"
 		AddHandler Me.btCriteria.Click, AddressOf Me.BtCriteriaClick
 		'
 		'btSeparator
 		'
 		Me.btSeparator.Name = "btSeparator"
-		Me.btSeparator.Size = New System.Drawing.Size(6, 25)
+		Me.btSeparator.Size = New System.Drawing.Size(21, 6)
 		'
 		'btCardsFR
 		'
@@ -1296,7 +1298,7 @@ Partial Class MainForm
 		Me.btCardsFR.Image = CType(resources.GetObject("btCardsFR.Image"),System.Drawing.Image)
 		Me.btCardsFR.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCardsFR.Name = "btCardsFR"
-		Me.btCardsFR.Size = New System.Drawing.Size(23, 22)
+		Me.btCardsFR.Size = New System.Drawing.Size(21, 20)
 		Me.btCardsFR.Text = "Titre des cartes en français"
 		AddHandler Me.btCardsFR.MouseUp, AddressOf Me.MnuCardsFRActivate
 		'
@@ -1306,7 +1308,7 @@ Partial Class MainForm
 		Me.btSort.Image = CType(resources.GetObject("btSort.Image"),System.Drawing.Image)
 		Me.btSort.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btSort.Name = "btSort"
-		Me.btSort.Size = New System.Drawing.Size(23, 22)
+		Me.btSort.Size = New System.Drawing.Size(21, 20)
 		Me.btSort.Text = "Trier par ordre alphabétique"
 		AddHandler Me.btSort.Click, AddressOf Me.MnuSortClick
 		'
@@ -1318,7 +1320,7 @@ Partial Class MainForm
 		Me.btDegroupFoils.Image = CType(resources.GetObject("btDegroupFoils.Image"),System.Drawing.Image)
 		Me.btDegroupFoils.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btDegroupFoils.Name = "btDegroupFoils"
-		Me.btDegroupFoils.Size = New System.Drawing.Size(23, 22)
+		Me.btDegroupFoils.Size = New System.Drawing.Size(21, 20)
 		Me.btDegroupFoils.Text = "Dissocier les cartes foils"
 		AddHandler Me.btDegroupFoils.Click, AddressOf Me.MnuDegroupFoilsClick
 		'
@@ -1337,7 +1339,7 @@ Partial Class MainForm
 		'splitV2.Panel2
 		'
 		Me.splitV2.Panel2.Controls.Add(Me.CBarImage)
-		Me.splitV2.Size = New System.Drawing.Size(459, 326)
+		Me.splitV2.Size = New System.Drawing.Size(459, 324)
 		Me.splitV2.SplitterDistance = 245
 		Me.splitV2.TabIndex = 0
 		Me.splitV2.TabStop = false
@@ -1353,7 +1355,7 @@ Partial Class MainForm
 		Me.CBarProperties.Location = New System.Drawing.Point(0, 0)
 		Me.CBarProperties.Movable = false
 		Me.CBarProperties.Name = "CBarProperties"
-		Me.CBarProperties.Size = New System.Drawing.Size(245, 326)
+		Me.CBarProperties.Size = New System.Drawing.Size(245, 324)
 		Me.CBarProperties.TabIndex = 0
 		Me.CBarProperties.Text = "Propriétés"
 		'
@@ -1364,7 +1366,7 @@ Partial Class MainForm
 		Me.pnlProperties.Controls.Add(Me.grpSerie2)
 		Me.pnlProperties.Location = New System.Drawing.Point(2, 27)
 		Me.pnlProperties.Name = "pnlProperties"
-		Me.pnlProperties.Size = New System.Drawing.Size(241, 297)
+		Me.pnlProperties.Size = New System.Drawing.Size(241, 295)
 		Me.pnlProperties.TabIndex = 0
 		'
 		'grpCarac
@@ -1375,7 +1377,7 @@ Partial Class MainForm
 		Me.grpCarac.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpCarac.Location = New System.Drawing.Point(0, 138)
 		Me.grpCarac.Name = "grpCarac"
-		Me.grpCarac.Size = New System.Drawing.Size(241, 159)
+		Me.grpCarac.Size = New System.Drawing.Size(241, 157)
 		Me.grpCarac.TabIndex = 16
 		Me.grpCarac.TabStop = false
 		'
@@ -1389,7 +1391,7 @@ Partial Class MainForm
 		Me.txtCardText.Name = "txtCardText"
 		Me.txtCardText.ReadOnly = true
 		Me.txtCardText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(235, 101)
+		Me.txtCardText.Size = New System.Drawing.Size(235, 99)
 		Me.txtCardText.TabIndex = 13
 		'
 		'grpAutorisations
@@ -1400,7 +1402,7 @@ Partial Class MainForm
 		Me.grpAutorisations.Controls.Add(Me.picAutT2)
 		Me.grpAutorisations.Controls.Add(Me.picAutBloc)
 		Me.grpAutorisations.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.grpAutorisations.Location = New System.Drawing.Point(3, 117)
+		Me.grpAutorisations.Location = New System.Drawing.Point(3, 115)
 		Me.grpAutorisations.Name = "grpAutorisations"
 		Me.grpAutorisations.Size = New System.Drawing.Size(235, 39)
 		Me.grpAutorisations.TabIndex = 12
@@ -1769,7 +1771,7 @@ Partial Class MainForm
 		Me.CBarImage.Location = New System.Drawing.Point(0, 0)
 		Me.CBarImage.Movable = false
 		Me.CBarImage.Name = "CBarImage"
-		Me.CBarImage.Size = New System.Drawing.Size(210, 326)
+		Me.CBarImage.Size = New System.Drawing.Size(210, 324)
 		Me.CBarImage.TabIndex = 1
 		Me.CBarImage.Text = "Image"
 		'
@@ -1778,7 +1780,7 @@ Partial Class MainForm
 		Me.pnlImage.Controls.Add(Me.picScanCard)
 		Me.pnlImage.Location = New System.Drawing.Point(2, 27)
 		Me.pnlImage.Name = "pnlImage"
-		Me.pnlImage.Size = New System.Drawing.Size(206, 297)
+		Me.pnlImage.Size = New System.Drawing.Size(206, 295)
 		Me.pnlImage.TabIndex = 0
 		'
 		'picScanCard
@@ -1786,7 +1788,7 @@ Partial Class MainForm
 		Me.picScanCard.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.picScanCard.Location = New System.Drawing.Point(0, 0)
 		Me.picScanCard.Name = "picScanCard"
-		Me.picScanCard.Size = New System.Drawing.Size(206, 297)
+		Me.picScanCard.Size = New System.Drawing.Size(206, 295)
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 		Me.picScanCard.TabIndex = 0
 		Me.picScanCard.TabStop = false
@@ -1822,7 +1824,7 @@ Partial Class MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(757, 397)
+		Me.ClientSize = New System.Drawing.Size(757, 424)
 		Me.Controls.Add(Me.splitV)
 		Me.Controls.Add(Me.toolStrip)
 		Me.Controls.Add(Me.statusStrip)

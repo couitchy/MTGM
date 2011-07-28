@@ -36,6 +36,8 @@ Imports System.IO
 'Imports Win7Taskbar
 Imports System.Resources
 Imports System.Reflection
+Imports System.Data
+Imports System.Data.OleDb
 #End Region
 Public Partial Class MainForm
 	#Region "Sous-classes"
@@ -43,6 +45,7 @@ Public Partial Class MainForm
 		Public Key As String = ""
 		Public Value As String = ""
 		Public Value2 As String = ""
+		Public Descendance As String = ""
 		Public Sub New
 		End Sub
 		Public Sub New(VpValue As String)
@@ -555,7 +558,7 @@ Public Partial Class MainForm
 	'--------------------------------
 	'Suppression des degrés de rareté
 	'--------------------------------
-		VgDBCommand.CommandText = "Update Card Set Rarity = Left(Rarity, 1);"		
+		VgDBCommand.CommandText = "Update Card Set Rarity = Left(Rarity, 1);"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set Rarity = 'D' Where Rarity = 'L' Or Rarity = 'S';"
 		VgDBCommand.ExecuteNonQuery
@@ -675,7 +678,7 @@ Public Partial Class MainForm
 	'-----------------------------------------------------
 	Dim VpHistory As String = ""
 	Dim VpStr As String
-		If VpNode Is Me.tvwExplore.Nodes(0) Then
+		If VpNode Is Me.FirstRoot Then
 			Return ""
 		Else
 			Do
@@ -685,7 +688,7 @@ Public Partial Class MainForm
 				'End If
 				VpHistory = "#" + VpStr + VpHistory
 				VpNode = VpNode.Parent
-			Loop Until VpNode Is Me.tvwExplore.Nodes(0)
+			Loop Until VpNode Is Me.FirstRoot
 			Return VpHistory.Substring(1)
 		End If
 	End Function
@@ -717,6 +720,14 @@ Public Partial Class MainForm
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
 			Me.tvwExplore.SelectedNode.EnsureVisible
 		End If
+	End Sub
+	Private Sub ReloadWithHistory
+	Dim VpHistory As String
+		VpHistory = Me.SaveNode(Me.tvwExplore.SelectedNode)
+		Call Me.LoadTvw
+		Me.tvwExplore.BeginUpdate
+		Call Me.RestoreNode(VpHistory, Me.FirstRoot)
+		Me.tvwExplore.EndUpdate
 	End Sub
 	Public Sub InitBars(VpMax As Integer)
 	'----------------------------------------
@@ -894,6 +905,8 @@ Public Partial Class MainForm
 		End While
 		'Suppression des mots-clés inutiles
 		VpSQL = clsModule.TrimQuery(VpSQL)
+		'Mémorise la requête
+		VpNode.Tag.Descendance = VpSQL
 		'Exécution de la requête
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
@@ -1277,16 +1290,74 @@ Public Partial Class MainForm
 	'Gère les transferts / suppression en ajoutant le cas où plusieurs éléments sont sélectionnés dans le treeview
 	'-------------------------------------------------------------------------------------------------------------
 	Dim VpMustReload As Boolean = False
-	Dim VpHistory As String
-		For Each VpNode As TreeNode In Me.tvwExplore.SelectedNodes
-			VpMustReload = VpMustReload Or Me.ManageTransfert(VpNode, VpTransfertType, VpTo)	'Si au moins un des cas multiples ne s'est pas terminé par une annulation, c'est qu'il faut recharger le treeview
-		Next VpNode
+	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
+	Dim VpTag As clsTag
+		If Not VpNode Is Nothing Then
+			VpTag = VpNode.Tag
+			If VpTag.Descendance = "" Then
+				For Each VpItem As TreeNode In Me.tvwExplore.SelectedNodes
+					VpMustReload = VpMustReload Or Me.ManageTransfert(VpItem, VpTransfertType, VpTo)	'Si au moins un des cas multiples ne s'est pas terminé par une annulation, c'est qu'il faut recharger le treeview
+				Next VpItem
+				If VpMustReload Then
+					Call Me.ReloadWithHistory
+				End If
+			Else
+				Call Me.ManageDescendanceTransferts(VpTransfertType, VpTo)
+			End If
+		End If
+	End Sub
+	Private Sub ManageDescendanceTransferts(VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "")
+	'------------------------------------------------------------------------------------------------------------------------------
+	'Gère les transferts / suppression dans le cas où l'utilisateur n'a pas choisi des cartes mais un niveau hiérarchique supérieur
+	'------------------------------------------------------------------------------------------------------------------------------
+	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
+	Dim VpTag As clsTag = VpNode.Tag
+	Dim VpSQL As String = VpTag.Descendance
+	Dim VpSource As String = If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpTransfertResult As clsTransfertResult
+	Dim	VpDBCommand As New OleDbCommand
+	Dim VpDBReader As OleDbDataReader
+	Dim VpMustReload As Boolean = False
+		VpSQL = VpSQL.Substring(VpSQL.IndexOf("From"))
+		If Not Me.IsInAdvSearch Then
+			VpSQL = "Select " + VpSource + ".EncNbr, Items, Foil " + VpSQL
+		Else
+			VpSQL = "Select Card.EncNbr " + VpSQL
+		End If
+		VpDBCommand.Connection = VgDB
+		VpDBCommand.CommandType = CommandType.Text
+		VpDBCommand.CommandText = VpSQL
+		VpDBReader = VpDBcommand.ExecuteReader
+		While VpDBReader.Read
+			VpTransfertResult = New clsTransfertResult
+			With VpTransfertResult
+				.TransfertType = VpTransfertType
+				.EncNbrFrom = VpDBReader.GetInt32(0)
+				.EncNbrTo = .EncNbrFrom
+				.FoilFrom = If(Me.IsInAdvSearch, False, VpDBReader.GetBoolean(2))
+				.FoilTo = .FoilFrom
+				.NCartes = If(Me.IsInAdvSearch, 1, VpDBReader.GetInt32(1))
+				.TFrom = Me.GetSelectedSource
+				.SFrom = VpSource
+				If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+					.TTo = VpTo
+					.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
+				End If
+				'Opération effective
+				If Me.IsInAdvSearch Or (.TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+					Call frmTransfert.CommitAction(VpTransfertResult)
+				ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
+					Call frmTransfert.CommitAction(VpTransfertResult)
+					VpMustReload = True
+				Else
+					Call clsModule.ShowWarning("La source et la destination sont identiques !")
+					Exit While
+				End If
+			End With
+		End While
+		VpDBReader.Close
 		If VpMustReload Then
-			VpHistory = Me.SaveNode(Me.tvwExplore.SelectedNode)
-			Call Me.LoadTvw
-			Me.tvwExplore.BeginUpdate
-			Call Me.RestoreNode(VpHistory, Me.tvwExplore.Nodes(0))
-			Me.tvwExplore.EndUpdate
+			Call Me.ReloadWithHistory
 		End If
 	End Sub
 	Private Sub MVBuy(VpLoad As Boolean, VpFullLoad As Boolean)
@@ -1681,9 +1752,9 @@ Public Partial Class MainForm
 				VpEN = ( VpNode.Parent.Tag.Key = "Card.Title" )
 			End If
 			Me.mnuSwapSerie.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
-			Me.mnuDeleteACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
-			Me.mnuMoveACard.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
-			Me.mnuCopyACard.Enabled = VpEN
+			Me.mnuDeleteACard.Enabled = Not Me.IsInAdvSearch 'VpEN And VpSingle And Not Me.IsInAdvSearch
+			Me.mnuMoveACard.Enabled = Not Me.IsInAdvSearch 'VpEN And VpSingle And
+			Me.mnuCopyACard.Enabled = True 'VpEN
 			If Not VpNode Is Nothing Then
 				Me.mnuBuy.Enabled = VpEN Or ( VpNode.Parent Is Nothing And Not Me.IsInAdvSearch )
 			Else
@@ -2312,7 +2383,7 @@ Public Partial Class MainForm
 		Call Me.LoadTvw(VmAdvSearch, , VmAdvSearchLabel)
 		If VpHistory <> "" Then
 			Me.tvwExplore.BeginUpdate
-			Call Me.RestoreNode(VpHistory, Me.tvwExplore.Nodes(0))
+			Call Me.RestoreNode(VpHistory, Me.FirstRoot)
 			Me.tvwExplore.EndUpdate
 		End If
 	End Sub
@@ -2326,10 +2397,10 @@ Public Partial Class MainForm
 	Sub MnuCollapseRareteClick(sender As Object, e As EventArgs)
 		Call Me.FixRarete
 		Call clsModule.ShowInformation("Terminé !")
-	End Sub	
-	Sub BtCriteriaClick(sender As Object, e As EventArgs)		
+	End Sub
+	Sub BtCriteriaClick(sender As Object, e As EventArgs)
 		VmFilterCriteria.Show
-		VmFilterCriteria.Location = New Point(MousePosition.X, MousePosition.Y - Math.Max(0, MousePosition.Y + VmFilterCriteria.Height - Screen.PrimaryScreen.Bounds.Height))
-	End Sub	
+		VmFilterCriteria.Location = MousePosition
+	End Sub
 	#End Region
 End Class
