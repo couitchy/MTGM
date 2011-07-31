@@ -78,6 +78,19 @@ Public Partial Class frmSearch
 			End If
 		Next VpStr
 	End Sub
+	Private Function FindNumOperator As String
+		If Me.chkInf.Checked And Me.chkEq.Checked Then
+			Return " <= "
+		ElseIf Me.chkSup.Checked And Me.chkEq.Checked Then
+			Return " >= "
+		ElseIf Me.chkSup.Checked Then
+			Return " > "
+		ElseIf Me.chkInf.Checked Then
+			Return " < "
+		Else
+			Return " = "
+		End If
+	End Function
 	Private Function Search(VpField As String, VpValue As String, Optional VpIsCreature As Boolean = False, Optional VpMode As clsModule.eSearchType = clsModule.eSearchType.Alpha) As String
 	'------------------------------------------------------------
 	'Effectue la requête de l'utilisateur dans la base de données
@@ -88,9 +101,9 @@ Public Partial Class frmSearch
 		'Gestion des différents modes de recherche
 		Select Case VpMode
 			Case clsModule.eSearchType.Num
-				VpCriteria = VpField + " = " + VpValue.Replace(",", ".")
+				VpCriteria = VpField + Me.FindNumOperator + VpValue.Replace(",", ".")
 			Case clsModule.eSearchType.NumOverAlpha
-				VpCriteria = "Val(" + VpField + ") = " + VpValue
+				VpCriteria = "Val(" + VpField + ")" + Me.FindNumOperator + VpValue
 			Case clsModule.eSearchType.Alpha
 				If Not VpValue.Contains(" ") And Not VpValue.Contains("""") Then
 					VpCriteria = "InStr(" + VpField + ", '" + VpValue + "') > 0"	'cas simple
@@ -327,6 +340,28 @@ Public Partial Class frmSearch
 			sender.SelectionStart = 1
 		End If
 		VmKeyChange = False
+	End Sub
+	Sub ChkSupCheckedChanged(sender As Object, e As EventArgs)
+		If Me.chkSup.Checked Then
+			Me.chkInf.Checked = False
+		End If
+	End Sub
+	Sub ChkInfCheckedChanged(sender As Object, e As EventArgs)
+		If Me.chkInf.Checked Then
+			Me.chkSup.Checked = False
+		End If
+	End Sub
+	Sub CboSearchTypeSelectedIndexChanged(sender As Object, e As EventArgs)
+		Select Case Me.cboSearchType.SelectedIndex
+			Case 4, 5, 6, 8
+				Me.chkInf.Visible = True
+				Me.chkEq.Visible = True
+				Me.chkSup.Visible = True
+			Case Else
+				Me.chkInf.Visible = False
+				Me.chkEq.Visible = False
+				Me.chkSup.Visible = False
+		End Select
 	End Sub
 	#End Region
 End Class

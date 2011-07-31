@@ -107,7 +107,7 @@ Partial Class frmExport
 		Me.grpImport.Size = New System.Drawing.Size(324, 173)
 		Me.grpImport.TabIndex = 1
 		Me.grpImport.TabStop = false
-		Me.grpImport.Visible = false
+		Me.grpImport.Visible = true
 		'
 		'lstImp
 		'
@@ -201,7 +201,8 @@ Partial Class frmExport
 		Me.grpExport.Name = "grpExport"
 		Me.grpExport.Size = New System.Drawing.Size(324, 173)
 		Me.grpExport.TabIndex = 0
-		Me.grpExport.TabStop = false
+		Me.grpExport.TabStop = False
+		Me.grpExport.Visible = false
 		'
 		'optNormal
 		'

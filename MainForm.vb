@@ -399,8 +399,8 @@ Public Partial Class MainForm
 	Dim VpNewOffset As Long
 	Dim VpNewEnd As Long
 	Dim VpOldOffset As Long
-		Call clsModule.DownloadNow(New Uri(clsModule.CgURL10 + clsModule.CgMdPic + clsModule.CgPicUpExt), "\" + clsModule.CgMdPic + clsModule.CgPicUpExt)
-		Call clsModule.DownloadNow(New Uri(clsModule.CgURL10 + clsModule.CgMdPic + clsModule.CgPicLogExt), "\" + clsModule.CgMdPic + clsModule.CgPicLogExt)
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + clsModule.CgMdPic + clsModule.CgPicUpExt), "\" + clsModule.CgMdPic + clsModule.CgPicUpExt)
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + clsModule.CgMdPic + clsModule.CgPicLogExt), "\" + clsModule.CgMdPic + clsModule.CgPicLogExt)
 		If File.Exists(VpLogPath) And File.Exists(VpInPath) Then
 	    	VpLog = New StreamReader(VpLogPath)
 			VpIn = New StreamReader(VpInPath)
@@ -476,7 +476,7 @@ Public Partial Class MainForm
 	'------------------------------------------------------------------
 	Dim VpLog As StreamReader
 	Dim VpStrs() As String
-		Call clsModule.DownloadNow(New Uri(clsModule.CgURL14), clsModule.CgMdTrad)
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL14), clsModule.CgMdTrad)
 		If File.Exists(Application.StartupPath + clsModule.CgMdTrad) Then
 	    	VpLog = New StreamReader(Application.StartupPath + clsModule.CgMdTrad)
 			While Not VpLog.EndOfStream
@@ -1318,17 +1318,27 @@ Public Partial Class MainForm
 	Dim	VpDBCommand As New OleDbCommand
 	Dim VpDBReader As OleDbDataReader
 	Dim VpMustReload As Boolean = False
+	Dim VpQuant As Integer
+		'La requête permettant de construire les fils du noeud sélectionné a été mémorisée dans un tag
 		VpSQL = VpSQL.Substring(VpSQL.IndexOf("From"))
 		If Not Me.IsInAdvSearch Then
 			VpSQL = "Select " + VpSource + ".EncNbr, Items, Foil " + VpSQL
 		Else
+			'Gestion particulière lorsque l'on est en mode recherche avancée
 			VpSQL = "Select Card.EncNbr " + VpSQL
+			If VgOptions.VgSettings.CopyRange > 1 Then
+				VpQuant = Math.Min(VgOptions.VgSettings.CopyRange, Val(InputBox("En combien d'exemplaire(s) souhaitez-vous copier ces cartes ?" + vbCrLf + "(" + VgOptions.VgSettings.CopyRange.ToString + " max.)", "Nombre d'éléments", "1")))
+			Else
+				VpQuant = 1
+			End If
 		End If
+		'Rejoue cette requête
 		VpDBCommand.Connection = VgDB
 		VpDBCommand.CommandType = CommandType.Text
 		VpDBCommand.CommandText = VpSQL
 		VpDBReader = VpDBcommand.ExecuteReader
 		While VpDBReader.Read
+			'On crée un nouvel objet de transfert pour chaque ligne retournée
 			VpTransfertResult = New clsTransfertResult
 			With VpTransfertResult
 				.TransfertType = VpTransfertType
@@ -1336,7 +1346,7 @@ Public Partial Class MainForm
 				.EncNbrTo = .EncNbrFrom
 				.FoilFrom = If(Me.IsInAdvSearch, False, VpDBReader.GetBoolean(2))
 				.FoilTo = .FoilFrom
-				.NCartes = If(Me.IsInAdvSearch, 1, VpDBReader.GetInt32(1))
+				.NCartes = If(Me.IsInAdvSearch, VpQuant, VpDBReader.GetInt32(1))
 				.TFrom = Me.GetSelectedSource
 				.SFrom = VpSource
 				If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
@@ -1344,18 +1354,21 @@ Public Partial Class MainForm
 					.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
 				End If
 				'Opération effective
-				If Me.IsInAdvSearch Or (.TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy) Then
-					Call frmTransfert.CommitAction(VpTransfertResult)
-				ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
-					Call frmTransfert.CommitAction(VpTransfertResult)
-					VpMustReload = True
-				Else
-					Call clsModule.ShowWarning("La source et la destination sont identiques !")
-					Exit While
+				If .NCartes > 0 Then
+					If Me.IsInAdvSearch Or (.TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+						Call frmTransfert.CommitAction(VpTransfertResult)
+					ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
+						Call frmTransfert.CommitAction(VpTransfertResult)
+						VpMustReload = True
+					Else
+						Call clsModule.ShowWarning("La source et la destination sont identiques !")
+						Exit While
+					End If
 				End If
 			End With
 		End While
 		VpDBReader.Close
+		'Actualisation de l'arborescence si nécessaire
 		If VpMustReload Then
 			Call Me.ReloadWithHistory
 		End If
@@ -1893,7 +1906,7 @@ Public Partial Class MainForm
 	Sub MnuUpdateSimuActivate(ByVal sender As Object, ByVal e As EventArgs)
 		If clsModule.DBOK Then
 			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer les derniers modèles et/ou historiques ?") = System.Windows.Forms.DialogResult.Yes Then
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL3B), clsModule.CgUpDDBb)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL3B), clsModule.CgUpDDBb)
 				If File.Exists(Application.StartupPath + clsModule.CgUpDDBb) Then
 					Call clsModule.DBImport(Application.StartupPath + clsModule.CgUpDDBb)
 					Call clsModule.DBAdaptEncNbr
@@ -1906,7 +1919,7 @@ Public Partial Class MainForm
 	Sub MnuUpdateAutorisationsClick(sender As Object, e As EventArgs)
 		If clsModule.DBOK Then
 			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer la liste des autorisations des cartes en tournois ?") = System.Windows.Forms.DialogResult.Yes Then
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL15), clsModule.CgUpAutorisations)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL15), clsModule.CgUpAutorisations)
 				If File.Exists(Application.StartupPath + clsModule.CgUpAutorisations) Then
 					Call Me.UpdateAutorisations(Application.StartupPath + clsModule.CgUpAutorisations)
 					Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpAutorisations)
@@ -1919,7 +1932,7 @@ Public Partial Class MainForm
 	Sub MnuUpdatePricesActivate(ByVal sender As Object, ByVal e As EventArgs)
 		If clsModule.DBOK Then
 			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer la dernière liste des prix ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis un fichier sur le disque dur...") = System.Windows.Forms.DialogResult.Yes Then
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL9), clsModule.CgUpPrices)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL9), clsModule.CgUpPrices)
 				If File.Exists(Application.StartupPath + clsModule.CgUpPrices) Then
 					Call Me.UpdatePrices(Application.StartupPath + clsModule.CgUpPrices, False)
 					Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpPrices)
@@ -1942,7 +1955,7 @@ Public Partial Class MainForm
 					If clsModule.ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 						'Re-téléchargement complet de la base principale
 						Me.IsInImgDL = True
-						Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
+						Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
 					End If
 					Exit Sub
 				End If
@@ -1966,7 +1979,7 @@ Public Partial Class MainForm
 				If clsModule.ShowQuestion("La base d'images est introuvable." + vbCrLf + "Voulez-vous la télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 					'Téléchargement complet de la base principale
 					Me.IsInImgDL = True
-					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
+					Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + clsModule.CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
 				End If
 			End If
 		End If
@@ -1974,7 +1987,7 @@ Public Partial Class MainForm
 	Sub MnuUpdateTxtFRClick(sender As Object, e As EventArgs)
 		If clsModule.DBOK Then
 			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer les textes des cartes en français ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis le fichier sur le disque dur...") = System.Windows.Forms.DialogResult.Yes Then
-				Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL11), clsModule.CgUpTXTFR)
+				Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL11), clsModule.CgUpTXTFR)
 			Else
 				If File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
 					Call Me.UpdateTxtFR
@@ -2010,7 +2023,7 @@ Public Partial Class MainForm
 			End Try
 		Else
 			If clsModule.ShowQuestion("Le fichier d'aide est introuvable." + vbCrLf + "Voulez-vous le télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
-				Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL13), clsModule.CgHLPFile)
+				Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL13), clsModule.CgHLPFile)
 			End If
 		End If
 	End Sub

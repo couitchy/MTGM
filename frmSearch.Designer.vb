@@ -37,6 +37,9 @@ Partial Class frmSearch
 		Me.cbarSearch = New TD.SandBar.ContainerBar
 		Me.pnlSearch = New TD.SandBar.ContainerBarClientPanel
 		Me.grpSearch = New System.Windows.Forms.GroupBox
+		Me.chkSup = New System.Windows.Forms.CheckBox
+		Me.chkEq = New System.Windows.Forms.CheckBox
+		Me.chkInf = New System.Windows.Forms.CheckBox
 		Me.chkRestrictionInv = New System.Windows.Forms.CheckBox
 		Me.cmdClearSearches = New System.Windows.Forms.Button
 		Me.cboFind = New System.Windows.Forms.ComboBox
@@ -110,6 +113,9 @@ Partial Class frmSearch
 		'grpSearch
 		'
 		Me.grpSearch.BackColor = System.Drawing.Color.Transparent
+		Me.grpSearch.Controls.Add(Me.chkSup)
+		Me.grpSearch.Controls.Add(Me.chkEq)
+		Me.grpSearch.Controls.Add(Me.chkInf)
 		Me.grpSearch.Controls.Add(Me.chkRestrictionInv)
 		Me.grpSearch.Controls.Add(Me.cmdClearSearches)
 		Me.grpSearch.Controls.Add(Me.cboFind)
@@ -128,6 +134,43 @@ Partial Class frmSearch
 		Me.grpSearch.Size = New System.Drawing.Size(375, 308)
 		Me.grpSearch.TabIndex = 0
 		Me.grpSearch.TabStop = false
+		'
+		'chkSup
+		'
+		Me.chkSup.AutoSize = true
+		Me.chkSup.Location = New System.Drawing.Point(294, 18)
+		Me.chkSup.Name = "chkSup"
+		Me.chkSup.Size = New System.Drawing.Size(32, 17)
+		Me.chkSup.TabIndex = 30
+		Me.chkSup.Text = ">"
+		Me.chkSup.UseVisualStyleBackColor = true
+		Me.chkSup.Visible = false
+		AddHandler Me.chkSup.CheckedChanged, AddressOf Me.ChkSupCheckedChanged
+		'
+		'chkEq
+		'
+		Me.chkEq.AutoSize = true
+		Me.chkEq.Checked = true
+		Me.chkEq.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkEq.Location = New System.Drawing.Point(256, 18)
+		Me.chkEq.Name = "chkEq"
+		Me.chkEq.Size = New System.Drawing.Size(32, 17)
+		Me.chkEq.TabIndex = 29
+		Me.chkEq.Text = "="
+		Me.chkEq.UseVisualStyleBackColor = true
+		Me.chkEq.Visible = false
+		'
+		'chkInf
+		'
+		Me.chkInf.AutoSize = true
+		Me.chkInf.Location = New System.Drawing.Point(218, 18)
+		Me.chkInf.Name = "chkInf"
+		Me.chkInf.Size = New System.Drawing.Size(32, 17)
+		Me.chkInf.TabIndex = 28
+		Me.chkInf.Text = "<"
+		Me.chkInf.UseVisualStyleBackColor = true
+		Me.chkInf.Visible = false
+		AddHandler Me.chkInf.CheckedChanged, AddressOf Me.ChkInfCheckedChanged
 		'
 		'chkRestrictionInv
 		'
@@ -156,9 +199,9 @@ Partial Class frmSearch
 		Me.cboFind.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append
 		Me.cboFind.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
 		Me.cboFind.FormattingEnabled = true
-		Me.cboFind.Location = New System.Drawing.Point(79, 16)
+		Me.cboFind.Location = New System.Drawing.Point(62, 45)
 		Me.cboFind.Name = "cboFind"
-		Me.cboFind.Size = New System.Drawing.Size(232, 21)
+		Me.cboFind.Size = New System.Drawing.Size(264, 21)
 		Me.cboFind.TabIndex = 15
 		AddHandler Me.cboFind.KeyUp, AddressOf Me.CboFindKeyUp
 		AddHandler Me.cboFind.KeyDown, AddressOf Me.CboFindKeyDown
@@ -225,19 +268,20 @@ Partial Class frmSearch
 		'cboSearchType
 		'
 		Me.cboSearchType.Items.AddRange(New Object() {"Nom de la carte (VO)", "Nom de la carte (VF)", "Texte détaillé (VO)", "Texte détaillé (VF)", "Force", "Endurance", "Prix", "Edition", "Coût converti de mana", "Type / Sous-type"})
-		Me.cboSearchType.Location = New System.Drawing.Point(79, 45)
+		Me.cboSearchType.Location = New System.Drawing.Point(62, 16)
 		Me.cboSearchType.Name = "cboSearchType"
-		Me.cboSearchType.Size = New System.Drawing.Size(232, 21)
+		Me.cboSearchType.Size = New System.Drawing.Size(150, 21)
 		Me.cboSearchType.TabIndex = 16
 		Me.cboSearchType.Text = "Nom de la carte (VF)"
+		AddHandler Me.cboSearchType.SelectedIndexChanged, AddressOf Me.CboSearchTypeSelectedIndexChanged
 		'
 		'cmdGo
 		'
+		Me.cmdGo.Image = CType(resources.GetObject("cmdGo.Image"),System.Drawing.Image)
 		Me.cmdGo.Location = New System.Drawing.Point(338, 45)
 		Me.cmdGo.Name = "cmdGo"
 		Me.cmdGo.Size = New System.Drawing.Size(21, 21)
 		Me.cmdGo.TabIndex = 17
-		Me.cmdGo.Text = "."
 		Me.cmdGo.UseCompatibleTextRendering = true
 		AddHandler Me.cmdGo.Click, AddressOf Me.CmdGoClick
 		'
@@ -254,7 +298,7 @@ Partial Class frmSearch
 		'
 		Me.imgSearch.BackColor = System.Drawing.Color.Transparent
 		Me.imgSearch.Image = CType(resources.GetObject("imgSearch.Image"),System.Drawing.Image)
-		Me.imgSearch.Location = New System.Drawing.Point(15, 16)
+		Me.imgSearch.Location = New System.Drawing.Point(16, 23)
 		Me.imgSearch.Name = "imgSearch"
 		Me.imgSearch.Size = New System.Drawing.Size(32, 32)
 		Me.imgSearch.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -487,6 +531,9 @@ Partial Class frmSearch
 		CType(Me.picEdition,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private chkInf As System.Windows.Forms.CheckBox
+	Private chkEq As System.Windows.Forms.CheckBox
+	Private chkSup As System.Windows.Forms.CheckBox
 	Private chkRestrictionInv As System.Windows.Forms.CheckBox
 	Public lblStock2 As System.Windows.Forms.Label
 	Public lblStock3 As System.Windows.Forms.Label

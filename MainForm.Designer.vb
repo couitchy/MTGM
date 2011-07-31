@@ -134,7 +134,6 @@ Partial Class MainForm
 		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
 		Me.toolStrip = New System.Windows.Forms.ToolStrip
-		Me.btDBSelect = New System.Windows.Forms.ToolStripButton
 		Me.btExport = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator1 = New System.Windows.Forms.ToolStripSeparator
 		Me.btGestDecks = New System.Windows.Forms.ToolStripButton
@@ -1077,30 +1076,21 @@ Partial Class MainForm
 		'toolStrip
 		'
 		Me.toolStrip.ImageScalingSize = New System.Drawing.Size(32, 32)
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBSelect, Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(757, 54)
 		Me.toolStrip.TabIndex = 7
-		'
-		'btDBSelect
-		'
-		Me.btDBSelect.Image = CType(resources.GetObject("btDBSelect.Image"),System.Drawing.Image)
-		Me.btDBSelect.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btDBSelect.Name = "btDBSelect"
-		Me.btDBSelect.Size = New System.Drawing.Size(44, 51)
-		Me.btDBSelect.Text = "Ouvrir"
-		Me.btDBSelect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-		AddHandler Me.btDBSelect.Click, AddressOf Me.MnuDBOpenClick
 		'
 		'btExport
 		'
 		Me.btExport.Image = CType(resources.GetObject("btExport.Image"),System.Drawing.Image)
 		Me.btExport.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btExport.Name = "btExport"
-		Me.btExport.Size = New System.Drawing.Size(91, 51)
-		Me.btExport.Text = "Import / Export"
+		Me.btExport.Size = New System.Drawing.Size(57, 51)
+		Me.btExport.Text = "Importer"
 		Me.btExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btExport.ToolTipText = "Importer des cartes depuis divers formats"
 		AddHandler Me.btExport.Click, AddressOf Me.MnuExportActivate
 		'
 		'btSeparator1
@@ -1110,21 +1100,24 @@ Partial Class MainForm
 		'
 		'btGestDecks
 		'
+		Me.btGestDecks.AutoSize = false
 		Me.btGestDecks.Image = CType(resources.GetObject("btGestDecks.Image"),System.Drawing.Image)
 		Me.btGestDecks.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btGestDecks.Name = "btGestDecks"
-		Me.btGestDecks.Size = New System.Drawing.Size(42, 51)
+		Me.btGestDecks.Size = New System.Drawing.Size(60, 51)
 		Me.btGestDecks.Text = "Decks"
 		Me.btGestDecks.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btGestDecks.ToolTipText = "Liste de mes decks"
 		AddHandler Me.btGestDecks.Click, AddressOf Me.MnuGestDecksActivate
 		'
 		'btAddCards
 		'
+		Me.btAddCards.AutoSize = false
 		Me.btAddCards.Image = CType(resources.GetObject("btAddCards.Image"),System.Drawing.Image)
 		Me.btAddCards.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btAddCards.Name = "btAddCards"
-		Me.btAddCards.Size = New System.Drawing.Size(90, 51)
-		Me.btAddCards.Text = "Saisie de cartes"
+		Me.btAddCards.Size = New System.Drawing.Size(60, 51)
+		Me.btAddCards.Text = "Saisie"
 		Me.btAddCards.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		Me.btAddCards.ToolTipText = "Ajouter des cartes à la collection ou aux decks"
 		AddHandler Me.btAddCards.Click, AddressOf Me.MnuAddCardsActivate
@@ -1137,6 +1130,7 @@ Partial Class MainForm
 		Me.btAdvancedSearch.Size = New System.Drawing.Size(66, 51)
 		Me.btAdvancedSearch.Text = "Recherche"
 		Me.btAdvancedSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btAdvancedSearch.ToolTipText = "Recherche avancée dans la base des cartes"
 		AddHandler Me.btAdvancedSearch.Click, AddressOf Me.MnuAdvancedSearchActivate
 		'
 		'btSeparator2
@@ -1146,12 +1140,14 @@ Partial Class MainForm
 		'
 		'btExcelGen
 		'
+		Me.btExcelGen.AutoSize = false
 		Me.btExcelGen.Image = CType(resources.GetObject("btExcelGen.Image"),System.Drawing.Image)
 		Me.btExcelGen.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btExcelGen.Name = "btExcelGen"
-		Me.btExcelGen.Size = New System.Drawing.Size(75, 51)
-		Me.btExcelGen.Text = "Listing Excel"
+		Me.btExcelGen.Size = New System.Drawing.Size(60, 51)
+		Me.btExcelGen.Text = "Listing"
 		Me.btExcelGen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btExcelGen.ToolTipText = "Générer un listing de cartes sous Excel"
 		AddHandler Me.btExcelGen.Click, AddressOf Me.MnuExcelGenActivate
 		'
 		'btWordGen
@@ -1159,9 +1155,10 @@ Partial Class MainForm
 		Me.btWordGen.Image = CType(resources.GetObject("btWordGen.Image"),System.Drawing.Image)
 		Me.btWordGen.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btWordGen.Name = "btWordGen"
-		Me.btWordGen.Size = New System.Drawing.Size(92, 51)
-		Me.btWordGen.Text = "Vignettes Word"
+		Me.btWordGen.Size = New System.Drawing.Size(60, 51)
+		Me.btWordGen.Text = "Vignettes"
 		Me.btWordGen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btWordGen.ToolTipText = "Préparer des pages de cartes à imprimer sous Word"
 		AddHandler Me.btWordGen.Click, AddressOf Me.MnuWordGenClick
 		'
 		'btSimu
@@ -1172,6 +1169,7 @@ Partial Class MainForm
 		Me.btSimu.Size = New System.Drawing.Size(73, 51)
 		Me.btSimu.Text = "Simulations"
 		Me.btSimu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btSimu.ToolTipText = "Evaluer les performances de ma sélection"
 		AddHandler Me.btSimu.Click, AddressOf Me.MnuSimuActivate
 		'
 		'btStats
@@ -1182,28 +1180,31 @@ Partial Class MainForm
 		Me.btStats.Size = New System.Drawing.Size(71, 51)
 		Me.btStats.Text = "Statistiques"
 		Me.btStats.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btStats.ToolTipText = "Calculer les statistiques sur ma sélection"
 		AddHandler Me.btStats.Click, AddressOf Me.MnuStatsActivate
 		'
 		'btCheckForUpdates
 		'
 		Me.btCheckForUpdates.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-		Me.btCheckForUpdates.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btCheckForUpdates.Image = CType(resources.GetObject("btCheckForUpdates.Image"),System.Drawing.Image)
 		Me.btCheckForUpdates.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCheckForUpdates.Name = "btCheckForUpdates"
-		Me.btCheckForUpdates.Size = New System.Drawing.Size(36, 51)
-		Me.btCheckForUpdates.Text = "Vérifier les mises à jour"
+		Me.btCheckForUpdates.Size = New System.Drawing.Size(74, 51)
+		Me.btCheckForUpdates.Text = "Mises à jour"
+		Me.btCheckForUpdates.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btCheckForUpdates.ToolTipText = "Mises à jour de l'application et de son contenu"
 		AddHandler Me.btCheckForUpdates.Click, AddressOf Me.MnuCheckForUpdatesActivate
 		'
 		'btWebsite
 		'
 		Me.btWebsite.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-		Me.btWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btWebsite.Image = CType(resources.GetObject("btWebsite.Image"),System.Drawing.Image)
 		Me.btWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btWebsite.Name = "btWebsite"
-		Me.btWebsite.Size = New System.Drawing.Size(36, 51)
-		Me.btWebsite.Text = "Site Web de MTGM"
+		Me.btWebsite.Size = New System.Drawing.Size(67, 51)
+		Me.btWebsite.Text = "Sur le Web"
+		Me.btWebsite.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btWebsite.ToolTipText = "Site Internet de l'application"
 		AddHandler Me.btWebsite.Click, AddressOf Me.MnuWebsiteClick
 		'
 		'splitV
@@ -1939,7 +1940,6 @@ Partial Class MainForm
 	Private btCheckForUpdates As System.Windows.Forms.ToolStripButton
 	Private btStats As System.Windows.Forms.ToolStripButton
 	Private btSimu As System.Windows.Forms.ToolStripButton
-	Private btDBSelect As System.Windows.Forms.ToolStripButton
 	Private btExport As System.Windows.Forms.ToolStripButton
 	Private btGestDecks As System.Windows.Forms.ToolStripButton
 	Private btSeparator2 As System.Windows.Forms.ToolStripSeparator

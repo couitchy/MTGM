@@ -72,27 +72,28 @@ Public Module clsModule
 	Public Const CgMdPic As String				= "MD_Pict"
 	Public Const CgMdTrad As String				= "\MD_Trad.log"
 	Public Const CgShell As String				= "explorer.exe"
-	Public Const CgURL1 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/TimeStamp r4.txt"
-	Public Const CgURL1B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Beta/TimeStamp.txt"
-	Public Const CgURL1C As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/ContenuStamp r9b.txt"
-	Public Const CgURL1E As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/ContenuSizes r9.txt"
-	Public Const CgURL2 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Magic The Gathering Manager r4.new"
-	Public Const CgURL2B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Beta/Magic The Gathering Manager.new"
-	Public Const CgURL3 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Images DB.mdb"
-	Public Const CgURL3B As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Patch r9.mdb"
-	Public Const CgURL4 As String				= "http://couitchy.free.fr/upload/MTGM/Listes%20des%20editions/"
-	Public Const CgURL5 As String				= "http://couitchy.free.fr/upload/MTGM/Logos%20des%20editions/"
+	Public Const CgDefaultServer As String		= "http://couitchy.free.fr/upload/MTGM"
+	Public Const CgURL1 As String         		= "/Updates/TimeStamp r4.txt"
+	Public Const CgURL1B As String         		= "/Updates/Beta/TimeStamp.txt"
+	Public Const CgURL1C As String         		= "/Updates/PicturesStamp.txt"
+	Public Const CgURL1D As String         		= "/Updates/ContenuStamp r9b.txt"
+	Public Const CgURL1E As String         		= "/Updates/ContenuSizes r9.txt"
+	Public Const CgURL2 As String         		= "/Updates/Magic The Gathering Manager r4.new"
+	Public Const CgURL2B As String         		= "/Updates/Beta/Magic The Gathering Manager.new"
+	Public Const CgURL3 As String         		= "/Updates/Images DB.mdb"
+	Public Const CgURL3B As String         		= "/Updates/Patch r9.mdb"
+	Public Const CgURL4 As String				= "/Listes%20des%20editions/"
+	Public Const CgURL5 As String				= "/Logos%20des%20editions/"
 	Public Const CgURL6 As String				= "http://gatherer.wizards.com/Pages/Default.aspx"
-	Public Const CgURL7 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Historique.txt"
-	Public Const CgURL8 As String         		= "http://couitchy.free.fr/upload/MTGM/Lib/"
-	Public Const CgURL9 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/LastPrices.txt"
-	Public Const CgURL10 As String				= "http://couitchy.free.fr/upload/MTGM/Images%20des%20cartes/"
-	Public Const CgURL11 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Series r8.txt"
-	Public Const CgURL13 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/MTGM.pdf"
-	Public Const CgURL14 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/MD_Trad.log"
-	Public Const CgURL15 As String         		= "http://couitchy.free.fr/upload/MTGM/Updates/Tournois.txt"
+	Public Const CgURL7 As String         		= "/Updates/Historique.txt"
+	Public Const CgURL8 As String         		= "/Lib/"
+	Public Const CgURL9 As String         		= "/Updates/LastPrices.txt"
+	Public Const CgURL10 As String				= "/Images%20des%20cartes/"
+	Public Const CgURL11 As String         		= "/Updates/TextesVF.txt"
+	Public Const CgURL12 As String         		= "/Updates/Series r8.txt"
+	Public Const CgURL13 As String         		= "/Updates/MTGM.pdf"
+	Public Const CgURL14 As String         		= "/Updates/MD_Trad.log"
+	Public Const CgURL15 As String         		= "/Updates/Tournois.txt"
 	Public Const CgURL16 As String				= "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
 	Public Const CgURL17 As String				= "http://mtgm.free.fr"
 	Public Const CgURL18 As String				= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
@@ -278,7 +279,7 @@ Public Module clsModule
 			'Si le fichier n'existe pas
 			If Not File.Exists(Application.StartupPath + VpFile) Then
 				'Essaie de le télécharger
-				Call DownloadNow(New Uri(CgURL8 + VpFile.Replace("\", "")), VpFile)
+				Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + VgOptions.VgSettings.DownloadServer + CgURL8 + VpFile.Replace("\", "")), VpFile)
 				'Si le fichier n'existe toujours pas, on ne démarre pas
 				If Not File.Exists(Application.StartupPath + VpFile) Then
 					Call ShowWarning("Des fichiers nécessaires à l'exécution sont manquants...")
@@ -1074,7 +1075,7 @@ Public Module clsModule
 	Dim VpAnswer As Stream
 	Dim VpBuf() As Byte
 	Dim VpStamp As String
-			VpRequest = WebRequest.Create(CgURL1C)
+			VpRequest = WebRequest.Create(VgOptions.VgSettings.DownloadServer + CgURL1C)
 			VpResponse = VpRequest.GetResponse
 			VpAnswer = VpResponse.GetResponseStream
 			'Lecture du fichier sur Internet
@@ -1105,17 +1106,17 @@ Public Module clsModule
 					Call MainForm.VgMe.StatusText(VpOldText)
 				Else
 					'Téléchargement du fichier accompagnateur
-					Call DownloadNow(New Uri(CgURL10 + VpStr + CgPicLogExt), CgUpPic + CgPicLogExt)
+					Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL10 + VpStr + CgPicLogExt), CgUpPic + CgPicLogExt)
 					Application.DoEvents
 					'Téléchargement du service pack d'images
 					MainForm.VgMe.IsInImgDL = True
-					Call DownloadUpdate(New Uri(CgURL10 + VpStr + CgPicUpExt), CgUpPic + CgPicUpExt)
+					Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL10 + VpStr + CgPicUpExt), CgUpPic + CgPicUpExt)
 				End If
 			Else
 				If ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
 					'Re-téléchargement complet de la base principale
 					MainForm.VgMe.IsInImgDL = True
-					Call DownloadUpdate(New Uri(CgURL10 + CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
+					Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL10 + CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
 				Else
 					Call MainForm.VgMe.StatusText(VpOldText)
 				End If
@@ -1139,10 +1140,10 @@ Public Module clsModule
 		VpOldText = MainForm.VgMe.StatusTextGet
 		Call MainForm.VgMe.StatusText(CgDL1)
 		'Fichier d'historique des versions
-		Call DownloadNow(New Uri(CgURL7), CgHSTFile)
+		Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL7), CgHSTFile)
 		'Vérification horodatage
 		Try
-			VpRequest = WebRequest.Create(If(VpBeta, CgURL1B, CgURL1))
+			VpRequest = WebRequest.Create(If(VpBeta, VgOptions.VgSettings.DownloadServer + CgURL1B, VgOptions.VgSettings.DownloadServer + CgURL1))
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			'Lecture du fichier horodaté sur Internet
 			VpAnswer.Read(VpBuf, 0, 19)
@@ -1190,9 +1191,9 @@ Public Module clsModule
 		VgTimer.Stop
 		Select Case VpType
 			Case eUpdateType.Release
-				Call DownloadUpdate(New Uri(CgURL2), CgUpDFile)
+				Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL2), CgUpDFile)
 			Case eUpdateType.Beta
-				Call DownloadUpdate(New Uri(CgURL2B), CgUpDFile)
+				Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL2B), CgUpDFile)
 			Case eUpdateType.Contenu
 				MainForm.VgMe.MyChildren.ContenuUpdater.Show
 				MainForm.VgMe.MyChildren.ContenuUpdater.BringToFront
@@ -1627,7 +1628,7 @@ Public Module clsModule
 			If VpMissingTable Then
 				Select Case ShowQuestion("Cette version du logiciel est capable de gérer les images des cartes mais la base de données n'est pas à jour." + vbCrLf + "Voulez-vous télécharger les informations manquantes maintenant ?" + vbCrLf + "Cliquez sur 'Annuler' pour ne plus afficher ce message...", MessageBoxButtons.YesNoCancel)
 					Case DialogResult.Yes
-						Call DownloadUpdate(New Uri(CgURL3), CgUpDDB)
+						Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL3), CgUpDDB)
 					Case DialogResult.Cancel
 						VgOptions.VgSettings.PicturesFile = ""
 				 	Case Else

@@ -78,10 +78,10 @@ Public Partial Class frmNewEdition
 	Dim VpSpoiler As String = "\" + VpInfos(0) + "_spoiler_en.txt"
 	Dim VpTrad As String = "\" + VpInfos(0) + "_titles_fr.txt"
 		'Téléchargement des fichiers nécessaires
-		Call Me.DLResource("(1/4)", clsModule.CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
-		Call Me.DLResource("(2/4)", clsModule.CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
-		Call Me.DLResource("(3/4)", clsModule.CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
-		Call Me.DLResource("(4/4)", clsModule.CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
+		Call Me.DLResource("(1/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
+		Call Me.DLResource("(2/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
+		Call Me.DLResource("(3/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
+		Call Me.DLResource("(4/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
 		'Inscription de l'en-tête
 		Me.lblStatus.Text = "Inscription de l'en-tête..."
 		Application.DoEvents
@@ -108,7 +108,7 @@ Public Partial Class frmNewEdition
 	Dim VpSeriesInfos As StreamReader
 	Dim VpInfos() As String
 	Dim VpLine As String
-		Call clsModule.DownloadNow(New Uri(clsModule.CgURL12), clsModule.CgUpSeries)
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
 		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
 			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
 			Do While Not VpSeriesInfos.EndOfStream
@@ -142,7 +142,7 @@ Public Partial Class frmNewEdition
 	Dim VpAlready As List(Of String)
 	Dim VpNew As New List(Of String)
 	Dim VpMustAdd As Boolean
-		Call clsModule.DownloadNow(New Uri(clsModule.CgURL12), clsModule.CgUpSeries)
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
 		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
 			VpAlready = Me.BuildList("Select UCase(SeriesNM) From Series;")
 			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)

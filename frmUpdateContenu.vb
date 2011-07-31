@@ -45,7 +45,7 @@ Public Partial Class frmUpdateContenu
 			'Gestion cas 0
 			VpStamps(0) = clsModule.GetPictSP
 			'Gestion cas 1 à 6
-			VpRequest = WebRequest.Create(clsModule.CgURL1D)
+			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1D)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, 70)
 			For VpI As Integer = 0 To 5
@@ -70,7 +70,7 @@ Public Partial Class frmUpdateContenu
 	Dim VpAnswer As Stream
 	Dim VpBuf(0 To 46) As Byte
 		Try
-			VpRequest = WebRequest.Create(clsModule.CgURL1E)
+			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1E)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, 47)
 			'Gestion cas 0
@@ -144,7 +144,7 @@ Public Partial Class frmUpdateContenu
 		Select Case VpElement.TypeContenu
 			Case clsMAJContenu.EgMAJContenu.NewAut
 				'Appel silencieux pour mise à jour autorisations en tournoi
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL15), clsModule.CgUpAutorisations)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL15), clsModule.CgUpAutorisations)
 				If File.Exists(Application.StartupPath + clsModule.CgUpAutorisations) Then
 					Call MainForm.VgMe.UpdateAutorisations(Application.StartupPath + clsModule.CgUpAutorisations, True)
 					Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpAutorisations)
@@ -165,7 +165,7 @@ Public Partial Class frmUpdateContenu
 				End If
 			Case clsMAJContenu.EgMAJContenu.NewSimu
 				'Appel silencieux pour mise à jour modèles et historiques
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL3B), clsModule.CgUpDDBb)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL3B), clsModule.CgUpDDBb)
 				If File.Exists(Application.StartupPath + clsModule.CgUpDDBb) Then
 					Call clsModule.DBImport(Application.StartupPath + clsModule.CgUpDDBb, True)
 					Call clsModule.DBAdaptEncNbr
@@ -182,7 +182,7 @@ Public Partial Class frmUpdateContenu
 				End If
 			Case clsMAJContenu.EgMAJContenu.NewTxtVF
 				'Appel silencieux pour mise à jour texte des cartes en français
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL11), clsModule.CgUpTXTFR)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL11), clsModule.CgUpTXTFR)
 				If File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
 					Call MainForm.VgMe.UpdateTxtFR(True)
 					VgOptions.VgSettings.LastUpdateTxtVF = VpElement.Serveur
@@ -191,7 +191,7 @@ Public Partial Class frmUpdateContenu
 				End If
 			Case clsMAJContenu.EgMAJContenu.NewPrix
 				'Appel silencieux pour mise à jour prix
-				Call clsModule.DownloadNow(New Uri(clsModule.CgURL9), clsModule.CgUpPrices)
+				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL9), clsModule.CgUpPrices)
 				If File.Exists(Application.StartupPath + clsModule.CgUpPrices) Then
 					Call MainForm.VgMe.UpdatePrices(Application.StartupPath + clsModule.CgUpPrices, False, True)
 					Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpPrices)
@@ -203,11 +203,11 @@ Public Partial Class frmUpdateContenu
 				For VpI As Integer = 1 + CInt(VpElement.Locale.Replace("SP", "")) To CInt(VpElement.Serveur.Replace("SP", ""))
 					VmPassiveUpdate = EgPassiveUpdate.InProgress
 					'Téléchargement du fichier accompagnateur
-					Call clsModule.DownloadNow(New Uri(clsModule.CgURL10 + "SP" + VpI.ToString + clsModule.CgPicLogExt), clsModule.CgUpPic + clsModule.CgPicLogExt)
+					Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + clsModule.CgPicLogExt), clsModule.CgUpPic + clsModule.CgPicLogExt)
 					Application.DoEvents
 					'Téléchargement du service pack d'images
 					MainForm.VgMe.IsInImgDL = True
-					Call clsModule.DownloadUpdate(New Uri(clsModule.CgURL10 + "SP" + VpI.ToString + clsModule.CgPicUpExt), clsModule.CgUpPic + clsModule.CgPicUpExt, , True)
+					Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + clsModule.CgPicUpExt), clsModule.CgUpPic + clsModule.CgPicUpExt, , True)
 					While VmPassiveUpdate = EgPassiveUpdate.InProgress
 						Application.DoEvents
 					End While

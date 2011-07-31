@@ -123,6 +123,7 @@ Public Class clsSettings
 	Private VmShowCorruption As Boolean = True
 	Private VmCopyRange As Integer = 1
 	Private VmShowLines As Boolean = False
+	Private VmDownloadServer As String = clsModule.CgDefaultServer
 	<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 	Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 		Get
@@ -186,7 +187,7 @@ Public Class clsSettings
 			VmFormWindowState = VpFormWindowState
 		End Set
 	End Property
-	<DisplayName("Vérifier les mises à jour"), Category("Général"), DefaultValue(True), Description("Vérifier régulièrement si une mise à jour existe pour l'application")> _
+	<DisplayName("Vérifier les mises à jour"), Category("Mises à jour"), DefaultValue(True), Description("Vérifier régulièrement si une mise à jour existe pour l'application")> _
 	Public Property CheckForUpdate As Boolean
 		Get
 			Return VmCheckForUpdate
@@ -422,6 +423,15 @@ Public Class clsSettings
 		End Get
 		Set (VpShowUpdateMenus As Boolean)
 			VmShowUpdateMenus = VpShowUpdateMenus
+		End Set
+	End Property
+	<DisplayName("Serveur de téléchargement"), Category("Mises à jour"), Description("Serveur de téléchargement à contacter pour télécharger les mises à jour d'application et de contenu")> _
+	Public Property DownloadServer As String
+		Get
+			Return VmDownloadServer
+		End Get
+		Set (VpDownloadServer As String)
+			VmDownloadServer = VpDownloadServer
 		End Set
 	End Property
 End Class
