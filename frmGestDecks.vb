@@ -20,10 +20,11 @@
 '------------------------------------------------------
 Imports System.Collections.Generic
 Public Partial Class frmGestDecks
+	Private VmOwner As MainForm
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
-	Private VmOwner As MainForm
+	Private VmMustReload As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmOwner = VpOwner
@@ -62,6 +63,7 @@ Public Partial Class frmGestDecks
 		Call Me.SwapDeckId("MyGamesID", VpId1, VpId2)
 		Call Me.SwapDeckId("MyGames", VpId1, VpId2)
 		Call Me.LoadDecks(VpDirection)
+		VmMustReload = True
 	End Sub
 	Private Sub RemoveDeck(VpDeckName As String)
 	'-----------------------------------
@@ -139,8 +141,10 @@ Public Partial Class frmGestDecks
 	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
 		If e.CloseReason = CloseReason.UserClosing Then
 			Me.Visible = False
-			Call VmOwner.LoadMnu
-			Call VmOwner.LoadTvw
+			If VmMustReload Then
+				Call VmOwner.LoadMnu
+				Call VmOwner.LoadTvw
+			End If
 		End If
 	End Sub
 	Sub BtAddActivate(sender As Object, e As EventArgs)
@@ -158,6 +162,7 @@ Public Partial Class frmGestDecks
 			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0);"
 			VgDBCommand.ExecuteNonQuery
 			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpId + 1))
+			VmMustReload = True
 		End If
 	End Sub
 	Sub BtRemoveActivate(sender As Object, e As EventArgs)
@@ -173,6 +178,7 @@ Public Partial Class frmGestDecks
 		Me.btRename.Enabled = False
 		Me.btUp.Enabled = False
 		Me.btDown.Enabled = False
+		VmMustReload = True
 	End Sub
 	Sub BtRenameActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String
@@ -204,6 +210,7 @@ Public Partial Class frmGestDecks
 			VgDBCommand.CommandText = "Update MyGamesID Set GameName = '" + VpDeckName + "' Where GameName = '" + VpOldName + "';"
 			VgDBCommand.ExecuteNonQuery
 			Me.lstDecks.Items(Me.lstDecks.SelectedIndex) = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
+			VmMustReload = True
 		End If
 	End Sub
 	Sub BtDownActivate(sender As Object, e As EventArgs)

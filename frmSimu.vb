@@ -135,7 +135,7 @@ Public Partial Class frmSimu
 		'Simulation des N parties
 		For VpI As Integer = 1 To CInt(Me.txtN.Text)
 			'Mélange le jeu
-			Call VpPartie.DeckShuffle(VpI)
+			Call VpPartie.DeckShuffle
 			'Gestion des n tours
 			For VpJ As Integer = 0 To VpPartie.CardsCount - clsModule.CgNMain
 				Call VpPartie.UntagAll
@@ -205,7 +205,7 @@ Public Partial Class frmSimu
 			Call clsModule.ShowWarning("Il faut avoir au moins " + clsModule.CgNMain.ToString + " cartes saisies pour tirer une main...")
 		Else
 			'Mélange le jeu
-			Call VpPartie.DeckShuffle(DateTime.Now.Millisecond)
+			Call VpPartie.DeckShuffle
 			'Tire les 7 cartes
 			Call VpPartie.Draw(clsModule.CgNMain)
 			'Les inscrit dans la grille
@@ -238,11 +238,7 @@ Public Partial Class frmSimu
 		For VpI As Integer = 1 To CInt(Me.txtN2.Text)
 			VpPrevious = 0
 			'Mélange le jeu
-			If Me.chkVerbosity.Checked Then
-				Call VpPartie.DeckShuffle(DateTime.Now.Millisecond)
-			Else
-				Call VpPartie.DeckShuffle(VpI)
-			End If
+			Call VpPartie.DeckShuffle
 			'Gestion des n tours
 			For VpJ As Integer = 0 To VpPartie.CardsCount - clsModule.CgNMain
 				Call clsModule.VerboseSimu(VpVerbose, "Tour " + VpJ.ToString, VmSimuOut)
@@ -747,18 +743,25 @@ Public Class clsPartie
 			VmDeckCopy.Add(New clsCard(VpName, VpNameFR, VpCardText, VpCost, VpType, VpGestDeploy))
 		Next VpI
 	End Sub
-	Public Sub DeckShuffle(VpRndSeed As Integer)
+	Public Sub DeckShuffle
 	'--------------
 	'Mélange le jeu
 	'--------------
-	Dim VpRnd1 As New Random(VpRndSeed * Now.Second * 2)
-	Dim VpRnd2 As New Random(VpRndSeed * Now.Second / 2)
+	Dim VpI As Integer
+	Dim VpRandomPos As New SortedList(Me.CardsCount)
 		VmDrawn.Clear
 		VmInPlay.Clear
 		VmDeck = New List(Of clsCard)(VmDeckCopy)
-		For VpI As Integer = 1 To clsModule.CgShuffleDepth * Me.CardsCount
-			Call Me.DeckSwap(VpRnd1.NextDouble * (Me.CardsCount - 1), VpRnd2.NextDouble * (Me.CardsCount - 1))
+		'Génère un tableau trié de nombres aléatoires
+		For VpI = 0 To Me.CardsCount - 1
+			VpRandomPos.Add(clsModule.VgRandom.NextDouble, VpI)
 		Next VpI
+		'Réordonne les cartes en conséquence
+		VpI = 0
+		For Each VpPos As Integer In VpRandomPos.Values
+			VmDeck.Item(VpI) = VmDeckCopy.Item(VpPos)
+			VpI = VpI + 1
+		Next VpPos
 	End Sub
 	Public Sub UntapAll
 	'---------------------------
@@ -1225,15 +1228,6 @@ Public Class clsPartie
 		Next VpCard
 		Return False
 	End Function
-	Private Sub DeckSwap(VpI As Integer, VpJ As Integer)
-	'------------------------------------------
-	'Permute les deux cartes spécifiées du deck
-	'------------------------------------------
-	Dim VpTmp As clsCard
-		VpTmp = VmDeck.Item(VpI)
-		VmDeck.Item(VpI) = VmDeck.Item(VpJ)
-		VmDeck.Item(VpJ) = VpTmp
-	End Sub
 	Public Function ManasPotentielIn(VpList As List(Of clsCard)) As Integer
 	'-----------------------------------------------------------------------------
 	'Retourne le nombre de manas potentiellement générables avec les cartes en jeu

@@ -16,8 +16,8 @@
 '| Modifications :               							   |
 '---------------------------------------------------------------
 Public Partial Class frmExploSettings
-	Private VmMustReload As Boolean = False	'Rechargement des menus obligatoires dans le père
-	Private VmOwner As MainForm	
+	Private VmOwner As MainForm
+	Private VmSourceChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmOwner = VpOwner
@@ -33,7 +33,7 @@ Public Partial Class frmExploSettings
 			Catch
 			End Try
 		Next VpCriterion
-	End Sub	
+	End Sub
 	Private Sub ManageOrder(VpX As Integer, VpY As Integer, VpZ As Integer)
 	Dim VpIndex As Integer = Me.chklstClassement.SelectedIndex
 	Dim VpChecked As Boolean = Me.chklstClassement.GetItemChecked(VpIndex)
@@ -41,51 +41,50 @@ Public Partial Class frmExploSettings
 		Me.chklstClassement.Items.RemoveAt(VpIndex + VpX + VpY)
 		Me.chklstClassement.SetItemChecked(VpIndex - VpX, VpChecked)
 		Me.chklstClassement.SelectedIndex = VpIndex - Vpx
-	End Sub	
+	End Sub
 	Sub ChklstClassementSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Me.btUp.Enabled = (Me.chklstClassement.SelectedIndex > 1 And Me.chklstClassement.SelectedIndex <> Me.chklstClassement.Items.Count - 1)
 		Me.btDown.Enabled = (Me.chklstClassement.SelectedIndex > 0 And Me.chklstClassement.SelectedIndex < Me.chklstClassement.Items.Count - 2)
-		If VmMustReload Then
-			Call VmOwner.LoadTvw
-		End If
 	End Sub
-	Sub ChklstClassementItemCheck(ByVal sender As Object, ByVal e As ItemCheckEventArgs)
-	Dim VpStr As String
+	Sub ChklstClassementItemCheck(sender As Object, e As ItemCheckEventArgs)
 		If Me.chklstClassement.SelectedIndex = 0 Then
-			For Each VpItem As Object In VmOwner.mnuDisp.DropDownItems
-				VpStr = clsModule.SafeGetText(VpItem)
-				If VpStr = clsModule.CgCollection Then
-					VpItem.Checked = Not ( e.NewValue = CheckState.Checked )
-'				ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
-'				Else
-'					VpItem.Checked = ( e.NewValue = CheckState.Checked )
-				End If
-			Next VpItem
-			Me.chklstClassement.SelectedItems.Clear
-			VmMustReload = True	'un peu crade mais l'appel direct à LoadTvw est impossible car les checkboxes ne sont mises à jour qu'à la fin du présent évènement
-		End If
+			VmSourceChange = True
+		End If		
 	End Sub	
 	Sub BtRefreshClick(sender As Object, e As EventArgs)
+	Dim VpStr As String
+		If VmSourceChange Then
+			For Each VpItem As Object In VmOwner.mnuDisp.DropDownItems
+				VpStr = clsModule.SafeGetText(VpItem)
+				If VpStr <> clsModule.CgRefresh And VpStr <> clsModule.CgPanel And VpStr <> "" Then
+					If Not Me.DeckMode Then
+						VpItem.Checked = ( VpStr = clsModule.CgCollection )
+					Else
+						VpItem.Checked = Not ( VpStr = clsModule.CgCollection )
+					End If
+				End If
+			Next VpItem
+		End If
 		Me.Hide
 		Call VmOwner.MyRefresh
-	End Sub	
+	End Sub
 	Sub FrmExploSettingsKeyUp(sender As Object, e As KeyEventArgs)
 		If e.KeyCode = Keys.Escape Then
 			Me.Hide
 		End If
-	End Sub	
+	End Sub
 	Sub FrmExploSettingsFormClosing(sender As Object, e As FormClosingEventArgs)
 		If e.CloseReason = CloseReason.UserClosing Then
 			e.Cancel = True
 			Me.Hide
 		End If
-	End Sub	
+	End Sub
 	Sub BtUpClick(sender As Object, e As EventArgs)
 		Call Me.ManageOrder(1, 0, -1)
 	End Sub
 	Sub BtDownClick(sender As Object, e As EventArgs)
 		Call Me.ManageOrder(-1, 1, 2)
-	End Sub	
+	End Sub
 	Public ReadOnly Property MyList As CheckedListBox
 		Get
 			Return Me.chklstClassement
@@ -95,7 +94,7 @@ Public Partial Class frmExploSettings
 		Get
 			Return Me.chklstClassement.Items.Count
 		End Get
-	End Property	
+	End Property
 	Public ReadOnly Property NSelectedCriteria As Integer
 		Get
 			Return Me.chklstClassement.CheckedItems.Count
@@ -107,6 +106,11 @@ Public Partial Class frmExploSettings
 		End Get
 		Set(VpDeckMode As Boolean)
 			Me.chklstClassement.SetItemChecked(0, VpDeckMode)
+		End Set
+	End Property	
+	Public WriteOnly Property SourceChange As Boolean
+		Set(VpSourceChange As Boolean)
+			VmSourceChange = VpSourceChange
 		End Set
 	End Property
 End Class

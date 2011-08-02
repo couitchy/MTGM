@@ -2412,6 +2412,7 @@ Public Partial Class MainForm
 		Call clsModule.ShowInformation("Terminé !")
 	End Sub
 	Sub BtCriteriaClick(sender As Object, e As EventArgs)
+		VmFilterCriteria.SourceChange = False
 		VmFilterCriteria.Show
 		VmFilterCriteria.Location = MousePosition
 	End Sub

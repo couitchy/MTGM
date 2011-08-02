@@ -36,7 +36,6 @@ Public Module clsModule
 	Public Const CgCodeLines As Integer   		= 25619
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
-	Public Const CgShuffleDepth As Integer		= 4
 	Public Const CgNMain As Integer				= 7
 	Public Const CgNLives As Integer			= 20
 	Public Const CgMaxPot As Integer			= 100
@@ -164,6 +163,7 @@ Public Module clsModule
 	Public VgImgSeries As New ImageList
 	Public VgRemoteDate As Date
 	Public VgOptions As New Options
+	Public VgRandom As New Random(Now.Millisecond)
 	Public WithEvents VgTray As NotifyIcon
 	Public WithEvents VgTimer As Timer
 	Public WithEvents VgClient As New WebClient
@@ -1987,19 +1987,19 @@ Public Class clsManas
 			ElseIf VpX = "(" Then
 				VpY = VpCost.Substring(VpI + 1, 3)
 				Select Case VpY.ToUpper
-					Case "P/R"
+					Case "P/R", "R/P"
 						VmImgIndexes.Add(35)
 						VmPR = VmPR + 1
-					Case "P/B"
+					Case "P/B", "B/P"
 						VmImgIndexes.Add(33)
 						VmPB = VmPB + 1
-					Case "P/G"
+					Case "P/G", "G/P"
 						VmImgIndexes.Add(34)
 						VmPG = VmPG + 1
-					Case "P/U"
+					Case "P/U", "U/P"
 						VmImgIndexes.Add(36)
 						VmPU = VmPU + 1
-					Case "P/W"
+					Case "P/W", "W/P"
 						VmImgIndexes.Add(37)
 						VmPW = VmPW + 1
 					Case "G/B"

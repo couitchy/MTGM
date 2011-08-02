@@ -108,7 +108,8 @@ Partial Class frmExploSettings
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.KeyPreview = true
 		Me.Name = "frmExploSettings"
-		Me.Text = "frmExploSettings"
+		Me.ShowInTaskbar = false
+		Me.Text = "Filtres d'affichage"
 		Me.TopMost = true
 		AddHandler KeyUp, AddressOf Me.FrmExploSettingsKeyUp
 		AddHandler FormClosing, AddressOf Me.FrmExploSettingsFormClosing
