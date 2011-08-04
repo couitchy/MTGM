@@ -139,6 +139,10 @@ Public Partial Class frmGrapher
 			Call Me.RefreshAllPlots(False)
 		End If		
 	End Sub
+	Sub BtCoordsClick(sender As Object, e As EventArgs)
+		Me.btCoords.Checked = Not Me.btCoords.Checked
+		Me.plotMain.ShowCoordinates = Me.btCoords.Checked
+	End Sub
 End Class
 Public Class clsGrapherSettings
 	Private VmOwner As frmGrapher

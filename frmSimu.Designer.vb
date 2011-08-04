@@ -37,6 +37,29 @@ Partial Class frmSimu
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSimu))
 		Me.cbarSimus = New TD.SandBar.ContainerBar
 		Me.pnlSimus = New TD.SandBar.ContainerBarClientPanel
+		Me.grpCombos = New System.Windows.Forms.GroupBox
+		Me.splitCombosV = New System.Windows.Forms.SplitContainer
+		Me.splitCombosH1 = New System.Windows.Forms.SplitContainer
+		Me.lstCombosDispos = New System.Windows.Forms.ListBox
+		Me.toolStripCombos1 = New System.Windows.Forms.ToolStrip
+		Me.btClear = New System.Windows.Forms.ToolStripButton
+		Me.btAddSequence = New System.Windows.Forms.ToolStripButton
+		Me.btClearAll = New System.Windows.Forms.ToolStripButton
+		Me.chklstSequencesDispos = New System.Windows.Forms.CheckedListBox
+		Me.splitCombosH2 = New System.Windows.Forms.SplitContainer
+		Me.picScanCard2 = New System.Windows.Forms.PictureBox
+		Me.prgSimu = New System.Windows.Forms.ProgressBar
+		Me.toolStripCombos2 = New System.Windows.Forms.ToolStrip
+		Me.txtN = New System.Windows.Forms.ToolStripTextBox
+		Me.lbl3 = New System.Windows.Forms.ToolStripLabel
+		Me.btSeparator = New System.Windows.Forms.ToolStripSeparator
+		Me.btSimu = New System.Windows.Forms.ToolStripButton
+		Me.btAddPlot = New System.Windows.Forms.ToolStripButton
+		Me.lbl8 = New System.Windows.Forms.Label
+		Me.txtEspCumul = New System.Windows.Forms.TextBox
+		Me.cboTourCumul = New System.Windows.Forms.ComboBox
+		Me.lbl4 = New System.Windows.Forms.Label
+		Me.lbl1 = New System.Windows.Forms.Label
 		Me.grpSuggest = New System.Windows.Forms.GroupBox
 		Me.cmdCorrExpr = New System.Windows.Forms.Button
 		Me.sldPertin = New System.Windows.Forms.TrackBar
@@ -79,26 +102,6 @@ Partial Class frmSimu
 		Me.lbl9 = New System.Windows.Forms.Label
 		Me.txtN2 = New System.Windows.Forms.TextBox
 		Me.lbl10 = New System.Windows.Forms.Label
-		Me.grpCombos = New System.Windows.Forms.GroupBox
-		Me.splitCombosV = New System.Windows.Forms.SplitContainer
-		Me.splitCombosH = New System.Windows.Forms.SplitContainer
-		Me.lstCombosListe = New System.Windows.Forms.ListBox
-		Me.cmdAddPlot = New System.Windows.Forms.Button
-		Me.prgSimu = New System.Windows.Forms.ProgressBar
-		Me.cmdSimu = New System.Windows.Forms.Button
-		Me.lbl2 = New System.Windows.Forms.Label
-		Me.txtN = New System.Windows.Forms.TextBox
-		Me.lbl8 = New System.Windows.Forms.Label
-		Me.lbl7 = New System.Windows.Forms.Label
-		Me.txtEspCumul = New System.Windows.Forms.TextBox
-		Me.txtEspSimple = New System.Windows.Forms.TextBox
-		Me.cboTourCumul = New System.Windows.Forms.ComboBox
-		Me.lbl6 = New System.Windows.Forms.Label
-		Me.lbl5 = New System.Windows.Forms.Label
-		Me.cboTourSimple = New System.Windows.Forms.ComboBox
-		Me.lbl4 = New System.Windows.Forms.Label
-		Me.lbl3 = New System.Windows.Forms.Label
-		Me.lbl1 = New System.Windows.Forms.Label
 		Me.btMains = New TD.SandBar.ButtonItem
 		Me.btCombos = New TD.SandBar.ButtonItem
 		Me.btDeploy = New TD.SandBar.ButtonItem
@@ -112,6 +115,19 @@ Partial Class frmSimu
 		Me.dlgVerbose = New System.Windows.Forms.SaveFileDialog
 		Me.cbarSimus.SuspendLayout
 		Me.pnlSimus.SuspendLayout
+		Me.grpCombos.SuspendLayout
+		Me.splitCombosV.Panel1.SuspendLayout
+		Me.splitCombosV.Panel2.SuspendLayout
+		Me.splitCombosV.SuspendLayout
+		Me.splitCombosH1.Panel1.SuspendLayout
+		Me.splitCombosH1.Panel2.SuspendLayout
+		Me.splitCombosH1.SuspendLayout
+		Me.toolStripCombos1.SuspendLayout
+		Me.splitCombosH2.Panel1.SuspendLayout
+		Me.splitCombosH2.Panel2.SuspendLayout
+		Me.splitCombosH2.SuspendLayout
+		CType(Me.picScanCard2,System.ComponentModel.ISupportInitialize).BeginInit
+		Me.toolStripCombos2.SuspendLayout
 		Me.grpSuggest.SuspendLayout
 		CType(Me.sldPertin,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.grpMains.SuspendLayout
@@ -126,13 +142,6 @@ Partial Class frmSimu
 		Me.splitDeployV.Panel1.SuspendLayout
 		Me.splitDeployV.Panel2.SuspendLayout
 		Me.splitDeployV.SuspendLayout
-		Me.grpCombos.SuspendLayout
-		Me.splitCombosV.Panel1.SuspendLayout
-		Me.splitCombosV.Panel2.SuspendLayout
-		Me.splitCombosV.SuspendLayout
-		Me.splitCombosH.Panel1.SuspendLayout
-		Me.splitCombosH.Panel2.SuspendLayout
-		Me.splitCombosH.SuspendLayout
 		Me.cmnuUserCombos.SuspendLayout
 		Me.SuspendLayout
 		'
@@ -155,14 +164,261 @@ Partial Class frmSimu
 		'
 		'pnlSimus
 		'
+		Me.pnlSimus.Controls.Add(Me.grpCombos)
 		Me.pnlSimus.Controls.Add(Me.grpSuggest)
 		Me.pnlSimus.Controls.Add(Me.grpMains)
 		Me.pnlSimus.Controls.Add(Me.grpDeploy)
-		Me.pnlSimus.Controls.Add(Me.grpCombos)
 		Me.pnlSimus.Location = New System.Drawing.Point(2, 49)
 		Me.pnlSimus.Name = "pnlSimus"
 		Me.pnlSimus.Size = New System.Drawing.Size(404, 221)
 		Me.pnlSimus.TabIndex = 0
+		'
+		'grpCombos
+		'
+		Me.grpCombos.BackColor = System.Drawing.Color.Transparent
+		Me.grpCombos.Controls.Add(Me.splitCombosV)
+		Me.grpCombos.Controls.Add(Me.lbl1)
+		Me.grpCombos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grpCombos.Location = New System.Drawing.Point(0, 0)
+		Me.grpCombos.Name = "grpCombos"
+		Me.grpCombos.Size = New System.Drawing.Size(404, 221)
+		Me.grpCombos.TabIndex = 1
+		Me.grpCombos.TabStop = false
+		Me.grpCombos.Visible = false
+		'
+		'splitCombosV
+		'
+		Me.splitCombosV.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitCombosV.IsSplitterFixed = true
+		Me.splitCombosV.Location = New System.Drawing.Point(3, 33)
+		Me.splitCombosV.Name = "splitCombosV"
+		'
+		'splitCombosV.Panel1
+		'
+		Me.splitCombosV.Panel1.Controls.Add(Me.splitCombosH1)
+		'
+		'splitCombosV.Panel2
+		'
+		Me.splitCombosV.Panel2.Controls.Add(Me.splitCombosH2)
+		Me.splitCombosV.Size = New System.Drawing.Size(398, 185)
+		Me.splitCombosV.SplitterDistance = 224
+		Me.splitCombosV.TabIndex = 3
+		'
+		'splitCombosH1
+		'
+		Me.splitCombosH1.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitCombosH1.IsSplitterFixed = true
+		Me.splitCombosH1.Location = New System.Drawing.Point(0, 0)
+		Me.splitCombosH1.Name = "splitCombosH1"
+		Me.splitCombosH1.Orientation = System.Windows.Forms.Orientation.Horizontal
+		'
+		'splitCombosH1.Panel1
+		'
+		Me.splitCombosH1.Panel1.Controls.Add(Me.lstCombosDispos)
+		Me.splitCombosH1.Panel1.Controls.Add(Me.toolStripCombos1)
+		'
+		'splitCombosH1.Panel2
+		'
+		Me.splitCombosH1.Panel2.Controls.Add(Me.chklstSequencesDispos)
+		Me.splitCombosH1.Size = New System.Drawing.Size(224, 185)
+		Me.splitCombosH1.SplitterDistance = 100
+		Me.splitCombosH1.TabIndex = 0
+		'
+		'lstCombosDispos
+		'
+		Me.lstCombosDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.lstCombosDispos.FormattingEnabled = true
+		Me.lstCombosDispos.Location = New System.Drawing.Point(0, 25)
+		Me.lstCombosDispos.Name = "lstCombosDispos"
+		Me.lstCombosDispos.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
+		Me.lstCombosDispos.Size = New System.Drawing.Size(224, 69)
+		Me.lstCombosDispos.TabIndex = 8
+		AddHandler Me.lstCombosDispos.SelectedIndexChanged, AddressOf Me.LstCombosDisposSelectedIndexChanged
+		'
+		'toolStripCombos1
+		'
+		Me.toolStripCombos1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+		Me.toolStripCombos1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btClear, Me.btAddSequence, Me.btClearAll})
+		Me.toolStripCombos1.Location = New System.Drawing.Point(0, 0)
+		Me.toolStripCombos1.Name = "toolStripCombos1"
+		Me.toolStripCombos1.Size = New System.Drawing.Size(224, 25)
+		Me.toolStripCombos1.TabIndex = 7
+		Me.toolStripCombos1.Text = "toolStrip1"
+		'
+		'btClear
+		'
+		Me.btClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btClear.Image = CType(resources.GetObject("btClear.Image"),System.Drawing.Image)
+		Me.btClear.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btClear.Name = "btClear"
+		Me.btClear.Size = New System.Drawing.Size(23, 22)
+		Me.btClear.Text = "Nouvelle séquence"
+		AddHandler Me.btClear.Click, AddressOf Me.BtClearClick
+		'
+		'btAddSequence
+		'
+		Me.btAddSequence.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btAddSequence.Image = CType(resources.GetObject("btAddSequence.Image"),System.Drawing.Image)
+		Me.btAddSequence.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btAddSequence.Name = "btAddSequence"
+		Me.btAddSequence.Size = New System.Drawing.Size(23, 22)
+		Me.btAddSequence.Text = "Ajouter la séquence"
+		AddHandler Me.btAddSequence.Click, AddressOf Me.BtAddSequenceClick
+		'
+		'btClearAll
+		'
+		Me.btClearAll.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+		Me.btClearAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btClearAll.Image = CType(resources.GetObject("btClearAll.Image"),System.Drawing.Image)
+		Me.btClearAll.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btClearAll.Name = "btClearAll"
+		Me.btClearAll.Size = New System.Drawing.Size(23, 22)
+		Me.btClearAll.Text = "Supprimer toutes les séquences"
+		AddHandler Me.btClearAll.Click, AddressOf Me.BtClearAllClick
+		'
+		'chklstSequencesDispos
+		'
+		Me.chklstSequencesDispos.CheckOnClick = true
+		Me.chklstSequencesDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chklstSequencesDispos.FormattingEnabled = true
+		Me.chklstSequencesDispos.Location = New System.Drawing.Point(0, 0)
+		Me.chklstSequencesDispos.Name = "chklstSequencesDispos"
+		Me.chklstSequencesDispos.Size = New System.Drawing.Size(224, 79)
+		Me.chklstSequencesDispos.TabIndex = 0
+		'
+		'splitCombosH2
+		'
+		Me.splitCombosH2.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitCombosH2.Location = New System.Drawing.Point(0, 0)
+		Me.splitCombosH2.Name = "splitCombosH2"
+		Me.splitCombosH2.Orientation = System.Windows.Forms.Orientation.Horizontal
+		'
+		'splitCombosH2.Panel1
+		'
+		Me.splitCombosH2.Panel1.Controls.Add(Me.picScanCard2)
+		'
+		'splitCombosH2.Panel2
+		'
+		Me.splitCombosH2.Panel2.Controls.Add(Me.prgSimu)
+		Me.splitCombosH2.Panel2.Controls.Add(Me.toolStripCombos2)
+		Me.splitCombosH2.Panel2.Controls.Add(Me.lbl8)
+		Me.splitCombosH2.Panel2.Controls.Add(Me.txtEspCumul)
+		Me.splitCombosH2.Panel2.Controls.Add(Me.cboTourCumul)
+		Me.splitCombosH2.Panel2.Controls.Add(Me.lbl4)
+		Me.splitCombosH2.Size = New System.Drawing.Size(170, 185)
+		Me.splitCombosH2.SplitterDistance = 92
+		Me.splitCombosH2.TabIndex = 41
+		'
+		'picScanCard2
+		'
+		Me.picScanCard2.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.picScanCard2.Location = New System.Drawing.Point(0, 0)
+		Me.picScanCard2.Name = "picScanCard2"
+		Me.picScanCard2.Size = New System.Drawing.Size(170, 92)
+		Me.picScanCard2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+		Me.picScanCard2.TabIndex = 41
+		Me.picScanCard2.TabStop = false
+		'
+		'prgSimu
+		'
+		Me.prgSimu.Dock = System.Windows.Forms.DockStyle.Top
+		Me.prgSimu.Location = New System.Drawing.Point(0, 25)
+		Me.prgSimu.Name = "prgSimu"
+		Me.prgSimu.Size = New System.Drawing.Size(170, 14)
+		Me.prgSimu.TabIndex = 16
+		'
+		'toolStripCombos2
+		'
+		Me.toolStripCombos2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+		Me.toolStripCombos2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.txtN, Me.lbl3, Me.btSeparator, Me.btSimu, Me.btAddPlot})
+		Me.toolStripCombos2.Location = New System.Drawing.Point(0, 0)
+		Me.toolStripCombos2.Name = "toolStripCombos2"
+		Me.toolStripCombos2.Size = New System.Drawing.Size(170, 25)
+		Me.toolStripCombos2.TabIndex = 15
+		Me.toolStripCombos2.Text = "toolStrip1"
+		'
+		'txtN
+		'
+		Me.txtN.Name = "txtN"
+		Me.txtN.Size = New System.Drawing.Size(40, 25)
+		Me.txtN.Text = "1000"
+		Me.txtN.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Right
+		'
+		'lbl3
+		'
+		Me.lbl3.Name = "lbl3"
+		Me.lbl3.Size = New System.Drawing.Size(42, 22)
+		Me.lbl3.Text = "parties"
+		'
+		'btSeparator
+		'
+		Me.btSeparator.Name = "btSeparator"
+		Me.btSeparator.Size = New System.Drawing.Size(6, 25)
+		'
+		'btSimu
+		'
+		Me.btSimu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btSimu.Image = CType(resources.GetObject("btSimu.Image"),System.Drawing.Image)
+		Me.btSimu.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btSimu.Name = "btSimu"
+		Me.btSimu.Size = New System.Drawing.Size(23, 22)
+		Me.btSimu.Text = "Lancer le calcul"
+		AddHandler Me.btSimu.Click, AddressOf Me.BtSimusClick
+		'
+		'btAddPlot
+		'
+		Me.btAddPlot.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btAddPlot.Enabled = false
+		Me.btAddPlot.Image = CType(resources.GetObject("btAddPlot.Image"),System.Drawing.Image)
+		Me.btAddPlot.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btAddPlot.Name = "btAddPlot"
+		Me.btAddPlot.Size = New System.Drawing.Size(23, 22)
+		Me.btAddPlot.Text = "Graphe résultat"
+		AddHandler Me.btAddPlot.Click, AddressOf Me.BtAddPlotClick
+		'
+		'lbl8
+		'
+		Me.lbl8.AutoSize = true
+		Me.lbl8.Location = New System.Drawing.Point(141, 63)
+		Me.lbl8.Name = "lbl8"
+		Me.lbl8.Size = New System.Drawing.Size(15, 13)
+		Me.lbl8.TabIndex = 14
+		Me.lbl8.Text = "%"
+		'
+		'txtEspCumul
+		'
+		Me.txtEspCumul.Enabled = false
+		Me.txtEspCumul.Location = New System.Drawing.Point(74, 60)
+		Me.txtEspCumul.Name = "txtEspCumul"
+		Me.txtEspCumul.Size = New System.Drawing.Size(61, 20)
+		Me.txtEspCumul.TabIndex = 13
+		'
+		'cboTourCumul
+		'
+		Me.cboTourCumul.FormattingEnabled = true
+		Me.cboTourCumul.Location = New System.Drawing.Point(7, 60)
+		Me.cboTourCumul.Name = "cboTourCumul"
+		Me.cboTourCumul.Size = New System.Drawing.Size(61, 21)
+		Me.cboTourCumul.TabIndex = 12
+		AddHandler Me.cboTourCumul.SelectedIndexChanged, AddressOf Me.CboTourCumulSelectedIndexChanged
+		'
+		'lbl4
+		'
+		Me.lbl4.AutoSize = true
+		Me.lbl4.Location = New System.Drawing.Point(7, 44)
+		Me.lbl4.Name = "lbl4"
+		Me.lbl4.Size = New System.Drawing.Size(107, 13)
+		Me.lbl4.TabIndex = 11
+		Me.lbl4.Text = "Probabilité au tour n :"
+		'
+		'lbl1
+		'
+		Me.lbl1.Dock = System.Windows.Forms.DockStyle.Top
+		Me.lbl1.Location = New System.Drawing.Point(3, 16)
+		Me.lbl1.Name = "lbl1"
+		Me.lbl1.Size = New System.Drawing.Size(398, 17)
+		Me.lbl1.TabIndex = 2
+		Me.lbl1.Text = "Sélectionner des cartes pour en estimer la probabilité d'apparition :"
 		'
 		'grpSuggest
 		'
@@ -661,222 +917,6 @@ Partial Class frmSimu
 		Me.lbl10.TabIndex = 8
 		Me.lbl10.Text = "Défaut de manas au tour n :"
 		'
-		'grpCombos
-		'
-		Me.grpCombos.BackColor = System.Drawing.Color.Transparent
-		Me.grpCombos.Controls.Add(Me.splitCombosV)
-		Me.grpCombos.Controls.Add(Me.lbl1)
-		Me.grpCombos.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpCombos.Location = New System.Drawing.Point(0, 0)
-		Me.grpCombos.Name = "grpCombos"
-		Me.grpCombos.Size = New System.Drawing.Size(404, 221)
-		Me.grpCombos.TabIndex = 1
-		Me.grpCombos.TabStop = false
-		Me.grpCombos.Visible = false
-		'
-		'splitCombosV
-		'
-		Me.splitCombosV.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitCombosV.IsSplitterFixed = true
-		Me.splitCombosV.Location = New System.Drawing.Point(3, 33)
-		Me.splitCombosV.Name = "splitCombosV"
-		'
-		'splitCombosV.Panel1
-		'
-		Me.splitCombosV.Panel1.Controls.Add(Me.splitCombosH)
-		'
-		'splitCombosV.Panel2
-		'
-		Me.splitCombosV.Panel2.Controls.Add(Me.lbl8)
-		Me.splitCombosV.Panel2.Controls.Add(Me.lbl7)
-		Me.splitCombosV.Panel2.Controls.Add(Me.txtEspCumul)
-		Me.splitCombosV.Panel2.Controls.Add(Me.txtEspSimple)
-		Me.splitCombosV.Panel2.Controls.Add(Me.cboTourCumul)
-		Me.splitCombosV.Panel2.Controls.Add(Me.lbl6)
-		Me.splitCombosV.Panel2.Controls.Add(Me.lbl5)
-		Me.splitCombosV.Panel2.Controls.Add(Me.cboTourSimple)
-		Me.splitCombosV.Panel2.Controls.Add(Me.lbl4)
-		Me.splitCombosV.Panel2.Controls.Add(Me.lbl3)
-		Me.splitCombosV.Size = New System.Drawing.Size(398, 185)
-		Me.splitCombosV.SplitterDistance = 224
-		Me.splitCombosV.TabIndex = 3
-		'
-		'splitCombosH
-		'
-		Me.splitCombosH.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitCombosH.IsSplitterFixed = true
-		Me.splitCombosH.Location = New System.Drawing.Point(0, 0)
-		Me.splitCombosH.Name = "splitCombosH"
-		Me.splitCombosH.Orientation = System.Windows.Forms.Orientation.Horizontal
-		'
-		'splitCombosH.Panel1
-		'
-		Me.splitCombosH.Panel1.Controls.Add(Me.lstCombosListe)
-		'
-		'splitCombosH.Panel2
-		'
-		Me.splitCombosH.Panel2.Controls.Add(Me.cmdAddPlot)
-		Me.splitCombosH.Panel2.Controls.Add(Me.prgSimu)
-		Me.splitCombosH.Panel2.Controls.Add(Me.cmdSimu)
-		Me.splitCombosH.Panel2.Controls.Add(Me.lbl2)
-		Me.splitCombosH.Panel2.Controls.Add(Me.txtN)
-		Me.splitCombosH.Size = New System.Drawing.Size(224, 185)
-		Me.splitCombosH.SplitterDistance = 119
-		Me.splitCombosH.TabIndex = 0
-		'
-		'lstCombosListe
-		'
-		Me.lstCombosListe.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.lstCombosListe.FormattingEnabled = true
-		Me.lstCombosListe.Location = New System.Drawing.Point(0, 0)
-		Me.lstCombosListe.Name = "lstCombosListe"
-		Me.lstCombosListe.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
-		Me.lstCombosListe.Size = New System.Drawing.Size(224, 108)
-		Me.lstCombosListe.TabIndex = 1
-		AddHandler Me.lstCombosListe.MouseUp, AddressOf Me.LstCombosListeMouseUp
-		'
-		'cmdAddPlot
-		'
-		Me.cmdAddPlot.Enabled = false
-		Me.cmdAddPlot.Location = New System.Drawing.Point(164, 25)
-		Me.cmdAddPlot.Name = "cmdAddPlot"
-		Me.cmdAddPlot.Size = New System.Drawing.Size(56, 23)
-		Me.cmdAddPlot.TabIndex = 14
-		Me.cmdAddPlot.Text = "Graphes"
-		Me.cmdAddPlot.UseVisualStyleBackColor = true
-		AddHandler Me.cmdAddPlot.Click, AddressOf Me.CmdAddPlotClick
-		'
-		'prgSimu
-		'
-		Me.prgSimu.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.prgSimu.Location = New System.Drawing.Point(0, 48)
-		Me.prgSimu.Name = "prgSimu"
-		Me.prgSimu.Size = New System.Drawing.Size(224, 14)
-		Me.prgSimu.TabIndex = 13
-		'
-		'cmdSimu
-		'
-		Me.cmdSimu.Location = New System.Drawing.Point(164, 2)
-		Me.cmdSimu.Name = "cmdSimu"
-		Me.cmdSimu.Size = New System.Drawing.Size(56, 23)
-		Me.cmdSimu.TabIndex = 4
-		Me.cmdSimu.Text = "Simuler"
-		Me.cmdSimu.UseVisualStyleBackColor = true
-		AddHandler Me.cmdSimu.Click, AddressOf Me.CmdSimuClick
-		'
-		'lbl2
-		'
-		Me.lbl2.AutoSize = true
-		Me.lbl2.Location = New System.Drawing.Point(7, 19)
-		Me.lbl2.Name = "lbl2"
-		Me.lbl2.Size = New System.Drawing.Size(99, 13)
-		Me.lbl2.TabIndex = 3
-		Me.lbl2.Text = "Nombre de parties :"
-		'
-		'txtN
-		'
-		Me.txtN.Location = New System.Drawing.Point(112, 16)
-		Me.txtN.Name = "txtN"
-		Me.txtN.Size = New System.Drawing.Size(38, 20)
-		Me.txtN.TabIndex = 1
-		Me.txtN.Text = "1000"
-		Me.txtN.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-		'
-		'lbl8
-		'
-		Me.lbl8.AutoSize = true
-		Me.lbl8.Location = New System.Drawing.Point(115, 160)
-		Me.lbl8.Name = "lbl8"
-		Me.lbl8.Size = New System.Drawing.Size(15, 13)
-		Me.lbl8.TabIndex = 10
-		Me.lbl8.Text = "%"
-		'
-		'lbl7
-		'
-		Me.lbl7.AutoSize = true
-		Me.lbl7.Location = New System.Drawing.Point(115, 74)
-		Me.lbl7.Name = "lbl7"
-		Me.lbl7.Size = New System.Drawing.Size(15, 13)
-		Me.lbl7.TabIndex = 9
-		Me.lbl7.Text = "%"
-		'
-		'txtEspCumul
-		'
-		Me.txtEspCumul.Enabled = false
-		Me.txtEspCumul.Location = New System.Drawing.Point(48, 157)
-		Me.txtEspCumul.Name = "txtEspCumul"
-		Me.txtEspCumul.Size = New System.Drawing.Size(61, 20)
-		Me.txtEspCumul.TabIndex = 8
-		'
-		'txtEspSimple
-		'
-		Me.txtEspSimple.Enabled = false
-		Me.txtEspSimple.Location = New System.Drawing.Point(48, 71)
-		Me.txtEspSimple.Name = "txtEspSimple"
-		Me.txtEspSimple.Size = New System.Drawing.Size(61, 20)
-		Me.txtEspSimple.TabIndex = 7
-		'
-		'cboTourCumul
-		'
-		Me.cboTourCumul.FormattingEnabled = true
-		Me.cboTourCumul.Location = New System.Drawing.Point(48, 130)
-		Me.cboTourCumul.Name = "cboTourCumul"
-		Me.cboTourCumul.Size = New System.Drawing.Size(61, 21)
-		Me.cboTourCumul.TabIndex = 6
-		AddHandler Me.cboTourCumul.SelectedIndexChanged, AddressOf Me.CboTourCumulSelectedIndexChanged
-		'
-		'lbl6
-		'
-		Me.lbl6.AutoSize = true
-		Me.lbl6.Location = New System.Drawing.Point(13, 133)
-		Me.lbl6.Name = "lbl6"
-		Me.lbl6.Size = New System.Drawing.Size(29, 13)
-		Me.lbl6.TabIndex = 5
-		Me.lbl6.Text = "Tour"
-		'
-		'lbl5
-		'
-		Me.lbl5.AutoSize = true
-		Me.lbl5.Location = New System.Drawing.Point(13, 47)
-		Me.lbl5.Name = "lbl5"
-		Me.lbl5.Size = New System.Drawing.Size(29, 13)
-		Me.lbl5.TabIndex = 4
-		Me.lbl5.Text = "Tour"
-		'
-		'cboTourSimple
-		'
-		Me.cboTourSimple.FormattingEnabled = true
-		Me.cboTourSimple.Location = New System.Drawing.Point(48, 44)
-		Me.cboTourSimple.Name = "cboTourSimple"
-		Me.cboTourSimple.Size = New System.Drawing.Size(61, 21)
-		Me.cboTourSimple.TabIndex = 3
-		AddHandler Me.cboTourSimple.SelectedIndexChanged, AddressOf Me.CboTourSimpleSelectedIndexChanged
-		'
-		'lbl4
-		'
-		Me.lbl4.Location = New System.Drawing.Point(13, 99)
-		Me.lbl4.Name = "lbl4"
-		Me.lbl4.Size = New System.Drawing.Size(152, 38)
-		Me.lbl4.TabIndex = 2
-		Me.lbl4.Text = "Probabilité de la combinaison au tour n :"
-		'
-		'lbl3
-		'
-		Me.lbl3.Location = New System.Drawing.Point(13, 11)
-		Me.lbl3.Name = "lbl3"
-		Me.lbl3.Size = New System.Drawing.Size(141, 38)
-		Me.lbl3.TabIndex = 1
-		Me.lbl3.Text = "Probabilité d'au moins une des cartes au tour n :"
-		'
-		'lbl1
-		'
-		Me.lbl1.Dock = System.Windows.Forms.DockStyle.Top
-		Me.lbl1.Location = New System.Drawing.Point(3, 16)
-		Me.lbl1.Name = "lbl1"
-		Me.lbl1.Size = New System.Drawing.Size(398, 17)
-		Me.lbl1.TabIndex = 2
-		Me.lbl1.Text = "Sélectionner des cartes pour en estimer la probabilité d'apparition :"
-		'
 		'btMains
 		'
 		Me.btMains.Icon = CType(resources.GetObject("btMains.Icon"),System.Drawing.Icon)
@@ -969,6 +1009,23 @@ Partial Class frmSimu
 		AddHandler Load, AddressOf Me.FrmSimuLoad
 		Me.cbarSimus.ResumeLayout(false)
 		Me.pnlSimus.ResumeLayout(false)
+		Me.grpCombos.ResumeLayout(false)
+		Me.splitCombosV.Panel1.ResumeLayout(false)
+		Me.splitCombosV.Panel2.ResumeLayout(false)
+		Me.splitCombosV.ResumeLayout(false)
+		Me.splitCombosH1.Panel1.ResumeLayout(false)
+		Me.splitCombosH1.Panel1.PerformLayout
+		Me.splitCombosH1.Panel2.ResumeLayout(false)
+		Me.splitCombosH1.ResumeLayout(false)
+		Me.toolStripCombos1.ResumeLayout(false)
+		Me.toolStripCombos1.PerformLayout
+		Me.splitCombosH2.Panel1.ResumeLayout(false)
+		Me.splitCombosH2.Panel2.ResumeLayout(false)
+		Me.splitCombosH2.Panel2.PerformLayout
+		Me.splitCombosH2.ResumeLayout(false)
+		CType(Me.picScanCard2,System.ComponentModel.ISupportInitialize).EndInit
+		Me.toolStripCombos2.ResumeLayout(false)
+		Me.toolStripCombos2.PerformLayout
 		Me.grpSuggest.ResumeLayout(false)
 		Me.grpSuggest.PerformLayout
 		CType(Me.sldPertin,System.ComponentModel.ISupportInitialize).EndInit
@@ -986,18 +1043,23 @@ Partial Class frmSimu
 		Me.splitDeployV.Panel2.ResumeLayout(false)
 		Me.splitDeployV.Panel2.PerformLayout
 		Me.splitDeployV.ResumeLayout(false)
-		Me.grpCombos.ResumeLayout(false)
-		Me.splitCombosV.Panel1.ResumeLayout(false)
-		Me.splitCombosV.Panel2.ResumeLayout(false)
-		Me.splitCombosV.Panel2.PerformLayout
-		Me.splitCombosV.ResumeLayout(false)
-		Me.splitCombosH.Panel1.ResumeLayout(false)
-		Me.splitCombosH.Panel2.ResumeLayout(false)
-		Me.splitCombosH.Panel2.PerformLayout
-		Me.splitCombosH.ResumeLayout(false)
 		Me.cmnuUserCombos.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private lbl3 As System.Windows.Forms.ToolStripLabel
+	Private picScanCard2 As System.Windows.Forms.PictureBox
+	Private btClearAll As System.Windows.Forms.ToolStripButton
+	Private btAddSequence As System.Windows.Forms.ToolStripButton
+	Private btClear As System.Windows.Forms.ToolStripButton
+	Private toolStripCombos1 As System.Windows.Forms.ToolStrip
+	Private lstCombosDispos As System.Windows.Forms.ListBox
+	Private toolStripCombos2 As System.Windows.Forms.ToolStrip
+	Private chklstSequencesDispos As System.Windows.Forms.CheckedListBox
+	Private btAddPlot As System.Windows.Forms.ToolStripButton
+	Private btSimu As System.Windows.Forms.ToolStripButton
+	Private btSeparator As System.Windows.Forms.ToolStripSeparator
+	Private splitCombosH1 As System.Windows.Forms.SplitContainer
+	Private splitCombosH2 As System.Windows.Forms.SplitContainer
 	Private cmdCorrExpr As System.Windows.Forms.Button
 	Private lbl17 As System.Windows.Forms.Label
 	Private sldPertin As System.Windows.Forms.TrackBar
@@ -1032,7 +1094,6 @@ Partial Class frmSimu
 	Private cmnuUserCombos As System.Windows.Forms.ContextMenuStrip
 	Private lbl12 As System.Windows.Forms.Label
 	Private lstUserCombos As System.Windows.Forms.CheckedListBox
-	Private cmdAddPlot As System.Windows.Forms.Button
 	Private cmdAddPlot2 As System.Windows.Forms.Button
 	Private lbl10 As System.Windows.Forms.Label
 	Private cboTourDeploy As System.Windows.Forms.ComboBox
@@ -1045,22 +1106,12 @@ Partial Class frmSimu
 	Private splitDeployH As System.Windows.Forms.SplitContainer
 	Private cmdMain As System.Windows.Forms.Button
 	Private prgSimu As System.Windows.Forms.ProgressBar
-	Private lbl3 As System.Windows.Forms.Label
 	Private lbl4 As System.Windows.Forms.Label
-	Private cboTourSimple As System.Windows.Forms.ComboBox
-	Private lbl5 As System.Windows.Forms.Label
-	Private lbl6 As System.Windows.Forms.Label
 	Private cboTourCumul As System.Windows.Forms.ComboBox
-	Private txtEspSimple As System.Windows.Forms.TextBox
 	Private txtEspCumul As System.Windows.Forms.TextBox
-	Private lbl7 As System.Windows.Forms.Label
 	Private lbl8 As System.Windows.Forms.Label
-	Private cmdSimu As System.Windows.Forms.Button
-	Private txtN As System.Windows.Forms.TextBox
-	Private lbl2 As System.Windows.Forms.Label
-	Private splitCombosH As System.Windows.Forms.SplitContainer
+	Private txtN As System.Windows.Forms.ToolStripTextBox
 	Private lbl1 As System.Windows.Forms.Label
-	Private lstCombosListe As System.Windows.Forms.ListBox
 	Private splitCombosV As System.Windows.Forms.SplitContainer
 	Private splitMainsV As System.Windows.Forms.SplitContainer
 	Private grdMainsTirage As SourceGrid2.Grid

@@ -45,6 +45,7 @@ Partial Class frmGrapher
 		Me.chklstCurves = New System.Windows.Forms.CheckedListBox
 		Me.propCurves = New System.Windows.Forms.PropertyGrid
 		Me.dlgCapture = New System.Windows.Forms.SaveFileDialog
+		Me.btCoords = New System.Windows.Forms.ToolStripButton
 		Me.toolStrip.SuspendLayout
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
@@ -56,7 +57,7 @@ Partial Class frmGrapher
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCapture, Me.btSeparator, Me.btEdit, Me.btClear})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCapture, Me.btSeparator, Me.btEdit, Me.btClear, Me.btCoords})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(553, 25)
@@ -186,6 +187,17 @@ Partial Class frmGrapher
 		Me.dlgCapture.Filter = "Fichiers d'image (*.png)|*.png"
 		Me.dlgCapture.Title = "Sélection du fichier de sauvegarde"
 		'
+		'btCoords
+		'
+		Me.btCoords.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+		Me.btCoords.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btCoords.Image = CType(resources.GetObject("btCoords.Image"),System.Drawing.Image)
+		Me.btCoords.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btCoords.Name = "btCoords"
+		Me.btCoords.Size = New System.Drawing.Size(23, 22)
+		Me.btCoords.Text = "Afficher les coordonnées"
+		AddHandler Me.btCoords.Click, AddressOf Me.BtCoordsClick
+		'
 		'frmGrapher
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -208,6 +220,7 @@ Partial Class frmGrapher
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btCoords As System.Windows.Forms.ToolStripButton
 	Private propCurves As System.Windows.Forms.PropertyGrid
 	Private chklstCurves As System.Windows.Forms.CheckedListBox
 	Private splitV As System.Windows.Forms.SplitContainer

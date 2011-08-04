@@ -39,32 +39,6 @@ Public Partial Class frmSimu
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		Me.Text = clsModule.CgSimus + VmRestrictionTXT
 	End Sub
-	Private Function GetNbItems(VpIndex As Integer) As Integer
-	'------------------------------------------------------------
-	'Retourne la quantité associée à l'élément passé en paramètre
-	'------------------------------------------------------------
-	Dim VpStr As String = Me.lstCombosListe.Items.Item(VpIndex)
-		Return Val(VpStr.Substring(VpStr.IndexOf("[") + 1))
-	End Function
-	Private Function GetMaxItems(VpIndex As Integer, VpIncrement As Integer) As Integer
-	'------------------------------------------------------------------------------
-	'Retourne la quantité maximale possible associée à l'élément passé en paramètre
-	'------------------------------------------------------------------------------
-	Dim VpStr As String = Me.lstCombosListe.Items.Item(VpIndex)
-		Return VpIncrement + Val(VpStr.Substring(VpStr.LastIndexOf("/") + 1))
-	End Function
-	Private Function MyIndexOf(VpEntry As String) As Integer
-	'--------------------------------------------------------------------------------------
-	'Retourne l'index dans la liste de l'élément passé en paramètre en omettant sa quantité
-	'--------------------------------------------------------------------------------------
-	Dim VpI As Integer
-		For VpI = 0 To Me.lstCombosListe.Items.Count - 1
-			If Me.lstCombosListe.Items.Item(VpI).StartsWith(VpEntry) Then
-				Return VpI
-			End If
-		Next VpI
-		Return -1
-	End Function
 	Private Sub LoadSpecialUses
 	'----------------------------------------------------------------------
 	'Charge la liste des cartes possédant une utilisation spéciale associée
@@ -87,51 +61,33 @@ Public Partial Class frmSimu
 	'Charge la liste des cartes disponibles pour l'estimation
 	'--------------------------------------------------------
 	Dim VpSQL As String
-	Dim VpEntry As String
-	Dim VpIndex As Integer
-		Me.lstCombosListe.Items.Clear
-		VpSQL = "Select Card.Title, CardFR.TitleFR, " + VmSource + ".Items From ((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where "
+		Me.lstCombosDispos.Items.Clear
+		'VpSQL = "Select Card.Title, CardFR.TitleFR, " + VmSource + ".Items From ((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where "
+		VpSQL = "Select Card.Title, " + VmSource + ".Items From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where "
 		VpSQL = VpSQL + VmRestrictionSQL
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpEntry = .GetString(1) + " (" + .GetString(0) + ")"
-				'Si la liste contient déjà la carte, ne la met pas en doublon mais incrémente le nombre d'éléments correspondant
-				VpIndex = Me.MyIndexOf(VpEntry)
-				If VpIndex < 0 Then
-					Me.lstCombosListe.Items.Add(VpEntry + " [0/" + .GetInt32(2).ToString + "]")
-				Else
-					Me.lstCombosListe.Items.Item(VpIndex) = VpEntry + " [0/" + Me.GetMaxItems(VpIndex, .GetInt32(2)).ToString + "]"
-				End If
+				'Ajoute les doublons pour permettre de créer des séquences avec des cartes en plusieurs exemplaires
+				For VpI As Integer = 1 To .GetInt32(1)
+					Me.lstCombosDispos.Items.Add(.GetString(0))
+				Next VpI
 			End While
 			.Close
 		End With
-		Me.lstCombosListe.Sorted = True
+		Me.lstCombosDispos.Sorted = True
+		Me.lstCombosDispos.Tag = New List(Of Integer)
 	End Sub
 	Private Sub CombosSimu
 	'----------------------------------------------------------------------------------------------
 	'Estime les probabilités simple et combinée d'apparition des cartes sélectionnées au nième tour
 	'----------------------------------------------------------------------------------------------
 	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL)
-	Dim VpEspSimple As New clsEsperance(Me.txtN.Text)
 	Dim VpEspCumul As New clsEsperance(Me.txtN.Text)
-	Dim VpCombo() As String
-	Dim VpComboL As New List(Of String)
-	Dim VpStr As String
 		Me.prgSimu.Maximum = CInt(Me.txtN.Text)
 		Me.prgSimu.Value = 0
-		'Préparation du combo
-		For VpI As Integer = 0 To Me.lstCombosListe.SelectedItems.Count - 1
-			VpStr = Me.lstCombosListe.SelectedItems(VpI)
-			VpStr = VpStr.Substring(VpStr.IndexOf("(") + 1)
-			VpStr = VpStr.Substring(0, VpStr.IndexOf(")"))
-			For VpJ As Integer = 1 To Me.GetNbItems(Me.lstCombosListe.SelectedIndices(VpI))
-				VpComboL.Add(VpStr)
-			Next VpJ
-		Next VpI
-		VpCombo = VpComboL.ToArray
 		'Simulation des N parties
 		For VpI As Integer = 1 To CInt(Me.txtN.Text)
 			'Mélange le jeu
@@ -146,25 +102,23 @@ Public Partial Class frmSimu
 				Else
 					Call VpPartie.Draw
 				End If
-				If VpPartie.IsOnePresent(VpCombo) Then
-					VpEspSimple.AddForRound(VpJ)
-				End If
-				If VpPartie.IsComboPresent(VpCombo) Then
-					VpEspCumul.AddForRound(VpJ)
-				End If
+				'Vérifie si les séquences demandées sont présentes
+				For Each VpSequence As clsComboSequence In Me.chklstSequencesDispos.CheckedItems
+					If VpPartie.IsSequencePresent(VpSequence) Then
+						VpEspCumul.AddForRound(VpJ)
+						Exit For
+					End If					
+				Next VpSequence
 			Next VpJ
 			Me.prgSimu.Value = VpI
 			Application.DoEvents
 		Next VpI
-		Me.cmdAddPlot.Enabled = True
+		Me.btAddPlot.Enabled = True
 		'Tours disponibles
-		VpEspSimple.AddRoundsDispos(Me.cboTourSimple)
 		VpEspCumul.AddRoundsDispos(Me.cboTourCumul)
 		'Mémorisation espérances
-		Me.cboTourSimple.Tag = VpEspSimple.GetEsp
 		Me.cboTourCumul.Tag = VpEspCumul.GetEsp
 		'Sélection par défaut
-		If Me.cboTourSimple.Items.Count > 0 Then Me.cboTourSimple.SelectedIndex = 0
 		If Me.cboTourCumul.Items.Count > 0 Then Me.cboTourCumul.SelectedIndex = 0
 	End Sub
 	Private Sub ShowMain
@@ -511,6 +465,47 @@ Public Partial Class frmSimu
 	End Sub
 	#End Region
 	#Region "Evènements"
+	Sub LstCombosDisposSelectedIndexChanged(sender As Object, e As EventArgs)
+	Dim VpPrev As List(Of Integer) = Me.lstCombosDispos.Tag
+		'Elément nouvellement sélectionné ?
+		For Each VpItem As Integer In Me.lstCombosDispos.SelectedIndices
+			If Not VpPrev.Contains(VpItem) Then
+				VpPrev.Add(VpItem)
+				Call clsModule.LoadScanCard(Me.lstCombosDispos.Items.Item(VpItem), Me.picScanCard2)
+				Exit For
+			End If
+		Next VpItem
+		'Elément déselectionné ?
+		For Each VpItem As Integer In VpPrev
+			If Not Me.lstCombosDispos.SelectedIndices.Contains(VpItem) Then
+				Call clsModule.LoadScanCard(Me.lstCombosDispos.Items.Item(VpItem), Me.picScanCard2)
+				VpPrev.Remove(VpItem)
+				Exit For
+			End If
+		Next VpItem		
+	End Sub
+	Sub BtClearClick(sender As Object, e As EventArgs)
+		Me.lstCombosDispos.ClearSelected	
+		CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear
+	End Sub
+	Sub BtClearAllClick(sender As Object, e As EventArgs)
+		Me.chklstSequencesDispos.Items.Clear
+		Me.lstCombosDispos.ClearSelected
+		CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear
+	End Sub
+	Sub BtAddSequenceClick(sender As Object, e As EventArgs)
+	Dim VpSequence As New clsComboSequence
+		If Me.lstCombosDispos.SelectedItems.Count > 0 Then
+			For Each VpItem As String In Me.lstCombosDispos.SelectedItems
+				VpSequence.Add(VpItem)
+			Next VpItem
+			Me.chklstSequencesDispos.Items.Add(VpSequence, True)
+			Me.lstCombosDispos.ClearSelected
+			CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear
+		Else
+			Call clsModule.ShowWarning("Une séquence doit contenir au moins une carte.")
+		End If						
+	End Sub	
 	Sub BtMainsActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.GestVisible(True)
 	End Sub
@@ -525,21 +520,15 @@ Public Partial Class frmSimu
 	Sub BtSuggestActivate(sender As Object, e As EventArgs)
 		Call Me.GestVisible(, , , True)
 	End Sub
-	Sub CmdSimuClick(ByVal sender As Object, ByVal e As EventArgs)
-		Me.cboTourSimple.Text = ""
+	Sub BtSimusClick(sender As Object, e As EventArgs)
 		Me.cboTourCumul.Text = ""
-		Me.txtEspSimple.Text = ""
 		Me.txtEspCumul.Text = ""
-		If Me.lstCombosListe.SelectedItems.Count > 0 Then
+		If Me.chklstSequencesDispos.CheckedItems.Count > 0 Then
 			Call Me.CombosSimu
 		Else
-			Call clsModule.ShowWarning("Sélectionner au moins une carte dans la liste.")
-		End If
-	End Sub
-	Sub CboTourSimpleSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpEspSimple As SortedList = Me.cboTourSimple.Tag
-		Me.txtEspSimple.Text = Format(VpEspSimple.Item(CInt(Me.cboTourSimple.Text) - 1), "0.00")
-	End Sub
+			Call clsModule.ShowWarning("Créer au moins une séquence avant de lancer le calcul.")
+		End If		
+	End Sub	
 	Sub CboTourCumulSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpEspCumul As SortedList = Me.cboTourCumul.Tag
 		Me.txtEspCumul.Text = Format(VpEspCumul.Item(CInt(Me.cboTourCumul.Text) - 1), "0.00")
@@ -581,14 +570,12 @@ Public Partial Class frmSimu
 	Dim VpEspInvoc As SortedList = Me.cboTourDeploy2.Tag
 		Me.txtEspDefaut.Text = Format(VpEspInvoc.Item(CInt(Me.cboTourDeploy2.Text) - 1), "0.00")
 	End Sub
-	Sub CmdAddPlotClick(sender As Object, e As EventArgs)
-	Dim VpEspSimple As SortedList = Me.cboTourSimple.Tag
+	Sub BtAddPlotClick(sender As Object, e As EventArgs)
 	Dim VpEspCumul As SortedList = Me.cboTourCumul.Tag
 		VmGraphCount = VmGraphCount + 1
-		VmGrapher.AddNewPlot(VpEspSimple, "(" + VmGraphCount.ToString + ") " + clsModule.CgSimus2 + VmRestrictionTXT)
 		VmGrapher.AddNewPlot(VpEspCumul, "(" + VmGraphCount.ToString + ") " + clsModule.CgSimus3 + VmRestrictionTXT)
 		VmGrapher.Show
-		VmGrapher.BringToFront
+		VmGrapher.BringToFront		
 	End Sub
 	Sub CmdAddPlot2Click(sender As Object, e As EventArgs)
 	Dim VpEspDeploy As SortedList = Me.cboTourDeploy.Tag
@@ -602,29 +589,6 @@ Public Partial Class frmSimu
 	End Sub
 	Sub FrmSimuLoad(sender As Object, e As EventArgs)
 		Call Me.MainsSimu
-	End Sub
-	Sub LstCombosListeMouseUp(sender As Object, e As MouseEventArgs)
-	'------------------------------------------------------------------------------------------------------------------------------------
-	'Gère les cas où l'utilisateur souhaite faire une estimation d'apparition sur un combo qui peut contenir plusieurs fois la même carte
-	'------------------------------------------------------------------------------------------------------------------------------------
-	Dim VpIndex As Integer
-	Dim VpQuant As Integer
-	Dim VpMax As Integer
-		If Me.lstCombosListe.Items.Count > 0 Then
-			VpIndex = Me.lstCombosListe.IndexFromPoint(e.Location)
-			VpMax = Me.GetMaxItems(VpIndex, 0)
-			VpQuant = Val(InputBox("Combien de " + Me.lstCombosListe.Items.Item(VpIndex) + " voulez-vous sélectionner ?", "Nombre d'éléments", "1"))
-			VpQuant = Math.Min(VpMax, VpQuant)
-			'Actualisation de la quantité
-			Me.lstCombosListe.Items.Item(VpIndex) = Me.lstCombosListe.Items.Item(VpIndex).Replace("[" + Me.GetNbItems(VpIndex).ToString, "[" + VpQuant.ToString)
-			'Si annulation, désélectionne la carte
-			If VpQuant = 0 And Me.lstCombosListe.SelectedIndices.Contains(VpIndex) Then
-				Me.lstCombosListe.SelectedIndices.Remove(VpIndex)
-			'Sinon, force le maintien
-			ElseIf VpQuant > 0 And Not Me.lstCombosListe.SelectedIndices.Contains(VpIndex) Then
-				Me.lstCombosListe.SelectedIndices.Add(VpIndex)
-			End If
-		End If
 	End Sub
 	Sub LstUserCombosMouseUp(sender As Object, e As MouseEventArgs)
 	Dim VpItem As Integer = Me.lstUserCombos.IndexFromPoint(e.Location)
@@ -793,25 +757,16 @@ Public Class clsPartie
 			Next VpI
 		End If
 	End Sub
-	Private Function ManagePresence(VpCombo() As String, VpMode As Boolean) As Boolean
-		For Each VpItem As String In VpCombo
-			If Me.IsDrawn(VpItem, Not VpMode) = VpMode Then
-				Return VpMode
-			End If
-		Next VpItem
-		Return Not VpMode
-	End Function
-	Public Function IsComboPresent(VpCombo() As String) As Boolean
+	Public Function IsSequencePresent(VpSequence As clsComboSequence) As Boolean
 	'-------------------------------------------------------------
 	'Renvoie vrai si toutes les cartes spécifiées ont été piochées
 	'-------------------------------------------------------------
-		Return Me.ManagePresence(VpCombo, False)
-	End Function
-	Public Function IsOnePresent(VpCombo() As String) As Boolean
-	'----------------------------------------------------------------
-	'Renvoie vrai si au moins une des cartes spécifiées a été piochée
-	'----------------------------------------------------------------
-		Return Me.ManagePresence(VpCombo, True)
+		For Each VpItem As String In VpSequence.CardsNames
+			If Not Me.IsDrawn(VpItem) Then
+				Return False
+			End If
+		Next VpItem
+		Return True
 	End Function
 	Public Function IsInFullDeck(VpCardName As String) As Boolean
 	'-------------------------------------------------------------------------------
@@ -1216,13 +1171,13 @@ Public Class clsPartie
 		Next VpCard
 		Return VpPot
 	End Function
-	Private Function IsDrawn(VpName As String, VpComboCare As Boolean) As Boolean
+	Private Function IsDrawn(VpName As String) As Boolean
 	'-------------------------------------------------
 	'Renvoie vrai si la cartes spécifiée a été piochée
 	'-------------------------------------------------
 		For Each VpCard As clsCard In VmDrawn
 			If VpCard.CardName = VpName And Not VpCard.Tagged Then
-				VpCard.Tagged = VpComboCare
+				VpCard.Tagged = True
 				Return True
 			End If
 		Next VpCard
@@ -1548,4 +1503,31 @@ Public Class clsCorrelationComparer
 	Public Function Compare(ByVal x As clsCorrelation, ByVal y As clsCorrelation) As Integer Implements IComparer(Of clsCorrelation).Compare
 		Return x.Seq.Length - y.Seq.Length
 	End Function
+End Class
+Public Class clsComboSequence
+	Private VmCardsNames As List(Of String)
+	'Private VmCardsNamesFR As List(Of String)
+	Public Sub New
+		VmCardsNames = New List(Of String)
+	'	VmCardsNamesFR = New List(Of String)
+	End Sub
+	Public Sub Add(VpItem As String)
+	'Dim VpVO As String
+	'Dim VpVF As String
+		VmCardsNames.Add(VpItem)
+	'	VmCardsNamesFR.Add(VpVF)
+	End Sub
+	Public Overrides Function ToString As String
+	Dim VpStr As String = "ou ("
+		'For Each VpCard As String In If(VpVF, VmCardsNamesFR, VmCardsNames)
+		For Each VpCard As String In VmCardsNames
+			VpStr = VpStr + VpCard + " et "
+		Next VpCard
+		Return VpStr.Substring(0, VpStr.Length - 4) + ")"
+	End Function
+	Public ReadOnly Property CardsNames As List(Of String)
+		Get
+			Return VmCardsNames
+		End Get
+	End Property
 End Class
