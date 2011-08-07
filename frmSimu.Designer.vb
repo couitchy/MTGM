@@ -44,7 +44,11 @@ Partial Class frmSimu
 		Me.toolStripCombos1 = New System.Windows.Forms.ToolStrip
 		Me.btClear = New System.Windows.Forms.ToolStripButton
 		Me.btAddSequence = New System.Windows.Forms.ToolStripButton
+		Me.btRemove = New System.Windows.Forms.ToolStripButton
 		Me.btClearAll = New System.Windows.Forms.ToolStripButton
+		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
+		Me.btSave = New System.Windows.Forms.ToolStripButton
+		Me.btOpen = New System.Windows.Forms.ToolStripButton
 		Me.chklstSequencesDispos = New System.Windows.Forms.CheckedListBox
 		Me.splitCombosH2 = New System.Windows.Forms.SplitContainer
 		Me.picScanCard2 = New System.Windows.Forms.PictureBox
@@ -113,6 +117,8 @@ Partial Class frmSimu
 		Me.cmnuUp = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuDown = New System.Windows.Forms.ToolStripMenuItem
 		Me.dlgVerbose = New System.Windows.Forms.SaveFileDialog
+		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
+		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
 		Me.cbarSimus.SuspendLayout
 		Me.pnlSimus.SuspendLayout
 		Me.grpCombos.SuspendLayout
@@ -238,7 +244,7 @@ Partial Class frmSimu
 		'toolStripCombos1
 		'
 		Me.toolStripCombos1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-		Me.toolStripCombos1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btClear, Me.btAddSequence, Me.btClearAll})
+		Me.toolStripCombos1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btClear, Me.btAddSequence, Me.btRemove, Me.btClearAll, Me.btSeparator2, Me.btSave, Me.btOpen})
 		Me.toolStripCombos1.Location = New System.Drawing.Point(0, 0)
 		Me.toolStripCombos1.Name = "toolStripCombos1"
 		Me.toolStripCombos1.Size = New System.Drawing.Size(224, 25)
@@ -265,9 +271,18 @@ Partial Class frmSimu
 		Me.btAddSequence.Text = "Ajouter la séquence"
 		AddHandler Me.btAddSequence.Click, AddressOf Me.BtAddSequenceClick
 		'
+		'btRemove
+		'
+		Me.btRemove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btRemove.Image = CType(resources.GetObject("btRemove.Image"),System.Drawing.Image)
+		Me.btRemove.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btRemove.Name = "btRemove"
+		Me.btRemove.Size = New System.Drawing.Size(23, 22)
+		Me.btRemove.Text = "Supprimer la séquence sélectionnée"
+		AddHandler Me.btRemove.Click, AddressOf Me.BtRemoveClick
+		'
 		'btClearAll
 		'
-		Me.btClearAll.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
 		Me.btClearAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
 		Me.btClearAll.Image = CType(resources.GetObject("btClearAll.Image"),System.Drawing.Image)
 		Me.btClearAll.ImageTransparentColor = System.Drawing.Color.Magenta
@@ -276,15 +291,40 @@ Partial Class frmSimu
 		Me.btClearAll.Text = "Supprimer toutes les séquences"
 		AddHandler Me.btClearAll.Click, AddressOf Me.BtClearAllClick
 		'
+		'btSeparator2
+		'
+		Me.btSeparator2.Name = "btSeparator2"
+		Me.btSeparator2.Size = New System.Drawing.Size(6, 25)
+		'
+		'btSave
+		'
+		Me.btSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btSave.Image = CType(resources.GetObject("btSave.Image"),System.Drawing.Image)
+		Me.btSave.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btSave.Name = "btSave"
+		Me.btSave.Size = New System.Drawing.Size(23, 22)
+		Me.btSave.Text = "Sauvegarder les séquences"
+		AddHandler Me.btSave.Click, AddressOf Me.BtSaveClick
+		'
+		'btOpen
+		'
+		Me.btOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btOpen.Image = CType(resources.GetObject("btOpen.Image"),System.Drawing.Image)
+		Me.btOpen.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btOpen.Name = "btOpen"
+		Me.btOpen.Size = New System.Drawing.Size(23, 22)
+		Me.btOpen.Text = "Charger les séquences..."
+		AddHandler Me.btOpen.Click, AddressOf Me.BtOpenClick
+		'
 		'chklstSequencesDispos
 		'
-		Me.chklstSequencesDispos.CheckOnClick = true
 		Me.chklstSequencesDispos.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.chklstSequencesDispos.FormattingEnabled = true
 		Me.chklstSequencesDispos.Location = New System.Drawing.Point(0, 0)
 		Me.chklstSequencesDispos.Name = "chklstSequencesDispos"
 		Me.chklstSequencesDispos.Size = New System.Drawing.Size(224, 79)
 		Me.chklstSequencesDispos.TabIndex = 0
+		AddHandler Me.chklstSequencesDispos.SelectedIndexChanged, AddressOf Me.ChklstSequencesDisposSelectedIndexChanged
 		'
 		'splitCombosH2
 		'
@@ -691,7 +731,7 @@ Partial Class frmSimu
 		Me.picScanCard.Location = New System.Drawing.Point(0, 0)
 		Me.picScanCard.Name = "picScanCard"
 		Me.picScanCard.Size = New System.Drawing.Size(138, 202)
-		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
 		Me.picScanCard.TabIndex = 39
 		Me.picScanCard.TabStop = false
 		'
@@ -997,6 +1037,18 @@ Partial Class frmSimu
 		Me.dlgVerbose.Filter = "Fichiers texte (*.txt) | *.txt"
 		Me.dlgVerbose.Title = "Enregistrer la simulation sous"
 		'
+		'dlgSave
+		'
+		Me.dlgSave.DefaultExt = "txt"
+		Me.dlgSave.Filter = "Fichiers texte (*.txt)|*.txt"
+		Me.dlgSave.Title = "Enregistrer sous..."
+		'
+		'dlgOpen
+		'
+		Me.dlgOpen.DefaultExt = "txt"
+		Me.dlgOpen.Filter = "Fichiers texte (*.txt)|*.txt"
+		Me.dlgOpen.Title = "Ouvrir"
+		'
 		'frmSimu
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1046,6 +1098,12 @@ Partial Class frmSimu
 		Me.cmnuUserCombos.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private btRemove As System.Windows.Forms.ToolStripButton
+	Private dlgOpen As System.Windows.Forms.OpenFileDialog
+	Private dlgSave As System.Windows.Forms.SaveFileDialog
+	Private btOpen As System.Windows.Forms.ToolStripButton
+	Private btSave As System.Windows.Forms.ToolStripButton
+	Private btSeparator2 As System.Windows.Forms.ToolStripSeparator
 	Private lbl3 As System.Windows.Forms.ToolStripLabel
 	Private picScanCard2 As System.Windows.Forms.PictureBox
 	Private btClearAll As System.Windows.Forms.ToolStripButton

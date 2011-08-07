@@ -463,8 +463,64 @@ Public Partial Class frmSimu
 		Me.lstUserCombos.Items(VpItem + VpSens) = Me.lstUserCombos.Items(VpItem)
 		Me.lstUserCombos.Items(VpItem) = VpTmp
 	End Sub
+	Private Sub Clear(Optional VpAll As Boolean = False)
+		Me.lstCombosDispos.ClearSelected
+		CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear	
+		If VpAll Then
+			Me.chklstSequencesDispos.Items.Clear
+		End If
+	End Sub
 	#End Region
 	#Region "Evènements"
+	Sub ChklstSequencesDisposSelectedIndexChanged(sender As Object, e As EventArgs)
+	'----------------------------------------------------------------------------------------------------
+	'Resélectionne dans le listbox les éléments composant la séquence sélectionnée dans le checkedlistbox
+	'----------------------------------------------------------------------------------------------------
+		If Me.chklstSequencesDispos.SelectedItems.Count > 0 Then
+			Call Me.Clear
+			For Each VpCard As String In CType(Me.chklstSequencesDispos.SelectedItem, clsComboSequence).CardsNames
+				For VpI As Integer = 0 To Me.lstCombosDispos.Items.Count - 1
+					If VpCard = Me.lstCombosDispos.Items.Item(VpI) And Not Me.lstCombosDispos.SelectedIndices.Contains(VpI) Then
+						Me.lstCombosDispos.SelectedIndices.Add(VpI)
+						Exit For
+					End If
+				Next VpI
+			Next VpCard
+		End If
+	End Sub
+	Sub BtSaveClick(sender As Object, e As EventArgs)
+	'----------------------------------------------
+	'Sauvegarde les séquences dans un fichier texte
+	'----------------------------------------------
+	Dim VpSeqFile As StreamWriter
+		Me.dlgSave.FileName = ""
+		Me.dlgSave.ShowDialog
+		If Me.dlgSave.FileName <> "" Then
+			VpSeqFile = New StreamWriter(Me.dlgSave.FileName)
+			For VpI As Integer = 0 To Me.chklstSequencesDispos.Items.Count - 1
+				VpSeqFile.WriteLine(CType(Me.chklstSequencesDispos.Items.Item(VpI), clsComboSequence).ToString + "#" + Me.chklstSequencesDispos.GetItemChecked(VpI).ToString)
+			Next VpI
+			VpSeqFile.Close
+		End If		
+	End Sub
+	Sub BtOpenClick(sender As Object, e As EventArgs)
+	'----------------------------------------------
+	'Recharge les séquences depuis un fichier texte
+	'----------------------------------------------
+	Dim VpSeqFile As StreamReader
+	Dim VpCur(0 To 1) As String
+		Me.dlgOpen.FileName = ""
+		Me.dlgOpen.ShowDialog
+		If Me.dlgOpen.FileName <> "" Then
+			VpSeqFile = New StreamReader(Me.dlgOpen.FileName)
+			Call Me.Clear(True)
+			While Not VpSeqFile.EndOfStream
+				VpCur = VpSeqFile.ReadLine.Split("#")
+				Me.chklstSequencesDispos.Items.Add(clsComboSequence.FromString(VpCur(0)), clsModule.Matching(VpCur(1)))			
+			End While
+			VpSeqFile.Close
+		End If
+	End Sub
 	Sub LstCombosDisposSelectedIndexChanged(sender As Object, e As EventArgs)
 	Dim VpPrev As List(Of Integer) = Me.lstCombosDispos.Tag
 		'Elément nouvellement sélectionné ?
@@ -485,13 +541,16 @@ Public Partial Class frmSimu
 		Next VpItem		
 	End Sub
 	Sub BtClearClick(sender As Object, e As EventArgs)
-		Me.lstCombosDispos.ClearSelected	
-		CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear
+		Call Me.Clear
 	End Sub
 	Sub BtClearAllClick(sender As Object, e As EventArgs)
-		Me.chklstSequencesDispos.Items.Clear
-		Me.lstCombosDispos.ClearSelected
-		CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear
+		Call Me.Clear(True)
+	End Sub
+	Sub BtRemoveClick(sender As Object, e As EventArgs)
+		If Me.chklstSequencesDispos.SelectedIndex >= 0 Then
+			Me.chklstSequencesDispos.Items.Remove(Me.chklstSequencesDispos.SelectedItem)
+			Call Me.Clear
+		End If
 	End Sub
 	Sub BtAddSequenceClick(sender As Object, e As EventArgs)
 	Dim VpSequence As New clsComboSequence
@@ -500,8 +559,7 @@ Public Partial Class frmSimu
 				VpSequence.Add(VpItem)
 			Next VpItem
 			Me.chklstSequencesDispos.Items.Add(VpSequence, True)
-			Me.lstCombosDispos.ClearSelected
-			CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear
+			Call Me.Clear
 		Else
 			Call clsModule.ShowWarning("Une séquence doit contenir au moins une carte.")
 		End If						
@@ -1517,6 +1575,15 @@ Public Class clsComboSequence
 		VmCardsNames.Add(VpItem)
 	'	VmCardsNamesFR.Add(VpVF)
 	End Sub
+	Public Shared Function FromString(VpStr As String) As clsComboSequence
+	Dim VpSequence As New clsComboSequence
+		VpStr = VpStr.Substring(VpStr.IndexOf("(") + 1)
+		VpStr = VpStr.Substring(0, VpStr.Length - 1)
+		For Each VpItem As String In VpStr.Split(New String() {" et "}, StringSplitOptions.None)
+			VpSequence.Add(VpItem)
+		Next VpItem
+		Return VpSequence
+	End Function
 	Public Overrides Function ToString As String
 	Dim VpStr As String = "ou ("
 		'For Each VpCard As String In If(VpVF, VmCardsNamesFR, VmCardsNames)

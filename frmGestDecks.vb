@@ -65,7 +65,7 @@ Public Partial Class frmGestDecks
 		Call Me.LoadDecks(VpDirection)
 		VmMustReload = True
 	End Sub
-	Private Sub RemoveDeck(VpDeckName As String)
+	Private Function RemoveDeck(VpDeckName As String) As Boolean
 	'-----------------------------------
 	'Gestion de la suppression d'un deck
 	'-----------------------------------
@@ -73,7 +73,7 @@ Public Partial Class frmGestDecks
 	Dim VpQuestion As DialogResult = clsModule.ShowQuestion("Le deck " + VpDeckName + " va être supprimé." + vbCrLf + "Souhaitez-vous déplacer les cartes qu'il contenait vers la collection ?", MessageBoxButtons.YesNoCancel)
 	Dim VpContenu As List(Of clsItemRecup)
 	Dim VpO As Object
-		If VpQuestion = System.Windows.Forms.DialogResult.Cancel Then Exit Sub
+		If VpQuestion = System.Windows.Forms.DialogResult.Cancel Then Return False
 		'Recopie avant suppression
 		If VpQuestion = System.Windows.Forms.DialogResult.Yes Then
 			'Récupération du contenu du deck
@@ -104,7 +104,8 @@ Public Partial Class frmGestDecks
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From MyGamesId Where GameID = " + VpDeckId.ToString + ";"
 		VgDBCommand.ExecuteNonQuery
-	End Sub
+		Return True
+	End Function
 	Sub CbarDecksManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
 		VmCanClose = True
@@ -166,11 +167,19 @@ Public Partial Class frmGestDecks
 		End If
 	End Sub
 	Sub BtRemoveActivate(sender As Object, e As EventArgs)
+	Dim VpDecksToRemove As New Hashtable
 	Dim VpToRemove As New List(Of String)
+		'Informations sur les decks à supprimer (indice, nom) à mémoriser avant car en cours de suppression les indices se trouveraient décalés
 		For Each VpI As Integer In Me.lstDecks.SelectedIndices	
-			Call Me.RemoveDeck(clsModule.GetDeckName(VpI + 1))
-			VpToRemove.Add(Me.lstDecks.Items.Item(VpI))		'liste temporaire car on ne peut pas toucher à la collection qu'on est en train d'énumérer
+			VpDecksToRemove.Add(VpI, clsModule.GetDeckName(VpI + 1))
 		Next VpI
+		'Suppression unitaire en base de données
+		For Each VpKey As Integer In VpDecksToRemove.Keys
+			If Me.RemoveDeck(VpDecksToRemove.Item(VpKey)) Then
+				VpToRemove.Add(Me.lstDecks.Items.Item(VpKey))		'liste temporaire car on ne peut pas toucher à la collection qu'on est en train d'énumérer
+			End If			
+		Next VpKey
+		'Suppression dans la listbox
 		For Each VpItem As String In VpToRemove
 			Me.lstDecks.Items.Remove(VpItem)
 		Next VpItem
