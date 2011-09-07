@@ -272,12 +272,16 @@ Public Partial Class frmSearch
 	End Sub
 	Sub BtSearchActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpSearch.Visible = True
+		'Me.btResult.Checked = False
 		Me.grpSerie.Visible = False
+		'Me.btSearch.Checked = True
 		Me.cboFind.Focus
 	End Sub
 	Sub BtResultActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpSerie.Visible = True
+		'Me.btSearch.Checked = False
 		Me.grpSearch.Visible = False
+		'Me.btResult.Checked = True
 	End Sub
 	Sub ChkRestrictionCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear

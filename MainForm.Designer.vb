@@ -164,6 +164,7 @@ Partial Class MainForm
 		Me.grpAutorisations = New System.Windows.Forms.GroupBox
 		Me.picAutT1 = New System.Windows.Forms.PictureBox
 		Me.picAutT15 = New System.Windows.Forms.PictureBox
+		Me.picAutM = New System.Windows.Forms.PictureBox
 		Me.picAutT1x = New System.Windows.Forms.PictureBox
 		Me.picAutT2 = New System.Windows.Forms.PictureBox
 		Me.picAutBloc = New System.Windows.Forms.PictureBox
@@ -219,6 +220,7 @@ Partial Class MainForm
 		Me.grpAutorisations.SuspendLayout
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
+		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).BeginInit
@@ -235,7 +237,7 @@ Partial Class MainForm
 		Me.statusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblDB, Me.lblNCards, Me.prgAvance, Me.btDownload})
 		Me.statusStrip.Location = New System.Drawing.Point(0, 402)
 		Me.statusStrip.Name = "statusStrip"
-		Me.statusStrip.Size = New System.Drawing.Size(757, 22)
+		Me.statusStrip.Size = New System.Drawing.Size(774, 22)
 		Me.statusStrip.TabIndex = 2
 		Me.statusStrip.Text = "statusStrip1"
 		'
@@ -551,7 +553,7 @@ Partial Class MainForm
 		Me.mnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFile, Me.mnuDisp, Me.mnuTools, Me.mnuBigSearch, Me.mnuPlugins, Me.mnuInfo})
 		Me.mnu.Location = New System.Drawing.Point(0, 0)
 		Me.mnu.Name = "mnu"
-		Me.mnu.Size = New System.Drawing.Size(757, 24)
+		Me.mnu.Size = New System.Drawing.Size(774, 24)
 		Me.mnu.TabIndex = 4
 		Me.mnu.Text = "menuStrip1"
 		'
@@ -1079,7 +1081,7 @@ Partial Class MainForm
 		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
-		Me.toolStrip.Size = New System.Drawing.Size(757, 54)
+		Me.toolStrip.Size = New System.Drawing.Size(774, 54)
 		Me.toolStrip.TabIndex = 7
 		'
 		'btExport
@@ -1193,7 +1195,7 @@ Partial Class MainForm
 		Me.btCheckForUpdates.Text = "Mises à jour"
 		Me.btCheckForUpdates.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		Me.btCheckForUpdates.ToolTipText = "Mises à jour de l'application et de son contenu"
-		AddHandler Me.btCheckForUpdates.Click, AddressOf Me.MnuCheckForUpdatesActivate
+		AddHandler Me.btCheckForUpdates.Click, AddressOf Me.BtCheckForUpdatesClick
 		'
 		'btWebsite
 		'
@@ -1220,8 +1222,8 @@ Partial Class MainForm
 		'splitV.Panel2
 		'
 		Me.splitV.Panel2.Controls.Add(Me.splitV2)
-		Me.splitV.Size = New System.Drawing.Size(757, 324)
-		Me.splitV.SplitterDistance = 294
+		Me.splitV.Size = New System.Drawing.Size(774, 324)
+		Me.splitV.SplitterDistance = 300
 		Me.splitV.TabIndex = 8
 		Me.splitV.TabStop = false
 		'
@@ -1236,7 +1238,7 @@ Partial Class MainForm
 		Me.cbarTvw.Location = New System.Drawing.Point(0, 0)
 		Me.cbarTvw.Movable = false
 		Me.cbarTvw.Name = "cbarTvw"
-		Me.cbarTvw.Size = New System.Drawing.Size(294, 324)
+		Me.cbarTvw.Size = New System.Drawing.Size(300, 324)
 		Me.cbarTvw.TabIndex = 0
 		Me.cbarTvw.Text = "Explorateur"
 		'
@@ -1246,7 +1248,7 @@ Partial Class MainForm
 		Me.pnlTvw.Controls.Add(Me.toolSubStrip)
 		Me.pnlTvw.Location = New System.Drawing.Point(2, 27)
 		Me.pnlTvw.Name = "pnlTvw"
-		Me.pnlTvw.Size = New System.Drawing.Size(290, 295)
+		Me.pnlTvw.Size = New System.Drawing.Size(296, 295)
 		Me.pnlTvw.TabIndex = 0
 		'
 		'tvwExplore
@@ -1260,7 +1262,7 @@ Partial Class MainForm
 		Me.tvwExplore.Name = "tvwExplore"
 		Me.tvwExplore.SelectedImageIndex = 0
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
-		Me.tvwExplore.Size = New System.Drawing.Size(266, 295)
+		Me.tvwExplore.Size = New System.Drawing.Size(272, 295)
 		Me.tvwExplore.TabIndex = 6
 		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
@@ -1340,8 +1342,8 @@ Partial Class MainForm
 		'splitV2.Panel2
 		'
 		Me.splitV2.Panel2.Controls.Add(Me.CBarImage)
-		Me.splitV2.Size = New System.Drawing.Size(459, 324)
-		Me.splitV2.SplitterDistance = 245
+		Me.splitV2.Size = New System.Drawing.Size(470, 324)
+		Me.splitV2.SplitterDistance = 255
 		Me.splitV2.TabIndex = 0
 		Me.splitV2.TabStop = false
 		'
@@ -1356,7 +1358,7 @@ Partial Class MainForm
 		Me.CBarProperties.Location = New System.Drawing.Point(0, 0)
 		Me.CBarProperties.Movable = false
 		Me.CBarProperties.Name = "CBarProperties"
-		Me.CBarProperties.Size = New System.Drawing.Size(245, 324)
+		Me.CBarProperties.Size = New System.Drawing.Size(255, 324)
 		Me.CBarProperties.TabIndex = 0
 		Me.CBarProperties.Text = "Propriétés"
 		'
@@ -1367,7 +1369,7 @@ Partial Class MainForm
 		Me.pnlProperties.Controls.Add(Me.grpSerie2)
 		Me.pnlProperties.Location = New System.Drawing.Point(2, 27)
 		Me.pnlProperties.Name = "pnlProperties"
-		Me.pnlProperties.Size = New System.Drawing.Size(241, 295)
+		Me.pnlProperties.Size = New System.Drawing.Size(251, 295)
 		Me.pnlProperties.TabIndex = 0
 		'
 		'grpCarac
@@ -1378,7 +1380,7 @@ Partial Class MainForm
 		Me.grpCarac.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpCarac.Location = New System.Drawing.Point(0, 138)
 		Me.grpCarac.Name = "grpCarac"
-		Me.grpCarac.Size = New System.Drawing.Size(241, 157)
+		Me.grpCarac.Size = New System.Drawing.Size(251, 157)
 		Me.grpCarac.TabIndex = 16
 		Me.grpCarac.TabStop = false
 		'
@@ -1392,26 +1394,27 @@ Partial Class MainForm
 		Me.txtCardText.Name = "txtCardText"
 		Me.txtCardText.ReadOnly = true
 		Me.txtCardText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(235, 99)
+		Me.txtCardText.Size = New System.Drawing.Size(245, 99)
 		Me.txtCardText.TabIndex = 13
 		'
 		'grpAutorisations
 		'
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
 		Me.grpAutorisations.Controls.Add(Me.picAutT15)
+		Me.grpAutorisations.Controls.Add(Me.picAutM)
 		Me.grpAutorisations.Controls.Add(Me.picAutT1x)
 		Me.grpAutorisations.Controls.Add(Me.picAutT2)
 		Me.grpAutorisations.Controls.Add(Me.picAutBloc)
 		Me.grpAutorisations.Dock = System.Windows.Forms.DockStyle.Bottom
 		Me.grpAutorisations.Location = New System.Drawing.Point(3, 115)
 		Me.grpAutorisations.Name = "grpAutorisations"
-		Me.grpAutorisations.Size = New System.Drawing.Size(235, 39)
+		Me.grpAutorisations.Size = New System.Drawing.Size(245, 39)
 		Me.grpAutorisations.TabIndex = 12
 		Me.grpAutorisations.TabStop = false
 		'
 		'picAutT1
 		'
-		Me.picAutT1.Location = New System.Drawing.Point(33, 10)
+		Me.picAutT1.Location = New System.Drawing.Point(1, 10)
 		Me.picAutT1.Name = "picAutT1"
 		Me.picAutT1.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT1.TabIndex = 4
@@ -1419,15 +1422,23 @@ Partial Class MainForm
 		'
 		'picAutT15
 		'
-		Me.picAutT15.Location = New System.Drawing.Point(74, 10)
+		Me.picAutT15.Location = New System.Drawing.Point(42, 10)
 		Me.picAutT15.Name = "picAutT15"
 		Me.picAutT15.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT15.TabIndex = 3
 		Me.picAutT15.TabStop = false
 		'
+		'picAutM
+		'
+		Me.picAutM.Location = New System.Drawing.Point(83, 10)
+		Me.picAutM.Name = "picAutM"
+		Me.picAutM.Size = New System.Drawing.Size(35, 25)
+		Me.picAutM.TabIndex = 3
+		Me.picAutM.TabStop = false
+		'
 		'picAutT1x
 		'
-		Me.picAutT1x.Location = New System.Drawing.Point(115, 10)
+		Me.picAutT1x.Location = New System.Drawing.Point(124, 10)
 		Me.picAutT1x.Name = "picAutT1x"
 		Me.picAutT1x.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT1x.TabIndex = 2
@@ -1435,7 +1446,7 @@ Partial Class MainForm
 		'
 		'picAutT2
 		'
-		Me.picAutT2.Location = New System.Drawing.Point(156, 10)
+		Me.picAutT2.Location = New System.Drawing.Point(165, 10)
 		Me.picAutT2.Name = "picAutT2"
 		Me.picAutT2.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT2.TabIndex = 1
@@ -1443,7 +1454,7 @@ Partial Class MainForm
 		'
 		'picAutBloc
 		'
-		Me.picAutBloc.Location = New System.Drawing.Point(197, 10)
+		Me.picAutBloc.Location = New System.Drawing.Point(206, 10)
 		Me.picAutBloc.Name = "picAutBloc"
 		Me.picAutBloc.Size = New System.Drawing.Size(35, 25)
 		Me.picAutBloc.TabIndex = 0
@@ -1471,7 +1482,7 @@ Partial Class MainForm
 		Me.grpSerie.Dock = System.Windows.Forms.DockStyle.Top
 		Me.grpSerie.Location = New System.Drawing.Point(0, 0)
 		Me.grpSerie.Name = "grpSerie"
-		Me.grpSerie.Size = New System.Drawing.Size(241, 138)
+		Me.grpSerie.Size = New System.Drawing.Size(251, 138)
 		Me.grpSerie.TabIndex = 8
 		Me.grpSerie.TabStop = false
 		'
@@ -1480,7 +1491,7 @@ Partial Class MainForm
 		Me.lblStock2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblStock2.AutoSize = true
 		Me.lblStock2.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock2.Location = New System.Drawing.Point(198, 75)
+		Me.lblStock2.Location = New System.Drawing.Point(208, 75)
 		Me.lblStock2.Name = "lblStock2"
 		Me.lblStock2.Size = New System.Drawing.Size(12, 13)
 		Me.lblStock2.TabIndex = 24
@@ -1491,7 +1502,7 @@ Partial Class MainForm
 		'
 		Me.lblStock3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblStock3.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock3.Location = New System.Drawing.Point(200, 75)
+		Me.lblStock3.Location = New System.Drawing.Point(210, 75)
 		Me.lblStock3.Name = "lblStock3"
 		Me.lblStock3.Size = New System.Drawing.Size(19, 20)
 		Me.lblStock3.TabIndex = 23
@@ -1512,7 +1523,7 @@ Partial Class MainForm
 		'
 		Me.scrollStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.scrollStock.LargeChange = 1
-		Me.scrollStock.Location = New System.Drawing.Point(157, 70)
+		Me.scrollStock.Location = New System.Drawing.Point(167, 70)
 		Me.scrollStock.Maximum = 0
 		Me.scrollStock.Name = "scrollStock"
 		Me.scrollStock.Size = New System.Drawing.Size(17, 25)
@@ -1524,7 +1535,7 @@ Partial Class MainForm
 		'
 		Me.cboEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.cboEdition.FormattingEnabled = true
-		Me.cboEdition.Location = New System.Drawing.Point(115, 12)
+		Me.cboEdition.Location = New System.Drawing.Point(125, 12)
 		Me.cboEdition.Name = "cboEdition"
 		Me.cboEdition.RightToLeft = System.Windows.Forms.RightToLeft.Yes
 		Me.cboEdition.Size = New System.Drawing.Size(104, 21)
@@ -1534,7 +1545,7 @@ Partial Class MainForm
 		'picEdition
 		'
 		Me.picEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.picEdition.Location = New System.Drawing.Point(91, 13)
+		Me.picEdition.Location = New System.Drawing.Point(101, 13)
 		Me.picEdition.Name = "picEdition"
 		Me.picEdition.Size = New System.Drawing.Size(18, 18)
 		Me.picEdition.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -1545,7 +1556,7 @@ Partial Class MainForm
 		'
 		Me.lblAD.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblAD.BackColor = System.Drawing.Color.Transparent
-		Me.lblAD.Location = New System.Drawing.Point(174, 95)
+		Me.lblAD.Location = New System.Drawing.Point(184, 95)
 		Me.lblAD.Name = "lblAD"
 		Me.lblAD.Size = New System.Drawing.Size(45, 13)
 		Me.lblAD.TabIndex = 15
@@ -1555,7 +1566,7 @@ Partial Class MainForm
 		'
 		Me.lblPrix.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblPrix.BackColor = System.Drawing.Color.Transparent
-		Me.lblPrix.Location = New System.Drawing.Point(174, 55)
+		Me.lblPrix.Location = New System.Drawing.Point(184, 55)
 		Me.lblPrix.Name = "lblPrix"
 		Me.lblPrix.Size = New System.Drawing.Size(45, 13)
 		Me.lblPrix.TabIndex = 13
@@ -1565,7 +1576,7 @@ Partial Class MainForm
 		'
 		Me.lblRarete.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblRarete.BackColor = System.Drawing.Color.Transparent
-		Me.lblRarete.Location = New System.Drawing.Point(120, 35)
+		Me.lblRarete.Location = New System.Drawing.Point(130, 35)
 		Me.lblRarete.Name = "lblRarete"
 		Me.lblRarete.Size = New System.Drawing.Size(99, 13)
 		Me.lblRarete.TabIndex = 12
@@ -1635,7 +1646,7 @@ Partial Class MainForm
 		'
 		Me.lblStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.lblStock.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock.Location = New System.Drawing.Point(151, 75)
+		Me.lblStock.Location = New System.Drawing.Point(161, 75)
 		Me.lblStock.Name = "lblStock"
 		Me.lblStock.Size = New System.Drawing.Size(45, 13)
 		Me.lblStock.TabIndex = 14
@@ -1772,7 +1783,7 @@ Partial Class MainForm
 		Me.CBarImage.Location = New System.Drawing.Point(0, 0)
 		Me.CBarImage.Movable = false
 		Me.CBarImage.Name = "CBarImage"
-		Me.CBarImage.Size = New System.Drawing.Size(210, 324)
+		Me.CBarImage.Size = New System.Drawing.Size(211, 324)
 		Me.CBarImage.TabIndex = 1
 		Me.CBarImage.Text = "Image"
 		'
@@ -1781,7 +1792,7 @@ Partial Class MainForm
 		Me.pnlImage.Controls.Add(Me.picScanCard)
 		Me.pnlImage.Location = New System.Drawing.Point(2, 27)
 		Me.pnlImage.Name = "pnlImage"
-		Me.pnlImage.Size = New System.Drawing.Size(206, 295)
+		Me.pnlImage.Size = New System.Drawing.Size(207, 295)
 		Me.pnlImage.TabIndex = 0
 		'
 		'picScanCard
@@ -1789,7 +1800,7 @@ Partial Class MainForm
 		Me.picScanCard.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.picScanCard.Location = New System.Drawing.Point(0, 0)
 		Me.picScanCard.Name = "picScanCard"
-		Me.picScanCard.Size = New System.Drawing.Size(206, 295)
+		Me.picScanCard.Size = New System.Drawing.Size(207, 295)
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 		Me.picScanCard.TabIndex = 0
 		Me.picScanCard.TabStop = false
@@ -1820,12 +1831,15 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(13, "_aT15.gif")
 		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
+		Me.imglstAutorisations.Images.SetKeyName(16, "_aM.gif")
+		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
+		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
 		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(757, 424)
+		Me.ClientSize = New System.Drawing.Size(774, 424)
 		Me.Controls.Add(Me.splitV)
 		Me.Controls.Add(Me.toolStrip)
 		Me.Controls.Add(Me.statusStrip)
@@ -1833,7 +1847,7 @@ Partial Class MainForm
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.MainMenuStrip = Me.mnu
 		Me.Name = "MainForm"
-		Me.Text = "Magic The Gathering Manager"
+		Me.Text = "agic The Gathering Manager"
 		AddHandler Load, AddressOf Me.MainFormLoad
 		AddHandler FormClosing, AddressOf Me.MainFormFormClosing
 		Me.statusStrip.ResumeLayout(false)
@@ -1861,6 +1875,7 @@ Partial Class MainForm
 		Me.grpAutorisations.ResumeLayout(false)
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
+		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).EndInit
@@ -1907,6 +1922,7 @@ Partial Class MainForm
 	Private picAutT2 As System.Windows.Forms.PictureBox
 	Private picAutT1x As System.Windows.Forms.PictureBox
 	Private picAutT15 As System.Windows.Forms.PictureBox
+	Private picAutM As System.Windows.Forms.PictureBox
 	Private picAutT1 As System.Windows.Forms.PictureBox
 	Private grpAutorisations As System.Windows.Forms.GroupBox
 	Private mnuFixSerie2 As System.Windows.Forms.ToolStripMenuItem

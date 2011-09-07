@@ -448,10 +448,16 @@ Public Partial Class frmSimu
 	'------------------
 	'Gestion des panels
 	'------------------
+		'Groupe visible
 		Me.grpMains.Visible = VpMains
 		Me.grpCombos.Visible = VpCombos
 		Me.grpDeploy.Visible = VpDeploy
 		Me.grpSuggest.Visible = VpSuggest
+		'Bouton coché
+		Me.btMains.Checked = VpMains
+		Me.btCombos.Checked = VpCombos
+		Me.btDeploy.Checked = VpDeploy
+		Me.btSuggest.Checked = VpSuggest
 	End Sub
 	Private Sub GestPriority(VpSens As Short)
 	'------------------------------------------------

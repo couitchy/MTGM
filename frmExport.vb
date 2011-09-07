@@ -220,11 +220,15 @@ Public Partial Class frmExport
 	End Sub
 	Sub BtExportActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpExport.Visible = True
+		Me.btImport.Checked = False
 		Me.grpImport.Visible = False
+		Me.btExport.Checked = True
 	End Sub
 	Sub BtImportActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpImport.Visible = True
+		Me.btExport.Checked = False
 		Me.grpExport.Visible = False
+		Me.btImport.Checked = True
 	End Sub
 	Sub OptImpAddCheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Me.lstImp.Enabled = Me.optImpAdd.Checked

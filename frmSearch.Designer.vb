@@ -498,6 +498,7 @@ Partial Class frmSearch
 		'btSearch
 		'
 		Me.btSearch.Text = "Recherche"
+		'Me.btSearch.Checked = true
 		AddHandler Me.btSearch.Activate, AddressOf Me.BtSearchActivate
 		'
 		'btResult

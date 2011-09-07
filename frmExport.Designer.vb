@@ -69,7 +69,7 @@ Partial Class frmExport
 		Me.cbarImpExp.DrawActionsButton = false
 		Me.cbarImpExp.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarImpExp.Guid = New System.Guid("f988187e-b847-4ec4-a421-bf66cadf6d4d")
-		Me.cbarImpExp.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btExport, Me.btImport})
+		Me.cbarImpExp.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btImport, Me.btExport})
 		Me.cbarImpExp.Location = New System.Drawing.Point(0, 0)
 		Me.cbarImpExp.Movable = false
 		Me.cbarImpExp.Name = "cbarImpExp"
@@ -280,6 +280,7 @@ Partial Class frmExport
 		'
 		Me.btImport.Icon = CType(resources.GetObject("btImport.Icon"),System.Drawing.Icon)
 		Me.btImport.Text = "Import"
+		Me.btImport.Checked = true
 		AddHandler Me.btImport.Activate, AddressOf Me.BtImportActivate
 		'
 		'dlgFileBrowser

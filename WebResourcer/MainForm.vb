@@ -839,7 +839,9 @@ Public Partial Class MainForm
 			Case "NP"
 				Return "newphyrexia#" + VpStr
 			Case "M3"
-				Return "magic2012#" + VpStr				
+				Return "magic2012#" + VpStr			
+			Case "CD"
+				Return "commander#" + VpStr	
 			Case Else
 				Return "#" + VpStr
 		End Select

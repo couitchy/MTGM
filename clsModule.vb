@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 25619
+	Public Const CgCodeLines As Integer   		= 26076
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -92,7 +92,7 @@ Public Module clsModule
 	Public Const CgURL12 As String         		= "/Updates/Series r8.txt"
 	Public Const CgURL13 As String         		= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         		= "/Updates/MD_Trad.log"
-	Public Const CgURL15 As String         		= "/Updates/Tournois.txt"
+	Public Const CgURL15 As String         		= "/Updates/Tournois r11.txt"
 	Public Const CgURL16 As String				= "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
 	Public Const CgURL17 As String				= "http://mtgm.free.fr"
 	Public Const CgURL18 As String				= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
@@ -124,8 +124,7 @@ Public Module clsModule
 	Public Const CgDefaultName As String		= "MonJeu"
 	Public Const CgStats As String				= "Statistiques : "
 	Public Const CgSimus As String				= "Simulations : "
-	Public Const CgSimus2 As String				= "Proba. partielle pour "
-	Public Const CgSimus3 As String				= "Proba. du combo pour "
+	Public Const CgSimus3 As String				= "Proba. séquence(s) pour "
 	Public Const CgSimus4 As String				= "Manas productibles pour "
 	Public Const CgSimus5 As String				= "Défaut de manas pour "
 	Public Const CgRefresh As String			= "Rafraîchir"
@@ -192,6 +191,7 @@ Public Module clsModule
 		Prix
 		Edition
 		Cout
+		Type
 	End Enum
 	Public Enum eSortCriteria
 		Price
@@ -216,16 +216,17 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'ajustement types numériques, manque Adversaires
-		BDD_v9		'ajustement types numériques
-		BDD_v10		'à jour
+		BDD_v1		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque tournois M, ajustement types numériques
+		BDD_v10		'manque tournois M
+		BDD_v11		'à jour
 	End Enum
 	Public Sub Main(ByVal VpArgs() As String)
 	'-------------------------------
@@ -352,8 +353,14 @@ Public Module clsModule
 					'Si on est ici, BDD version 9
 					VpDBVersion = eDBVersion.BDD_v9
 				Else
-					'Si on est ici, BDD version 10
-					VpDBVersion = eDBVersion.BDD_v10
+					VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
+					If VpSchemaTable.Rows.Count <> 8 Then
+						'Si on est ici, BDD version 10
+						VpDBVersion = eDBVersion.BDD_v10
+					Else
+						'Si on est ici, BDD version 11
+						VpDBVersion = eDBVersion.BDD_v11	
+					End If
 				End If
 			End If
 		Else
@@ -363,10 +370,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v10 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v11 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v10)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v11)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -450,6 +457,9 @@ Public Module clsModule
 						VgDBCommand.CommandText = "Create Index EncNbr On MyCollection (EncNbr);"
 						VgDBCommand.ExecuteNonQuery
 					End If
+					'Passage version 10 à 11
+					VgDBCommand.CommandText = "Alter Table Autorisations Add M Bit;"
+					VgDBCommand.ExecuteNonQuery
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
 					Return False
@@ -1127,7 +1137,7 @@ Public Module clsModule
 			Call MainForm.VgMe.StatusText(VpOldText)
 		End Try
 	End Sub
-	Public Sub CheckForUpdates(Optional VpExplicit As Boolean = False, Optional VpBeta As Boolean = False)
+	Public Sub CheckForUpdates(Optional VpExplicit As Boolean = False, Optional VpBeta As Boolean = False, Optional VpContenu As Boolean = False)
 	'------------------------------------------------------------------
 	'Vérifie si une mise à jour du logiciel est disponible sur Internet
 	'------------------------------------------------------------------
@@ -1154,10 +1164,16 @@ Public Module clsModule
 				VgTray.Tag = If(VpBeta, eUpdateType.Beta, eUpdateType.Release)
 				VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + If(VpBeta, " BETA", ""), "Une mise à jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la télécharger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
 			ElseIf VpExplicit
-				If VpBeta Then
-					Call ShowInformation("Aucune version bêta postérieure à la dernière release n'est disponible pour l'instant...")
+				If VpContenu Then
+					If clsModule.ShowQuestion("L'application est à jour..." + vbCrLf + "Voulez-vous rechercher aussi les mises à jour de contenu (prix, images...) ?") = System.Windows.Forms.DialogResult.Yes Then
+						Call MainForm.VgMe.MnuContenuUpdateClick(Nothing, Nothing)
+					End If
 				Else
-					Call ShowInformation("Vous disposez déjà de la dernière version de Magic The Gathering Manager !")
+					If VpBeta Then
+						Call ShowInformation("Aucune version bêta postérieure à la dernière release n'est disponible pour l'instant...")
+					Else
+						Call ShowInformation("Vous disposez déjà de la dernière version de Magic The Gathering Manager !")
+					End If
 				End If
 			'Recherche automatique des mises à jour de contenu
 			ElseIf DBOK Then

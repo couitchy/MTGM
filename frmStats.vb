@@ -158,6 +158,12 @@ Public Partial Class frmStats
 		Else
 			Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(10)
 		End If
+		'Autorisations M
+		If Me.GetAutorisation("M") Then
+			Me.picAutM.Image = Me.imglstAutorisations.Images.Item(11)
+		Else
+			Me.picAutM.Image = Me.imglstAutorisations.Images.Item(12)
+		End If
 		'Autorisations T1x
 		If Me.GetAutorisation("T1x") Then
 			Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(5)

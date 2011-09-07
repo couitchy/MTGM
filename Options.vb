@@ -353,7 +353,7 @@ Public Class clsSettings
 			VmImageMode = VpImageMode
 		End Set
 	End Property
-	<DisplayName("Forcer source unique"), Category("Explorateur"), DefaultValue(False), Description("Limitation à une source unique sélectionnée dans le menu affichage (un seul deck ou collection)")> _
+	<DisplayName("Forcer source unique"), Category("Explorateur"), DefaultValue(True), Description("Limitation à une source unique sélectionnée dans le menu affichage (un seul deck ou collection)")> _
 	Public Property ForceSingleSource As Boolean
 		Get
 			Return VmForceSingleSource

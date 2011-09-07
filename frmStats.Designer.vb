@@ -92,6 +92,7 @@ Partial Class frmStats
 		Me.tabAutorisations = New System.Windows.Forms.TabPage
 		Me.lstTournoiForbid = New System.Windows.Forms.ListBox
 		Me.grpAutorisations = New System.Windows.Forms.GroupBox
+		Me.picAutM = New System.Windows.Forms.PictureBox
 		Me.picAutT1 = New System.Windows.Forms.PictureBox
 		Me.picAutT15 = New System.Windows.Forms.PictureBox
 		Me.picAutT1x = New System.Windows.Forms.PictureBox
@@ -135,6 +136,7 @@ Partial Class frmStats
 		Me.grpCreatures.SuspendLayout
 		Me.tabAutorisations.SuspendLayout
 		Me.grpAutorisations.SuspendLayout
+		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).BeginInit
@@ -215,14 +217,14 @@ Partial Class frmStats
 		'
 		Me.cmnuChart.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuBreakDown, Me.cmnuCurve})
 		Me.cmnuChart.Name = "cmnuChart"
-		Me.cmnuChart.Size = New System.Drawing.Size(153, 70)
+		Me.cmnuChart.Size = New System.Drawing.Size(137, 48)
 		'
 		'cmnuBreakDown
 		'
 		Me.cmnuBreakDown.Checked = true
 		Me.cmnuBreakDown.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.cmnuBreakDown.Name = "cmnuBreakDown"
-		Me.cmnuBreakDown.Size = New System.Drawing.Size(152, 22)
+		Me.cmnuBreakDown.Size = New System.Drawing.Size(136, 22)
 		Me.cmnuBreakDown.Text = "Diagramme"
 		AddHandler Me.cmnuBreakDown.Click, AddressOf Me.CmnuBreakDownClick
 		'
@@ -230,7 +232,7 @@ Partial Class frmStats
 		'
 		Me.cmnuCurve.Enabled = false
 		Me.cmnuCurve.Name = "cmnuCurve"
-		Me.cmnuCurve.Size = New System.Drawing.Size(152, 22)
+		Me.cmnuCurve.Size = New System.Drawing.Size(136, 22)
 		Me.cmnuCurve.Text = "Mana curve"
 		AddHandler Me.cmnuCurve.Click, AddressOf Me.CmnuCurveClick
 		'
@@ -778,6 +780,7 @@ Partial Class frmStats
 		'
 		'grpAutorisations
 		'
+		Me.grpAutorisations.Controls.Add(Me.picAutM)
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
 		Me.grpAutorisations.Controls.Add(Me.picAutT15)
 		Me.grpAutorisations.Controls.Add(Me.picAutT1x)
@@ -790,9 +793,19 @@ Partial Class frmStats
 		Me.grpAutorisations.TabIndex = 15
 		Me.grpAutorisations.TabStop = false
 		'
+		'picAutM
+		'
+		Me.picAutM.Location = New System.Drawing.Point(112, 10)
+		Me.picAutM.Name = "picAutM"
+		Me.picAutM.Size = New System.Drawing.Size(35, 25)
+		Me.picAutM.TabIndex = 5
+		Me.picAutM.TabStop = false
+		Me.picAutM.Tag = "M"
+		AddHandler Me.picAutM.Click, AddressOf Me.PicAutClick
+		'
 		'picAutT1
 		'
-		Me.picAutT1.Location = New System.Drawing.Point(33, 10)
+		Me.picAutT1.Location = New System.Drawing.Point(30, 10)
 		Me.picAutT1.Name = "picAutT1"
 		Me.picAutT1.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT1.TabIndex = 4
@@ -802,7 +815,7 @@ Partial Class frmStats
 		'
 		'picAutT15
 		'
-		Me.picAutT15.Location = New System.Drawing.Point(74, 10)
+		Me.picAutT15.Location = New System.Drawing.Point(71, 10)
 		Me.picAutT15.Name = "picAutT15"
 		Me.picAutT15.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT15.TabIndex = 3
@@ -812,7 +825,7 @@ Partial Class frmStats
 		'
 		'picAutT1x
 		'
-		Me.picAutT1x.Location = New System.Drawing.Point(115, 10)
+		Me.picAutT1x.Location = New System.Drawing.Point(153, 10)
 		Me.picAutT1x.Name = "picAutT1x"
 		Me.picAutT1x.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT1x.TabIndex = 2
@@ -822,7 +835,7 @@ Partial Class frmStats
 		'
 		'picAutT2
 		'
-		Me.picAutT2.Location = New System.Drawing.Point(156, 10)
+		Me.picAutT2.Location = New System.Drawing.Point(194, 10)
 		Me.picAutT2.Name = "picAutT2"
 		Me.picAutT2.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT2.TabIndex = 1
@@ -832,7 +845,7 @@ Partial Class frmStats
 		'
 		'picAutBloc
 		'
-		Me.picAutBloc.Location = New System.Drawing.Point(197, 10)
+		Me.picAutBloc.Location = New System.Drawing.Point(235, 10)
 		Me.picAutBloc.Name = "picAutBloc"
 		Me.picAutBloc.Size = New System.Drawing.Size(35, 25)
 		Me.picAutBloc.TabIndex = 0
@@ -890,6 +903,8 @@ Partial Class frmStats
 		Me.imglstAutorisations.Images.SetKeyName(8, "_aT2no.gif")
 		Me.imglstAutorisations.Images.SetKeyName(9, "_aT15.gif")
 		Me.imglstAutorisations.Images.SetKeyName(10, "_aT15no.gif")
+		Me.imglstAutorisations.Images.SetKeyName(11, "_aM.gif")
+		Me.imglstAutorisations.Images.SetKeyName(12, "_aMno.gif")
 		'
 		'cmnuHisto
 		'
@@ -1026,6 +1041,7 @@ Partial Class frmStats
 		Me.tabAutorisations.ResumeLayout(false)
 		Me.tabAutorisations.PerformLayout
 		Me.grpAutorisations.ResumeLayout(false)
+		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).EndInit
@@ -1034,6 +1050,7 @@ Partial Class frmStats
 		Me.cmnuHisto.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private picAutM As System.Windows.Forms.PictureBox
 	Private chartManaCurve As NPlot.Windows.PlotSurface2D
 	Private cmnuHistCardsPrice8 As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuHistCardsPrice7 As System.Windows.Forms.ToolStripMenuItem

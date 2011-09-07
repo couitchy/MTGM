@@ -213,7 +213,10 @@ Public Partial Class MainForm
 		Call Me.InitBars(File.ReadAllLines(VpFile).Length)
 		While Not VpTournois.EndOfStream
 			VpCardData = VpTournois.ReadLine.Split("#")
-			If VpCardData.Length = 6 Then
+			If VpCardData.Length = 7 Then
+				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ");"
+				VgDBCommand.ExecuteNonQuery				
+			ElseIf VpCardData.Length = 6 Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ");"
 				VgDBCommand.ExecuteNonQuery
 			End If
@@ -1064,11 +1067,12 @@ Public Partial Class MainForm
 			'Autorisations vierges
 			Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(5)
 			Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(15)
+			Me.picAutM.Image = Me.imglstAutorisations.Images.Item(18)
 			Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(9)
 			Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(12)
 			Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(2)
 		Else
-			VgDBCommand.CommandText = "Select T1, T1r, T15, T1x, T2, Bloc From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
+			VgDBCommand.CommandText = "Select T1, T1r, T15, T1x, T2, Bloc, M From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				If .Read Then
@@ -1086,7 +1090,12 @@ Public Partial Class MainForm
 					Else
 						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(14)
 					End If
-					'Autorisations T1x
+					'Autorisations M
+					If .GetBoolean(6) Then
+						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(16)
+					Else
+						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(17)
+					End If					'Autorisations T1x
 					If .GetBoolean(3) Then
 						Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(7)
 					Else
@@ -2116,7 +2125,10 @@ Public Partial Class MainForm
 	Sub MnuCheckForUpdatesActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call clsModule.CheckForUpdates(True)
 	End Sub
-	Sub MnuContenuUpdateClick(sender As Object, e As EventArgs)
+	Sub BtCheckForUpdatesClick(ByVal sender As Object, ByVal e As EventArgs)
+		Call clsModule.CheckForUpdates(True, ( clsModule.ShowQuestion("Souhaitez-vous également rechercher les mises à jour bêta (moins stables) ?") = System.Windows.Forms.DialogResult.Yes ), True)
+	End Sub
+	Public Sub MnuContenuUpdateClick(sender As Object, e As EventArgs)
 	Dim VpContenuUpdate As frmUpdateContenu
 		If clsModule.DBOK Then
 			If VmMyChildren.DoesntExist(VmMyChildren.ContenuUpdater) Then

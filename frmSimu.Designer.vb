@@ -962,6 +962,7 @@ Partial Class frmSimu
 		Me.btMains.Icon = CType(resources.GetObject("btMains.Icon"),System.Drawing.Icon)
 		Me.btMains.Text = "Mains"
 		Me.btMains.ToolTipText = "Tirage de mains aléatoires"
+		Me.btMains.Checked = true
 		AddHandler Me.btMains.Activate, AddressOf Me.BtMainsActivate
 		'
 		'btCombos
