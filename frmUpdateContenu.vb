@@ -11,6 +11,7 @@
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
 '| Release 9      |                        05/02/2011 |
+'| Release 10     |                        10/09/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -355,7 +356,7 @@ Public Class clsMAJContenu
 				Case clsMAJContenu.EgMAJContenu.NewPrix
 					Return "Mise à jour des prix"
 				Case clsMAJContenu.EgMAJContenu.NewAut
-					Return "Mise à jour des autorisations tournoi"
+					Return "Mise à jour des autorisations tournois"
 				Case clsMAJContenu.EgMAJContenu.NewSimu
 					Return "Mise à jour des modèles et/ou historiques"
 				Case clsMAJContenu.EgMAJContenu.NewTxtVF

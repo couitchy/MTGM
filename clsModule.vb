@@ -11,6 +11,7 @@
 '| Release 7      |                        29/07/2010 |
 '| Release 8      |                        03/10/2010 |
 '| Release 9      |                        05/02/2011 |
+'| Release 10     |                        10/09/2011 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -33,7 +34,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 26076
+	Public Const CgCodeLines As Integer   		= 26107
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -1292,8 +1293,8 @@ Public Module clsModule
 		If File.Exists(Application.StartupPath + CgUpDFile) Then
 			File.SetLastWriteTimeUtc(Application.StartupPath + CgUpDFile, VgRemoteDate)
 			Call SecureDelete(Application.StartupPath + CgDownDFile)
-			File.Copy(Process.GetCurrentProcess.MainModule.FileName, Application.StartupPath + CgDownDFile)
 			Try
+				File.Copy(Process.GetCurrentProcess.MainModule.FileName, Application.StartupPath + CgDownDFile)
 				Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
 			Catch
 				Call ShowWarning(CgErr5)
