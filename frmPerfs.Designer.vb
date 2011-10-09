@@ -49,7 +49,6 @@ Partial Class frmPerfs
 		Me.cbarGraph = New TD.SandBar.ContainerBar
 		Me.cboLocalVersion = New TD.SandBar.ComboBoxItem
 		Me.cboAdvVersion = New TD.SandBar.ComboBoxItem
-		Me.btAdvice = New TD.SandBar.ButtonItem
 		Me.btEfficiency = New TD.SandBar.ButtonItem
 		Me.strStatus = New System.Windows.Forms.StatusStrip
 		Me.dropAddGames = New System.Windows.Forms.ToolStripDropDownButton
@@ -150,7 +149,7 @@ Partial Class frmPerfs
 		Me.cbarGraph.DrawActionsButton = false
 		Me.cbarGraph.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarGraph.Guid = New System.Guid("4060aef7-8a2a-4cab-a9b1-52b8477a7366")
-		Me.cbarGraph.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.cboJeuLocal, Me.cboLocalVersion, Me.cboJeuAdv, Me.cboAdvVersion, Me.btAdvice, Me.btEfficiency, Me.btVicOk, Me.btDefOk, Me.btVicNok, Me.btDefNok})
+		Me.cbarGraph.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.cboJeuLocal, Me.cboLocalVersion, Me.cboJeuAdv, Me.cboAdvVersion, Me.btEfficiency, Me.btVicOk, Me.btDefOk, Me.btVicNok, Me.btDefNok})
 		Me.cbarGraph.Location = New System.Drawing.Point(0, 0)
 		Me.cbarGraph.Movable = false
 		Me.cbarGraph.Name = "cbarGraph"
@@ -168,16 +167,10 @@ Partial Class frmPerfs
 		Me.cboAdvVersion.MinimumControlWidth = 82
 		Me.cboAdvVersion.Visible = false
 		'
-		'btAdvice
-		'
-		Me.btAdvice.Icon = CType(resources.GetObject("btAdvice.Icon"),System.Drawing.Icon)
-		Me.btAdvice.Text = "Conseils"
-		AddHandler Me.btAdvice.Activate, AddressOf Me.BtAdviceActivate
-		'
 		'btEfficiency
 		'
 		Me.btEfficiency.Icon = CType(resources.GetObject("btEfficiency.Icon"),System.Drawing.Icon)
-		Me.btEfficiency.Text = "Efficacité"
+		Me.btEfficiency.Text = "Statistiques sous Excel"
 		AddHandler Me.btEfficiency.Activate, AddressOf Me.BtEfficiencyActivate
 		'
 		'strStatus
@@ -263,7 +256,6 @@ Partial Class frmPerfs
 	Private cboAdvVersion As TD.SandBar.ComboBoxItem
 	Private dropSeparator As System.Windows.Forms.ToolStripSeparator
 	Private dropGamesVersions As System.Windows.Forms.ToolStripMenuItem
-	Private btAdvice As TD.SandBar.ButtonItem
 	Private cboJeuLocal As TD.SandBar.ComboBoxItem
 	Private cboJeuAdv As TD.SandBar.ComboBoxItem
 	Private dropAddGames As System.Windows.Forms.ToolStripDropDownButton

@@ -18,6 +18,7 @@
 '| - gestion des versions de jeux		   13/10/2008 |
 '| - gestion de parties 'hors total'	   10/09/2009 |
 '| - gestion des adversaires multiples	   12/11/2010 |
+'| - diversification des informations	   08/10/2011 |
 '------------------------------------------------------
 Imports System.Data
 Imports System.Data.OleDb
@@ -343,11 +344,28 @@ Public Partial Class frmPerfs
 	Dim VpRow As Integer = 3
 	Dim VpI As Integer = 0
 	Dim VpJ As Integer
+	Dim VpK As Integer
+	Dim VpL As Integer
+	Dim VpM As Integer
+	Dim VpJ1 As String
+	Dim VpJ2 As String
+	Dim VpJn1 As Integer
+	Dim VpJn2 As Integer	
+	Dim VpJv1 As Integer
+	Dim VpJv2 As Integer		
 	Dim VpDecks() As String = clsPerformances.GetAllDecks
 	Dim VpMat(,) As Single = clsPerformances.GetRatioMatrix(VpDecks)
 	Dim VpMatT() As Single = clsPerformances.Reshape(VpMat)
 	Dim VpRef As Single = clsPerformances.GetMeanPrice(VpDecks) / 50
 	Dim VpPrice As Single
+	Dim VpVersusMatV1() As Integer
+	Dim VpVersusMatD1() As Integer
+	Dim VpVersusMatV2() As Integer
+	Dim VpVersusMatD2() As Integer
+	Dim VpTotV1 As Integer
+	Dim VpTotV2 As Integer
+	Dim VpEfficiencies As New List(Of clsEfficiency)
+	Dim VpFrequences As New List(Of clsMatchCounter)
 		Try
 			VpExcelApp = CreateObject("Excel.Application")
 		Catch
@@ -356,11 +374,9 @@ Public Partial Class frmPerfs
 		End Try
 		With VpExcelApp
 			.Workbooks.Add
-			.Sheets(3).Delete
-			.Visible = True
 			'Partie 1 : efficacité dans l'absolu
 			With .Sheets(1)
-				.Name = "Mode global"
+				.Name = "Efficience"
 				.Cells(1, 1) = "Nom du deck"
 				.Cells(1, 2) = "Prix du deck"
 				.Cells(1, 3) = "Performance (proportions de victoires)"
@@ -371,16 +387,20 @@ Public Partial Class frmPerfs
 				For Each VpDeck As String In VpDecks
 					VpPrice = clsPerformances.GetPrice(VpDeck)
 					If VpPrice <> -1 Then
-						.Cells(VpRow, 1) = VpDeck
-						.Cells(VpRow, 2) = VpPrice 'Format(VpPrice, "0.0") + " €"
-						.Cells(VpRow, 3) = Format(VpMatT(VpI), "0.0") + "%"
-						.Cells(VpRow, 4) = VpRef * VpMatT(VpI) 'Format(VpRef * VpMatT(VpI), "0.0") + " €"
-						.Cells(VpRow, 5) = Format(Math.Min(VpPrice / VpRef, 100), "0.0") + "%"
-						.Cells(VpRow, 6) = Format((VpPrice / VpMatT(VpI)) / VpRef, "0.00")
-						VpRow = VpRow + 1
+						VpEfficiencies.Add(New clsEfficiency(VpDeck, VpPrice, VpMatT(VpI), VpRef * VpMatT(VpI), Math.Min(VpPrice / VpRef, 100), (VpPrice / VpMatT(VpI)) / VpRef))
 					End If
 					VpI = VpI + 1
 				Next VpDeck
+				VpEfficiencies.Sort(New clsEfficiency.clsEfficiencyComparer)
+				For Each VpEfficiency As clsEfficiency In VpEfficiencies
+					.Cells(VpRow, 1) = VpEfficiency.Name
+					.Cells(VpRow, 2) = VpEfficiency.Price
+					.Cells(VpRow, 3) = Format(VpEfficiency.Perfs, "0.0") + "%"
+					.Cells(VpRow, 4) = VpEfficiency.EspPrice
+					.Cells(VpRow, 5) = Format(VpEfficiency.EspPerfs, "0.0") + "%"
+					.Cells(VpRow, 6) = Format(VpEfficiency.Efficiency, "0.00")
+					VpRow = VpRow + 1
+				Next VpEfficiency
 				'Formatage particulier
 				For VpI = 1 To 6
 					.Columns(VpI).EntireColumn.AutoFit
@@ -390,26 +410,99 @@ Public Partial Class frmPerfs
 				Next VpI
 			End With
 			VpRow = 1
-			'Partie 2 : facteur d'efficacité d'un jeu contre un autre (à lire sur ligne (et non sur colonne) après génération)
+			'Partie 2 : résultats matches versus
 			With .Sheets(2)
-				.Name = "Mode versus"
-				For VpI = 0 To VpDecks.Length - 1
-					.Cells(VpI + VpRow + 1, 1) = VpDecks(VpI)
-					For VpJ = 0 To VpDecks.Length - 1
-						.Cells(VpRow, VpJ + 2) = VpDecks(VpJ)
-						.Cells(VpI + VpRow + 1, VpJ + 2) = Format(Me.GetEfficiency(New String() {VpDecks(VpI), VpDecks(VpJ)}, VpDecks(VpI)), "0.00").Replace("Non Numérique", "").Replace("-Infini", "").Replace("+Infini", "")
+				.Name = "Matches vs."
+				VpM = clsModule.GetAdvCount
+				For VpI = 1 To VpM
+					For VpJ = VpI + 1 To VpM
+						VpJ1 = clsModule.GetAdvName(VpI)
+						VpJ2 = clsModule.GetAdvName(VpJ)
+						VpJn1 = clsModule.GetAdvDecksCount(VpJ1)
+						VpJn2 = clsModule.GetAdvDecksCount(VpJ2)
+						If VpJn1 > 0 And VpJn2 > 0 Then
+							ReDim VpVersusMatV1(0 To VpJn1 - 1)
+							ReDim VpVersusMatD1(0 To VpJn1 - 1)
+							ReDim VpVersusMatV2(0 To VpJn2 - 1)
+							ReDim VpVersusMatD2(0 To VpJn2 - 1)
+							VpTotV1 = 0
+							VpTotV2 = 0
+							.Cells(VpRow, 1) = VpJ1 + " vs. " + VpJ2
+							.Rows(VpRow).EntireRow.Font.Bold = True
+							VpRow = VpRow + 1
+							VpK = 1
+							For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
+								.Cells(VpK + VpRow + 1, 1) = VpDeck1
+								VpL = 1
+								For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
+									.Cells(VpRow, VpL + 1) = VpDeck2
+									VpJv1 = clsPerformances.GetNVictoires(VpDeck1, VpDeck2)
+									VpJv2 = clsPerformances.GetNDefaites(VpDeck1, VpDeck2)
+									VpVersusMatV1(VpK - 1) += VpJv1
+									VpVersusMatD1(VpK - 1) += VpJv2
+									VpVersusMatV2(VpL - 1) += VpJv1
+									VpVersusMatD2(VpL - 1) += VpJv2
+									.Cells(VpK + VpRow + 1, VpL + 1) = VpJv1.ToString + "V / " + VpJv2.ToString + "D"
+									VpL = VpL + 1
+								Next VpDeck2
+								.Cells(VpK + VpRow + 1, VpL + 1) = VpVersusMatV1(VpK - 1).ToString + "V / " + VpVersusMatD1(VpK - 1).ToString + "D"
+								.Cells(VpK + VpRow + 1, VpL + 1).Interior.ColorIndex = 48
+								VpK = VpK + 1
+							Next VpDeck1
+							For VpF As Integer = 0 To VpVersusMatV2.Length - 1
+								VpTotV1 += VpVersusMatV2(VpF)
+								VpTotV2 += VpVersusMatD2(VpF)
+								.Cells(VpK + VpRow + 1, VpF + 2) = VpVersusMatV2(VpF).ToString + "V / " + VpVersusMatD2(VpF).ToString + "D"
+								.Cells(VpK + VpRow + 1, VpF + 2).Interior.ColorIndex = 48
+							Next VpF
+							.Cells(VpK + VpRow + 1, VpVersusMatV2.Length + 2) = VpTotV1.ToString + "V / " + VpTotV2.ToString + "D"
+							.Cells(VpK + VpRow + 1, VpVersusMatV2.Length + 2).Interior.ColorIndex = 48
+							.Cells(VpK + VpRow + 1, VpVersusMatV2.Length + 2).Font.Bold = True
+							VpRow = VpRow + VpK + 3
+						End If
 					Next VpJ
 				Next VpI
 				'Formatage particulier
-				.Columns(1).EntireColumn.Font.Bold = True
-				.Rows(1).EntireRow.Font.Bold = True
 				For VpI = 1 To VpDecks.Length + 1
 					.Columns(VpI).EntireColumn.AutoFit
-					.Cells(VpI, VpI).Interior.ColorIndex = 48
 				Next VpI
 			End With
+			VpRow = 1
+			'Partie 3 : fréquence des matches
+			With .Sheets(3)
+				.Name = "Fréquences"
+				For VpI = 1 To VpM
+					For VpJ = VpI + 1 To VpM
+						VpJ1 = clsModule.GetAdvName(VpI)
+						VpJ2 = clsModule.GetAdvName(VpJ)
+						If clsModule.GetAdvDecksCount(VpJ1) > 0 And clsModule.GetAdvDecksCount(VpJ2) > 0 Then
+							.Cells(VpRow, 1) = VpJ1 + " vs. " + VpJ2
+							.Rows(VpRow).EntireRow.Font.Bold = True
+							VpRow = VpRow + 1
+							VpFrequences.Clear
+							For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
+								For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
+									VpFrequences.Add(New clsMatchCounter(VpDeck1 + " / " + VpDeck2, clsPerformances.GetNPlayed(VpDeck1, VpDeck2)))
+								Next VpDeck2
+							Next VpDeck1
+							VpFrequences.Sort(New clsMatchCounter.clsMatchCounterComparer)
+							For Each VpMatchCounter As clsMatchCounter In VpFrequences
+								.Cells(VpRow, 1) = VpMatchCounter.Versus
+								.Cells(VpRow, 2) = VpMatchCounter.Count
+								VpRow = VpRow + 1
+							Next VpMatchCounter
+							VpRow = VpRow + 1
+						End If
+					Next VpJ
+				Next VpI
+				'Formatage particulier
+				For VpI = 1 To VpDecks.Length + 1
+					.Columns(VpI).EntireColumn.AutoFit
+				Next VpI
+			End With
+			Call clsModule.ShowInformation("Génération terminée." + vbCrLf + "NB. Ces calculs n'ont de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix) et si suffisamment de parties entre tous les decks ont été disputées.")
+			.Visible = True
 		End With
-		Call clsModule.ShowInformation("Génération terminée." + vbCrLf + "NB. Ce calcul n'a de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix) et si suffisamment de parties entre tous les decks ont été disputées.")
 	End Sub
 	Private Function GetEfficiency(VpDecks() As String, VpGame As String) As Single
 	'------------------------------------------------------------------------------------------------------------------------
@@ -523,28 +616,6 @@ Public Partial Class frmPerfs
 	Sub BtDefNokActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.RemoveResult(Me.cboJeuLocal.ComboBox.Text, Me.cboJeuAdv.ComboBox.Text, False)
 	End Sub
-	Sub BtAdviceActivate(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpJeuLocal As String = Me.cboJeuLocal.ComboBox.Text
-	Dim VpJeuAdv As String = Me.cboJeuAdv.ComboBox.Text
-	Dim VpMsg As Boolean = False
-		'Rencontre la moins jouée
-		Call clsModule.ShowInformation("La rencontre la moins souvent jouée est " + Me.GetLeastPlayed)
-		If VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then
-			VpMsg = True
-		Else
-			If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
-				'Meilleur jeu adverse contre jeu local
-				Call clsModule.ShowInformation("Le jeu adverse le plus fort contre le " + VpJeuLocal + " est le " + Me.GetBestGameAgainst(Me.cboJeuAdv, "JeuLocal", "JeuAdverse", VpJeuLocal, False) + ".")
-				'Meilleur jeu local contre jeu adverse
-				Call clsModule.ShowInformation("Le jeu local le plus fort contre le " + VpJeuAdv + " est le " + Me.GetBestGameAgainst(Me.cboJeuLocal, "JeuAdverse", "JeuLocal", VpJeuAdv, True) + ".")
-			Else
-				VpMsg = True
-			End If
-		End If
-		If VpMsg Then
-			Call clsModule.ShowWarning("Sélectionner deux jeux présents dans les listes pour obtenir plus d'informations dessus...")
-		End If
-	End Sub
 	Sub DropGamesVersionsClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.cboLocalVersion.Visible = Me.dropGamesVersions.Checked
 		Me.cboAdvVersion.Visible = Me.dropGamesVersions.Checked
@@ -585,39 +656,8 @@ Public Partial Class frmPerfs
 		Call Me.GetAllPlayed
 	End Sub
 	Sub BtEfficiencyActivate(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpDecks() As String
-	Dim VpGame As String = ""
-	Dim VpStr As String = clsModule.CgPerfsEfficiency
-		If clsModule.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Cliquer sur 'Non' pour obtenir l'information ponctuelle...")= System.Windows.Forms.DialogResult.Yes Then
+		If clsModule.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Ceci peut prendre plusieurs secondes...")= System.Windows.Forms.DialogResult.Yes Then
 			Call Me.ExcelEfficiency
-		Else
-			'Cas 0 : aucun jeu sélectionné
-			If Me.cboJeuLocal.ComboBox.Text.StartsWith(clsModule.CgPerfsTotal) And Me.cboJeuAdv.ComboBox.Text.StartsWith(clsModule.CgPerfsTotal) Then
-				Call clsModule.ShowWarning("Sélectionner au moins un jeu présent dans les listes déroulantes pour obtenir l'information souhaitée...")
-			'Cas 1 : efficacité absolue d'un jeu local / adverse
-			ElseIf Me.cboJeuLocal.ComboBox.Text.StartsWith(clsModule.CgPerfsTotal) Or Me.cboJeuAdv.ComboBox.Text.StartsWith(clsModule.CgPerfsTotal) Then
-				VpDecks = clsPerformances.GetAllDecks
-				'Cas 1.1 : efficacité absolue d'un jeu adverse
-				If Me.cboJeuLocal.Items.Contains(Me.cboJeuLocal.ComboBox.Text) And Not Me.cboJeuLocal.ComboBox.Text.StartsWith(clsModule.CgPerfsTotal) Then
-					VpGame = Me.cboJeuLocal.ComboBox.Text
-					VpStr = VpStr + VpGame + " : " + Me.GetEfficiency(VpDecks, VpGame).ToString
-				'Cas 1.2 : efficacité absolue d'un jeu adverse
-				ElseIf Me.cboJeuAdv.Items.Contains(Me.cboJeuAdv.ComboBox.Text) Then
-					VpGame = Me.cboJeuAdv.ComboBox.Text
-					VpStr = VpStr + VpGame + " : " + Me.GetEfficiency(VpDecks, VpGame).ToString
-				End If
-			'Cas 2 : efficacité entre deux jeux
-			ElseIf Me.cboJeuLocal.Items.Contains(Me.cboJeuLocal.ComboBox.Text) And Me.cboJeuAdv.Items.Contains(Me.cboJeuAdv.ComboBox.Text) Then
-				ReDim VpDecks(0 To 1)
-				VpDecks(0) = Me.cboJeuLocal.ComboBox.Text
-				VpDecks(1) = Me.cboJeuAdv.ComboBox.Text
-				VpStr = VpStr + VpDecks(0) + " : " + Me.GetEfficiency(VpDecks, VpDecks(0)).ToString + vbCrLf
-				VpStr = VpStr + VpDecks(1) + " : " + Me.GetEfficiency(VpDecks, VpDecks(1)).ToString
-			End If
-			'Affichage effectif
-			If VpStr <> clsModule.CgPerfsEfficiency Then
-				Call clsModule.ShowInformation(VpStr)
-			End If
 		End If
 	End Sub
 	#End Region
@@ -723,6 +763,21 @@ Public Class clsPerformances
 		End With
 		Return VpGames.ToArray
 	End Function
+	Public Shared Function GetAdvDecks(VpAdvName As String) As String()
+	'---------------------------------------------------------
+	'Retourne le nom des decks du joueur spécifié en paramètre
+	'---------------------------------------------------------
+	Dim VpGames As New List(Of String)
+		VgDBCommand.CommandText = "Select GameName From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpAdvName.Replace("'", "''") + "';"
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpGames.Add(.GetString(0))
+			End While
+			.Close
+		End With
+		Return VpGames.ToArray
+	End Function
 	Public Shared Function GetNPlayed(VpGame1 As String, Optional VpGame2 As String = "") As Integer
 	'---------------------------------------------------------------------------------------------------------------------
 	'Retourne le nombre de parties jouées par le jeu passé en paramètre, ou dans l'absolu, ou contre l'adversaire spécifié
@@ -745,6 +800,18 @@ Public Class clsPerformances
 		VpP = VgDBCommand.ExecuteScalar
 		'Cas 2 : suppose que le jeu 1 est adverse et le jeu 2 est local
 		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuAdverse = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuLocal = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = False;"
+		Return VpP + VgDBCommand.ExecuteScalar
+	End Function
+	Public Shared Function GetNDefaites(VpGame1 As String, Optional VpGame2 As String = "") As Integer
+	'----------------------------------------------------------------------------------------------------------------------
+	'Retourne le nombre de parties perdues par le jeu passé en paramètre, ou dans l'absolu, ou contre l'adversaire spécifié
+	'----------------------------------------------------------------------------------------------------------------------
+	Dim VpP As Integer
+		'Cas 1 : suppose que le jeu 1 est local et le jeu 2 est adverse
+		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuAdverse = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = False;"
+		VpP = VgDBCommand.ExecuteScalar
+		'Cas 2 : suppose que le jeu 1 est adverse et le jeu 2 est local
+		VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuAdverse = '" + VpGame1.Replace("'", "''") + "'" + If(VpGame2 <> "", " And JeuLocal = '" + VpGame2.Replace("'", "''") + "'", "") + " And Victoire = True;"
 		Return VpP + VgDBCommand.ExecuteScalar
 	End Function
 	Public Shared Function GetRatio(VpGame1 As String, Optional VpGame2 As String = "") As Single
@@ -831,4 +898,86 @@ Public Class clsPerformances
 			Return -1
 		End If
 	End Function
+End Class
+Public Class clsEfficiency
+	Public Class clsEfficiencyComparer
+		Implements IComparer(Of clsEfficiency)
+		Public Function Compare(ByVal x As clsEfficiency, ByVal y As clsEfficiency) As Integer Implements IComparer(Of clsEfficiency).Compare
+			If x.Efficiency > y.Efficiency Then
+				Return 1
+			ElseIf x.Efficiency < y.Efficiency Then
+				Return -1
+			Else
+				Return 0
+			End If
+		End Function
+	End Class
+	Private VmName As String
+	Private VmPrice As Single
+	Private VmPerfs As Single
+	Private VmEspPrice As Single
+	Private VmEspPerfs As Single
+	Private VmEfficiency As Single
+	Public Sub New(VpName As String, VpPrice As Single, VpPerfs As Single, VpEspPrice As Single, VpEspPerfs As Single, VpEfficiency As Single)
+		VmName = VpName
+		VmPrice = VpPrice
+		VmPerfs = VpPerfs
+		VmEspPrice = VpEspPrice
+		VmEspPerfs = VpEspPerfs
+		VmEfficiency = VpEfficiency
+	End Sub
+	Public ReadOnly Property Name As String
+		Get
+			Return VmName
+		End Get
+	End Property
+	Public ReadOnly Property Price As Single
+		Get
+			Return VmPrice
+		End Get
+	End Property
+	Public ReadOnly Property Perfs As Single
+		Get
+			Return VmPerfs
+		End Get
+	End Property
+	Public ReadOnly Property EspPrice As Single
+		Get
+			Return VmEspPrice
+		End Get
+	End Property
+	Public ReadOnly Property EspPerfs As Single
+		Get
+			Return VmEspPerfs
+		End Get
+	End Property
+	Public ReadOnly Property Efficiency As Single
+		Get
+			Return VmEfficiency
+		End Get
+	End Property
+End Class
+Public Class clsMatchCounter
+	Public Class clsMatchCounterComparer
+		Implements IComparer(Of clsMatchCounter)
+		Public Function Compare(ByVal x As clsMatchCounter, ByVal y As clsMatchCounter) As Integer Implements IComparer(Of clsMatchCounter).Compare
+			Return y.Count - x.Count
+		End Function
+	End Class
+	Private VmVersus As String
+	Private VmCount As Integer
+	Public Sub New(VpVersus As String, VpCount As Integer)
+		VmVersus = VpVersus
+		VmCount = VpCount
+	End Sub
+	Public ReadOnly Property Versus As String
+		Get
+			Return VmVersus
+		End Get
+	End Property
+	Public ReadOnly Property Count As Integer
+		Get
+			Return VmCount
+		End Get
+	End Property
 End Class

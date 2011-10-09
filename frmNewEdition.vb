@@ -278,11 +278,18 @@ Public Partial Class frmNewEdition
 	'----------------------------------------------------------------------------------------------
 	Dim VpLine As String
 	Dim VpCarac(0 To clsModule.CgBalises.Length - 1) As String
+	Dim VpFound As Boolean
 		VpLine = VpFile.ReadLine.Trim
 		If VpLine.StartsWith(clsModule.CgBalises(0)) Or VpLine.StartsWith(clsModule.CgAlternateStart) Or VpLine.StartsWith(clsModule.CgAlternateStart2) Then
 			For VpI As Integer = 0 To clsModule.CgBalises.Length - 1
-				VpCarac(VpI) = VpLine.Replace(clsModule.CgBalises(VpI), "").Replace(clsModule.CgAlternateStart, "").Replace(clsModule.CgAlternateStart2, "").Trim
-				VpLine = VpFile.ReadLine.Trim
+				VpFound = False
+				Do
+					If VpLine.StartsWith(clsModule.CgBalises(VpI)) Or VpI = 0 Then
+						VpCarac(VpI) = VpLine.Replace(clsModule.CgBalises(VpI), "").Replace(clsModule.CgAlternateStart, "").Replace(clsModule.CgAlternateStart2, "").Trim
+						VpFound = True
+					End If
+					VpLine = VpFile.ReadLine.Trim
+				Loop Until VpFound
 			Next VpI
 			Return VpCarac
 		End If

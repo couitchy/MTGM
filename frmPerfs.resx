@@ -197,16 +197,6 @@
         AAD+HwAA+A8AAPAHAADgAwAA4AMAAOADAADgAwAA8AMAAPAHAAD4DwAA/j8AAP//AAD//wAA
 </value>
   </data>
-  <data name="btAdvice.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
-        AAD///8AAAAAAAAHAAAAAAAHDwcAAAAABwD/BwAAAAAAj/8HcAAAAI///wB3AAB4//j/+AdwB///jI//
-        8HAH///4///wd3////z///8Hf////M///wd////4zP//B3///M/M//8AB//4zMj/8AAHj/+Mj//wAAB3
-        j///93AAAAB3d3dwAAD/jwAA/g8AAPgPAADwBwAA4AMAAMABAACAAQAAgAAAAAAAAAAAAAAAAAAAAAAB
-        AACAAwAAgAMAAMAHAADwHwAA
-</value>
-  </data>
   <data name="btEfficiency.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAIAEBAQAAEABAAoAQAAJgAAACAgEAABAAQA6AIAAE4BAAAoAAAAEAAAACAAAAABAAQAAAAAAIAA

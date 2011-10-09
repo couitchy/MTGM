@@ -34,7 +34,7 @@ Public Module clsModule
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
 	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 26107
+	Public Const CgCodeLines As Integer   		= 26264
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -90,7 +90,7 @@ Public Module clsModule
 	Public Const CgURL9 As String         		= "/Updates/LastPrices.txt"
 	Public Const CgURL10 As String				= "/Images%20des%20cartes/"
 	Public Const CgURL11 As String         		= "/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         		= "/Updates/Series r8.txt"
+	Public Const CgURL12 As String         		= "/Updates/Series r11.txt"
 	Public Const CgURL13 As String         		= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         		= "/Updates/MD_Trad.log"
 	Public Const CgURL15 As String         		= "/Updates/Tournois r11.txt"
@@ -1666,6 +1666,10 @@ Public Module clsModule
 	'Retourne le nombre de decks possédés par le propriétaire d'index spécifié en paramètre
 	'--------------------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where AdvID = " + VpI.ToString + ";"
+		Return VgDBCommand.ExecuteScalar
+	End Function
+	Public Function GetAdvDecksCount(VpName As String) As Integer
+		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpName.Replace("'", "''") + "';"
 		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Function GetAdvId(VpName As String) As Integer
