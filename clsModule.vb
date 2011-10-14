@@ -33,8 +33,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgStrConn As String      		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Public Const CgCodeLines As Integer   		= 26264
+	Public Const CgCodeLines As Integer   		= 26286
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -155,6 +154,7 @@ Public Module clsModule
 	Public CgNumbers() As String 				= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgSearchFields() As String 			= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Spell.myCost", "Card.SubType"}
 	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgINIFile, CgMagicBack, CgUpdater}
+	Public CgStrConn() As String      			= {"Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source=", "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="}
 	Public CgCriteres As New Hashtable(CgNCriterions)
 	Public CgVirtualPath As String
 	Public VgDB As OleDbConnection
@@ -229,6 +229,10 @@ Public Module clsModule
 		BDD_v10		'manque tournois M
 		BDD_v11		'à jour
 	End Enum
+	Public Enum eDBProvider
+		Jet = 0
+		ACE
+	End Enum
 	Public Sub Main(ByVal VpArgs() As String)
 	'-------------------------------
 	'Point d'entrée de l'application
@@ -298,7 +302,7 @@ Public Module clsModule
 		If Not IO.File.Exists(VpPath) Then
 			Return False
 		Else
-			VgDB = New OleDbConnection(CgStrConn + VpPath)
+			VgDB = New OleDbConnection(CgStrConn(CInt(VgOptions.VgSettings.DBProvider)) + VpPath)
 	    	Try
 		    	VgDB.Open
 		    	VgDBCommand.Connection = VgDB
@@ -311,8 +315,8 @@ Public Module clsModule
 		    	Else
 		    		Return True
 		    	End If
-	    	Catch
-	    		Call ShowWarning("Impossible d'ouvrir la base de données sélectionnée...")
+	    	Catch VpErr As Exception
+	    		Call ShowWarning("Impossible d'ouvrir la base de données sélectionnée..." + vbCrLf + "Détails : " + VpErr.Message)
 	    	End Try
 	    End If
 	    Return False
@@ -531,7 +535,7 @@ Public Module clsModule
 	'DOMAIN_NAME
 	'DESCRIPTION
 	'---------------------------------------------------------------------------------
-	Dim VpDB As New OleDbConnection(CgStrConn + VpPath)
+	Dim VpDB As New OleDbConnection(CgStrConn(CInt(VgOptions.VgSettings.DBProvider)) + VpPath)
 	Dim VpTable As String
 	Dim VpTables As DataTable
 	Dim VpSchemaTable As DataTable
@@ -746,6 +750,10 @@ Public Module clsModule
 			Return eSearchCriterion.Edition
 		ElseIf VpStr = "Cout" Then
 			Return eSearchCriterion.Cout
+		ElseIf VpStr = "Jet" Then
+			Return eDBProvider.Jet
+		ElseIf VpStr = "ACE" Then
+			Return eDBProvider.ACE
 		ElseIf IsNumeric(VpStr)
 			Return CInt(VpStr)
 		Else

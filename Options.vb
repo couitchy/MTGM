@@ -93,6 +93,7 @@ End Class
 Public Class clsSettings
 	Private VmNJeux As Integer = 1
 	Private VmNomsJeux As String = ""
+	Private VmDBProvider As clsModule.eDBProvider = clsModule.eDBProvider.Jet
 	Private VmDefaultBase As String = Application.StartupPath + clsModule.CgMDB
 	Private VmPicturesFile As String = Application.StartupPath + clsModule.CgDAT
 	Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
@@ -433,6 +434,15 @@ Public Class clsSettings
 		End Get
 		Set (VpDownloadServer As String)
 			VmDownloadServer = VpDownloadServer
+		End Set
+	End Property
+	<DisplayName("Moteur de base de données"), Category("Général"), Description("Composant logiciel OLEDB permettant d'accéder aux fichiers de base de données Microsoft Access")> _
+	Public Property DBProvider As clsModule.eDBProvider
+		Get
+			Return VmDBProvider
+		End Get
+		Set (VpDBProvider As clsModule.eDBProvider)
+			VmDBProvider = VpDBProvider
 		End Set
 	End Property
 End Class

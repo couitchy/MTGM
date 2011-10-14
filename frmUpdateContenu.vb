@@ -42,15 +42,17 @@ Public Partial Class frmUpdateContenu
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
 	Dim VpBuf(0 To 69) As Byte
+	DIm VpLength As Integer
 		Try
 			'Gestion cas 0
 			VpStamps(0) = clsModule.GetPictSP
 			'Gestion cas 1 à 6
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1D)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
-			VpAnswer.Read(VpBuf, 0, 70)
+			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
+			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)
 			For VpI As Integer = 0 To 5
-				VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * 12, 10)
+				VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 10)
 			Next VpI
 			'Gestion cas 7
 
@@ -70,15 +72,17 @@ Public Partial Class frmUpdateContenu
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
 	Dim VpBuf(0 To 46) As Byte
+	DIm VpLength As Integer
 		Try
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1E)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
-			VpAnswer.Read(VpBuf, 0, 47)
+			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
+			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
 			'Gestion cas 0
 			
 			'Gestion cas 1 à 6
 			For VpI As Integer = 0 To 6
-				VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * 7, 5))
+				VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 5))
 			Next VpI
 			'Gestion cas 7
 
