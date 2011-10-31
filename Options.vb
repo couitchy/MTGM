@@ -26,7 +26,6 @@ Imports System.Text
 #End Region
 Public Partial Class Options
 	Public VgSettings As New clsSettings
-	Private VmIsInitializing As Boolean
 	Public Sub New()
 		Me.InitializeComponent()
 	End Sub
@@ -56,7 +55,6 @@ Public Partial Class Options
 	'------------------------------------------------------------------------------------------------------------------
 	Dim VpSettingsType As Type = GetType(clsSettings)
 	Dim VpStr As New StringBuilder(512)
-		VmIsInitializing = True
 		For Each VpProperty As MemberInfo In VpSettingsType.GetMembers
 			If VpProperty.MemberType = MemberTypes.Property Then
 				Call clsModule.GetPrivateProfileString("Properties", VpProperty.Name, "", VpStr, VpStr.Capacity, Application.StartupPath + clsModule.CgINIFile)
@@ -69,26 +67,7 @@ Public Partial Class Options
 				End If
 			End If
 		Next VpProperty
-		VmIsInitializing = False
 	End Sub
-	Public Function GetDeckName_INI(VpI As Integer) As String
-	'-----------------------------------------------------
-	'Retourne le nom du deck d'index spécifié en paramètre
-	'				/!\ OBSOLETE /!\
-	'-----------------------------------------------------
-	Dim VpNames() As String
-		Try
-			VpNames = VgSettings.NomsJeux.Split("#")
-			Return VpNames(VpI - 1)
-		Catch
-			Return "Jeu n°" + VpI.ToString
-		End Try
-	End Function
-	Public ReadOnly Property IsInitializing As Boolean
-		Get
-			Return VmIsInitializing
-		End Get
-	End Property
 End Class
 Public Class clsSettings
 	Private VmNJeux As Integer = 1

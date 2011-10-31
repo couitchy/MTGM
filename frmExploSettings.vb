@@ -105,12 +105,12 @@ Public Partial Class frmExploSettings
 		Get
 			Return Me.chklstClassement.GetItemChecked(0)
 		End Get
-		Set(VpDeckMode As Boolean)
+		Set (VpDeckMode As Boolean)
 			Me.chklstClassement.SetItemChecked(0, VpDeckMode)
 		End Set
 	End Property	
 	Public WriteOnly Property SourceChange As Boolean
-		Set(VpSourceChange As Boolean)
+		Set (VpSourceChange As Boolean)
 			VmSourceChange = VpSourceChange
 		End Set
 	End Property

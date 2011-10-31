@@ -1012,6 +1012,46 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Sub BuildTitles
+	'---------------------------------------------------------------------------------------------------------------
+	'Construit un fichier de titres des cartes en français pour l'édition demandée, avec les infos déjà dans la base
+	'---------------------------------------------------------------------------------------------------------------
+	Dim VpSerie As String = InputBox("Entrer le code de la série")
+	Dim VpOut As StreamWriter
+		If VpSerie.Length = 2 Then
+			Me.dlgSave.FileName = ""
+			Me.dlgSave.ShowDialog
+			If Me.dlgSave.FileName <> "" Then
+				VpOut = New StreamWriter(Me.dlgSave.FileName)
+				Call Me.AddToLog("La construction du fichier des titres traduits a commencé...", eLogType.Information, True)
+				Me.prgAvance.Style = ProgressBarStyle.Marquee
+		    	VmDBCommand.CommandText = "Select Card.Title, CardFR.TitleFR From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where UCase(Series.SeriesCD) = '" + VpSerie.ToUpper + "';"
+		    	VmDBReader = VmDBCommand.ExecuteReader
+				With VmDBReader
+					While .Read
+						Me.txtCur.Text = .GetString(0)
+						Application.DoEvents
+						Try
+							If .GetString(1).Trim <> "" And .GetString(1) <> .GetString(0) Then
+								VpOut.WriteLine(.GetString(0) + "#" + .GetString(1))
+							End If
+						Catch
+							Call Me.AddToLog("Impossible de récupérer le titre de la carte : " + .GetString(0), eLogType.Warning)
+						End Try
+						If Me.btCancel.Tag Then Exit While
+					End While
+					.Close
+				End With
+				VpOut.Flush
+				VpOut.Close
+				If Me.btCancel.Tag Then
+					Call Me.AddToLog("La construction du fichier des titres traduits a été annulée.", eLogType.Warning, , True)
+				Else
+					Call Me.AddToLog("La construction du fichier des titres traduits est terminée.", eLogType.Information, , True)
+				End If
+			End If			
+		End If
+	End Sub
 	Private Sub ExtractTitles
 	'-----------------------------------------
 	'Extrait les titres des cartes en français
@@ -1334,5 +1374,10 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuPicturesNewSPClick(sender As Object, e As EventArgs)
 		Call Me.BuildSP
+	End Sub
+	Sub MnuBuildTitlesClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.BuildTitles
+		End If
 	End Sub
 End Class

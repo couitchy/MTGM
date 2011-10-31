@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 26286
+	Public Const CgCodeLines As Integer   		= 26501
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -80,7 +80,7 @@ Public Module clsModule
 	Public Const CgURL2 As String         		= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         		= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         		= "/Updates/Images DB.mdb"
-	Public Const CgURL3B As String         		= "/Updates/Patch r9.mdb"
+	Public Const CgURL3B As String         		= "/Updates/Patch r11.mdb"
 	Public Const CgURL4 As String				= "/Listes%20des%20editions/"
 	Public Const CgURL5 As String				= "/Logos%20des%20editions/"
 	Public Const CgURL6 As String				= "http://gatherer.wizards.com/Pages/Default.aspx"
@@ -152,6 +152,7 @@ Public Module clsModule
 	Public CgManaParsing() As String 			= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
 	Public CgCriterionsFields() As String 		= {"", "Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
 	Public CgNumbers() As String 				= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
+	Public CgRarities() As String				= {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
 	Public CgSearchFields() As String 			= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Spell.myCost", "Card.SubType"}
 	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgINIFile, CgMagicBack, CgUpdater}
 	Public CgStrConn() As String      			= {"Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source=", "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="}
@@ -217,17 +218,18 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque tournois M, ajustement types numériques
-		BDD_v10		'manque tournois M
-		BDD_v11		'à jour
+		BDD_v1		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque CardDouble, tournois M
+		BDD_v11		'manque CardDouble
+		BDD_v12		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -363,8 +365,13 @@ Public Module clsModule
 						'Si on est ici, BDD version 10
 						VpDBVersion = eDBVersion.BDD_v10
 					Else
-						'Si on est ici, BDD version 11
-						VpDBVersion = eDBVersion.BDD_v11	
+						If VpTablesCount < 17 Then
+							'Si on est ici, BDD version 11
+							VpDBVersion = eDBVersion.BDD_v11
+						Else
+							'Si on est ici, BDD version 12
+							VpDBVersion = eDBVersion.BDD_v12
+						End If
 					End If
 				End If
 			End If
@@ -375,10 +382,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v11 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v12 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v11)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v12)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -397,10 +404,6 @@ Public Module clsModule
 						Try
 							VgDBCommand.CommandText = "Create Table MyGamesID (GameID Integer, GameName Text(50) With Compression);"
 							VgDBCommand.ExecuteNonQuery
-							For VpI As Integer = 0 To VgOptions.VgSettings.NJeux - 1
-								VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpI.ToString + ", '" + VgOptions.GetDeckName_INI(VpI + 1).Replace("'", "''") + "');"
-								VgDBCommand.ExecuteNonQuery
-							Next VpI
 						Catch
 						End Try
 					End If
@@ -463,8 +466,19 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 					End If
 					'Passage version 10 à 11
-					VgDBCommand.CommandText = "Alter Table Autorisations Add M Bit;"
-					VgDBCommand.ExecuteNonQuery
+					If CInt(VpDBVersion) < 11 Then
+						VgDBCommand.CommandText = "Alter Table Autorisations Add M Bit;"
+						VgDBCommand.ExecuteNonQuery
+					End If
+					'Passage version 11 à 12
+					If CInt(VpDBVersion) < 12 Then
+						VgDBCommand.CommandText = "Alter Table Card Add SpecialDoubleCard Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update Card Set SpecialDoubleCard = False;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Create Table CardDouble (EncNbrDownFace Long, EncNbrTopFace Long);"
+						VgDBCommand.ExecuteNonQuery
+					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
 					Return False
@@ -968,12 +982,13 @@ Public Module clsModule
 	        End If
 	    End If
 	End Function
-	Public Function MyTxt(VpCard As String, VpVF As Boolean) As String
+	Public Function MyTxt(VpCard As String, VpVF As Boolean, VpGestDownFace As Boolean, VpDownFace As Boolean) As String
 	'----------------------------------------------------
 	'Retourne le texte VF de la carte passée en paramètre
 	'----------------------------------------------------
 	Dim VpDBCommand As New OleDbCommand
 	Dim VpO As Object
+	Dim VpStr As String
     	VpDBCommand.Connection = VgDB
     	VpDBCommand.CommandType = CommandType.Text
     	If VpVF Then
@@ -983,7 +998,16 @@ Public Module clsModule
     	End If
 		VpO = VpDBCommand.ExecuteScalar
 		If Not VpO Is Nothing Then
-			Return VpO.ToString
+			VpStr = VpO.ToString
+			If VpGestDownFace And VpStr.Contains("//") Then
+				If VpDownFace Then
+					Return VpStr.Substring(VpStr.IndexOf("//") + 6).Trim
+				Else
+					Return VpStr.Substring(0, VpStr.IndexOf("//") - 5).Trim
+				End If
+			Else
+				Return VpStr.Trim
+			End If
 		Else
 			Return ""
 		End If
@@ -1315,7 +1339,7 @@ Public Module clsModule
 			Call MainForm.VgMe.UpdateTxtFR
 		End If
 	End Sub
-	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, VpGestFoil As Boolean, Optional VpSource As String = "", Optional VpEdition As String = "", Optional VpFoil As Boolean = False)
+	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, VpGestFoil As Boolean, VpGestDownFace As Boolean, Optional VpSource As String = "", Optional VpEdition As String = "", Optional VpFoil As Boolean = False, Optional VpDownFace As Boolean = False)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
 	'-----------------------------------------------
@@ -1398,7 +1422,7 @@ Public Module clsModule
 				End If
 				VpForm.lblRarete.Text = FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
 				If VpMainForm.mnuCardsFR.Checked Then
-					VpForm.txtCardText.Text = MyTxt(VpCard, True)
+					VpForm.txtCardText.Text = MyTxt(VpCard, True, VpGestDownFace, VpDownFace)
 				Else
 					VpForm.txtCardText.Text = .GetValue(VgDBReader.GetOrdinal("CardText")).ToString
 				End If

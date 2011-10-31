@@ -326,6 +326,17 @@ Public Partial Class frmStats
 			Call clsModule.ShowWarning(clsModule.CgErr2)
 		End If
 	End Sub
+	Private Function GetRarest(VpLevel As Integer) As String
+	'------------------------------------------------------------------------------------------------------
+	'Retourne la carte la plus rare (si on ne trouve pas de mythique, on passe aux rares, et ainsi de suite
+	'------------------------------------------------------------------------------------------------------
+	Dim VpRarest As String = Me.QueryInfo("Card.Title", "Where InStr(UCase(Rarity), " + clsModule.CgRarities(VpLevel) + ") > 0 And " , " Order By Val(Mid(Rarity, 2)) Desc;")
+		If VpRarest = "" Then
+			Return Me.GetRarest(VpLevel + 1)
+		Else
+			Return VpRarest
+		End If
+	End Function
 	Private Sub LoadInfos
 	'------------------------------------------------------------------------------------------------------------------------------------------------------------
 	'Récupère dans la base les informations :
@@ -368,7 +379,7 @@ Public Partial Class frmStats
 		End If
 		Me.txtNCartes.Text = Me.QueryInfo("Sum(Items)").ToString
 		Me.txtOldest.Text = Me.QueryInfo("Card.Title", , " Order By Release Asc;")
-		Me.txtRarest.Text = Me.QueryInfo("Card.Title", "Where InStr(UCase(Rarity), 'R') > 0 And " , " Order By Val(Mid(Rarity, 2)) Desc;")
+		Me.txtRarest.Text = Me.GetRarest(0)
 		'Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(Price * Items)"), "0.00") + " €"
 		Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(IIf(Foil, FoilPrice, Price) * Items)"), "0.00") + " €"
 		Me.txtTougher.Text = Me.QueryInfo("Card.Title", "Inner Join Creature On Card.Title = Creature.Title ", " Order By Val(Power) Desc;")

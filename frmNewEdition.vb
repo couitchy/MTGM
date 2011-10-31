@@ -239,7 +239,7 @@ Public Partial Class frmNewEdition
 			VpMyCard = New clsMyCard(VpCarac, VpComplement)
 			Try
 				'Insertion dans la table Card (Series, Title, EncNbr, 1, Null, Rarity, Type, SubType, 1, 0, Null, 'N', Null, Null, Author, False, 10, 10, CardText, Null)
-				VgDBCommand.CommandText = "Insert Into Card (Series, Title, EncNbr, Versions, CardNbr, Rarity, Type, SubType, myPrice, Price, PriceDate, Condition, FoilPrice, FoilDate, Artist, CenterText, TextSize, FlavorSize, CardText, FlavorText) Values ('" + VpSerieCD + "', '" + VpMyCard.Title.Replace("'", "''") + "', " + VpEncNbr.ToString + ", 1, Null, '" + VpMyCard.Rarity + "', '" + VpMyCard.MyType + "', " + VpMycard.MySubType + ", 1, 0, Null, 'N', Null, Null, '" + VpMyCard.Author.Replace("'", "''") + "', False, 10, 10, " + VpMyCard.MyCardText + ", Null);"
+				VgDBCommand.CommandText = "Insert Into Card (Series, Title, EncNbr, Versions, CardNbr, Rarity, Type, SubType, myPrice, Price, PriceDate, Condition, FoilPrice, FoilDate, Artist, CenterText, TextSize, FlavorSize, CardText, FlavorText, SpecialDoubleCard) Values ('" + VpSerieCD + "', '" + VpMyCard.Title.Replace("'", "''") + "', " + VpEncNbr.ToString + ", 1, Null, '" + VpMyCard.Rarity + "', '" + VpMyCard.MyType + "', " + VpMycard.MySubType + ", 1, 0, Null, 'N', Null, Null, '" + VpMyCard.Author.Replace("'", "''") + "', False, 10, 10, " + VpMyCard.MyCardText + ", Null, False);"
 				VgDBCommand.ExecuteNonQuery
 				'Insertion dans la table CardFR où par défaut le nom français sera le nom anglais jusqu'à mise à jour (EncNbr, TitleFR)
 				VgDBCommand.CommandText = "Insert Into CardFR Values (" + VpEncNbr.ToString + ", '" + VpMyCard.Title.Replace("'", "''") + "');"

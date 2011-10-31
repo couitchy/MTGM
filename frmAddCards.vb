@@ -29,18 +29,25 @@ Public Partial Class frmAddCards
 	Private VmOwner As MainForm
 	#End Region
 	#Region "Méthodes"
-	Private Sub LoadCombo(VpCbo As ComboBox, VpTable As String, VpField As String)
-	'---------------------------------------------------------------------------------------------------
-	'Ajoute à la boîte combo passée en paramètres la liste des cartes de la base dans la table spécifiée
-	'---------------------------------------------------------------------------------------------------
-	Dim VpTitle As String
-		VgDBCommand.CommandText = "Select Distinct " + VpField + " From " + VpTable + ";"
+	Private Sub LoadCombos
+	'----------------------------------------------------------------
+	'Ajoute aux boîtes combos les noms de cartes disponibles en VO/VF
+	'----------------------------------------------------------------
+	Dim VpTitleEN As String
+	Dim VpTitleFR As String
+		Me.cboTitleFR.Sorted = True
+		'VgDBCommand.CommandText = "Select Card.Title, CardFR.TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.SpecialIsDownFace = False Order By Card.Title;"
+		VgDBCommand.CommandText = "Select Card.Title, CardFR.TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Order By Card.Title;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpTitle = .GetString(0)
-				If VpTitle.Trim <> "" Then
-					VpCbo.Items.Add(VpTitle)
+				VpTitleEN = .GetString(0)
+				VpTitleFR = .GetString(1)
+				If Not Me.cboTitleEN.Items.Contains(VpTitleEN) Then
+					Me.cboTitleEN.Items.Add(VpTitleEN)
+					Me.cboTitleFR.Items.Add(VpTitleFR)
+				ElseIf Not Me.cboTitleFR.Items.Contains(VpTitleFR) Then
+					Me.cboTitleFR.Items.Add(VpTitleFR)
 				End If
 			End While
 			.Close
@@ -143,8 +150,7 @@ Public Partial Class frmAddCards
 		VmOwner = VpOwner
 		Me.cboSerie.Tag = ""
 		Me.lblNbItems.Tag = 0
-		Call Me.LoadCombo(Me.cboTitleFR, "CardFR", "TitleFR")
-		Call Me.LoadCombo(Me.cboTitleEN, "Card", "Title")
+		Call Me.LoadCombos	'on le fait dans le constructeur car ça prend une éternité si c'est fait dans le Load à cause du rafraîchissement graphique
 		If clsModule.GetDeckCount = 0 Then
 			Me.cmdDestination.Visible = False
 		Else

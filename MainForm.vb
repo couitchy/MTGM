@@ -29,6 +29,7 @@
 '| - gestion cartes foils				   19/12/2010 |
 '| - infos restreintes aux ancêtres		   06/03/2011 |
 '| - délocalisation du filtrage			   09/07/2011 |
+'| - gestion des cartes transformables	   29/10/2011 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -43,15 +44,56 @@ Imports System.Data.OleDb
 Public Partial Class MainForm
 	#Region "Sous-classes"
 	Private Class clsTag
-		Public Key As String = ""
-		Public Value As String = ""
-		Public Value2 As String = ""
-		Public Descendance As String = ""
+		Private VmKey As String = ""			'Champ référent en base de données
+		Private VmValue As String = ""			'Valeur de ce champ
+		Private VmValue2 As String = ""			'Titre VF
+		Private VmValue3 As Boolean = False		'Double carte
+		Private VmDescendance As String = ""	'Requête SQL permettant de générer la descendante du noeud courant
 		Public Sub New
 		End Sub
 		Public Sub New(VpValue As String)
 			Value = VpValue
 		End Sub
+		Public Property Key As String
+			Get
+				Return VmKey
+			End Get
+			Set (VpKey As String)
+				VmKey = VpKey
+			End Set
+		End Property
+		Public Property Value As String
+			Get
+				Return VmValue
+			End Get
+			Set (VpValue As String)
+				VmValue = VpValue
+			End Set
+		End Property
+		Public Property Value2 As String
+			Get
+				Return VmValue2
+			End Get
+			Set (VpValue2 As String)
+				VmValue2 = VpValue2
+			End Set
+		End Property
+		Public Property Value3 As Boolean
+			Get
+				Return VmValue3
+			End Get
+			Set (VpValue3 As Boolean)
+				VmValue3 = VpValue3
+			End Set
+		End Property
+		Public Property Descendance As String
+			Get
+				Return VmDescendance
+			End Get
+			Set (VpDescendance As String)
+				VmDescendance = VpDescendance
+			End Set
+		End Property
 	End Class
 	#End Region
 	#Region "Déclarations"
@@ -216,7 +258,7 @@ Public Partial Class MainForm
 			VpCardData = VpTournois.ReadLine.Split("#")
 			If VpCardData.Length = 7 Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ");"
-				VgDBCommand.ExecuteNonQuery				
+				VgDBCommand.ExecuteNonQuery
 			ElseIf VpCardData.Length = 6 Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ");"
 				VgDBCommand.ExecuteNonQuery
@@ -893,9 +935,9 @@ Public Partial Class MainForm
 		'La requête s'effectue dans les deux tables Card et Spell mises en correspondances sur le nom de la carte, elles-mêmes mises en correspondance avec MyGames ou MyCollection sur le numéro encyclopédique
 		If VpCurTag.Key = "Card.Title" Then
 			If Me.mnuDegroupFoils.Checked And Not Me.IsInAdvSearch Then
-				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, " + VpSource2 + ".Foil From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, Card.SpecialDoubleCard, " + VpSource2 + ".Foil From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
 			Else
-				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+				VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, Card.SpecialDoubleCard From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
 			End If
 		Else
 			VpSQL = "Select Distinct " + VpCurTag.Key + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
@@ -904,13 +946,13 @@ Public Partial Class MainForm
 		VpSQL = VpSQL + VpRestriction
 		'Ajoute les conditions sur les critères des ancêtres
 		While Not VpParent.Parent Is Nothing
-			VpSQL = VpSQL + Me.ElderCriteria(VpParent.Tag.Value, VpParent.Parent.Tag.Key)
+			VpSQL = VpSQL + Me.ElderCriteria(CType(VpParent.Tag, clsTag).Value, CType(VpParent.Parent.Tag, clsTag).Key)
 			VpParent = VpParent.Parent
 		End While
 		'Suppression des mots-clés inutiles
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		'Mémorise la requête
-		VpNode.Tag.Descendance = VpSQL
+		CType(VpNode.Tag, clsTag).Descendance = VpSQL
 		'Exécution de la requête
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
@@ -935,11 +977,14 @@ Public Partial Class MainForm
 						VpChildTag.Key = clsModule.CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(VpRecurLevel))
 						'Caption explicite
 						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value)
-					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag les deux noms VO et VF
+					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag des paramètres supplémentaires
 					ElseIf VpCurTag.Key = "Card.Title"
+						'Traduction
 						VpChildTag.Value2 = .GetString(2)
+						'Flag double carte
+						VpChildTag.Value3 = .GetBoolean(3)
 						'Gestion éventuelle de la mention foil
-						If Me.mnuDegroupFoils.Checked AndAlso Not Me.IsInAdvSearch AndAlso .GetBoolean(3) Then
+						If Me.mnuDegroupFoils.Checked AndAlso Not Me.IsInAdvSearch AndAlso .GetBoolean(4) Then
 							VpChild.NodeFont = New Font(Me.tvwExplore.Font, FontStyle.Bold)
 						End If
 						VpChild.Text = VpChildTag.Value
@@ -1060,6 +1105,32 @@ Public Partial Class MainForm
 				Me.txtCardText.Text = (New ResourceManager(clsModule.CgProject, Assembly.GetExecutingAssembly)).GetString(VpCritere)
 		End Select
 	End Sub
+	Private Function ShowCard(VpTitle As String, VpFoil As Boolean, VpDownFace As Boolean) As Boolean
+	'-------------------------------------------------------------------
+	'Affiche les infos d'une carte après sa sélection dans l'explorateur
+	'-------------------------------------------------------------------
+		If Not VpTitle Is Nothing AndAlso VpTitle <> "" Then
+			Call Me.ManageSerieGrp(Me.grpSerie, Me.grpSerie2)
+			If Me.IsInAdvSearch Then
+				Call clsModule.LoadCarac(Me, Me, VpTitle, False, True, , , , VpDownFace)
+			ElseIf VmFilterCriteria.DeckMode Then
+				Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSDecks, , VpFoil, VpDownFace)
+			Else
+				Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSCollection, , VpFoil, VpDownFace)
+			End If
+			Call Me.ManageCurSerie(Me.tvwExplore.SelectedNode)
+			If Not Me.splitV2.Panel2Collapsed Then
+				Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
+			End If
+			If Me.grpAutorisations.Visible Then
+				Call Me.LoadAutorisations(VpTitle)
+			End If
+			Me.cmdHistPrices.Enabled = True
+			Me.scrollStock.Visible = (Not Me.IsInAdvSearch) And Me.mnuDegroupFoils.Checked And Me.IsSingleSource
+			Return True
+		End If
+		Return False
+	End Function
 	Private Sub LoadAutorisations(VpCard As String)
 	'-----------------------------------------------------------------------
 	'Affiche les autorisations de tournois pour la carte passée en paramètre
@@ -1130,6 +1201,50 @@ Public Partial Class MainForm
 		Else
 			Return VpCard.NodeFont.Bold		'pas forcément super classe mais la carte est foil si et seulement si sa police est en gras
 		End If
+	End Function
+	Private Function IsTransformed(VpNode As TreeNode) As Boolean
+	'-----------------------------------
+	'Renvoie si la carte est transformée
+	'-----------------------------------
+		Return Not ( VpNode.Text = VpNode.Tag.Value Or VpNode.Text = VpNode.Tag.Value2 )
+	End Function
+	Private Function IsDownFace(VpNode As TreeNode) As Boolean
+	'--------------------------------------
+	'Renvoie si la carte est face retournée
+	'--------------------------------------
+		VgDBCommand.CommandText = "Select Count(*) From CardDouble Inner Join Card On CardDouble.EncNbrDownFace = Card.EncNbr Where Card.Title = '" + VpNode.Tag.Value.Replace("'", "''") + "';"
+		Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
+	End Function
+	Private Function GetTransformedNames(VpTitle As String, VpReverse As Boolean, VpDownFace As Boolean) As clsTag
+	'----------------------------------------------------------
+	'Retourne les noms (VO/VF) de la carte transformée associée
+	'----------------------------------------------------------
+	Dim VpEncNbr As Long
+		If VpDownFace Then
+			If Not VpReverse Then
+				VgDBCommand.CommandText = "Select CardDouble.EncNbrDownFace From Card Inner Join CardDouble On Card.EncNbr = CardDouble.EncNbrDownFace Where Card.Title = '" + VpTitle.Replace("'", "''") + "';"
+			Else
+				VgDBCommand.CommandText = "Select CardDouble.EncNbrTopFace From Card Inner Join CardDouble On Card.EncNbr = CardDouble.EncNbrDownFace Where Card.Title = '" + VpTitle.Replace("'", "''") + "';"
+			End If
+		Else
+			If VpReverse Then
+				VgDBCommand.CommandText = "Select CardDouble.EncNbrTopFace From Card Inner Join CardDouble On Card.EncNbr = CardDouble.EncNbrTopFace Where Card.Title = '" + VpTitle.Replace("'", "''") + "';"
+			Else
+				VgDBCommand.CommandText = "Select CardDouble.EncNbrDownFace From Card Inner Join CardDouble On Card.EncNbr = CardDouble.EncNbrTopFace Where Card.Title = '" + VpTitle.Replace("'", "''") + "';"
+			End If
+		End If
+		VpEncNbr = VgDBCommand.ExecuteScalar
+		Return Me.GetNames(VpEncNbr)
+	End Function
+	Private Function GetNames(VpEncNbr As Long) As clsTag
+	Dim VpNames As New clsTag
+		If VpEncNbr <> 0 Then
+			VgDBCommand.CommandText = "Select Card.Title From Card Where Card.EncNbr = " + VpEncNbr.ToString + ";"
+			VpNames.Value = VgDBCommand.ExecuteScalar.ToString
+			VgDBCommand.CommandText = "Select CardFR.TitleFR From CardFR Where CardFR.EncNbr = " + VpEncNbr.ToString + ";"
+			VpNames.Value2 = VgDBCommand.ExecuteScalar.ToString
+		End If
+		Return VpNames
 	End Function
 	Public Function GetSelectedSource As String
 	'--------------------------------------------------
@@ -1760,29 +1875,49 @@ Public Partial Class MainForm
 		Me.mnuCardsFR.Checked = Not Me.mnuCardsFR.Checked
 		Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
-			Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked)	'change de suite la traduction de la carte courante
+			Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked, True, Me.IsDownFace(Me.tvwExplore.SelectedNode))	'change de suite la traduction de la carte courante
 		End If
 		Me.tvwExplore.BeginUpdate
 		Call Me.RecurChangeLanguage
 		Me.tvwExplore.EndUpdate
 	End Sub
 	Sub TvwExploreMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
+	'---------------------------------------------------------------
+	'Gère l'état du menu contextuel (éléments grisés, cochés, etc...
+	'---------------------------------------------------------------
 	Dim VpNode As TreeNode = Me.tvwExplore.GetNodeAt(e.Location)
-	Dim VpEN As Boolean
+	Dim VpEn As Boolean = False
+	Dim VpDouble As Boolean = False
 	Dim VpSingle As Boolean = Me.IsSingleSource
+		'Seulement sur clic droit
 		If e.Button = System.Windows.Forms.MouseButtons.Right Then
 			If Not VpNode Is Nothing AndAlso Not VpNode.Parent Is Nothing Then
-				VpEN = ( VpNode.Parent.Tag.Key = "Card.Title" )
+				VpEn = ( VpNode.Parent.Tag.Key = "Card.Title" )
+				VpDouble = VpNode.Tag.Value3
 			End If
-			Me.mnuSwapSerie.Enabled = VpEN And VpSingle And Not Me.IsInAdvSearch
-			Me.mnuDeleteACard.Enabled = Not Me.IsInAdvSearch 'VpEN And VpSingle And Not Me.IsInAdvSearch
-			Me.mnuMoveACard.Enabled = Not Me.IsInAdvSearch 'VpEN And VpSingle And
-			Me.mnuCopyACard.Enabled = True 'VpEN
+			'Modification d'édition
+			Me.mnuSwapSerie.Enabled = VpEn And VpSingle And Not Me.IsInAdvSearch
+			'Transformation (si carte double)
+			If VpEn And VpDouble Then
+				Me.mnuTransform.Enabled = True
+				Me.mnuTransform.Checked = Me.IsTransformed(VpNode)
+			Else
+				Me.mnuTransform.Checked = False
+				Me.mnuTransform.Enabled = False
+			End If
+			'Suppression
+			Me.mnuDeleteACard.Enabled = Not Me.IsInAdvSearch 'VpEn And VpSingle And Not Me.IsInAdvSearch
+			'Déplacement
+			Me.mnuMoveACard.Enabled = Not Me.IsInAdvSearch 'VpEn And VpSingle And
+			'Copie
+			Me.mnuCopyACard.Enabled = True 'VpEn
+			'Achat
 			If Not VpNode Is Nothing Then
-				Me.mnuBuy.Enabled = VpEN Or ( VpNode.Parent Is Nothing And Not Me.IsInAdvSearch )
+				Me.mnuBuy.Enabled = VpEn Or ( VpNode.Parent Is Nothing And Not Me.IsInAdvSearch )
 			Else
 				Me.mnuBuy.Enabled = False
 			End If
+			'Affichage effectif du menu contextuel
 			Me.cmnuTvw.Show(Me.tvwExplore, e.Location)
 			Application.DoEvents
 			Me.tvwExplore.SelectedNode = VpNode
@@ -1810,34 +1945,16 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub TvwExploreAfterSelect(ByVal sender As Object, ByVal e As TreeViewEventArgs)
-	Dim VpTitle As String
-	Dim VpFoil As Boolean
 	Dim VpParent As TreeNode
 	Dim VpElderCriteria As String
+	Dim VpTransformed As Boolean
 		If Not e.Node.Parent Is Nothing Then
 			Me.SuspendLayout
 			Me.cboEdition.Visible = False	'assez crade mais on dirait que le combobox ne tient pas compte du suspendlayout avec Aero
 			'Sélection d'un élément de type 'carte'
 			If e.Node.Parent.Tag.Key = "Card.Title" Then
-				VpTitle = e.Node.Tag.Value
-				VpFoil = Me.IsFoil(e.Node)
-				Call Me.ManageSerieGrp(Me.grpSerie, Me.grpSerie2)
-				If Me.IsInAdvSearch Then
-					Call clsModule.LoadCarac(Me, Me, VpTitle, False)
-				ElseIf VmFilterCriteria.DeckMode Then
-					Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSDecks, , VpFoil)
-				Else
-					Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSCollection, , VpFoil)
-				End If
-				Call Me.ManageCurSerie(e.Node)
-				If Not Me.splitV2.Panel2Collapsed Then
-					Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
-				End If
-				If Me.grpAutorisations.Visible Then
-					Call Me.LoadAutorisations(VpTitle)
-				End If
-				Me.cmdHistPrices.Enabled = True
-				Me.scrollStock.Visible = (Not Me.IsInAdvSearch) And Me.mnuDegroupFoils.Checked And Me.IsSingleSource
+				VpTransformed = Me.IsTransformed(e.Node)
+				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), Me.IsFoil(e.Node), Me.IsDownFace(e.Node) Xor VpTransformed)
 			Else
 				'Préconstruction de la requête avec les conditions sur les critères des ancêtres
 				VpParent = e.Node
@@ -1886,11 +2003,11 @@ Public Partial Class MainForm
 	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
 		Me.SuspendLayout
 		If Me.IsInAdvSearch Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, False, , VpSerie)
+			Call clsModule.LoadCarac(Me, Me, VpTitle, False, True, , VpSerie)
 		ElseIf VmFilterCriteria.DeckMode Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSDecks, VpSerie, VpFoil)
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSDecks, VpSerie, VpFoil)
 		Else
-			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, clsModule.CgSCollection, VpSerie, VpFoil)
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSCollection, VpSerie, VpFoil)
 		End If
 		Me.ResumeLayout
 	End Sub
@@ -2166,6 +2283,18 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuSwapSerieClick(sender As Object, e As EventArgs)
 		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Swap)
+	End Sub
+	Sub MnuTransformClick(sender As Object, e As EventArgs)
+	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
+	Dim VpDownFace As Boolean = Me.IsDownFace(VpNode)
+	Dim VpTransformed As Boolean = Me.IsTransformed(VpNode)
+	Dim VpNames As clsTag = Me.GetTransformedNames(VpNode.Tag.Value, (VpDownFace Xor VpTransformed), VpDownFace)
+		If Me.ShowCard(VpNames.Value, Me.IsFoil(VpNode), Not (VpDownFace Xor VpTransformed)) Then
+			'Met à jour le noeud de l'arbre
+			VpNode.Text = If(Me.mnuCardsFR.Checked, VpNames.Value2, VpNames.Value)
+			'Mémorise la référence de l'image
+			Me.picScanCard.Tag = VpNames.Value
+		End If
 	End Sub
 	Sub MnuExcelGenActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpXL As frmXL

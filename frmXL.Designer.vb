@@ -212,7 +212,8 @@ Partial Class frmXL
 		Me.chkVF.Size = New System.Drawing.Size(154, 17)
 		Me.chkVF.TabIndex = 2
 		Me.chkVF.Text = "Titre des cartes en français"
-		Me.chkVF.UseVisualStyleBackColor = true
+		Me.chkVF.UseVisualStyleBackColor = True
+		Me.chkVF.Checked = True
 		'
 		'chkTextMode
 		'

@@ -48,6 +48,7 @@ Partial Class MainForm
 		Me.mnuCardsExtractAll = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsExtractDiff = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsExtractDiff3 = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCardsExtractDiff4 = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsExtractDiff2 = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuTrad = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsTradTxt = New System.Windows.Forms.ToolStripMenuItem
@@ -96,7 +97,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuCardsExtractDiff4 = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -201,6 +202,13 @@ Partial Class MainForm
 		Me.mnuCardsExtractDiff3.Text = "celles sans traduction de leur texte en VF (hors texte vide)"
 		AddHandler Me.mnuCardsExtractDiff3.Click, AddressOf Me.MnuCardsExtractDiff3Click
 		'
+		'mnuCardsExtractDiff4
+		'
+		Me.mnuCardsExtractDiff4.Name = "mnuCardsExtractDiff4"
+		Me.mnuCardsExtractDiff4.Size = New System.Drawing.Size(406, 22)
+		Me.mnuCardsExtractDiff4.Text = "celles sans autorisations tournois indiquées"
+		AddHandler Me.mnuCardsExtractDiff4.Click, AddressOf Me.MnuCardsExtractDiff4Click
+		'
 		'mnuCardsExtractDiff2
 		'
 		Me.mnuCardsExtractDiff2.Name = "mnuCardsExtractDiff2"
@@ -210,7 +218,7 @@ Partial Class MainForm
 		'
 		'mnuTrad
 		'
-		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles})
+		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles})
 		Me.mnuTrad.Image = CType(resources.GetObject("mnuTrad.Image"),System.Drawing.Image)
 		Me.mnuTrad.Name = "mnuTrad"
 		Me.mnuTrad.Size = New System.Drawing.Size(278, 22)
@@ -219,21 +227,21 @@ Partial Class MainForm
 		'mnuCardsTradTxt
 		'
 		Me.mnuCardsTradTxt.Name = "mnuCardsTradTxt"
-		Me.mnuCardsTradTxt.Size = New System.Drawing.Size(346, 22)
+		Me.mnuCardsTradTxt.Size = New System.Drawing.Size(398, 22)
 		Me.mnuCardsTradTxt.Text = "Récupération des textes VF pour les nouvelles cartes"
 		AddHandler Me.mnuCardsTradTxt.Click, AddressOf Me.MnuCardsTradTxtClick
 		'
 		'mnuExtractTexts
 		'
 		Me.mnuExtractTexts.Name = "mnuExtractTexts"
-		Me.mnuExtractTexts.Size = New System.Drawing.Size(346, 22)
+		Me.mnuExtractTexts.Size = New System.Drawing.Size(398, 22)
 		Me.mnuExtractTexts.Text = "Extraction de tous les textes VF"
 		AddHandler Me.mnuExtractTexts.Click, AddressOf Me.MnuExtractTextsClick
 		'
 		'mnuFilterTitles
 		'
 		Me.mnuFilterTitles.Name = "mnuFilterTitles"
-		Me.mnuFilterTitles.Size = New System.Drawing.Size(346, 22)
+		Me.mnuFilterTitles.Size = New System.Drawing.Size(398, 22)
 		Me.mnuFilterTitles.Text = "Extraction des titres VF pour une nouvelle série"
 		AddHandler Me.mnuFilterTitles.Click, AddressOf Me.MnuFilterTitlesClick
 		'
@@ -589,12 +597,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuCardsExtractDiff4
+		'mnuBuildTitles
 		'
-		Me.mnuCardsExtractDiff4.Name = "mnuCardsExtractDiff4"
-		Me.mnuCardsExtractDiff4.Size = New System.Drawing.Size(406, 22)
-		Me.mnuCardsExtractDiff4.Text = "celles sans autorisations tournois indiquées"
-		AddHandler Me.mnuCardsExtractDiff4.Click, AddressOf Me.MnuCardsExtractDiff4Click
+		Me.mnuBuildTitles.Name = "mnuBuildTitles"
+		Me.mnuBuildTitles.Size = New System.Drawing.Size(398, 22)
+		Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une série depuis la base"
+		AddHandler Me.mnuBuildTitles.Click, AddressOf Me.MnuBuildTitlesClick
 		'
 		'MainForm
 		'
@@ -623,6 +631,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff4 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff3 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff As System.Windows.Forms.ToolStripMenuItem

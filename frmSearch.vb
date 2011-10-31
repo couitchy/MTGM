@@ -242,7 +242,7 @@ Public Partial Class frmSearch
 			'VmOwner.tvwExplore.Focus
 		Else
 			Me.SuspendLayout
-			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, False)
+			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, False, False)
 			Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
 			Me.btResult.Enabled = True
 			Call Me.BtResultActivate(sender, e)
@@ -251,7 +251,7 @@ Public Partial Class frmSearch
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Me.SuspendLayout
-		Call clsModule.LoadCarac(VmOwner, Me, clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), False, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+		Call clsModule.LoadCarac(VmOwner, Me, clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), False, False, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		Me.ResumeLayout
 	End Sub
 	Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
