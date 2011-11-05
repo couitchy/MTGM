@@ -39,18 +39,20 @@ Public Partial Class frmWord
 		End If
 		Me.txtSaveImg.Text = VpPath.Replace("\\", "\")
 	End Sub
-	Private Sub WordGen
+	Private Sub WordGen(VpTextOnly As Boolean)
 	'-----------------------------------------------------------------------------------------------
 	'Génération de planches de vignettes sous Word correspondant aux cartes de la sélection courante
 	'-----------------------------------------------------------------------------------------------
 	Dim VpWordApp As Object			'Objet Word par OLE
 	Dim VpDocument As Object
 	Dim VpPicture As Object
+	Dim VpTable As Object
 	Dim VpSQL As String
 	Dim VpTop As Integer
 	Dim VpLeft As Integer
 	Dim VpCount As Integer
 	Dim VpTotal As Integer
+	Dim VpItems As New Hashtable
 		Try
 			VpWordApp = CreateObject("Word.Application")
 		Catch
@@ -58,64 +60,98 @@ Public Partial Class frmWord
 			Exit Sub
 		End Try
 		'Pré-extraction des images nécessaires
-		VpTotal = clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
-		Me.prgAvance.Value = 0
-		Me.prgAvance.Maximum = VpTotal
+		If Not VpTextOnly Then
+			Call clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
+		End If
 		'Nouveau document
 		VpWordApp.DisplayAlerts = False
 		VpDocument = VpWordApp.Documents.Add
-		With VpDocument.PageSetup
-			.LeftMargin = VpWordApp.MillimetersToPoints(clsModule.CgXMargin)
-			.RightMargin = VpWordApp.MillimetersToPoints(clsModule.CgXMargin)
-			.TopMargin = VpWordApp.MillimetersToPoints(clsModule.CgYMargin)
-			.BottomMargin = VpWordApp.MillimetersToPoints(clsModule.CgYMargin)
-		End With
 		VpWordApp.Visible = Me.chkWordShow.Checked
-		'Récupération de la liste
 		MainForm.VgMe.IsMainReaderBusy = True
+		'Récupération de la liste
 		VpSQL = "Select Card.Title, Sum(Items) From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where "
 		VpSQL = VpSQL + VmRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By Card.Title")
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
-			VpTop = 0
-			VpLeft = 0
-			VpCount = 0
+			VpTotal = 0
 			While .Read
-				'Remplissage
 				If Me.chklstWord.CheckedItems.Contains(.GetString(0)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
-					Try
-						For VpI As Integer = 1 To If(Me.chkSingle.Checked, 1, .GetValue(1))
-							Application.DoEvents
-		 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(.GetString(0)) + ".jpg", False, True, 1, 1, 1, 1)
-		 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth)
-		 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight)
-		 					VpPicture.Top = VpTop
-		 					VpPicture.Left = VpLeft
-		 					VpCount = VpCount + 1
-		 					If VpCount Mod 9 = 0 Then
-		 						VpWordApp.Selection.InsertBreak
-		 						VpWordApp.Selection.MoveUp
-		 						VpLeft = 0
-		 						VpTop = 0
-		 					ElseIf VpCount Mod 3 = 0 Then
-		 						VpLeft = 0
-		 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight + clsModule.CgYMargin)
-		 					Else
-		 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth + clsModule.CgXMargin)
-		 					End If
-		 				Next VpI
-					Catch
-						Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + .GetString(0) + "...")
-					End Try
-	 			End If
- 				Me.prgAvance.Increment(1)
+					VpCount = If(Me.chkSingle.Checked, 1, .GetValue(1))
+					VpItems.Add(.GetString(0), VpCount)
+					VpTotal = VpTotal + VpCount
+				End If
 			End While
 			.Close
 		End With
-		MainForm.VgMe.IsMainReaderBusy = False
+		Me.prgAvance.Maximum = VpTotal
 		Me.prgAvance.Value = 0
+		'1. Génération mode image
+		If Not VpTextOnly Then
+			'Marges minimales
+			With VpDocument.PageSetup
+				.LeftMargin = VpWordApp.MillimetersToPoints(clsModule.CgXMargin)
+				.RightMargin = VpWordApp.MillimetersToPoints(clsModule.CgXMargin)
+				.TopMargin = VpWordApp.MillimetersToPoints(clsModule.CgYMargin)
+				.BottomMargin = VpWordApp.MillimetersToPoints(clsModule.CgYMargin)
+			End With
+			'Remplissage
+			VpTop = 0
+			VpLeft = 0
+			VpCount = 0
+			For Each VpItem As String In VpItems.Keys
+				Try
+					For VpI As Integer = 1 To VpItems.Item(VpItem)
+	 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem) + ".jpg", False, True, 1, 1, 1, 1)
+	 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth)
+	 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight)
+	 					VpPicture.Top = VpTop
+	 					VpPicture.Left = VpLeft
+	 					VpCount = VpCount + 1
+	 					If VpCount Mod 9 = 0 Then		'9 vignettes par page
+	 						VpWordApp.Selection.InsertBreak
+	 						VpWordApp.Selection.MoveUp
+	 						VpLeft = 0
+	 						VpTop = 0
+	 					ElseIf VpCount Mod 3 = 0 Then	'3 vignettes par ligne
+	 						VpLeft = 0
+	 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight + clsModule.CgYMargin)
+	 					Else
+	 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth + clsModule.CgXMargin)
+	 					End If
+						Me.prgAvance.Increment(1)
+						Application.DoEvents	 					
+	 				Next VpI
+				Catch
+					Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + VpItem + "...")
+				End Try
+			Next VpItem
+		'2. Génération mode texte
+		Else
+			'Création du tableau
+ 			VpTable = VpDocument.Tables.Add(VpDocument.Range(0, 0), Math.Ceiling(VpTotal / 6), 6, 1, 0)
+			'Remplissage
+			VpCount = 0
+			For Each VpItem As String In VpItems.Keys
+				For VpI As Integer = 1 To VpItems.Item(VpItem)
+					VpTable.Cell(1 + (VpCount \ 6), 1 + (VpCount Mod 6)).Range.Text = VpItem	'6 vignettes par ligne
+					VpCount = VpCount + 1
+					Me.prgAvance.Increment(1)
+					Application.DoEvents					
+				Next VpI				
+			Next VpItem
+			'Formatage
+ 			For Each VpBorder As Object In VpTable.Borders
+ 				VpBorder.LineStyle = 0
+ 			Next VpBorder
+ 			VpTable.Borders.Shadow = False
+ 			VpTable.TopPadding = VpWordApp.CentimetersToPoints(0.6)
+ 			VpTable.LeftPadding = VpWordApp.CentimetersToPoints(0.3)
+			VpTable.RightPadding = VpWordApp.CentimetersToPoints(0.3)
+		End If
+		Me.prgAvance.Value = 0
+		MainForm.VgMe.IsMainReaderBusy = False
 		VpWordApp.Visible = True
 		VpWordApp.DisplayAlerts = True
 	End Sub
@@ -178,9 +214,11 @@ Public Partial Class frmWord
 			Call clsModule.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + clsModule.CgMaxVignettes.ToString + ".")
 		Else
 			Me.cmdWord.Enabled = False
-			Call Me.WordGen
-			If Me.chkSaveImg.Checked Then
+			If Me.optSaveImg.Checked Then
+				Call Me.WordGen(False)
 				Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
+			Else
+				Call Me.WordGen(True)
 			End If
 			Me.cmdWord.Enabled = True
 		End If

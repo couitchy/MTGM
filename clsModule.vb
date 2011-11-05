@@ -1577,7 +1577,7 @@ Public Module clsModule
 		End With
 		VpCbo.Sorted = True
 	End Sub
-	Public Function ExtractPictures(VpSaveFolder As String, VpSource As String, VpRestriction As String) As Integer
+	Public Sub ExtractPictures(VpSaveFolder As String, VpSource As String, VpRestriction As String)
 	'-------------------------------------------------------------------------------------------------
 	'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection
 	'-------------------------------------------------------------------------------------------------
@@ -1597,8 +1597,7 @@ Public Module clsModule
 		For Each VpCard As String In VpCards
 			Call LoadScanCard(VpCard, Nothing, True, VpSaveFolder)
 		Next VpCard
-		Return VpCards.Count
-	End Function
+	End Sub
 	Public Sub LoadScanCard(VpTitle As String, VppicScanCard As PictureBox, Optional VpSave As Boolean = False, Optional VpSaveFolder As String = "")
 	'---------------------------------------------------------------------------------
 	'Charge l'image scannérisée de la carte recherchée dans la zone prévue à cet effet
