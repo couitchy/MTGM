@@ -54,6 +54,7 @@ Partial Class MainForm
 		Me.mnuCardsTradTxt = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuExtractTexts = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem
@@ -97,7 +98,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -245,6 +246,13 @@ Partial Class MainForm
 		Me.mnuFilterTitles.Text = "Extraction des titres VF pour une nouvelle série"
 		AddHandler Me.mnuFilterTitles.Click, AddressOf Me.MnuFilterTitlesClick
 		'
+		'mnuBuildTitles
+		'
+		Me.mnuBuildTitles.Name = "mnuBuildTitles"
+		Me.mnuBuildTitles.Size = New System.Drawing.Size(398, 22)
+		Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une série depuis la base"
+		AddHandler Me.mnuBuildTitles.Click, AddressOf Me.MnuBuildTitlesClick
+		'
 		'mnuCardsAut
 		'
 		Me.mnuCardsAut.Image = CType(resources.GetObject("mnuCardsAut.Image"),System.Drawing.Image)
@@ -255,7 +263,7 @@ Partial Class MainForm
 		'
 		'mnuSeries
 		'
-		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGen})
+		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGen, Me.mnuBuildDouble})
 		Me.mnuSeries.Name = "mnuSeries"
 		Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
 		Me.mnuSeries.Text = "Séries"
@@ -264,7 +272,7 @@ Partial Class MainForm
 		'
 		Me.mnuSeriesGen.Image = CType(resources.GetObject("mnuSeriesGen.Image"),System.Drawing.Image)
 		Me.mnuSeriesGen.Name = "mnuSeriesGen"
-		Me.mnuSeriesGen.Size = New System.Drawing.Size(219, 22)
+		Me.mnuSeriesGen.Size = New System.Drawing.Size(432, 22)
 		Me.mnuSeriesGen.Text = "Générer le fichier d'en-têtes"
 		AddHandler Me.mnuSeriesGen.Click, AddressOf Me.MnuSeriesGenClick
 		'
@@ -597,12 +605,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuBuildTitles
+		'mnuBuildDouble
 		'
-		Me.mnuBuildTitles.Name = "mnuBuildTitles"
-		Me.mnuBuildTitles.Size = New System.Drawing.Size(398, 22)
-		Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une série depuis la base"
-		AddHandler Me.mnuBuildTitles.Click, AddressOf Me.MnuBuildTitlesClick
+		Me.mnuBuildDouble.Name = "mnuBuildDouble"
+		Me.mnuBuildDouble.Size = New System.Drawing.Size(432, 22)
+		Me.mnuBuildDouble.Text = "Construire le fichier des doubles cartes pour une série depuis la base"
+		AddHandler Me.mnuBuildDouble.Click, AddressOf Me.MnuBuildDoubleClick
 		'
 		'MainForm
 		'
@@ -631,6 +639,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff4 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff3 As System.Windows.Forms.ToolStripMenuItem

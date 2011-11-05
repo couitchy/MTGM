@@ -33,7 +33,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 26501
+	Public Const CgCodeLines As Integer   		= 26607
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -1339,17 +1339,18 @@ Public Module clsModule
 			Call MainForm.VgMe.UpdateTxtFR
 		End If
 	End Sub
-	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, VpGestFoil As Boolean, VpGestDownFace As Boolean, Optional VpSource As String = "", Optional VpEdition As String = "", Optional VpFoil As Boolean = False, Optional VpDownFace As Boolean = False)
+	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, VpGestFoil As Boolean, VpGestDownFace As Boolean, Optional VpSource As String = "", Optional VpEdition As String = "", Optional VpFoil As Boolean = False, Optional VpDownFace As Boolean = False, Optional VpTransformed As Boolean = False)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
 	'-----------------------------------------------
 	Dim VpOpened As Boolean = False
 	Dim VpSQL As String
+	Dim VpMustBeInSource As Boolean = ( VpSource <> "" And ( (VpGestDownFace And Not VpTransformed) Or Not VpGestDownFace ) )
 		If MainForm.VgMe.IsMainReaderBusy Then
 			Call ShowWarning(CgErr3)
 		Else
 			'Le type de la carte est inconnu à priori, on suppose par défaut que c'est une créature
-			If VpSource <> "" Then
+			If VpMustBeInSource Then
 				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + CaracEdition(VpEdition)
 				VpSQL = VpSQL + VpMainForm.Restriction
 			Else
@@ -1360,7 +1361,7 @@ Public Module clsModule
 			'S'il n'y a pas de réponse, c'est que ce n'est pas une créature, on supprime donc les champs force et endurance et on suppose que c'est un sort
 			If Not VgDBReader.HasRows Then
 				VgDBReader.Close
-				If VpSource <> "" Then
+				If VpMustBeInSource Then
 					VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + CaracEdition(VpEdition)
 					VpSQL = VpSQL + VpMainForm.Restriction
 				Else
@@ -1403,7 +1404,7 @@ Public Module clsModule
 				Catch
 					VpForm.picEdition.Image = Nothing
 				End Try
-				If VpSource <> "" Then
+				If VpMustBeInSource Then
 '					Try
 '						VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
 '					Catch
@@ -1439,14 +1440,14 @@ Public Module clsModule
 						'Gestion cas 2, 4
 						If VpForm.cboEdition.Items.Contains(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString) Then
 							'Gestion cas 3
-							If VpSource <> "" Then
+							If VpMustBeInSource Then
 								VpForm.lblStock.Text = (CInt(VpForm.lblStock.Text) + .GetValue(VgDBReader.GetOrdinal("Items"))).ToString
 							End If
 						'Gestion cas 1
 						Else
 							VpForm.cboEdition.Items.Add(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString)
 						End If
-						If VpSource <> "" And VpEdition = "" Then
+						If VpMustBeInSource And VpEdition = "" Then
 							VpForm.lblStock3.Text = (CInt(VpForm.lblStock3.Text) + .GetValue(VgDBReader.GetOrdinal("Items"))).ToString
 						End If
 					End While

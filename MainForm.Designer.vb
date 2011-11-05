@@ -475,6 +475,7 @@ Partial Class MainForm
 		Me.mnuTransform.Size = New System.Drawing.Size(231, 22)
 		Me.mnuTransform.Text = "Transformer"
 		AddHandler Me.mnuTransform.Click, AddressOf Me.MnuTransformClick
+		AddHandler Me.picScanCard.Click, AddressOf Me.MnuTransformClick
 		'
 		'mnuMoveACard
 		'

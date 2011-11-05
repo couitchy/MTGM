@@ -1052,6 +1052,58 @@ Public Partial Class MainForm
 			End If			
 		End If
 	End Sub
+	Private Sub BuildDouble
+	'----------------------------------------------------------------------------------------------------------------------------
+	'Construit le fichier des doubles cartes pour l'édition demandée, avec les infos déjà dans la base (associations recto-verso)
+	'----------------------------------------------------------------------------------------------------------------------------
+	Dim VpSerie As String = InputBox("Entrer le code de la série")
+	Dim VpOut As StreamWriter
+	Dim VpDown As Hashtable
+	Dim VpTop As Hashtable
+		If VpSerie.Length = 2 Then
+			Me.dlgSave.FileName = ""
+			Me.dlgSave.ShowDialog
+			If Me.dlgSave.FileName <> "" Then
+				VpOut = New StreamWriter(Me.dlgSave.FileName)
+				Call Me.AddToLog("La construction du fichier des doubles cartes a commencé...", eLogType.Information, True)
+				Me.prgAvance.Style = ProgressBarStyle.Marquee
+				VpDown = Me.BuildDoubleHash("EncNbrDownFace", VpSerie)
+				VpTop = Me.BuildDoubleHash("EncNbrTopFace", VpSerie)
+				For Each VpEncNbr1 As Integer In VpDown.Keys
+					Application.DoEvents
+					For Each VpEncNbr2 As Integer In VpTop.Keys
+						Application.DoEvents
+						If VpEncNbr1 = VpEncNbr2 Then
+							VpOut.WriteLine(VpDown.Item(VpEncNbr1) + "#" + VpTop.Item(VpEncNbr1))
+							Exit For
+						End If
+					Next VpEncNbr2					
+					If Me.btCancel.Tag Then Exit For
+				Next VpEncNbr1
+				VpOut.Flush
+				VpOut.Close
+				If Me.btCancel.Tag Then
+					Call Me.AddToLog("La construction du fichier des doubles cartes a été annulée.", eLogType.Warning, , True)
+				Else
+					Call Me.AddToLog("La construction du fichier des doubles cartes est terminée.", eLogType.Information, , True)
+				End If				
+			End If
+		End If				
+	End Sub
+	Private Function BuildDoubleHash(VpField As String, VpSerie As String) As Hashtable
+	Dim VpHash As New Hashtable
+		VmDBCommand.CommandText = "Select Card.Title, CardDouble.EncNbrTopFace From Card Inner Join CardDouble On CardDouble." + VpField + " = Card.EncNbr Where UCase(Card.Series) = '" + VpSerie.ToUpper + "';"
+		VmDBReader = VmDBCommand.ExecuteReader
+		With VmDBReader
+			While .Read
+				Application.DoEvents
+				VpHash.Add(.GetInt32(1), .GetString(0))
+				If Me.btCancel.Tag Then Exit While
+			End While
+			.Close
+		End With
+		Return VpHash
+	End Function
 	Private Sub ExtractTitles
 	'-----------------------------------------
 	'Extrait les titres des cartes en français
@@ -1379,5 +1431,10 @@ Public Partial Class MainForm
 		If Not VmDB Is Nothing Then
 			Call Me.BuildTitles
 		End If
+	End Sub
+	Sub MnuBuildDoubleClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.BuildDouble
+		End If		
 	End Sub
 End Class

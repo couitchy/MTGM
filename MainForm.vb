@@ -1105,19 +1105,13 @@ Public Partial Class MainForm
 				Me.txtCardText.Text = (New ResourceManager(clsModule.CgProject, Assembly.GetExecutingAssembly)).GetString(VpCritere)
 		End Select
 	End Sub
-	Private Function ShowCard(VpTitle As String, VpFoil As Boolean, VpDownFace As Boolean) As Boolean
+	Private Function ShowCard(VpTitle As String, VpFoil As Boolean, VpDownFace As Boolean, VpTransformed As Boolean) As Boolean
 	'-------------------------------------------------------------------
 	'Affiche les infos d'une carte après sa sélection dans l'explorateur
 	'-------------------------------------------------------------------
 		If Not VpTitle Is Nothing AndAlso VpTitle <> "" Then
 			Call Me.ManageSerieGrp(Me.grpSerie, Me.grpSerie2)
-			If Me.IsInAdvSearch Then
-				Call clsModule.LoadCarac(Me, Me, VpTitle, False, True, , , , VpDownFace)
-			ElseIf VmFilterCriteria.DeckMode Then
-				Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSDecks, , VpFoil, VpDownFace)
-			Else
-				Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSCollection, , VpFoil, VpDownFace)
-			End If
+			Call Me.ManageShowWithLoadCarac(VpTitle, VpFoil, VpDownFace, VpTransformed)
 			Call Me.ManageCurSerie(Me.tvwExplore.SelectedNode)
 			If Not Me.splitV2.Panel2Collapsed Then
 				Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
@@ -1131,6 +1125,15 @@ Public Partial Class MainForm
 		End If
 		Return False
 	End Function
+	Private Sub ManageShowWithLoadCarac(VpTitle As String, VpFoil As Boolean, VpDownFace As Boolean, VpTransformed As Boolean, Optional VpSerie As String = "")
+		If Me.IsInAdvSearch Then
+			Call clsModule.LoadCarac(Me, Me, VpTitle, False, True, , VpSerie, , VpDownFace, VpTransformed)
+		ElseIf VmFilterCriteria.DeckMode Then
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSDecks, VpSerie, VpFoil, VpDownFace, VpTransformed)
+		Else
+			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSCollection, VpSerie, VpFoil, VpDownFace, VpTransformed)
+		End If		
+	End Sub
 	Private Sub LoadAutorisations(VpCard As String)
 	'-----------------------------------------------------------------------
 	'Affiche les autorisations de tournois pour la carte passée en paramètre
@@ -1954,7 +1957,7 @@ Public Partial Class MainForm
 			'Sélection d'un élément de type 'carte'
 			If e.Node.Parent.Tag.Key = "Card.Title" Then
 				VpTransformed = Me.IsTransformed(e.Node)
-				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), Me.IsFoil(e.Node), Me.IsDownFace(e.Node) Xor VpTransformed)
+				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), Me.IsFoil(e.Node), Me.IsDownFace(e.Node) Xor VpTransformed, VpTransformed)
 			Else
 				'Préconstruction de la requête avec les conditions sur les critères des ancêtres
 				VpParent = e.Node
@@ -1998,17 +2001,14 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpTitle As String = Me.tvwExplore.SelectedNode.Tag.Value
-	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
+	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
+	Dim VpTitle As String = VpNode.Tag.Value
+	Dim VpFoil As Boolean = Me.IsFoil(VpNode)
 	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
+	Dim VpDownFace As Boolean = Me.IsDownFace(VpNode)
+	Dim VpTransformed As Boolean = Me.IsTransformed(VpNode)
 		Me.SuspendLayout
-		If Me.IsInAdvSearch Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, False, True, , VpSerie)
-		ElseIf VmFilterCriteria.DeckMode Then
-			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSDecks, VpSerie, VpFoil)
-		Else
-			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSCollection, VpSerie, VpFoil)
-		End If
+		Call Me.ManageShowWithLoadCarac(VpTitle, VpFoil, VpDownFace, VpTransformed, VpSerie)
 		Me.ResumeLayout
 	End Sub
 	Sub MnuSearchCardClick(ByVal sender As Object, ByVal e As EventArgs)
@@ -2286,14 +2286,21 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuTransformClick(sender As Object, e As EventArgs)
 	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
-	Dim VpDownFace As Boolean = Me.IsDownFace(VpNode)
-	Dim VpTransformed As Boolean = Me.IsTransformed(VpNode)
-	Dim VpNames As clsTag = Me.GetTransformedNames(VpNode.Tag.Value, (VpDownFace Xor VpTransformed), VpDownFace)
-		If Me.ShowCard(VpNames.Value, Me.IsFoil(VpNode), Not (VpDownFace Xor VpTransformed)) Then
-			'Met à jour le noeud de l'arbre
-			VpNode.Text = If(Me.mnuCardsFR.Checked, VpNames.Value2, VpNames.Value)
-			'Mémorise la référence de l'image
-			Me.picScanCard.Tag = VpNames.Value
+	Dim VpDownFace As Boolean
+	Dim VpTransformed As Boolean
+	Dim VpNames As clsTag
+		If Not VpNode Is Nothing AndAlso Not VpNode.Parent Is Nothing Then
+			If VpNode.Parent.Tag.Key = "Card.Title" AndAlso VpNode.Tag.Value3 Then		'On doit refaire la vérif. au cas où l'évènement aurait été triggé par un clic sur l'image
+				VpDownFace = Me.IsDownFace(VpNode)
+				VpTransformed = Me.IsTransformed(VpNode)
+				VpNames = Me.GetTransformedNames(VpNode.Tag.Value, (VpDownFace Xor VpTransformed), VpDownFace)		
+				If Me.ShowCard(VpNames.Value, Me.IsFoil(VpNode), Not (VpDownFace Xor VpTransformed), Not VpTransformed) Then
+					'Met à jour le noeud de l'arbre
+					VpNode.Text = If(Me.mnuCardsFR.Checked, VpNames.Value2, VpNames.Value)
+					'Mémorise la référence de l'image
+					Me.picScanCard.Tag = VpNames.Value
+				End If
+			End If
 		End If
 	End Sub
 	Sub MnuExcelGenActivate(ByVal sender As Object, ByVal e As EventArgs)

@@ -78,11 +78,13 @@ Public Partial Class frmNewEdition
 	Dim VpChecker As String = "\" + VpInfos(0) + "_checklist_en.txt"
 	Dim VpSpoiler As String = "\" + VpInfos(0) + "_spoiler_en.txt"
 	Dim VpTrad As String = "\" + VpInfos(0) + "_titles_fr.txt"
+	Dim VpDouble As String = "\" + VpInfos(0) + "_doubles_en.txt"
 		'Téléchargement des fichiers nécessaires
-		Call Me.DLResource("(1/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
-		Call Me.DLResource("(2/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
-		Call Me.DLResource("(3/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
-		Call Me.DLResource("(4/4)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
+		Call Me.DLResource("(1/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
+		Call Me.DLResource("(2/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
+		Call Me.DLResource("(3/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
+		Call Me.DLResource("(4/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
+		Call Me.DLResource("(5/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_doubles_en.txt", VpDouble)
 		'Inscription de l'en-tête
 		Me.lblStatus.Text = "Inscription de l'en-tête..."
 		Application.DoEvents
@@ -94,13 +96,16 @@ Public Partial Class frmNewEdition
 			Me.txtCheckList.Text = Application.StartupPath + VpChecker
 			Me.txtSpoilerList.Text = Application.StartupPath + VpSpoiler
 			Me.txtSpoilerList.Tag = Application.StartupPath + VpTrad
+			Me.txtCheckList.Tag = Application.StartupPath + VpDouble
 			Me.chkNewEdition.Tag = VpInfos(2)
 			Call Me.AddNewEdition
 		End If
+		'Suppression des fichiers temporaires
 		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
 		Call clsModule.SecureDelete(Application.StartupPath + VpChecker)
 		Call clsModule.SecureDelete(Application.StartupPath + VpSpoiler)
 		Call clsModule.SecureDelete(Application.StartupPath + VpTrad)
+		Call clsModule.SecureDelete(Application.StartupPath + VpDouble)
 	End Sub
 	Private Sub UpdateSeriesHeaders
 	'--------------------------------------------------------------
@@ -302,6 +307,9 @@ Public Partial Class frmNewEdition
 	Dim VpFile As New StreamReader(Me.txtSpoilerList.Text, Encoding.Default)
 	Dim VpCounter As Integer = 0
 	Dim VpStrs() As String
+	Dim VpEncNbrDown As Long
+	Dim VpEncNbrTop As Long
+	Dim VpSerieCD As String
 		VmEncNbr0 = -1
 		'Ajout des cartes
 		Do While Not VpFile.EndOfStream
@@ -322,6 +330,25 @@ Public Partial Class frmNewEdition
 	    	End While
 			VpFile.Close
 		End If
+		'Gestion des doubles cartes éventuelles
+		If Not Me.txtCheckList.Tag Is Nothing AndAlso File.Exists(Me.txtCheckList.Tag.ToString) Then
+			Me.lblStatus.Text = "Association des doubles cartes en cours..."
+			Application.DoEvents
+			VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.Tag)
+			VpFile = New StreamReader(Me.txtCheckList.Tag.ToString, Encoding.Default)
+			While Not VpFile.EndOfStream
+				VpStrs = VpFile.ReadLine.Split("#")
+				VpEncNbrDown = clsModule.GetEncNbr(VpStrs(0), VpSerieCD)
+				VpEncNbrTop = clsModule.GetEncNbr(VpStrs(1), VpSerieCD)
+				VgDBCommand.CommandText = "Insert Into CardDouble(EncNbrDownFace, EncNbrTopFace) Values (" + VpEncNbrDown.ToString + ", " + VpEncNbrTop.ToString + ");"
+				VgDBCommand.ExecuteNonQuery
+				VgDBCommand.CommandText = "Update Card Set SpecialDoubleCard = True Where Card.EncNbr = " + VpEncNbrDown.ToString + ";"
+				VgDBCommand.ExecuteNonQuery
+				VgDBCommand.CommandText = "Update Card Set SpecialDoubleCard = True Where Card.EncNbr = " + VpEncNbrTop.ToString + ";"
+				VgDBCommand.ExecuteNonQuery
+	    	End While
+			VpFile.Close
+		End If		
 		Me.lblStatus.Text = "Terminé."
 		Call clsModule.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
 		Me.txtCheckList.Text = ""

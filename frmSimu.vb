@@ -95,7 +95,6 @@ Public Partial Class frmSimu
 			Call VpPartie.DeckShuffle
 			'Gestion des n tours
 			For VpJ As Integer = 0 To VpPartie.CardsCount - clsModule.CgNMain
-				Call VpPartie.UntagAll
 				'Au premier tour on pioche 7 cartes
 				If VpJ = 0 Then
 					Call VpPartie.Draw(clsModule.CgNMain)
@@ -105,6 +104,7 @@ Public Partial Class frmSimu
 				End If
 				'Vérifie si les séquences demandées sont présentes
 				For Each VpSequence As clsComboSequence In Me.chklstSequencesDispos.CheckedItems
+					Call VpPartie.UntagAll
 					If VpPartie.IsSequencePresent(VpSequence) Then
 						VpEspCumul.AddForRound(VpJ)
 						Exit For

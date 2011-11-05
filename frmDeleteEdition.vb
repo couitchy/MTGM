@@ -27,6 +27,10 @@ Public Partial Class frmDeleteEdition
 	'Suppression d'une édition dans la base de données
 	'-------------------------------------------------
 	Dim VpCD As String = Me.cboSerie.Text.Substring(1, 2)
+		VgDBCommand.CommandText = "Delete CardDouble.* From CardDouble Inner Join Card On CardDouble.EncNbrDownFace = Card.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.CommandText = "Delete CardDouble.* From CardDouble Inner Join Card On CardDouble.EncNbrTopFace = Card.EncNbr Where Card.Series = '" + VpCD + "';"
+		VgDBCommand.ExecuteNonQuery	
 		VgDBCommand.CommandText = "Delete PricesHistory.* From PricesHistory Inner Join Card On PricesHistory.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
 		VgDBCommand.ExecuteNonQuery	
 		VgDBCommand.CommandText = "Delete CardFR.* From CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
