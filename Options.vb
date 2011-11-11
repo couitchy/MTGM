@@ -16,12 +16,15 @@
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - traduction des options				   03/04/2010 |
+'| - réflexion .INI => sérialisation .XML  11/11/2011 |
 '------------------------------------------------------
 #Region "Importations"
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.ComponentModel
-Imports System.Reflection
+Imports System.Xml
+Imports System.Xml.Serialization
+Imports System.IO
 Imports System.Text
 #End Region
 Public Partial Class Options
@@ -36,37 +39,35 @@ Public Partial Class Options
 		Call SaveSettings
 	End Sub
 	Public Sub SaveSettings
-	'------------------------------------------------------------------------------------------------------------
-	'Sauvegarde les propriétés actuelles du PropertyGrid dans le fichier INI avant de fermer la boîte de dialogue
-	'------------------------------------------------------------------------------------------------------------
-	Dim VpSettingsType As Type = GetType(clsSettings)
-		'Parcourt les membres de la classe clsSettings
-		For Each VpProperty As MemberInfo In VpSettingsType.GetMembers
-			'Si on tombe sur une propriété
-			If VpProperty.MemberType = MemberTypes.Property Then
-				'On la sauvegarde dans le fichier INI
-				Call clsModule.WritePrivateProfileString(clsModule.CgCategory, VpProperty.Name, VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.GetProperty, Nothing, VgSettings, Nothing).ToString, Application.StartupPath + clsModule.CgINIFile)
-			End If
-		Next VpProperty
+	'-----------------------------------------------------------------------
+	'Sauvegarde les propriétés actuelles du PropertyGrid dans le fichier XML
+	'-----------------------------------------------------------------------
+    Dim VpXmlSerializer As New XmlSerializer(GetType(clsSettings))
+    Dim VpFile As FileStream
+    Dim VpWriter As XmlTextWriter
+		VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Create)
+		VpWriter = New XmlTextWriter(VpFile, Nothing)
+        VpXmlSerializer.Serialize(VpWriter, VgSettings)
+        VpWriter.Close
+        VpFile.Close
 	End Sub
 	Public Sub LoadSettings
-	'------------------------------------------------------------------------------------------------------------------
-	'Restaure les propriétés sauvegardées du PropertyGrid à partir du fichier INI à l'ouverture de la boîte de dialogue
-	'------------------------------------------------------------------------------------------------------------------
-	Dim VpSettingsType As Type = GetType(clsSettings)
-	Dim VpStr As New StringBuilder(512)
-		For Each VpProperty As MemberInfo In VpSettingsType.GetMembers
-			If VpProperty.MemberType = MemberTypes.Property Then
-				Call clsModule.GetPrivateProfileString("Properties", VpProperty.Name, "", VpStr, VpStr.Capacity, Application.StartupPath + clsModule.CgINIFile)
-				If VpStr.ToString <> "" Then
-					'Attention, les propriétés ne sont pas toutes du même type, il faut une fonction d'adaptation
-					Try
-						VpSettingsType.InvokeMember(VpProperty.Name, BindingFlags.SetProperty, Nothing, VgSettings, New Object() {clsModule.Matching(VpStr.ToString)})
-					Catch
-					End Try
-				End If
-			End If
-		Next VpProperty
+	'----------------------------------------------------------------------------
+	'Restaure les propriétés sauvegardées du PropertyGrid à partir du fichier XML
+	'----------------------------------------------------------------------------
+    Dim VpXmlSerializer As XmlSerializer
+    Dim VpFile As FileStream
+    Dim VpReader As XmlTextReader
+		If File.Exists(Application.StartupPath + clsModule.CgXMLFile) Then
+		    VpXmlSerializer = New XmlSerializer(GetType(clsSettings))
+		    VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Open)
+		    VpReader = New XmlTextReader(VpFile)
+	   		VgSettings = CType(VpXmlSerializer.Deserialize(VpReader), clsSettings)
+	        VpReader.Close
+	   	    VpFile.Close
+		ElseIf File.Exists(Application.StartupPath + clsModule.CgINIFile) Then
+			Call clsModule.ShowInformation(clsModule.CgErr8)
+		End If
 	End Sub
 End Class
 Public Class clsSettings

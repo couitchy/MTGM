@@ -1302,6 +1302,56 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Sub FindHoles
+	Dim VpEncNbrs() As Long
+	Dim VpMin As Long
+	Dim VpMax As Long
+	Dim VpBestFit As Long
+	Dim VpBestFitDelta As Long = Long.MaxValue
+	Dim VpSerie As String = InputBox("Entrer le code de la série")
+		If VpSerie.Length = 2 Then
+			VmDBCommand.CommandText = "Select Min(EncNbr) From Card Where UCase(Series) = '" + VpSerie.ToUpper + "';"
+			VpMin = VmDBCommand.ExecuteScalar
+			VmDBCommand.CommandText = "Select Max(EncNbr) From Card Where UCase(Series) = '" + VpSerie.ToUpper + "';"
+			VpMax = VmDBCommand.ExecuteScalar
+			Call Me.AddToLog("L'intervalle pour cette série est [" + VpMin.ToString + ";" + VpMax.ToString + "]", eLogType.Information, , True)
+	    	VmDBCommand.CommandText = "Select EncNbr From Card Order By EncNbr;"
+	    	VmDBReader = VmDBCommand.ExecuteReader
+	    	ReDim VpEncNbrs(0)
+			With VmDBReader
+				While .Read
+					VpEncNbrs(VpEncNbrs.Length - 1) = .GetValue(0)
+					ReDim Preserve VpEncNbrs(0 To VpEncNbrs.Length)
+				End While
+				.Close
+			End With		
+			ReDim Preserve VpEncNbrs(0 To VpEncNbrs.Length - 2)
+			For VpI As Integer = 1 To VpEncNbrs.Length - 1
+				If VpEncNbrs(VpI) > 1 + VpEncNbrs(VpI - 1) Then
+					'Debug.Print("Emplacement dispo. entre : " + VpEncNbrs(VpI - 1).ToString + " et " + VpEncNbrs(VpI).ToString)
+					If Math.Abs(VpEncNbrs(VpI - 1) - VpMin) < VpBestFitDelta Then
+						VpBestFitDelta = Math.Abs(VpEncNbrs(VpI - 1) - VpMin)
+						VpBestFit = VpEncNbrs(VpI - 1)
+					End If
+					If Math.Abs(VpEncNbrs(VpI) - VpMin) < VpBestFitDelta Then
+						VpBestFitDelta = Math.Abs(VpEncNbrs(VpI - 1) - VpMin)
+						VpBestFit = VpEncNbrs(VpI)
+					End If
+					If Math.Abs(VpEncNbrs(VpI - 1) - VpMax) < VpBestFitDelta Then
+						VpBestFitDelta = Math.Abs(VpEncNbrs(VpI - 1) - VpMin)
+						VpBestFit = VpEncNbrs(VpI - 1)
+					End If
+					If Math.Abs(VpEncNbrs(VpI) - VpMax) < VpBestFitDelta Then
+						VpBestFitDelta = Math.Abs(VpEncNbrs(VpI - 1) - VpMin)
+						VpBestFit = VpEncNbrs(VpI)
+					End If
+				End If
+			Next VpI
+			Call Me.AddToLog("Emplacement le plus adapté : " + VpBestFit.ToString, eLogType.Information, , True)
+			VmDBCommand.CommandText = "Select Series.SeriesNM From Series Inner Join Card On Series.SeriesCD = Card.Series Where Card.EncNbr = " + VpBestFit.ToString + ";"
+			Call Me.AddToLog("Série normalement à cet endroit : " + VmDBCommand.ExecuteScalar.ToString, eLogType.Information, , True)
+		End If
+	End Sub
 	Sub MnuExitClick(sender As Object, e As EventArgs)
 		Application.Exit
 	End Sub
@@ -1436,5 +1486,10 @@ Public Partial Class MainForm
 		If Not VmDB Is Nothing Then
 			Call Me.BuildDouble
 		End If		
+	End Sub
+	Sub MnuFindHolesClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.FindHoles
+		End If
 	End Sub
 End Class

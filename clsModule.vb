@@ -27,8 +27,6 @@ Imports System.Net
 Imports System.IO
 Imports System.ComponentModel
 Public Module clsModule
-	Public Declare Function GetPrivateProfileString   Lib "kernel32" Alias "GetPrivateProfileStringA" (lpApplicationName As String, lpKeyName As String, lpDefault As String, lpReturnedString As StringBuilder, nSize As Integer, lpFileName As String) As Integer
-	Public Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
 	Public Declare Function OpenIcon 				  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
@@ -54,6 +52,7 @@ Public Module clsModule
 	Public Const CgMDB As String				= "\Cartes\Magic DB.mdb"
 	Public Const CgDAT As String				= "\Cartes\Images DB.dat"
 	Public Const CgINIFile As String      		= "\MTGM.ini"
+	Public Const CgXMLFile As String      		= "\MTGM.xml"
 	Public Const CgHLPFile As String      		= "\MTGM.pdf"
 	Public Const CgHSTFile As String      		= "\Historique.txt"
 	Public Const CgUpdater As String      		= "\Updater.exe"
@@ -111,6 +110,7 @@ Public Module clsModule
 	Public Const CgErr5 As String				= "Le processus de mise à jour a été interrompu..."
 	Public Const CgErr6 As String				= "Le plug-in spécifié est introuvable..."
 	Public Const CgErr7 As String				= "Aucun critère de classement n'a été sélectionné..."
+	Public Const CgErr8 As String				= "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
 	Public Const CgFExtO As String				= ".dck"
 	Public Const CgFExtN As String				= ".dk2"
 	Public Const CgFExtA As String				= ".dec"
@@ -147,14 +147,13 @@ Public Module clsModule
 	Public Const CgAlternateStart2 As String	= "Name:"
 	Public Const CgFoil As String				= "PREMIUMFOILVO"
 	Public Const CgFoil2 As String				= " (Foil)"
-	Public Const CgCategory As String			= "Properties"
 	Public CgBalises() As String 				= {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:"}
 	Public CgManaParsing() As String 			= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
 	Public CgCriterionsFields() As String 		= {"", "Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
 	Public CgNumbers() As String 				= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgRarities() As String				= {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
 	Public CgSearchFields() As String 			= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Spell.myCost", "Card.SubType"}
-	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgINIFile, CgMagicBack, CgUpdater}
+	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgMagicBack, CgUpdater}
 	Public CgStrConn() As String      			= {"Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source=", "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="}
 	Public CgCriteres As New Hashtable(CgNCriterions)
 	Public CgVirtualPath As String
@@ -730,44 +729,6 @@ Public Module clsModule
 			Return True
 		ElseIf VpStr = "False" Then
 			Return False
-		ElseIf VpStr = "Normal" Then
-			Return FormWindowState.Normal
-		ElseIf VpStr = "Maximized" Then
-			Return FormWindowState.Maximized
-		ElseIf VpStr = "Minimized" Then
-			Return FormWindowState.Minimized
-		ElseIf VpStr = "AutoSize" Then
-			Return PictureBoxSizeMode.AutoSize
-		ElseIf VpStr = "CenterImage" Then
-			Return PictureBoxSizeMode.CenterImage
-		ElseIf VpStr = "Normal" Then
-			Return PictureBoxSizeMode.Normal
-		ElseIf VpStr = "StretchImage" Then
-			Return PictureBoxSizeMode.StretchImage
-		ElseIf VpStr = "Zoom" Then
-			Return PictureBoxSizeMode.Zoom
-		ElseIf VpStr = "NomVO" Then
-			Return eSearchCriterion.NomVO
-		ElseIf VpStr = "NomVF" Then
-			Return eSearchCriterion.NomVF
-		ElseIf VpStr = "TexteVO" Then
-			Return eSearchCriterion.TexteVO
-		ElseIf VpStr = "TexteVF" Then
-			Return eSearchCriterion.TexteVF
-		ElseIf VpStr = "Force" Then
-			Return eSearchCriterion.Force
-		ElseIf VpStr = "Endurance" Then
-			Return eSearchCriterion.Endurance
-		ElseIf VpStr = "Prix" Then
-			Return eSearchCriterion.Prix
-		ElseIf VpStr = "Edition" Then
-			Return eSearchCriterion.Edition
-		ElseIf VpStr = "Cout" Then
-			Return eSearchCriterion.Cout
-		ElseIf VpStr = "Jet" Then
-			Return eDBProvider.Jet
-		ElseIf VpStr = "ACE" Then
-			Return eDBProvider.ACE
 		ElseIf IsNumeric(VpStr)
 			Return CInt(VpStr)
 		Else

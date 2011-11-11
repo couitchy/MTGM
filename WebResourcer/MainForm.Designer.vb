@@ -58,6 +58,7 @@ Partial Class MainForm
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPricesUpdate = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem
@@ -98,7 +99,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -169,7 +170,7 @@ Partial Class MainForm
 		'
 		'mnuCards
 		'
-		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut})
+		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuFindHoles})
 		Me.mnuCards.Name = "mnuCards"
 		Me.mnuCards.Size = New System.Drawing.Size(152, 22)
 		Me.mnuCards.Text = "Cartes"
@@ -275,6 +276,13 @@ Partial Class MainForm
 		Me.mnuSeriesGen.Size = New System.Drawing.Size(432, 22)
 		Me.mnuSeriesGen.Text = "Générer le fichier d'en-têtes"
 		AddHandler Me.mnuSeriesGen.Click, AddressOf Me.MnuSeriesGenClick
+		'
+		'mnuBuildDouble
+		'
+		Me.mnuBuildDouble.Name = "mnuBuildDouble"
+		Me.mnuBuildDouble.Size = New System.Drawing.Size(432, 22)
+		Me.mnuBuildDouble.Text = "Construire le fichier des doubles cartes pour une série depuis la base"
+		AddHandler Me.mnuBuildDouble.Click, AddressOf Me.MnuBuildDoubleClick
 		'
 		'mnuPrices
 		'
@@ -605,12 +613,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuBuildDouble
+		'mnuFindHoles
 		'
-		Me.mnuBuildDouble.Name = "mnuBuildDouble"
-		Me.mnuBuildDouble.Size = New System.Drawing.Size(432, 22)
-		Me.mnuBuildDouble.Text = "Construire le fichier des doubles cartes pour une série depuis la base"
-		AddHandler Me.mnuBuildDouble.Click, AddressOf Me.MnuBuildDoubleClick
+		Me.mnuFindHoles.Name = "mnuFindHoles"
+		Me.mnuFindHoles.Size = New System.Drawing.Size(278, 22)
+		Me.mnuFindHoles.Text = "Trouve-trous (expérimental)"
+		AddHandler Me.mnuFindHoles.Click, AddressOf Me.MnuFindHolesClick
 		'
 		'MainForm
 		'
@@ -639,6 +647,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuFindHoles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff4 As System.Windows.Forms.ToolStripMenuItem

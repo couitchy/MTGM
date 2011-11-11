@@ -29,7 +29,6 @@ Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Ma
 Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Ressources\*.*"; DestDir: "{app}\Ressources"; Flags: ignoreversion
 Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Cartes\Magic DB.mdb"; DestDir: "{app}\Cartes"; Flags: ignoreversion
-Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\MTGM.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\MTGM.pdf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Historique.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\ChartFX.Lite.dll"; DestDir: "{app}"; Flags: ignoreversion
