@@ -973,6 +973,120 @@ Public Module clsModule
 			Return ""
 		End If
 	End Function
+	Private Sub PutInRichText(VpRich As ExRichTextBox, VpImg As ImageList, VpTxt As String)
+	'--------------------------------------------------------------------------------------------------
+	'Inscrit en RTF (avec images) le texte passé en paramètre dans la zone de texte passée en paramètre
+	'--------------------------------------------------------------------------------------------------
+	Dim VpStr As String = VpTxt
+	Dim VpSymbole As String
+	Dim VpImgIndex As Integer
+	Dim VpImg18 As Image
+	Dim VpImg12 As Bitmap
+		VpRich.Clear
+		While VpStr.IndexOf("!") <> VpStr.LastIndexOf("!")	'tant qu'il reste 2 '!', il reste un symbole à convertir
+			VpRich.AppendText(VpStr.Substring(0, VpStr.IndexOf("!")))
+			VpStr = VpStr.Substring(VpStr.IndexOf("!") + 1)
+			VpSymbole = VpStr.Substring(0, VpStr.IndexOf("!"))
+			If IsNumeric(VpSymbole) Then
+				VpImgIndex = 1 + CInt(VpSymbole)
+			Else
+				Select Case VpSymbole
+					Case "pr", "rp"
+						VpImgIndex = 35
+					Case "pb", "bp"
+						VpImgIndex = 33
+					Case "pg", "gp"
+						VpImgIndex = 34
+					Case "pu", "up"
+						VpImgIndex = 36
+					Case "pw", "wp"
+						VpImgIndex = 37
+					Case "gb"
+						VpImgIndex = 29
+					Case "rb"
+						VpImgIndex = 39
+					Case "ug"
+						VpImgIndex = 45
+					Case "wg"
+						VpImgIndex = 50
+					Case "gr"
+						VpImgIndex = 30
+					Case "wr"
+						VpImgIndex = 51
+					Case "bu"
+						VpImgIndex = 26
+					Case "ru"
+						VpImgIndex = 41
+					Case "bw"
+						VpImgIndex = 27
+					Case "uw"
+						VpImgIndex = 47
+					Case "bg"
+						VpImgIndex = 24
+					Case "br"
+						VpImgIndex = 25
+					Case "gu"
+						VpImgIndex = 31
+					Case "gw"
+						VpImgIndex = 32
+					Case "rg"
+						VpImgIndex = 40
+					Case "rw"
+						VpImgIndex = 42
+					Case "ub"
+						VpImgIndex = 44
+					Case "ur"
+						VpImgIndex = 46
+					Case "wb"
+						VpImgIndex = 49
+					Case "wu"
+						VpImgIndex = 52
+					Case "2w", "w2"
+						VpImgIndex = 22
+					Case "2b", "b2"
+						VpImgIndex = 18
+					Case "2g", "g2"
+						VpImgIndex = 19
+					Case "2r", "r2"
+						VpImgIndex = 20
+					Case "2u", "u2"
+						VpImgIndex = 21
+					Case "t"
+						VpImgIndex = 54
+					Case "q"
+						VpImgIndex = 53
+					Case "x"
+						VpImgIndex = 0
+					Case "b"
+						VpImgIndex = 23
+					Case "g"
+						VpImgIndex = 28
+					Case "r"
+						VpImgIndex = 38
+					Case "u"
+						VpImgIndex = 43
+					Case "w"
+						VpImgIndex = 48
+					Case "m"
+						VpImgIndex = 1
+					Case "a"
+						VpImgIndex = 1				
+					Case Else
+						VpImgIndex = -1
+				End Select
+			End If
+			If VpImgIndex <> -1 Then
+    			VpImg18 = VpImg.Images.Item(VpImgIndex)
+    			VpImg12 = New Bitmap(12, 12)
+			    Using VpGraphics As Graphics = Graphics.FromImage(VpImg12)
+    				VpGraphics.DrawImage(VpImg18, New Rectangle(0, 0, VpImg12.Width , VpImg12.Height), New Rectangle(0, 0, VpImg18.Width, VpImg18.Height), GraphicsUnit.Pixel)
+				End Using
+    			VpRich.InsertImage(VpImg12)
+			End If
+			VpStr = VpStr.Substring(VpStr.IndexOf("!") + 1)
+		End While
+		VpRich.AppendText(VpStr)
+	End Sub
 	Public Function MyClone(VpA As List(Of clsLocalCard)) As List(Of clsLocalCard)
 	'-------------------------------------------
 	'Duplication de la liste des cartes désirées
@@ -1384,7 +1498,7 @@ Public Module clsModule
 				End If
 				VpForm.lblRarete.Text = FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
 				If VpMainForm.mnuCardsFR.Checked Then
-					VpForm.txtCardText.Text = MyTxt(VpCard, True, VpGestDownFace, VpDownFace)
+					Call PutInRichText(VpForm.txtCardText, VpMainForm.imglstCarac, MyTxt(VpCard, True, VpGestDownFace, VpDownFace))
 				Else
 					VpForm.txtCardText.Text = .GetValue(VgDBReader.GetOrdinal("CardText")).ToString
 				End If

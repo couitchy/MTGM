@@ -60,7 +60,6 @@ Partial Class frmSearch
 		Me.lblStock = New System.Windows.Forms.Label
 		Me.lblPrix = New System.Windows.Forms.Label
 		Me.lblRarete = New System.Windows.Forms.Label
-		Me.txtCardText = New System.Windows.Forms.TextBox
 		Me.lblProp7 = New System.Windows.Forms.Label
 		Me.cboEdition = New System.Windows.Forms.ComboBox
 		Me.picEdition = New System.Windows.Forms.PictureBox
@@ -72,6 +71,7 @@ Partial Class frmSearch
 		Me.lblProp3 = New System.Windows.Forms.Label
 		Me.btSearch = New TD.SandBar.ButtonItem
 		Me.btResult = New TD.SandBar.ButtonItem
+		Me.txtCardText = New Magic_The_Gathering_Manager.ExRichTextBox
 		Me.cbarSearch.SuspendLayout
 		Me.pnlSearch.SuspendLayout
 		Me.grpSearch.SuspendLayout
@@ -308,6 +308,7 @@ Partial Class frmSearch
 		'grpSerie
 		'
 		Me.grpSerie.BackColor = System.Drawing.Color.Transparent
+		Me.grpSerie.Controls.Add(Me.txtCardText)
 		Me.grpSerie.Controls.Add(Me.lblStock2)
 		Me.grpSerie.Controls.Add(Me.lblStock3)
 		Me.grpSerie.Controls.Add(Me.picScanCard)
@@ -315,7 +316,6 @@ Partial Class frmSearch
 		Me.grpSerie.Controls.Add(Me.lblStock)
 		Me.grpSerie.Controls.Add(Me.lblPrix)
 		Me.grpSerie.Controls.Add(Me.lblRarete)
-		Me.grpSerie.Controls.Add(Me.txtCardText)
 		Me.grpSerie.Controls.Add(Me.lblProp7)
 		Me.grpSerie.Controls.Add(Me.cboEdition)
 		Me.grpSerie.Controls.Add(Me.picEdition)
@@ -397,15 +397,6 @@ Partial Class frmSearch
 		Me.lblRarete.Size = New System.Drawing.Size(99, 13)
 		Me.lblRarete.TabIndex = 32
 		Me.lblRarete.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'txtCardText
-		'
-		Me.txtCardText.Location = New System.Drawing.Point(31, 233)
-		Me.txtCardText.Multiline = true
-		Me.txtCardText.Name = "txtCardText"
-		Me.txtCardText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(338, 67)
-		Me.txtCardText.TabIndex = 31
 		'
 		'lblProp7
 		'
@@ -498,7 +489,6 @@ Partial Class frmSearch
 		'btSearch
 		'
 		Me.btSearch.Text = "Recherche"
-		'Me.btSearch.Checked = true
 		AddHandler Me.btSearch.Activate, AddressOf Me.BtSearchActivate
 		'
 		'btResult
@@ -506,6 +496,19 @@ Partial Class frmSearch
 		Me.btResult.Enabled = false
 		Me.btResult.Text = "Résultat"
 		AddHandler Me.btResult.Activate, AddressOf Me.BtResultActivate
+		'
+		'txtCardText
+		'
+		Me.txtCardText.AcceptsTab = true
+		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.eRtfColor.White
+		Me.txtCardText.Location = New System.Drawing.Point(31, 233)
+		Me.txtCardText.Name = "txtCardText"
+		Me.txtCardText.ReadOnly = true
+		Me.txtCardText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
+		Me.txtCardText.Size = New System.Drawing.Size(338, 67)
+		Me.txtCardText.TabIndex = 40
+		Me.txtCardText.Text = ""
+		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.eRtfColor.Black
 		'
 		'frmSearch
 		'
@@ -555,7 +558,7 @@ Partial Class frmSearch
 	Public picEdition As System.Windows.Forms.PictureBox
 	Public cboEdition As System.Windows.Forms.ComboBox
 	Private lblProp7 As System.Windows.Forms.Label
-	Public txtCardText As System.Windows.Forms.TextBox
+	Public txtCardText As Magic_The_Gathering_Manager.ExRichTextBox
 	Public lblRarete As System.Windows.Forms.Label
 	Public lblPrix As System.Windows.Forms.Label
 	Public lblStock As System.Windows.Forms.Label

@@ -30,6 +30,7 @@
 '| - infos restreintes aux ancêtres		   06/03/2011 |
 '| - délocalisation du filtrage			   09/07/2011 |
 '| - gestion des cartes transformables	   29/10/2011 |
+'| - icônes des symboles dans le texte	   12/11/2011 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -678,7 +679,7 @@ Public Partial Class MainForm
 		Me.lblRarete.Text = ""
 		Me.lblStock.Text = ""
 		Me.lblStock3.Text = ""
-		Me.txtCardText.Text = ""
+		Me.txtCardText.Clear
 		Me.lblSerieTot.Text = ""
 		Me.lblSerieMyTot.Text = ""
 		Me.lblSerieMyTotDist.Text = ""
@@ -1097,7 +1098,7 @@ Public Partial Class MainForm
 				If Not VpO Is Nothing Then
 					Me.txtCardText.Text = VpO.ToString
 				Else
-					Me.txtCardText.Text = ""
+					Me.txtCardText.Clear
 				End If
 			Case Else
 				Me.lblProp8.Visible = False

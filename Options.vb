@@ -93,7 +93,7 @@ Public Class clsSettings
 	Private VmRestoredHeight As Integer = 435
 	Private VmRestoredSplitterDistance As Integer = 68
 	Private VmFormWindowState As FormWindowState = FormWindowState.Normal
-	Private VmForceSingleSource As Boolean = False
+	Private VmForceSingleSource As Boolean = True
 	Private VmLastUpdateAut As String = ""
 	Private VmLastUpdateSimu As String = ""
 	Private VmLastUpdateTxtVF As String = ""
