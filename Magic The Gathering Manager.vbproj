@@ -138,6 +138,10 @@
       <DependentUpon>frmPerfs.vb</DependentUpon>
     </Compile>
     <Compile Include="frmPerfs.vb" />
+    <Compile Include="frmPlateau.Designer.vb">
+      <DependentUpon>frmPlateau.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPlateau.vb" />
     <Compile Include="frmSearch.Designer.vb">
       <DependentUpon>frmSearch.vb</DependentUpon>
     </Compile>
@@ -224,6 +228,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmPerfs.resx">
       <DependentUpon>frmPerfs.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPlateau.resx">
+      <DependentUpon>frmPlateau.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSearch.resx">
       <DependentUpon>frmSearch.vb</DependentUpon>

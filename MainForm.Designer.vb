@@ -161,6 +161,7 @@ Partial Class MainForm
 		Me.CBarProperties = New TD.SandBar.ContainerBar
 		Me.pnlProperties = New TD.SandBar.ContainerBarClientPanel
 		Me.grpCarac = New System.Windows.Forms.GroupBox
+		Me.txtCardText = New Magic_The_Gathering_Manager.ExRichTextBox
 		Me.grpAutorisations = New System.Windows.Forms.GroupBox
 		Me.picAutT1 = New System.Windows.Forms.PictureBox
 		Me.picAutT15 = New System.Windows.Forms.PictureBox
@@ -201,7 +202,7 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.txtCardText = New Magic_The_Gathering_Manager.ExRichTextBox
+		Me.mnuPlateau = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -905,14 +906,15 @@ Partial Class MainForm
 		'
 		Me.mnuPrefs.Image = CType(resources.GetObject("mnuPrefs.Image"),System.Drawing.Image)
 		Me.mnuPrefs.Name = "mnuPrefs"
-		Me.mnuPrefs.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P),System.Windows.Forms.Keys)
+		Me.mnuPrefs.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift)  _
+						Or System.Windows.Forms.Keys.P),System.Windows.Forms.Keys)
 		Me.mnuPrefs.Size = New System.Drawing.Size(277, 22)
 		Me.mnuPrefs.Text = "Préférences"
 		AddHandler Me.mnuPrefs.Click, AddressOf Me.MnuPrefsActivate
 		'
 		'mnuBigSearch
 		'
-		Me.mnuBigSearch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuStdSearch, Me.mnuAdvancedSearch, Me.mnuSeparator8, Me.mnuExcelGen, Me.mnuWordGen, Me.mnuPerfs, Me.mnuSimu, Me.mnuStats, Me.mnuMV})
+		Me.mnuBigSearch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuStdSearch, Me.mnuAdvancedSearch, Me.mnuSeparator8, Me.mnuExcelGen, Me.mnuWordGen, Me.mnuPerfs, Me.mnuPlateau, Me.mnuSimu, Me.mnuStats, Me.mnuMV})
 		Me.mnuBigSearch.Name = "mnuBigSearch"
 		Me.mnuBigSearch.Size = New System.Drawing.Size(50, 20)
 		Me.mnuBigSearch.Text = "Outils"
@@ -1396,6 +1398,20 @@ Partial Class MainForm
 		Me.grpCarac.TabIndex = 16
 		Me.grpCarac.TabStop = false
 		'
+		'txtCardText
+		'
+		Me.txtCardText.AcceptsTab = true
+		Me.txtCardText.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.eRtfColor.White
+		Me.txtCardText.Location = New System.Drawing.Point(3, 16)
+		Me.txtCardText.Name = "txtCardText"
+		Me.txtCardText.ReadOnly = true
+		Me.txtCardText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
+		Me.txtCardText.Size = New System.Drawing.Size(245, 99)
+		Me.txtCardText.TabIndex = 13
+		Me.txtCardText.Text = ""
+		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.eRtfColor.Black
+		'
 		'grpAutorisations
 		'
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
@@ -1835,19 +1851,14 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
 		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
 		'
-		'txtCardText
+		'mnuPlateau
 		'
-		Me.txtCardText.AcceptsTab = true
-		Me.txtCardText.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.eRtfColor.White
-		Me.txtCardText.Location = New System.Drawing.Point(3, 16)
-		Me.txtCardText.Name = "txtCardText"
-		Me.txtCardText.ReadOnly = true
-		Me.txtCardText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(245, 99)
-		Me.txtCardText.TabIndex = 13
-		Me.txtCardText.Text = ""
-		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.eRtfColor.Black
+		Me.mnuPlateau.Image = CType(resources.GetObject("mnuPlateau.Image"),System.Drawing.Image)
+		Me.mnuPlateau.Name = "mnuPlateau"
+		Me.mnuPlateau.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P),System.Windows.Forms.Keys)
+		Me.mnuPlateau.Size = New System.Drawing.Size(303, 22)
+		Me.mnuPlateau.Text = "Plateau de jeu sur la sélection"
+		AddHandler Me.mnuPlateau.Click, AddressOf Me.MnuPlateauClick
 		'
 		'MainForm
 		'
@@ -1903,6 +1914,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuPlateau As System.Windows.Forms.ToolStripMenuItem
 	Public txtCardText As Magic_The_Gathering_Manager.ExRichTextBox
 	Private mnuTransform As System.Windows.Forms.ToolStripMenuItem
 	Private btDegroupFoils As System.Windows.Forms.ToolStripButton

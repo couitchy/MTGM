@@ -1156,7 +1156,7 @@ Public Partial Class MainForm
 			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSDecks, VpSerie, VpFoil, VpDownFace, VpTransformed)
 		Else
 			Call clsModule.LoadCarac(Me, Me, VpTitle, Me.mnuDegroupFoils.Checked, True, clsModule.CgSCollection, VpSerie, VpFoil, VpDownFace, VpTransformed)
-		End If		
+		End If
 	End Sub
 	Private Sub LoadAutorisations(VpCard As String)
 	'-----------------------------------------------------------------------
@@ -2131,9 +2131,10 @@ Public Partial Class MainForm
 		Call Me.MnuExitActivate(sender, e)
 	End Sub
 	Sub MnuStatsActivate(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpStats As New frmStats(Me)
+	Dim VpStats As frmStats
 		If clsModule.DBOK Then
 			If Me.GetNCards(If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection), True) > 1 Then
+				VpStats = New frmStats(Me)
 				VpStats.Show
 			Else
 				Call clsModule.ShowWarning("Il faut au minimum une sélection de 2 cartes distinctes pour pouvoir lancer l'affichage des statistiques...")
@@ -2184,8 +2185,9 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub MnuNewEditionActivate(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpNewEdition As New frmNewEdition
+	Dim VpNewEdition As frmNewEdition
 		If clsModule.DBOK Then
+			VpNewEdition = New frmNewEdition
 			VpNewEdition.ShowDialog
 			Call clsModule.LoadIcons(Me.imglstTvw)		'Recharge les icônes au cas où de nouveaux logos auraient été ajoutés lors de la procédure
 		End If
@@ -2212,8 +2214,9 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub MnuTranslateActivate(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpTranslator As New frmTranslate(Me)
+	Dim VpTranslator As frmTranslate
 		If clsModule.DBOK Then
+			VpTranslator = New frmTranslate(Me)
 			VpTranslator.ShowDialog
 		End If
 	End Sub
@@ -2296,7 +2299,7 @@ Public Partial Class MainForm
 			If VpNode.Parent.Tag.Key = "Card.Title" AndAlso VpNode.Tag.Value3 Then		'On doit refaire la vérif. au cas où l'évènement aurait été triggé par un clic sur l'image
 				VpDownFace = Me.IsDownFace(VpNode)
 				VpTransformed = Me.IsTransformed(VpNode)
-				VpNames = Me.GetTransformedNames(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)		
+				VpNames = Me.GetTransformedNames(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)
 				If Me.ShowCard(VpNames.Value, Me.IsFoil(VpNode), Not (VpDownFace Xor VpTransformed), Not VpTransformed, False) Then
 					'Met à jour le noeud de l'arbre
 					VpNode.Text = If(Me.mnuCardsFR.Checked, VpNames.Value2, VpNames.Value)
@@ -2334,9 +2337,21 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub MnuSimuActivate(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpSimu As New frmSimu(Me)
+	Dim VpSimu As frmSimu
 		If clsModule.DBOK Then
+			VpSimu = New frmSimu(Me)
 			VpSimu.Show
+		End If
+	End Sub
+	Sub MnuPlateauClick(sender As Object, e As EventArgs)
+	Dim VpPlateau As frmPlateau
+		If clsModule.DBOK Then			
+			If Me.GetNCards(If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)) <= clsModule.CgMaxVignettes Then
+				VpPlateau = New frmPlateau(Me)
+				VpPlateau.Show
+			Else
+				Call clsModule.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + clsModule.CgMaxVignettes.ToString + ".")
+			End If
 		End If
 	End Sub
 	Sub MnuExportActivate(ByVal sender As Object, ByVal e As EventArgs)

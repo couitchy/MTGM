@@ -26,7 +26,7 @@ Public Partial Class frmWord
 	Private VmRestrictionTXT As String
 	Private VmBusy As Boolean = False
 	Public Sub New(VpOwner As MainForm)
-	Dim VpPath As String = Path.GetTempPath + "\mtgmgr"
+	Dim VpPath As String = Path.GetTempPath + clsModule.CgTemp
 		Me.InitializeComponent()
 		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		VmRestriction = VpOwner.Restriction

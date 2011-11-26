@@ -764,7 +764,7 @@ Public Class clsPartie
 		VmVerbose = VpVerbose
 		VmSimuOut = VpSimuOut
 	End Sub
-	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer , Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
+	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
 	'--------------------
 	'Construction du deck
 	'--------------------

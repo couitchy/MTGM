@@ -47,6 +47,7 @@ Public Module clsModule
 	Public Const CgMTGCardHeight As Integer		= 88
 	Public Const CgXMargin As Integer			= 5
 	Public Const CgYMargin As Integer			= 8
+	Public Const CgTemp As String				= "\mtgmgr"
 	Public Const CgIcons As String        		= "\Ressources"
 	Public Const CgMagicBack As String      	= "\Ressources\Magic Back.jpg"
 	Public Const CgMDB As String				= "\Cartes\Magic DB.mdb"
@@ -122,6 +123,7 @@ Public Module clsModule
 	Public Const CgImgSeries As String			= "_series_"
 	Public Const CgImgColors As String			= "_colors_"
 	Public Const CgDefaultName As String		= "MonJeu"
+	Public Const CgPlateau As String			= "Plateau de jeu : "
 	Public Const CgStats As String				= "Statistiques : "
 	Public Const CgSimus As String				= "Simulations : "
 	Public Const CgSimus3 As String				= "Proba. séquence(s) pour "
