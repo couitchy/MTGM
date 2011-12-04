@@ -104,8 +104,8 @@ Public Partial Class frmWord
 				Try
 					For VpI As Integer = 1 To VpItems.Item(VpItem)
 	 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem) + ".jpg", False, True, 1, 1, 1, 1)
-	 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth)
-	 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight)
+	 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm)
+	 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm)
 	 					VpPicture.Top = VpTop
 	 					VpPicture.Left = VpLeft
 	 					VpCount = VpCount + 1
@@ -116,9 +116,9 @@ Public Partial Class frmWord
 	 						VpTop = 0
 	 					ElseIf VpCount Mod 3 = 0 Then	'3 vignettes par ligne
 	 						VpLeft = 0
-	 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight + clsModule.CgYMargin)
+	 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm + clsModule.CgYMargin)
 	 					Else
-	 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth + clsModule.CgXMargin)
+	 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm + clsModule.CgXMargin)
 	 					End If
 						Me.prgAvance.Increment(1)
 						Application.DoEvents	 					
