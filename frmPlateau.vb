@@ -55,20 +55,20 @@ Public Partial Class frmPlateau
 		With VmPlateauPartie
 			'Bibliothèque
 			.BibliTop.Hidden = Not Me.btBibliReveal.Checked
-			Call Me.DrawPicture(.BibliTop, Me.panelBibli, New EventHandler(AddressOf Me.CardBibliDoubleClick), New MouseEventHandler(AddressOf Me.CardBibliMouseUp))
+			Call Me.DrawPicture(.BibliTop, True, Me.panelBibli, New EventHandler(AddressOf Me.CardBibliDoubleClick), New MouseEventHandler(AddressOf Me.CardBibliMouseUp))
 			'Cimetière
-			Call Me.DrawPicture(.GraveyardTop, Me.panelGraveyard, New EventHandler(AddressOf Me.CardGraveyardDoubleClick), New MouseEventHandler(AddressOf Me.CardGraveyardMouseUp))
+			Call Me.DrawPicture(.GraveyardTop, True, Me.panelGraveyard, New EventHandler(AddressOf Me.CardGraveyardDoubleClick), New MouseEventHandler(AddressOf Me.CardGraveyardMouseUp))
 			'Exil
-			Call Me.DrawPictures(.Exil, Me.panelExil, New EventHandler(AddressOf Me.CardExilDoubleClick), New MouseEventHandler(AddressOf Me.CardExilMouseUp))
+			Call Me.DrawPictures(.Exil, True, Me.panelExil, New EventHandler(AddressOf Me.CardExilDoubleClick), New MouseEventHandler(AddressOf Me.CardExilMouseUp))
 			'Regard
-			Call Me.DrawPictures(.Regard, Me.panelRegard, New EventHandler(AddressOf Me.CardRegardDoubleClick), New MouseEventHandler(AddressOf Me.CardRegardMouseUp))
+			Call Me.DrawPictures(.Regard, True, Me.panelRegard, New EventHandler(AddressOf Me.CardRegardDoubleClick), New MouseEventHandler(AddressOf Me.CardRegardMouseUp))
 			'Main
-			Call Me.DrawPictures(.Main, Me.panelMain, New EventHandler(AddressOf Me.CardMainDoubleClick), New MouseEventHandler(AddressOf Me.CardMainMouseUp))
+			Call Me.DrawPictures(.Main, True, Me.panelMain, New EventHandler(AddressOf Me.CardMainDoubleClick), New MouseEventHandler(AddressOf Me.CardMainMouseUp))
 			'Champ de bataille
-			Call Me.DrawPictures(.Field, Me.panelField, New EventHandler(AddressOf Me.CardFieldDoubleClick), New MouseEventHandler(AddressOf Me.CardFieldMouseUp))
+			Call Me.DrawPictures(.Field, False, Me.panelField, New EventHandler(AddressOf Me.CardFieldDoubleClick), New MouseEventHandler(AddressOf Me.CardFieldMouseUp))
 		End With
 	End Sub
-	Private Sub DrawPicture(VpCard As clsPlateauCard, VpParent As Control, VpIndex As Integer, VpCount As Integer, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+	Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpIndex As Integer, VpCount As Integer, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
 	'---------------------------------
 	'Dessin d'une carte sur le plateau
 	'---------------------------------
@@ -76,6 +76,9 @@ Public Partial Class frmPlateau
 	Dim VpW As Integer
 	Dim VpH As Integer
 		If Not VpCard Is Nothing Then
+			If VpUntap Then
+				VpCard.Tapped = False
+			End If
 			VpPicture = New PictureBox
 			'Détermine le côté limitant pour l'affichage optimal avec respect des proportions
 			If CgMTGCardHeight_px - VpParent.Height > CgMTGCardWidth_px - VpParent.Width Then
@@ -87,7 +90,7 @@ Public Partial Class frmPlateau
 			End If
 			'Ajustement dynamique du contrôle PictureBox
 			With VpPicture
-				.Location = New System.Drawing.Point(VpParent.Width * VpIndex / VpCount, 0)
+				.Location = New System.Drawing.Point(If(VpIndex = 0, 0, VpIndex * (VpParent.Width - VpW) / (VpCount - 1)), 0)
 				.Size = New System.Drawing.Size(VpW, VpH)
 				.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 				.Image = Image.FromFile(VpCard.PicturePath)
@@ -102,13 +105,13 @@ Public Partial Class frmPlateau
 			VmPictures.Add(VpPicture)		'conserve la référence
 		End If
 	End Sub
-	Private Sub DrawPicture(VpCard As clsPlateauCard, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
-		Call Me.DrawPicture(VpCard, VpParent, 0, 1, VpDoubleClickHandler, VpMouseUpHandler)
+	Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+		Call Me.DrawPicture(VpCard, VpUntap, VpParent, 0, 1, VpDoubleClickHandler, VpMouseUpHandler)
 	End Sub
-	Private Sub DrawPictures(VpCards As List(Of clsPlateauCard), VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+	Private Sub DrawPictures(VpCards As List(Of clsPlateauCard), VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
 	Dim VpCount As Integer = VpCards.Count
 		For VpI As Integer = 0 To VpCount - 1
-			Call Me.DrawPicture(VpCards.Item(VpI), VpParent, VpI, VpCount, VpDoubleClickHandler, VpMouseUpHandler)
+			Call Me.DrawPicture(VpCards.Item(VpI), VpUntap, VpParent, VpI, VpCount, VpDoubleClickHandler, VpMouseUpHandler)
 		Next VpI
 	End Sub
 	Private Sub ManageTap(VpPicture As PictureBox, Optional VpStatic As Boolean = False)
@@ -126,11 +129,21 @@ Public Partial Class frmPlateau
 			VpCard.Tapped = Not VpCard.Tapped
 		End If
 	End Sub
+	Private Sub ManageContextMenu(VpField As Boolean)
+		Me.cmnuSeparator0.Visible = VpField
+		Me.cmnuAttachTo.Visible = VpField
+		Me.cmnuCounters.Visible = VpField
+		Me.cmnuTapUntap.Visible = VpField
+	End Sub
 	Private Sub ShowContextMenu(VpPictureBox As PictureBox, VpPoint As Point)
 	Dim VpCurCard As clsPlateauCard
 		VmCurrentPicture = VpPictureBox
 		VpCurCard = VmCurrentPicture.Tag
-		Me.cmnuName.Text = VpCurCard.NameVF
+		If VpCurCard.Owner Is VmPlateauPartie.Bibli And Not Me.btBibliReveal.Checked Then
+			Me.cmnuName.Text = "(Face cachée)"
+		Else
+			Me.cmnuName.Text = VpCurCard.NameVF
+		End If
 		Me.cmnuAttachTo.DropDownItems.Clear
 		For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
 			If Not VpCard Is VpCurCard Then
@@ -192,7 +205,7 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub BtMulliganClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
-		Me.btPoisons.Text = "Poisons"		
+		Me.btPoisons.Text = "Poisons"
 		VmPlateauPartie.Mulligan = Math.Min(VmPlateauPartie.Mulligan + 1, clsModule.CgNMain - 1)
 		Call VmPlateauPartie.BeginPlateauPartie
 		Call Me.ManageReDraw
@@ -211,8 +224,8 @@ Public Partial Class frmPlateau
 		Else
 			VmPlateauPartie.Poisons -= 1
 		End If
-		Me.btPoisons.Text = VmPlateauPartie.Poisons.ToString		
-	End Sub	
+		Me.btPoisons.Text = VmPlateauPartie.Poisons.ToString
+	End Sub
 	Sub BtBibliRevealClick(sender As Object, e As EventArgs)
 		Me.btBibliReveal.Checked = Not Me.btBibliReveal.Checked
 		Call Me.ManageReDraw
@@ -269,7 +282,26 @@ Public Partial Class frmPlateau
 		VmCurrentPicture.BringToFront
 	End Sub
 	Sub CmnuSendToClick(sender As Object, e As EventArgs)
-		
+	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
+		Select Case CType(sender, ToolStripMenuItem).Name
+			Case Me.cmnuSendToBibliBottom.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Bibli)
+				VpCurCard.Hidden = True
+			Case Me.cmnuSendToBibliTop.Name
+			Case Me.cmnuSendToExil.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Exil)
+			Case Me.cmnuSendToField.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Field)
+			Case Me.cmnuSendToGraveyard.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Graveyard)
+			Case Me.cmnuSendToMain.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Main)
+			Case Me.cmnuSendToRegard.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Regard)
+			Case Else
+		End Select
+		Call VmPlateauPartie.SortAll
+		Call Me.ManageReDraw
 	End Sub
 	Sub CmnuAttachToClick(sender As Object, e As EventArgs)
 	
@@ -283,9 +315,7 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		VpCard.Hidden = False
-		VmPlateauPartie.Main.Add(VpCard)
-		VmPlateauPartie.Bibli.Remove(VpCard)
+		Call VpCard.SendTo(VmPlateauPartie.Main)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw
 	End Sub
@@ -297,55 +327,61 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		VmPlateauPartie.Main.Add(VpCard)
-		VmPlateauPartie.Regard.Remove(VpCard)
+		VpCard.SendTo(VmPlateauPartie.Main)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw
 	End Sub
 	Sub CardMainDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.IsAPermanent Then
-			VmPlateauPartie.Field.Add(VpCard)
+			VpCard.SendTo(VmPlateauPartie.Field)
 		Else
-			VmPlateauPartie.Graveyard.Add(VpCard)
+			VpCard.SendTo(VmPlateauPartie.Graveyard)
 		End If
-		VmPlateauPartie.Main.Remove(VpCard)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw
 	End Sub
 	Sub CardFieldDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		VpCard.Tapped = False
-		VmPlateauPartie.Graveyard.Add(VpCard)
-		VmPlateauPartie.Field.Remove(VpCard)
+		VpCard.SendTo(VmPlateauPartie.Graveyard)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw
 	End Sub
 	Sub CardBibliMouseUp(sender As Object, e As MouseEventArgs)
-		
+		If e.Button = MouseButtons.Right Then
+			Call Me.ManageContextMenu(False)
+			Call Me.ShowContextMenu(sender, e.Location)
+		End If
 	End Sub
 	Sub CardGraveyardMouseUp(sender As Object, e As MouseEventArgs)
-
+		If e.Button = MouseButtons.Right Then
+			Call Me.ManageContextMenu(False)
+			Call Me.ShowContextMenu(sender, e.Location)
+		End If
 	End Sub
 	Sub CardExilMouseUp(sender As Object, e As MouseEventArgs)
-
+		If e.Button = MouseButtons.Right Then
+			Call Me.ManageContextMenu(False)
+			Call Me.ShowContextMenu(sender, e.Location)
+		End If
 	End Sub
 	Sub CardRegardMouseUp(sender As Object, e As MouseEventArgs)
 	Dim VpPicture As PictureBox = sender
 	Dim VpCard As clsPlateauCard = VpPicture.Tag
 		If e.Button = MouseButtons.Left Then
-			If VpCard.Hidden Then
-				VpCard.Hidden = False
-				Call Me.ManageReDraw
-			Else
-				VpPicture.BringToFront
-			End If
+			VpPicture.BringToFront
+		Else
+			Call Me.ManageContextMenu(False)
+			Call Me.ShowContextMenu(sender, e.Location)
 		End If
 	End Sub
 	Sub CardMainMouseUp(sender As Object, e As MouseEventArgs)
 	Dim VpPicture As PictureBox = sender
 		If e.Button = MouseButtons.Left Then
 			VpPicture.BringToFront
+		Else
+			Call Me.ManageContextMenu(False)
+			Call Me.ShowContextMenu(sender, e.Location)
 		End If
 	End Sub
 	Sub CardFieldMouseUp(sender As Object, e As MouseEventArgs)
@@ -354,6 +390,7 @@ Public Partial Class frmPlateau
 			Call Me.ManageTap(VpPicture)
 			VpPicture.BringToFront
 		Else
+			Call Me.ManageContextMenu(True)
 			Call Me.ShowContextMenu(sender, e.Location)
 		End If
 	End Sub
@@ -381,7 +418,7 @@ Public Class clsPlateauPartie
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3))
+				Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3))
 			End While
 			.Close
 		End With
@@ -397,7 +434,7 @@ Public Class clsPlateauPartie
 		VmGraveyard.Clear
 		VmExil.Clear
 		For Each VpCard As clsPlateauCard In VmDeck
-			Call VpCard.ReInit
+			Call VpCard.ReInit(VmBibli)
 			VmBibli.Add(VpCard)
 		Next VpCard
 		Call Shuffle(VmBibli)
@@ -405,6 +442,7 @@ Public Class clsPlateauPartie
 		VmBibli.RemoveRange(0, clsModule.CgNMain - VmMulligan)
 		For Each VpCard As clsPlateauCard In VmMain
 			VpCard.Hidden = False
+			VpCard.Owner = VmMain
 		Next VpCard
 		Call Me.SortAll
 		VmLives = clsModule.CgNLives
@@ -424,7 +462,7 @@ Public Class clsPlateauPartie
 	'Construction du deck
 	'--------------------
 		For VpI As Integer = 1 To VpCount
-			VmDeck.Add(New clsPlateauCard(VpName, VpNameFR, VpType))
+			VmDeck.Add(New clsPlateauCard(VmDeck, VpName, VpNameFR, VpType))
 		Next VpI
 	End Sub
 	Public Shared Sub Shuffle(ByRef VpListe As List(Of clsPlateauCard))
@@ -441,6 +479,7 @@ Public Class clsPlateauPartie
 		'Réordonne les cartes en conséquence
 		VpI = 0
 		For Each VpPos As Integer In VpRandomPos.Values
+			VpListe.Item(VpPos).Owner = VpShuffled			'eh oui : quand on mélange la liste, on change de handle, et il faut pas perdre le nouveau !
 			VpShuffled.Insert(VpI, VpListe.Item(VpPos))
 			VpI = VpI + 1
 		Next VpPos
@@ -544,6 +583,7 @@ Public Class clsPlateauPartie
 	End Class
 End Class
 Public Class clsPlateauCard
+	Private VmOwner As List(Of clsPlateauCard)
 	Private VmCardName As String
 	Private VmCardNameFR As String
 	Private VmCardType As String
@@ -552,22 +592,39 @@ Public Class clsPlateauCard
 	Private VmCounters As Integer
 	Private VmAttachedTo As clsPlateauCard
 	Private VmAttachments As New List(Of clsPlateauCard)
-	Public Sub New(VpName As String, VpNameFR As String, VpType As String)
+	Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String)
 		VmCardName = VpName
 		VmCardNameFR = VpNameFR
 		VmCardType = VpType
-		Call Me.ReInit
+		Call Me.ReInit(VpOwner)
 	End Sub
-	Public Sub ReInit
+	Public Sub ReInit(VpOwner As List(Of clsPlateauCard))
+		VmOwner = VpOwner
 		VmTapped = False
 		VmHidden = True
 		VmCounters = 0
 		VmAttachedTo = Nothing
 		VmAttachments.Clear
 	End Sub
+	Public Sub SendTo(VpNewOwner As List(Of clsPlateauCard))
+		If Not VmOwner Is VpNewOwner Then
+			VmHidden = False
+			VmOwner.Remove(Me)
+			VmOwner = VpNewOwner
+			VmOwner.Add(Me)
+		End If
+	End Sub
 	Public Overrides Function ToString() As String
 		Return VmCardNameFR + " (" + VmCardName + ")"
 	End Function
+	Public Property Owner As List(Of clsPlateauCard)
+		Get
+			Return VmOwner
+		End Get
+		Set (VpOwner As List(Of clsPlateauCard))
+			VmOwner = VpOwner
+		End Set
+	End Property
 	Public ReadOnly Property NameVF As String
 		Get
 			Return VmCardNameFR

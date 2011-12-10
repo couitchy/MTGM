@@ -638,7 +638,7 @@ Partial Class frmPlateau
 		'
 		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuCounters, Me.cmnuSeparator1, Me.cmnuSendTo, Me.cmnuAttachTo})
 		Me.cmnuCardContext.Name = "cmnuCardContext"
-		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 126)
+		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 148)
 		'
 		'cmnuName
 		'
@@ -718,36 +718,42 @@ Partial Class frmPlateau
 		Me.cmnuSendToBibliBottom.Name = "cmnuSendToBibliBottom"
 		Me.cmnuSendToBibliBottom.Size = New System.Drawing.Size(194, 22)
 		Me.cmnuSendToBibliBottom.Text = "Bibliothèque (dessous)"
+		AddHandler Me.cmnuSendToBibliBottom.Click, AddressOf Me.CmnuSendToClick
 		'
 		'cmnuSendToRegard
 		'
 		Me.cmnuSendToRegard.Name = "cmnuSendToRegard"
 		Me.cmnuSendToRegard.Size = New System.Drawing.Size(194, 22)
 		Me.cmnuSendToRegard.Text = "Regard"
+		AddHandler Me.cmnuSendToRegard.Click, AddressOf Me.CmnuSendToClick
 		'
 		'cmnuSendToMain
 		'
 		Me.cmnuSendToMain.Name = "cmnuSendToMain"
 		Me.cmnuSendToMain.Size = New System.Drawing.Size(194, 22)
 		Me.cmnuSendToMain.Text = "Main"
+		AddHandler Me.cmnuSendToMain.Click, AddressOf Me.CmnuSendToClick
 		'
 		'cmnuSendToField
 		'
 		Me.cmnuSendToField.Name = "cmnuSendToField"
 		Me.cmnuSendToField.Size = New System.Drawing.Size(194, 22)
 		Me.cmnuSendToField.Text = "Champ de bataille"
+		AddHandler Me.cmnuSendToField.Click, AddressOf Me.CmnuSendToClick
 		'
 		'cmnuSendToGraveyard
 		'
 		Me.cmnuSendToGraveyard.Name = "cmnuSendToGraveyard"
 		Me.cmnuSendToGraveyard.Size = New System.Drawing.Size(194, 22)
 		Me.cmnuSendToGraveyard.Text = "Cimetière"
+		AddHandler Me.cmnuSendToGraveyard.Click, AddressOf Me.CmnuSendToClick
 		'
 		'cmnuSendToExil
 		'
 		Me.cmnuSendToExil.Name = "cmnuSendToExil"
 		Me.cmnuSendToExil.Size = New System.Drawing.Size(194, 22)
 		Me.cmnuSendToExil.Text = "Exil"
+		AddHandler Me.cmnuSendToExil.Click, AddressOf Me.CmnuSendToClick
 		'
 		'cmnuAttachTo
 		'
