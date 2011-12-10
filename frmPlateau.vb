@@ -115,20 +115,29 @@ Public Partial Class frmPlateau
 	Dim VpCard As clsPlateauCard = VpPicture.Tag
 		If VpCard.Tapped And Not VpStatic Then
 			VpPicture.Image.RotateFlip(RotateFlipType.Rotate90FlipNone)
-			VpPicture.Size = New Size(CgMTGCardWidth_px, CgMTGCardHeight_px)
-			VpPicture.Location = New Point(VpPicture.Location.X, VpPicture.Location.Y - (CgMTGCardHeight_px - CgMTGCardWidth_px))
+			VpPicture.Size = New Size(VpPicture.Height, VpPicture.Width)
+			VpPicture.Location = New Point(VpPicture.Location.X, VpPicture.Location.Y - Math.Abs(VpPicture.Height - VpPicture.Width))
 		ElseIf Not ( VpCard.Tapped Xor VpStatic )
 			VpPicture.Image.RotateFlip(RotateFlipType.Rotate270FlipNone)
-			VpPicture.Size = New Size(CgMTGCardHeight_px, CgMTGCardWidth_px)
-			VpPicture.Location = New Point(VpPicture.Location.X, VpPicture.Location.Y + (CgMTGCardHeight_px - CgMTGCardWidth_px))
+			VpPicture.Size = New Size(VpPicture.Height, VpPicture.Width)
+			VpPicture.Location = New Point(VpPicture.Location.X, VpPicture.Location.Y + Math.Abs(VpPicture.Height - VpPicture.Width))
 		End If
 		If Not VpStatic Then
 			VpCard.Tapped = Not VpCard.Tapped
 		End If
 	End Sub
 	Private Sub ShowContextMenu(VpPictureBox As PictureBox, VpPoint As Point)
+	Dim VpCurCard As clsPlateauCard
 		VmCurrentPicture = VpPictureBox
-		Me.cmnuCardContext.Show(VpPictureBox, VpPoint)		
+		VpCurCard = VmCurrentPicture.Tag
+		Me.cmnuName.Text = VpCurCard.NameVF
+		Me.cmnuAttachTo.DropDownItems.Clear
+		For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
+			If Not VpCard Is VpCurCard Then
+				Me.cmnuAttachTo.DropDownItems.Add(VpCard.NameVF, Nothing, AddressOf CmnuAttachToClick)
+			End If
+		Next VpCard
+		Me.cmnuCardContext.Show(VpPictureBox, VpPoint)
 	End Sub
 	Private Sub ManageResize
 		Me.splitV1.SplitterDistance = Me.splitV1.Width / 6
@@ -140,18 +149,32 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub PictureBoxPaint(sender As Object, e As PaintEventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
+	Dim VpDiameter As Single
+	Dim VpLeftToDraw As Integer
+	Dim VpLevel As Integer
+	Dim VpItem As Integer
+	Dim VpX As Single
+	Dim VpY As Single
 		'Gestion d'éventuels marqueurs sur la carte
 		If VpCard.Counters > 0 Then
-			
-			
-			
-			
-			e.Graphics.FillEllipse(Brushes.Pink, 0, 0, 10, 10)
-			
-			
-			
-			
-		End If		
+			VpDiameter = clsModule.CgCounterDiametr_px * Math.Max(sender.Width, sender.Height) / clsModule.CgMTGCardHeight_px
+			VpLeftToDraw = VpCard.Counters
+			VpLevel = 0
+			VpItem = 0
+			While VpLeftToDraw > 0
+				VpX = sender.Width  / 2 + (VpLevel + 1) * VpDiameter * Math.Cos(2 * VpItem * Math.PI / 2 ^ (VpLevel + 1))
+				VpY = sender.Height / 2 - (VpLevel + 1) * VpDiameter * Math.Sin(2 * VpItem * Math.PI / 2 ^ (VpLevel + 1))
+				e.Graphics.FillEllipse(Brushes.DarkBlue,        CInt(VpX), CInt(VpY), VpDiameter, VpDiameter)
+				e.Graphics.DrawEllipse(New Pen(Color.Black, 2), CInt(VpX), CInt(VpY), VpDiameter, VpDiameter)
+				If VpItem = 2 ^ (VpLevel + 1) - 1 Then
+					VpLevel += 1
+					VpItem = 0
+				Else
+					VpItem += 1
+				End If
+				VpLeftToDraw -= 1
+			End While
+		End If
 	End Sub
 	Sub FrmPlateauLoad(sender As Object, e As EventArgs)
 		Call Me.ManageResize
@@ -161,9 +184,35 @@ Public Partial Class frmPlateau
 		Call Me.ManageResize
 	End Sub
 	Sub BtNewPartieClick(sender As Object, e As EventArgs)
+		Me.btLives.Text = "Vies"
+		Me.btPoisons.Text = "Poisons"
+		VmPlateauPartie.Mulligan = 0
 		Call VmPlateauPartie.BeginPlateauPartie
 		Call Me.ManageReDraw
 	End Sub
+	Sub BtMulliganClick(sender As Object, e As EventArgs)
+		Me.btLives.Text = "Vies"
+		Me.btPoisons.Text = "Poisons"		
+		VmPlateauPartie.Mulligan = Math.Min(VmPlateauPartie.Mulligan + 1, clsModule.CgNMain - 1)
+		Call VmPlateauPartie.BeginPlateauPartie
+		Call Me.ManageReDraw
+	End Sub
+	Sub BtLivesMouseUp(sender As Object, e As MouseEventArgs)
+		If e.Button = MouseButtons.Left Then
+			VmPlateauPartie.Lives -= 1
+		Else
+			VmPlateauPartie.Lives += 1
+		End If
+		Me.btLives.Text = VmPlateauPartie.Lives.ToString
+	End Sub
+	Sub BtPoisonsMouseUp(sender As Object, e As MouseEventArgs)
+		If e.Button = MouseButtons.Left Then
+			VmPlateauPartie.Poisons += 1
+		Else
+			VmPlateauPartie.Poisons -= 1
+		End If
+		Me.btPoisons.Text = VmPlateauPartie.Poisons.ToString		
+	End Sub	
 	Sub BtBibliRevealClick(sender As Object, e As EventArgs)
 		Me.btBibliReveal.Checked = Not Me.btBibliReveal.Checked
 		Call Me.ManageReDraw
@@ -209,6 +258,21 @@ Public Partial Class frmPlateau
 	Dim VpCard As clsPlateauCard = VmCurrentPicture.Tag
 		VpCard.Counters = Math.Max(0, VpCard.Counters - 1)
 		VmCurrentPicture.Invalidate
+	End Sub
+	Sub CmnuCountersRemoveClick(sender As Object, e As EventArgs)
+	Dim VpCard As clsPlateauCard = VmCurrentPicture.Tag
+		VpCard.Counters = 0
+		VmCurrentPicture.Invalidate
+	End Sub
+	Sub CmnuTapUntapClick(sender As Object, e As EventArgs)
+		Call Me.ManageTap(VmCurrentPicture)
+		VmCurrentPicture.BringToFront
+	End Sub
+	Sub CmnuSendToClick(sender As Object, e As EventArgs)
+		
+	End Sub
+	Sub CmnuAttachToClick(sender As Object, e As EventArgs)
+	
 	End Sub
 	Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
@@ -302,6 +366,9 @@ Public Class clsPlateauPartie
 	Private VmField As New List(Of clsPlateauCard)
 	Private VmGraveyard As New List(Of clsPlateauCard)
 	Private VmExil As New List(Of clsPlateauCard)
+	Private VmMulligan As Integer = 0
+	Private VmLives As Integer
+	Private VmPoisons As Integer
 	Public Sub New(VpSource As String, VpRestriction As String)
 	'-------------------
 	'Construction du jeu
@@ -330,18 +397,18 @@ Public Class clsPlateauPartie
 		VmGraveyard.Clear
 		VmExil.Clear
 		For Each VpCard As clsPlateauCard In VmDeck
-			VpCard.Hidden = True
-			VpCard.Tapped = False
-			VpCard.Counters = 0
+			Call VpCard.ReInit
 			VmBibli.Add(VpCard)
 		Next VpCard
 		Call Shuffle(VmBibli)
-		VmMain.AddRange(VmBibli.GetRange(0, clsModule.CgNMain))
-		VmBibli.RemoveRange(0, clsModule.CgNMain)
+		VmMain.AddRange(VmBibli.GetRange(0, clsModule.CgNMain - VmMulligan))
+		VmBibli.RemoveRange(0, clsModule.CgNMain - VmMulligan)
 		For Each VpCard As clsPlateauCard In VmMain
 			VpCard.Hidden = False
 		Next VpCard
 		Call Me.SortAll
+		VmLives = clsModule.CgNLives
+		VmPoisons = 0
 	End Sub
 	Public Sub SortAll
 	'-----------------------------------------
@@ -445,6 +512,30 @@ Public Class clsPlateauPartie
 			End If
 		End Get
 	End Property
+	Public Property Mulligan As Integer
+		Get
+			Return VmMulligan
+		End Get
+		Set (VpMulligan As Integer)
+			VmMulligan = VpMulligan
+		End Set
+	End Property
+	Public Property Lives As Integer
+		Get
+			Return VmLives
+		End Get
+		Set (VpLives As Integer)
+			VmLives = VpLives
+		End Set
+	End Property
+	Public Property Poisons As Integer
+		Get
+			Return VmPoisons
+		End Get
+		Set (VpPoisons As Integer)
+			VmPoisons = VpPoisons
+		End Set
+	End Property
 	Private Class clsPlateauCardComparer
 		Implements IComparer(Of clsPlateauCard)
 		Public Function Compare(ByVal x As clsPlateauCard, ByVal y As clsPlateauCard) As Integer Implements IComparer(Of clsPlateauCard).Compare
@@ -459,13 +550,20 @@ Public Class clsPlateauCard
 	Private VmTapped As Boolean
 	Private VmHidden As Boolean
 	Private VmCounters As Integer
+	Private VmAttachedTo As clsPlateauCard
+	Private VmAttachments As New List(Of clsPlateauCard)
 	Public Sub New(VpName As String, VpNameFR As String, VpType As String)
 		VmCardName = VpName
 		VmCardNameFR = VpNameFR
 		VmCardType = VpType
+		Call Me.ReInit
+	End Sub
+	Public Sub ReInit
 		VmTapped = False
 		VmHidden = True
 		VmCounters = 0
+		VmAttachedTo = Nothing
+		VmAttachments.Clear
 	End Sub
 	Public Overrides Function ToString() As String
 		Return VmCardNameFR + " (" + VmCardName + ")"

@@ -47,6 +47,7 @@ Public Module clsModule
 	Public Const CgMTGCardHeight_mm As Integer	= 88
 	Public Const CgMTGCardWidth_px As Integer	= 210
 	Public Const CgMTGCardHeight_px As Integer	= 300
+	Public Const CgCounterDiametr_px As Integer = 20
 	Public Const CgXMargin As Integer			= 5
 	Public Const CgYMargin As Integer			= 8
 	Public Const CgTemp As String				= "\mtgmgr"
