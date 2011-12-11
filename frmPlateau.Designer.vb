@@ -98,6 +98,7 @@ Partial Class frmPlateau
 		Me.cmnuSendToGraveyard = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToExil = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuAttachTo = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuDetachFrom = New System.Windows.Forms.ToolStripMenuItem
 		Me.toolStrip.SuspendLayout
 		Me.splitV1.Panel1.SuspendLayout
 		Me.splitV1.Panel2.SuspendLayout
@@ -389,6 +390,7 @@ Partial Class frmPlateau
 		Me.btGraveyardSearch.Name = "btGraveyardSearch"
 		Me.btGraveyardSearch.Size = New System.Drawing.Size(21, 20)
 		Me.btGraveyardSearch.Text = "Rechercher"
+		AddHandler Me.btGraveyardSearch.Click, AddressOf Me.BtGraveyardSearchClick
 		'
 		'cbarExil
 		'
@@ -440,6 +442,7 @@ Partial Class frmPlateau
 		Me.btExilSearch.Name = "btExilSearch"
 		Me.btExilSearch.Size = New System.Drawing.Size(21, 20)
 		Me.btExilSearch.Text = "Rechercher"
+		AddHandler Me.btExilSearch.Click, AddressOf Me.BtExilSearchClick
 		'
 		'splitH1
 		'
@@ -636,9 +639,9 @@ Partial Class frmPlateau
 		'
 		'cmnuCardContext
 		'
-		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuCounters, Me.cmnuSeparator1, Me.cmnuSendTo, Me.cmnuAttachTo})
+		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuCounters, Me.cmnuSeparator1, Me.cmnuSendTo, Me.cmnuAttachTo, Me.cmnuDetachFrom})
 		Me.cmnuCardContext.Name = "cmnuCardContext"
-		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 148)
+		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 170)
 		'
 		'cmnuName
 		'
@@ -762,6 +765,14 @@ Partial Class frmPlateau
 		Me.cmnuAttachTo.Size = New System.Drawing.Size(172, 22)
 		Me.cmnuAttachTo.Text = "Attacher à..."
 		'
+		'cmnuDetachFrom
+		'
+		Me.cmnuDetachFrom.Image = CType(resources.GetObject("cmnuDetachFrom.Image"),System.Drawing.Image)
+		Me.cmnuDetachFrom.Name = "cmnuDetachFrom"
+		Me.cmnuDetachFrom.Size = New System.Drawing.Size(172, 22)
+		Me.cmnuDetachFrom.Text = "Détacher"
+		AddHandler Me.cmnuDetachFrom.Click, AddressOf Me.CmnuDetachFromClick
+		'
 		'frmPlateau
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -826,6 +837,7 @@ Partial Class frmPlateau
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private cmnuDetachFrom As System.Windows.Forms.ToolStripMenuItem
 	Private btSeparator1 As System.Windows.Forms.ToolStripSeparator
 	Private btPoisons As System.Windows.Forms.ToolStripButton
 	Private btLives As System.Windows.Forms.ToolStripButton
