@@ -119,6 +119,7 @@ Partial Class MainForm
 		Me.mnuExcelGen = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuWordGen = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPerfs = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuPlateau = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSimu = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuStats = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMV = New System.Windows.Forms.ToolStripMenuItem
@@ -202,7 +203,6 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.mnuPlateau = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -398,6 +398,7 @@ Partial Class MainForm
 		Me.imglstCarac.Images.SetKeyName(52, "_lwu.png")
 		Me.imglstCarac.Images.SetKeyName(53, "_lq.png")
 		Me.imglstCarac.Images.SetKeyName(54, "_lt.png")
+		Me.imglstCarac.Images.SetKeyName(55, "_ls.png")
 		'
 		'cmnuTvw
 		'
@@ -969,6 +970,15 @@ Partial Class MainForm
 		Me.mnuPerfs.Size = New System.Drawing.Size(303, 22)
 		Me.mnuPerfs.Text = "Comptage Victoires / Défaites"
 		AddHandler Me.mnuPerfs.Click, AddressOf Me.MnuPerfsActivate
+		'
+		'mnuPlateau
+		'
+		Me.mnuPlateau.Image = CType(resources.GetObject("mnuPlateau.Image"),System.Drawing.Image)
+		Me.mnuPlateau.Name = "mnuPlateau"
+		Me.mnuPlateau.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P),System.Windows.Forms.Keys)
+		Me.mnuPlateau.Size = New System.Drawing.Size(303, 22)
+		Me.mnuPlateau.Text = "Plateau de jeu sur la sélection"
+		AddHandler Me.mnuPlateau.Click, AddressOf Me.MnuPlateauClick
 		'
 		'mnuSimu
 		'
@@ -1850,15 +1860,6 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(16, "_aM.gif")
 		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
 		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
-		'
-		'mnuPlateau
-		'
-		Me.mnuPlateau.Image = CType(resources.GetObject("mnuPlateau.Image"),System.Drawing.Image)
-		Me.mnuPlateau.Name = "mnuPlateau"
-		Me.mnuPlateau.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P),System.Windows.Forms.Keys)
-		Me.mnuPlateau.Size = New System.Drawing.Size(303, 22)
-		Me.mnuPlateau.Text = "Plateau de jeu sur la sélection"
-		AddHandler Me.mnuPlateau.Click, AddressOf Me.MnuPlateauClick
 		'
 		'MainForm
 		'

@@ -2345,10 +2345,16 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuPlateauClick(sender As Object, e As EventArgs)
 	Dim VpPlateau As frmPlateau
-		If clsModule.DBOK Then			
-			If Me.GetNCards(If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)) <= clsModule.CgMaxVignettes Then
-				VpPlateau = New frmPlateau(Me)
-				VpPlateau.Show
+	Dim VpN As Integer
+		If clsModule.DBOK Then
+			VpN = Me.GetNCards(If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection))
+			If VpN <= clsModule.CgMaxVignettes Then
+				If VpN >= clsModule.CgNMain Then
+					VpPlateau = New frmPlateau(Me)
+					VpPlateau.Show
+				Else
+					Call clsModule.ShowWarning("Il faut avoir au moins " + clsModule.CgNMain.ToString + " cartes saisies pour tirer une main...")
+				End If
 			Else
 				Call clsModule.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + clsModule.CgMaxVignettes.ToString + ".")
 			End If

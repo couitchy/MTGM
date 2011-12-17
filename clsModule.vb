@@ -31,7 +31,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 29300
+	Public Const CgCodeLines As Integer   		= 29501
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -84,7 +84,7 @@ Public Module clsModule
 	Public Const CgURL2 As String         		= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         		= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         		= "/Updates/Images DB.mdb"
-	Public Const CgURL3B As String         		= "/Updates/Patch r11.mdb"
+	Public Const CgURL3B As String         		= "/Updates/Patch r9.mdb"
 	Public Const CgURL4 As String				= "/Listes%20des%20editions/"
 	Public Const CgURL5 As String				= "/Logos%20des%20editions/"
 	Public Const CgURL6 As String				= "http://gatherer.wizards.com/Pages/Default.aspx"
@@ -1076,7 +1076,9 @@ Public Module clsModule
 					Case "m"
 						VpImgIndex = 1
 					Case "a"
-						VpImgIndex = 1				
+						VpImgIndex = 1
+					Case "s"
+						VpImgIndex = 55
 					Case Else
 						VpImgIndex = -1
 				End Select

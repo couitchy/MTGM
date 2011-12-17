@@ -75,11 +75,9 @@ Public Partial Class frmPlateau
 	'---------------------------------
 	'Dessin d'une carte sur le plateau
 	'---------------------------------
-	Dim VpIndexV As Integer
 	Dim VpW As Integer
 	Dim VpH As Integer
 	Dim VpEffectiveCardHeight_px As Integer
-	Dim VpHost As PictureBox
 		If Not VpCard Is Nothing Then
 			If VpUntap Then
 				VpCard.Tapped = False
@@ -88,8 +86,8 @@ Public Partial Class frmPlateau
 			VpEffectiveCardHeight_px = CInt(CgMTGCardHeight_px * (1 + VpCard.Attachments.Count * CgChevauchFactor))	'/!\ il faut prendre en compte les cartes attachées pour avoir la hauteur totale
 			'Si c'est la hauteur qui limite
 			If VpEffectiveCardHeight_px - VpParent.Height > CgMTGCardWidth_px - VpParent.Width Then
-				VpH = Math.Min(VpParent.Height, VpEffectiveCardHeight_px)			'ici VpH vaut la hauteur cumulée (avec les cartes attachées)
-				VpH = CInt(VpH / (1 + VpCard.Attachments.Count * CgChevauchFactor))	'on divise pour trouver la hauteur de la carte hôte seule
+				VpH = Math.Min(VpParent.Height, VpEffectiveCardHeight_px)				'ici VpH vaut la hauteur cumulée (avec les cartes attachées)
+				VpH = CInt(VpH / (1 + VpCard.Attachments.Count * CgChevauchFactor))		'on divise pour trouver la hauteur de la carte hôte seule
 				VpW = CgMTGCardWidth_px * VpH / CgMTGCardHeight_px
 			'Si c'est la largeur qui limite
 			Else
@@ -97,19 +95,16 @@ Public Partial Class frmPlateau
 				VpH = CgMTGCardHeight_px * VpW / CgMTGCardWidth_px
 			End If
 			'Dessin carte hôte
-			VpHost = Me.EffectiveDraw(VpCard, VpW, VpH, VpIndexH, VpCount, VpCard.Attachments.Count, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
-			'Dessin cartes attachées
+			Call Me.EffectiveDraw(VpCard, VpW, VpH, VpIndexH, VpCount, VpCard.Attachments.Count, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
+			'Dessin cartes attachées éventuelles
 			If VpCard.Attachments.Count > 0 Then
-				VpIndexV = 0
-				For Each VpAttachment As clsPlateauCard In VpCard.Attachments
-					Me.EffectiveDraw(VpAttachment, VpW, VpH, VpIndexH, VpCount, VpIndexV, VpParent, VpDoubleClickHandler, VpMouseUpHandler).BringToFront
-					VpIndexV += 1
-				Next VpAttachment
-				VpHost.BringToFront
+				For VpIndexV As Integer = VpCard.Attachments.Count - 1 To 0 Step - 1	'on parcourt la liste à l'envers pour avoir l'affichage visuel dans le bon ordre (zorder)
+					Call Me.EffectiveDraw(VpCard.Attachments.Item(VpIndexV), VpW, VpH, VpIndexH, VpCount, VpIndexV, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
+				Next VpIndexV
 			End If
 		End If
 	End Sub
-	Private Function EffectiveDraw(VpCard As clsPlateauCard, VpW As Integer, VpH As Integer, VpIndexH As Integer, VpCount As Integer, VpIndexV As Integer, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler) As PictureBox
+	Private Sub EffectiveDraw(VpCard As clsPlateauCard, VpW As Integer, VpH As Integer, VpIndexH As Integer, VpCount As Integer, VpIndexV As Integer, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
 	Dim VpPicture As PictureBox
 		VpPicture = New PictureBox
 		With VpPicture
@@ -120,14 +115,14 @@ Public Partial Class frmPlateau
 			.Tag = VpCard
 			AddHandler .DoubleClick, VpDoubleClickHandler
 			AddHandler .MouseUp, VpMouseUpHandler
+			AddHandler .MouseDown, New MouseEventHandler(AddressOf Me.CardMouseDown)
 			AddHandler .Paint, New PaintEventHandler(AddressOf Me.PictureBoxPaint)
 		End With
 		'Gestion carte engagée / dégagée
 		Call Me.ManageTap(VpPicture, True)
 		VpParent.Controls.Add(VpPicture)
 		VmPictures.Add(VpPicture)		'conserve la référence
-		Return VpPicture
-	End Function
+	End Sub
 	Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
 		Call Me.DrawPicture(VpCard, VpUntap, VpParent, 0, 1, VpDoubleClickHandler, VpMouseUpHandler)
 	End Sub
@@ -356,6 +351,8 @@ Public Partial Class frmPlateau
 				Call VpCurCard.SendTo(VmPlateauPartie.Bibli)
 				VpCurCard.Hidden = True
 			Case Me.cmnuSendToBibliTop.Name
+				Call VpCurCard.SendTo(VmPlateauPartie.Bibli, True)
+				VpCurCard.Hidden = True
 			Case Me.cmnuSendToExil.Name
 				Call VpCurCard.SendTo(VmPlateauPartie.Exil)
 			Case Me.cmnuSendToField.Name
@@ -383,7 +380,7 @@ Public Partial Class frmPlateau
 		Call VpCurCard.AttachTo(Nothing)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw
-	End Sub	
+	End Sub
 	Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
 	End Sub
@@ -471,6 +468,23 @@ Public Partial Class frmPlateau
 			Call Me.ManageContextMenu(True)
 			Call Me.ShowContextMenu(sender, e.Location)
 		End If
+	End Sub
+	Sub CardMouseDown(sender As Object, e As MouseEventArgs)
+'	Dim VpPicture As PictureBox = sender
+'		VpPicture.DoDragDrop(VpPicture, DragDropEffects.Move)
+	End Sub
+	Sub PanelFieldDragEnter(sender As Object, e As DragEventArgs)
+		If e.Data.GetFormats()(0) = GetType(PictureBox).ToString Then
+			e.Effect = DragDropEffects.Move
+		Else
+			e.Effect = DragDropEffects.None
+		End If
+	End Sub	
+	Sub PanelFieldDragDrop(sender As Object, e As DragEventArgs)
+	Dim VpCard As clsPlateauCard = e.Data.GetData(GetType(PictureBox)).Tag
+		Call VpCard.SendTo(VmPlateauPartie.Field)
+		Call VmPlateauPartie.SortAll
+		Call Me.ManageReDraw
 	End Sub
 	#End Region
 End Class
@@ -696,12 +710,19 @@ Public Class clsPlateauCard
 		VmAttachedTo = Nothing
 		VmAttachments.Clear
 	End Sub
-	Public Sub SendTo(VpNewOwner As List(Of clsPlateauCard))
+	Public Sub SendTo(VpNewOwner As List(Of clsPlateauCard), Optional VpTop As Boolean = False)
+	'-----------------------
+	'Change la carte de zone
+	'-----------------------
 		If Not VmOwner Is VpNewOwner Then
 			VmHidden = False
 			VmOwner.Remove(Me)
 			VmOwner = VpNewOwner
-			VmOwner.Add(Me)
+			If VpTop Then
+				VmOwner.Insert(0, Me)
+			Else
+				VmOwner.Add(Me)
+			End If
 			'On doit aussi enlever tout ce qui était attaché / ce à quoi on était attaché
 			For Each VpAttachment As clsPlateauCard In VmAttachments
 				Call VpAttachment.AttachTo(Nothing)
@@ -711,11 +732,14 @@ Public Class clsPlateauCard
 		End If
 	End Sub
 	Public Sub AttachTo(VpHost As clsPlateauCard)
+	'---------------------------------------------------------------------
+	'Attache la carte à une autre (équipement, enchantement, empreinte...)
+	'---------------------------------------------------------------------
 		If Not VmAttachedTo Is Nothing Then
 			VmAttachedTo.Attachments.Remove(Me)
 		End If
 		VmAttachedTo = VpHost
-		If Not VmAttachedTo Is Nothing Then			
+		If Not VmAttachedTo Is Nothing Then
 			VmAttachedTo.Attachments.Add(Me)
 		End If
 	End Sub

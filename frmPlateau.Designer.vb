@@ -182,6 +182,7 @@ Partial Class frmPlateau
 		Me.btLives.Size = New System.Drawing.Size(74, 51)
 		Me.btLives.Text = "Vies"
 		Me.btLives.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btLives.ToolTipText = "Clic gauche pour -, droit pour +"
 		AddHandler Me.btLives.MouseUp, AddressOf Me.BtLivesMouseUp
 		'
 		'btPoisons
@@ -194,6 +195,7 @@ Partial Class frmPlateau
 		Me.btPoisons.Size = New System.Drawing.Size(74, 51)
 		Me.btPoisons.Text = "Poisons"
 		Me.btPoisons.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btPoisons.ToolTipText = "Clic gauche pour +, droit pour -"
 		AddHandler Me.btPoisons.MouseUp, AddressOf Me.BtPoisonsMouseUp
 		'
 		'btSeparator1
@@ -275,6 +277,7 @@ Partial Class frmPlateau
 		'
 		'panelBibli
 		'
+		Me.panelBibli.AllowDrop = true
 		Me.panelBibli.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelBibli.Location = New System.Drawing.Point(24, 0)
 		Me.panelBibli.Name = "panelBibli"
@@ -366,6 +369,7 @@ Partial Class frmPlateau
 		'
 		'panelGraveyard
 		'
+		Me.panelGraveyard.AllowDrop = true
 		Me.panelGraveyard.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelGraveyard.Location = New System.Drawing.Point(24, 0)
 		Me.panelGraveyard.Name = "panelGraveyard"
@@ -418,6 +422,7 @@ Partial Class frmPlateau
 		'
 		'panelExil
 		'
+		Me.panelExil.AllowDrop = true
 		Me.panelExil.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelExil.Location = New System.Drawing.Point(24, 0)
 		Me.panelExil.Name = "panelExil"
@@ -489,6 +494,7 @@ Partial Class frmPlateau
 		'
 		'panelRegard
 		'
+		Me.panelRegard.AllowDrop = true
 		Me.panelRegard.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelRegard.Location = New System.Drawing.Point(24, 0)
 		Me.panelRegard.Name = "panelRegard"
@@ -559,6 +565,7 @@ Partial Class frmPlateau
 		'
 		'panelMain
 		'
+		Me.panelMain.AllowDrop = true
 		Me.panelMain.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelMain.Location = New System.Drawing.Point(24, 0)
 		Me.panelMain.Name = "panelMain"
@@ -611,11 +618,14 @@ Partial Class frmPlateau
 		'
 		'panelField
 		'
+		Me.panelField.AllowDrop = true
 		Me.panelField.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelField.Location = New System.Drawing.Point(24, 0)
 		Me.panelField.Name = "panelField"
 		Me.panelField.Size = New System.Drawing.Size(452, 176)
 		Me.panelField.TabIndex = 3
+		AddHandler Me.panelField.DragDrop, AddressOf Me.PanelFieldDragDrop
+		AddHandler Me.panelField.DragEnter, AddressOf Me.PanelFieldDragEnter
 		'
 		'toolStripField
 		'
@@ -641,7 +651,7 @@ Partial Class frmPlateau
 		'
 		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuCounters, Me.cmnuSeparator1, Me.cmnuSendTo, Me.cmnuAttachTo, Me.cmnuDetachFrom})
 		Me.cmnuCardContext.Name = "cmnuCardContext"
-		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 170)
+		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 148)
 		'
 		'cmnuName
 		'

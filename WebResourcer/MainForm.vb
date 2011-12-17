@@ -584,6 +584,8 @@ Public Partial Class MainForm
 				VpStr = VpStr.Replace("&#8212;", "-")
 				VpStr = VpStr.Replace("&#8217;", "'")
 				VpStr = VpStr.Replace("<img src=""/images/magic/manas/micro/", "!")
+				VpStr = VpStr.Replace("<img src=""images/smileys/", "!")
+				VpStr = VpStr.Replace("<img src=""/images/smileys/", "!")
 				VpStr = VpStr.Replace(".gif""  border=""0"" style=""vertical-align: text-bottom;"" alt="""" />", "!")
 				VpStr = VpStr.Replace("<br />", vbCrLf)
 				Return VpStr
@@ -1161,6 +1163,8 @@ Public Partial Class MainForm
 				.CommandText = "Drop Table Series;"
 				.ExecuteNonQuery
 				.CommandText = "Drop Table Autorisations;"
+				.ExecuteNonQuery
+				.CommandText = "Drop Table CardDouble;"
 				.ExecuteNonQuery
 				.CommandText = "Drop Table CardFR;"
 				.ExecuteNonQuery

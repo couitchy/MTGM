@@ -344,7 +344,7 @@ Public Class clsSettings
 			VmForceSingleSource = VpForceSingleSource
 		End Set
 	End Property
-	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour des autorisations de tournoi")> _
+	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des autorisations de tournoi")> _
 	Public Property LastUpdateAut As String
 		Get
 			Return VmLastUpdateAut
@@ -353,7 +353,7 @@ Public Class clsSettings
 			VmLastUpdateAut = VpLastUpdateAut
 		End Set
 	End Property
-	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour des modèles de simulations / historiques")> _
+	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des modèles de simulations / historiques")> _
 	Public Property LastUpdateSimu As String
 		Get
 			Return VmLastUpdateSimu
@@ -362,7 +362,7 @@ Public Class clsSettings
 			VmLastUpdateSimu = VpLastUpdateSimu
 		End Set
 	End Property
-	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour des textes des cartes en VF")> _
+	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des textes des cartes en VF")> _
 	Public Property LastUpdateTxtVF As String
 		Get
 			Return VmLastUpdateTxtVF
@@ -371,7 +371,7 @@ Public Class clsSettings
 			VmLastUpdateTxtVF = VpLastUpdateTxtVF
 		End Set
 	End Property
-	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour du correctif des images")> _
+	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour du correctif des images")> _
 	Public Property LastUpdatePictPatch As String
 		Get
 			Return VmLastUpdatePictPatch
@@ -380,7 +380,7 @@ Public Class clsSettings
 			VmLastUpdatePictPatch = VpLastUpdatePictPatch
 		End Set
 	End Property
-	<Browsable(False), Category("Général"), Description("Date de dernière mise à jour du correctif des titres des cartes en VF")> _
+	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour du correctif des titres des cartes en VF")> _
 	Public Property LastUpdateTradPatch As String
 		Get
 			Return VmLastUpdateTradPatch
@@ -398,7 +398,7 @@ Public Class clsSettings
 			VmPrevSearches = VpPrevSearches
 		End Set
 	End Property
-	<DisplayName("Afficher les menus détaillés des mises à jour"), Category("Général"), DefaultValue(False), Description("Permet d'afficher l'ensemble des menus des mises à jour (obsolète)")> _
+	<DisplayName("Afficher les menus détaillés des mises à jour"), Category("Mises à jour"), DefaultValue(False), Description("Permet d'afficher l'ensemble des menus des mises à jour (obsolète)")> _
 	Public Property ShowUpdateMenus As Boolean
 		Get
 			Return VmShowUpdateMenus
