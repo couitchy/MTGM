@@ -23,9 +23,7 @@ Public Partial Class frmPlateau
 	Private VmRestriction As String
 	Private VmRestrictionTXT As String
 	Private VmPlateauPartie As clsPlateauPartie
-	Private VmPictures As New List(Of PictureBox)
-	Private VmCurrentPicture As PictureBox
-	Private VmDragMode As Boolean
+	Private VmPlateau As New clsPlateauDrawings
 	#End Region
 	#Region "Méthodes"
 	Public Sub New(VpOwner As MainForm)
@@ -54,7 +52,7 @@ Public Partial Class frmPlateau
 	Dim VpCard As clsPlateauCard
 		With VmPlateauPartie
 			'Efface les anciennes images (celles à redessiner)
-			For Each VpPictureBox As PictureBox In VmPictures
+			For Each VpPictureBox As PictureBox In VmPlateau.Pictures
 				VpCard = VpPictureBox.Tag
 				If (VpCard.Owner Is .Bibli And VpBibli) Or (VpCard.Owner Is .Graveyard And VpGraveyard) Or (VpCard.Owner Is .Exil And VpExil) Or (VpCard.Owner Is .Regard And VpRegard) Or (VpCard.Owner Is .Main And VpMain) Or (VpCard.Owner Is .Field And VpField) Then
 					VpToRemove.Add(VpPictureBox)
@@ -63,7 +61,7 @@ Public Partial Class frmPlateau
 				End If
 			Next VpPictureBox
 			For Each VpPictureBox As PictureBox In VpToRemove	'interdiction de supprimer des éléments d'une collection en cours d'énumération, d'où cette 2nde boucle
-				VmPictures.Remove(VpPictureBox)
+				VmPlateau.Pictures.Remove(VpPictureBox)
 			Next VpPictureBox		
 			'Bibliothèque
 			If VpBibli Then
@@ -156,7 +154,7 @@ Public Partial Class frmPlateau
 		'Gestion carte engagée / dégagée
 		Call Me.ManageTap(VpPicture, True)
 		VpParent.Controls.Add(VpPicture)
-		VmPictures.Add(VpPicture)		'conserve la référence
+		VmPlateau.Pictures.Add(VpPicture)		'conserve la référence
 	End Sub
 	Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
 		Call Me.DrawPicture(VpCard, VpUntap, VpParent, 0, 1, VpDoubleClickHandler, VpMouseUpHandler)
@@ -236,21 +234,19 @@ Public Partial Class frmPlateau
 	'-------------------------------------
 	'Affichage effectif du menu contextuel
 	'-------------------------------------
-	Dim VpCurCard As clsPlateauCard
 	Dim VpDropDown As ToolStripItem
-		VmCurrentPicture = VpPictureBox
-		VpCurCard = VmCurrentPicture.Tag
+		VmPlateau.CurrentPicture = VpPictureBox
 		'Nom de la carte (titre du menu contextuel)
-		If VpCurCard.Owner Is VmPlateauPartie.Bibli And Not Me.btBibliReveal.Checked Then
+		If VmPlateau.CurrentCard.Owner Is VmPlateauPartie.Bibli And Not Me.btBibliReveal.Checked Then
 			Me.cmnuName.Text = "(Face cachée)"
 		Else
-			Me.cmnuName.Text = VpCurCard.NameVF
+			Me.cmnuName.Text = VmPlateau.CurrentCard.NameVF
 		End If
 		'Liste des autres cartes auxquelles on pourrait potentiellement attacher la carte courante
 		Me.cmnuAttachTo.DropDownItems.Clear
-		If VpCurCard.Attachments.Count = 0 Then									'on peut s'attacher à une autre carte que si personne n'est attaché à soi
+		If VmPlateau.CurrentCard.Attachments.Count = 0 Then									'on peut s'attacher à une autre carte que si personne n'est attaché à soi
 			For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
-				If Not VpCard Is VpCurCard AndAlso Not VpCard.IsAttached Then	'on ne peut ni s'attacher à soi-même ni à une carte déjà attachée à une autre carte
+				If Not VpCard Is VmPlateau.CurrentCard AndAlso Not VpCard.IsAttached Then	'on ne peut ni s'attacher à soi-même ni à une carte déjà attachée à une autre carte
 					VpDropDown = Me.cmnuAttachTo.DropDownItems.Add(VpCard.NameVF, Nothing, AddressOf CmnuAttachToClick)
 					VpDropDown.Tag = VpCard										'conserve la référence de l'hôte potentiel
 				End If
@@ -280,6 +276,7 @@ Public Partial Class frmPlateau
 			Call VmPlateauPartie.SortAll
 			Call Me.ManageReDraw(VpSource, VpDestination)
 		End If
+		Call VmPlateau.StopDragging
 	End Sub
 	#End Region
 	#Region "Evènements"
@@ -318,7 +315,7 @@ Public Partial Class frmPlateau
 	Sub FrmPlateauLoad(sender As Object, e As EventArgs)
 		Call Me.ManageResize
 		Me.Text = clsModule.CgPlateau + VmRestrictionTXT
-		VmDragMode = False
+		VmPlateau.DragMode = False
 	End Sub
 	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)
 		Call Me.ManageResize
@@ -373,66 +370,63 @@ Public Partial Class frmPlateau
 		Call Me.SearchIn(VmPlateauPartie.Exil, VmPlateauPartie.Exil.Count - 1)
 	End Sub
 	Sub CmnuCountersAddClick(sender As Object, e As EventArgs)
-	Dim VpCard As clsPlateauCard = VmCurrentPicture.Tag
-		VpCard.Counters = VpCard.Counters + 1
-		VmCurrentPicture.Invalidate
+		VmPlateau.CurrentCard.Counters = VmPlateau.CurrentCard.Counters + 1
+		VmPlateau.CurrentPicture.Invalidate
 	End Sub
 	Sub CmnuCountersSubClick(sender As Object, e As EventArgs)
-	Dim VpCard As clsPlateauCard = VmCurrentPicture.Tag
-		VpCard.Counters = Math.Max(0, VpCard.Counters - 1)
-		VmCurrentPicture.Invalidate
+		VmPlateau.CurrentCard.Counters = Math.Max(0, VmPlateau.CurrentCard.Counters - 1)
+		VmPlateau.CurrentPicture.Invalidate
 	End Sub
 	Sub CmnuCountersRemoveClick(sender As Object, e As EventArgs)
-	Dim VpCard As clsPlateauCard = VmCurrentPicture.Tag
-		VpCard.Counters = 0
-		VmCurrentPicture.Invalidate
+		VmPlateau.CurrentCard.Counters = 0
+		VmPlateau.CurrentPicture.Invalidate
 	End Sub
 	Sub CmnuTapUntapClick(sender As Object, e As EventArgs)
-		Call Me.ManageTap(VmCurrentPicture)
-		VmCurrentPicture.BringToFront
+		Call Me.ManageTap(VmPlateau.CurrentPicture)
+		VmPlateau.CurrentPicture.BringToFront
 	End Sub
 	Sub CmnuSendToClick(sender As Object, e As EventArgs)
-	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
 	Dim VpRedraw As Boolean
-	Dim VpSource As List(Of clsPlateauCard) = VpCurCard.Owner
-		Select Case CType(sender, ToolStripMenuItem).Name
-			Case Me.cmnuSendToBibliBottom.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Bibli)
-				If VpRedraw Then
-					VpCurCard.Hidden = True
-				End If
-			Case Me.cmnuSendToBibliTop.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Bibli, True)
-				If VpRedraw Then
-					VpCurCard.Hidden = True
-				End If
-			Case Me.cmnuSendToExil.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Exil)
-			Case Me.cmnuSendToField.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Field)
-			Case Me.cmnuSendToGraveyard.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Graveyard)
-			Case Me.cmnuSendToMain.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Main)
-			Case Me.cmnuSendToRegard.Name
-				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Regard)
-			Case Else
-		End Select
-		If VpRedraw Then
-			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw(VpSource, VpCurCard.Owner)
-		End If
+	Dim VpSource As List(Of clsPlateauCard)
+		With VmPlateau.CurrentCard
+			VpSource = .Owner
+			Select Case CType(sender, ToolStripMenuItem).Name
+				Case Me.cmnuSendToBibliBottom.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Bibli)
+					If VpRedraw Then
+						.Hidden = True
+					End If
+				Case Me.cmnuSendToBibliTop.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Bibli, True)
+					If VpRedraw Then
+						.Hidden = True
+					End If
+				Case Me.cmnuSendToExil.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Exil)
+				Case Me.cmnuSendToField.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Field)
+				Case Me.cmnuSendToGraveyard.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Graveyard)
+				Case Me.cmnuSendToMain.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Main)
+				Case Me.cmnuSendToRegard.Name
+					VpRedraw = .SendTo(VmPlateauPartie.Regard)
+				Case Else
+			End Select
+			If VpRedraw Then
+				Call VmPlateauPartie.SortAll
+				Call Me.ManageReDraw(VpSource, .Owner)
+			End If
+		End With
 	End Sub
 	Sub CmnuAttachToClick(sender As Object, e As EventArgs)
 	Dim VpHost As clsPlateauCard = sender.Tag
-	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
-		Call VpCurCard.AttachTo(VpHost)
+		Call VmPlateau.CurrentCard.AttachTo(VpHost)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
 	Sub CmnuDetachFromClick(sender As Object, e As EventArgs)
-	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
-		Call VpCurCard.AttachTo(Nothing)
+		Call VmPlateau.CurrentCard.AttachTo(Nothing)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
@@ -534,14 +528,14 @@ Public Partial Class frmPlateau
 	Sub CardMouseMove(sender As Object, e As MouseEventArgs)
 	Dim VpPicture As PictureBox = sender
 		If e.Button = MouseButtons.Left Then
-			If Not VmDragMode Then
-				VmDragMode = True
+			If Not VmPlateau.DragMode Then
+				VmPlateau.DragMode = True
 				VpPicture.DoDragDrop(VpPicture, DragDropEffects.Move)
 			End If
 		End If
 	End Sub
 	Sub CardMouseLeave(sender As Object, e As EventArgs)
-		VmDragMode = False
+		VmPlateau.DragMode = False
 	End Sub
 	Sub PanelDragEnter(sender As Object, e As DragEventArgs)
 		If e.Data.GetFormats()(0) = GetType(PictureBox).ToString Then
@@ -550,6 +544,22 @@ Public Partial Class frmPlateau
 			e.Effect = DragDropEffects.None
 		End If
 	End Sub	
+	Sub PanelDragOver(sender As Object, e As DragEventArgs)
+	Dim VpOrigPicture As PictureBox = e.Data.GetData(GetType(PictureBox))
+	Dim VpImg As Image
+		With VmPlateau.DraggedPicture
+			If .Image Is Nothing Then
+				VpImg = VpOrigPicture.Image
+				.Image = New Bitmap(VpImg.Width, VpImg.Height)
+				Using VpGraphics As Graphics = Graphics.FromImage(.Image)
+					VpGraphics.DrawImage(VpImg, New Rectangle(0, 0, .Image.Width, .Image.Height), 0, 0, .Image.Width, .Image.Height, GraphicsUnit.Pixel, VmPlateau.Opacity)
+				End Using
+				.Size = VpOrigPicture.Size
+			End If
+			sender.Controls.Add(VmPlateau.DraggedPicture)
+			.Location = sender.PointToClient(New Point(e.X - .Width / 2, e.Y - .Height / 2))
+		End With	
+	End Sub
 	Sub PanelFieldDragDrop(sender As Object, e As DragEventArgs)
 		Call Me.ManageDrop(e, VmPlateauPartie.Field)
 	End Sub	
@@ -908,5 +918,66 @@ Public Class clsPlateauCard
 		Set (VpAttachments As List(Of clsPlateauCard))
 			VmAttachments = VpAttachments
 		End Set
+	End Property
+End Class
+Public Class clsPlateauDrawings
+	Private VmPictures As New List(Of PictureBox)
+	Private VmCurrentPicture As PictureBox
+	Private VmDragMode As Boolean	
+	Private VmDraggedPicture As PictureBox
+	Private VmAttrib As New Imaging.ImageAttributes
+	Public Sub New
+	Dim VpColorMatrix As New Imaging.ColorMatrix
+		VmDraggedPicture = New PictureBox
+		VmDraggedPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		VmDraggedPicture.BackColor = Color.Transparent
+		VpColorMatrix.Matrix00 = 1 : VpColorMatrix.Matrix11 = 1 : VpColorMatrix.Matrix22 = 1 : VpColorMatrix.Matrix33 = 0.5 : VpColorMatrix.Matrix44 = 1
+		VmAttrib.SetColorMatrix(VpColorMatrix)
+	End Sub
+	Public Sub StopDragging
+		VmDraggedPicture.Visible = False
+		VmDraggedPicture.Image = Nothing
+	End Sub
+	Public Property Pictures As List(Of PictureBox)
+		Get
+			Return VmPictures
+		End Get
+		Set (VpPictures As List(Of PictureBox))
+			VmPictures = VpPictures
+		End Set
+	End Property
+	Public Property CurrentPicture As PictureBox
+		Get
+			Return VmCurrentPicture
+		End Get
+		Set (VpCurrentPicture As PictureBox)
+			VmCurrentPicture = VpCurrentPicture
+		End Set
+	End Property
+	Public ReadOnly Property CurrentCard As clsPlateauCard
+		Get
+			Return VmCurrentPicture.Tag
+		End Get
+	End Property
+	Public Property DragMode As Boolean
+		Get
+			Return VmDragMode
+		End Get
+		Set (VpDragMode As Boolean)
+			VmDragMode = VpDragMode
+			If VmDragMode Then
+				VmDraggedPicture.Visible = True
+			End If
+		End Set
+	End Property
+	Public ReadOnly Property DraggedPicture As PictureBox
+		Get
+			Return VmDraggedPicture
+		End Get
+	End Property
+	Public ReadOnly Property Opacity As Imaging.ImageAttributes
+		Get
+			Return VmAttrib
+		End Get
 	End Property
 End Class
