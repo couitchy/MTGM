@@ -283,6 +283,8 @@ Partial Class frmPlateau
 		Me.panelBibli.Name = "panelBibli"
 		Me.panelBibli.Size = New System.Drawing.Size(215, 103)
 		Me.panelBibli.TabIndex = 2
+		AddHandler Me.panelBibli.DragDrop, AddressOf Me.PanelBibliDragDrop
+		AddHandler Me.panelBibli.DragEnter, AddressOf Me.PanelDragEnter
 		'
 		'toolStripBibli
 		'
@@ -375,6 +377,8 @@ Partial Class frmPlateau
 		Me.panelGraveyard.Name = "panelGraveyard"
 		Me.panelGraveyard.Size = New System.Drawing.Size(215, 134)
 		Me.panelGraveyard.TabIndex = 3
+		AddHandler Me.panelGraveyard.DragDrop, AddressOf Me.PanelGraveyardDragDrop
+		AddHandler Me.panelGraveyard.DragEnter, AddressOf Me.PanelDragEnter
 		'
 		'toolStripGraveyard
 		'
@@ -428,6 +432,8 @@ Partial Class frmPlateau
 		Me.panelExil.Name = "panelExil"
 		Me.panelExil.Size = New System.Drawing.Size(215, 142)
 		Me.panelExil.TabIndex = 3
+		AddHandler Me.panelExil.DragDrop, AddressOf Me.PanelExilDragDrop
+		AddHandler Me.panelExil.DragEnter, AddressOf Me.PanelDragEnter
 		'
 		'toolStripExil
 		'
@@ -500,6 +506,8 @@ Partial Class frmPlateau
 		Me.panelRegard.Name = "panelRegard"
 		Me.panelRegard.Size = New System.Drawing.Size(452, 101)
 		Me.panelRegard.TabIndex = 3
+		AddHandler Me.panelRegard.DragDrop, AddressOf Me.PanelRegardDragDrop
+		AddHandler Me.panelRegard.DragEnter, AddressOf Me.PanelDragEnter
 		'
 		'toolStripRegard
 		'
@@ -571,6 +579,8 @@ Partial Class frmPlateau
 		Me.panelMain.Name = "panelMain"
 		Me.panelMain.Size = New System.Drawing.Size(452, 102)
 		Me.panelMain.TabIndex = 3
+		AddHandler Me.panelMain.DragDrop, AddressOf Me.PanelMainDragDrop
+		AddHandler Me.panelMain.DragEnter, AddressOf Me.PanelDragEnter
 		'
 		'toolStripMain
 		'
@@ -625,7 +635,7 @@ Partial Class frmPlateau
 		Me.panelField.Size = New System.Drawing.Size(452, 176)
 		Me.panelField.TabIndex = 3
 		AddHandler Me.panelField.DragDrop, AddressOf Me.PanelFieldDragDrop
-		AddHandler Me.panelField.DragEnter, AddressOf Me.PanelFieldDragEnter
+		AddHandler Me.panelField.DragEnter, AddressOf Me.PanelDragEnter
 		'
 		'toolStripField
 		'

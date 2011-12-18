@@ -25,6 +25,7 @@ Public Partial Class frmPlateau
 	Private VmPlateauPartie As clsPlateauPartie
 	Private VmPictures As New List(Of PictureBox)
 	Private VmCurrentPicture As PictureBox
+	Private VmDragMode As Boolean
 	#End Region
 	#Region "Méthodes"
 	Public Sub New(VpOwner As MainForm)
@@ -115,7 +116,8 @@ Public Partial Class frmPlateau
 			.Tag = VpCard
 			AddHandler .DoubleClick, VpDoubleClickHandler
 			AddHandler .MouseUp, VpMouseUpHandler
-			AddHandler .MouseDown, New MouseEventHandler(AddressOf Me.CardMouseDown)
+			AddHandler .MouseMove, New MouseEventHandler(AddressOf Me.CardMouseMove)
+			AddHandler .MouseLeave, New EventHandler(AddressOf Me.CardMouseLeave)
 			AddHandler .Paint, New PaintEventHandler(AddressOf Me.PictureBoxPaint)
 		End With
 		'Gestion carte engagée / dégagée
@@ -235,6 +237,16 @@ Public Partial Class frmPlateau
 		Me.splitH4.SplitterDistance = Me.splitH4.Height / 2
 		Call Me.ManageReDraw
 	End Sub
+	Private Sub ManageDrop(VpEventArgs As DragEventArgs, VpDestination As List(Of clsPlateauCard))
+	'---------------------------------------------
+	'Gestion de la fin de l'opération de drag&drop
+	'---------------------------------------------
+	Dim VpCard As clsPlateauCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
+		If VpCard.SendTo(VpDestination) Then
+			Call VmPlateauPartie.SortAll
+			Call Me.ManageReDraw		
+		End If
+	End Sub
 	#End Region
 	#Region "Evènements"
 	Sub PictureBoxPaint(sender As Object, e As PaintEventArgs)
@@ -272,6 +284,7 @@ Public Partial Class frmPlateau
 	Sub FrmPlateauLoad(sender As Object, e As EventArgs)
 		Call Me.ManageResize
 		Me.Text = clsModule.CgPlateau + VmRestrictionTXT
+		VmDragMode = False
 	End Sub
 	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)
 		Call Me.ManageResize
@@ -346,27 +359,34 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub CmnuSendToClick(sender As Object, e As EventArgs)
 	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
+	Dim VpRedraw As Boolean
 		Select Case CType(sender, ToolStripMenuItem).Name
 			Case Me.cmnuSendToBibliBottom.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Bibli)
-				VpCurCard.Hidden = True
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Bibli)
+				If VpRedraw Then
+					VpCurCard.Hidden = True
+				End If
 			Case Me.cmnuSendToBibliTop.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Bibli, True)
-				VpCurCard.Hidden = True
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Bibli, True)
+				If VpRedraw Then
+					VpCurCard.Hidden = True
+				End If
 			Case Me.cmnuSendToExil.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Exil)
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Exil)
 			Case Me.cmnuSendToField.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Field)
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Field)
 			Case Me.cmnuSendToGraveyard.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Graveyard)
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Graveyard)
 			Case Me.cmnuSendToMain.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Main)
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Main)
 			Case Me.cmnuSendToRegard.Name
-				Call VpCurCard.SendTo(VmPlateauPartie.Regard)
+				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Regard)
 			Case Else
 		End Select
-		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		If VpRedraw Then
+			Call VmPlateauPartie.SortAll
+			Call Me.ManageReDraw
+		End If
 	End Sub
 	Sub CmnuAttachToClick(sender As Object, e As EventArgs)
 	Dim VpHost As clsPlateauCard = sender.Tag
@@ -390,9 +410,10 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		Call VpCard.SendTo(VmPlateauPartie.Main)
-		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		If VpCard.SendTo(VmPlateauPartie.Main) Then
+			Call VmPlateauPartie.SortAll
+			Call Me.ManageReDraw
+		End If
 	End Sub
 	Sub CardGraveyardDoubleClick(sender As Object, e As EventArgs)
 		
@@ -402,25 +423,30 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		Call VpCard.SendTo(VmPlateauPartie.Main)
-		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		If VpCard.SendTo(VmPlateauPartie.Main) Then
+			Call VmPlateauPartie.SortAll
+			Call Me.ManageReDraw
+		End If
 	End Sub
 	Sub CardMainDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
+	Dim VpRedraw As Boolean
 		If VpCard.IsAPermanent Then
-			Call VpCard.SendTo(VmPlateauPartie.Field)
+			VpRedraw = VpCard.SendTo(VmPlateauPartie.Field)
 		Else
-			Call VpCard.SendTo(VmPlateauPartie.Graveyard)
+			VpRedraw = VpCard.SendTo(VmPlateauPartie.Graveyard)
 		End If
-		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		If VpRedraw Then
+			Call VmPlateauPartie.SortAll
+			Call Me.ManageReDraw
+		End If
 	End Sub
 	Sub CardFieldDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		Call VpCard.SendTo(VmPlateauPartie.Graveyard)
-		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		If VpCard.SendTo(VmPlateauPartie.Graveyard) Then
+			Call VmPlateauPartie.SortAll
+			Call Me.ManageReDraw
+		End If
 	End Sub
 	Sub CardBibliMouseUp(sender As Object, e As MouseEventArgs)
 		If e.Button = MouseButtons.Right Then
@@ -469,11 +495,19 @@ Public Partial Class frmPlateau
 			Call Me.ShowContextMenu(sender, e.Location)
 		End If
 	End Sub
-	Sub CardMouseDown(sender As Object, e As MouseEventArgs)
-'	Dim VpPicture As PictureBox = sender
-'		VpPicture.DoDragDrop(VpPicture, DragDropEffects.Move)
+	Sub CardMouseMove(sender As Object, e As MouseEventArgs)
+	Dim VpPicture As PictureBox = sender
+		If e.Button = MouseButtons.Left Then
+			If Not VmDragMode Then
+				VmDragMode = True
+				VpPicture.DoDragDrop(VpPicture, DragDropEffects.Move)
+			End If
+		End If
 	End Sub
-	Sub PanelFieldDragEnter(sender As Object, e As DragEventArgs)
+	Sub CardMouseLeave(sender As Object, e As EventArgs)
+		VmDragMode = False
+	End Sub
+	Sub PanelDragEnter(sender As Object, e As DragEventArgs)
 		If e.Data.GetFormats()(0) = GetType(PictureBox).ToString Then
 			e.Effect = DragDropEffects.Move
 		Else
@@ -481,10 +515,22 @@ Public Partial Class frmPlateau
 		End If
 	End Sub	
 	Sub PanelFieldDragDrop(sender As Object, e As DragEventArgs)
-	Dim VpCard As clsPlateauCard = e.Data.GetData(GetType(PictureBox)).Tag
-		Call VpCard.SendTo(VmPlateauPartie.Field)
-		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		Call Me.ManageDrop(e, VmPlateauPartie.Field)
+	End Sub	
+	Sub PanelMainDragDrop(sender As Object, e As DragEventArgs)
+		Call Me.ManageDrop(e, VmPlateauPartie.Main)
+	End Sub
+	Sub PanelRegardDragDrop(sender As Object, e As DragEventArgs)
+		Call Me.ManageDrop(e, VmPlateauPartie.Regard)
+	End Sub
+	Sub PanelBibliDragDrop(sender As Object, e As DragEventArgs)
+		Call Me.ManageDrop(e, VmPlateauPartie.Bibli)
+	End Sub
+	Sub PanelGraveyardDragDrop(sender As Object, e As DragEventArgs)
+		Call Me.ManageDrop(e, VmPlateauPartie.Graveyard)
+	End Sub
+	Sub PanelExilDragDrop(sender As Object, e As DragEventArgs)
+		Call Me.ManageDrop(e, VmPlateauPartie.Exil)
 	End Sub
 	#End Region
 End Class
@@ -710,11 +756,20 @@ Public Class clsPlateauCard
 		VmAttachedTo = Nothing
 		VmAttachments.Clear
 	End Sub
-	Public Sub SendTo(VpNewOwner As List(Of clsPlateauCard), Optional VpTop As Boolean = False)
+	Public Function SendTo(VpNewOwner As List(Of clsPlateauCard), Optional VpTop As Boolean = False) As Boolean
 	'-----------------------
 	'Change la carte de zone
 	'-----------------------
 		If Not VmOwner Is VpNewOwner Then
+			'On doit tout d'abord enlever tout ce qui était attaché / ce à quoi on était attaché
+			For Each VpAttachment As clsPlateauCard In VmAttachments
+				Call VpAttachment.AttachTo(Nothing, True)
+			Next VpAttachment
+			VmAttachments.Clear
+			If Not VmAttachedTo Is Nothing Then
+				VmAttachedTo.Attachments.Remove(Me)
+			End If
+			VmAttachedTo = Nothing
 			VmHidden = False
 			VmOwner.Remove(Me)
 			VmOwner = VpNewOwner
@@ -723,20 +778,18 @@ Public Class clsPlateauCard
 			Else
 				VmOwner.Add(Me)
 			End If
-			'On doit aussi enlever tout ce qui était attaché / ce à quoi on était attaché
-			For Each VpAttachment As clsPlateauCard In VmAttachments
-				Call VpAttachment.AttachTo(Nothing)
-			Next VpAttachment
-			VmAttachedTo = Nothing
-			VmAttachments.Clear
+			Return True
 		End If
-	End Sub
-	Public Sub AttachTo(VpHost As clsPlateauCard)
+		Return False
+	End Function
+	Public Sub AttachTo(VpHost As clsPlateauCard, Optional VpHostReadOnly As Boolean = False)
 	'---------------------------------------------------------------------
 	'Attache la carte à une autre (équipement, enchantement, empreinte...)
 	'---------------------------------------------------------------------
-		If Not VmAttachedTo Is Nothing Then
-			VmAttachedTo.Attachments.Remove(Me)
+		If Not VpHostReadOnly Then		'interdiction de supprimer des éléments d'une collection en cours d'énumération
+			If Not VmAttachedTo Is Nothing Then
+				VmAttachedTo.Attachments.Remove(Me)
+			End If
 		End If
 		VmAttachedTo = VpHost
 		If Not VmAttachedTo Is Nothing Then

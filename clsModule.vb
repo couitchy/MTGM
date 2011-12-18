@@ -31,7 +31,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 29501
+	Public Const CgCodeLines As Integer   		= 29563
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7

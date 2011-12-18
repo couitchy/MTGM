@@ -36,7 +36,6 @@ Public Partial Class frmAddCards
 	Dim VpTitleEN As String
 	Dim VpTitleFR As String
 		Me.cboTitleFR.Sorted = True
-		'VgDBCommand.CommandText = "Select Card.Title, CardFR.TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.SpecialIsDownFace = False Order By Card.Title;"
 		VgDBCommand.CommandText = "Select Card.Title, CardFR.TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Order By Card.Title;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
