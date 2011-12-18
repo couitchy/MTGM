@@ -46,30 +46,63 @@ Public Partial Class frmPlateau
 		VmPlateauPartie = New clsPlateauPartie(VmSource, VmRestriction)
 		Call VmPlateauPartie.BeginPlateauPartie
 	End Sub
-	Private Sub ManageReDraw
+	Private Sub ManageReDraw(VpBibli As Boolean, VpGraveyard As Boolean, VpExil As Boolean, VpRegard As Boolean, VpMain As Boolean, VpField As Boolean)
 	'-------------------------------
 	'Actualisation du plateau de jeu
 	'-------------------------------
-		'Efface les anciennes images
-		For Each VpPictureBox As PictureBox In VmPictures
-			VpPictureBox.Parent.Controls.Remove(VpPictureBox)
-			VpPictureBox.Dispose
-		Next VpPictureBox
-		VmPictures.Clear
+	Dim VpToRemove As New List(Of PictureBox)
+	Dim VpCard As clsPlateauCard
 		With VmPlateauPartie
+			'Efface les anciennes images (celles à redessiner)
+			For Each VpPictureBox As PictureBox In VmPictures
+				VpCard = VpPictureBox.Tag
+				If (VpCard.Owner Is .Bibli And VpBibli) Or (VpCard.Owner Is .Graveyard And VpGraveyard) Or (VpCard.Owner Is .Exil And VpExil) Or (VpCard.Owner Is .Regard And VpRegard) Or (VpCard.Owner Is .Main And VpMain) Or (VpCard.Owner Is .Field And VpField) Then
+					VpToRemove.Add(VpPictureBox)
+					VpPictureBox.Parent.Controls.Remove(VpPictureBox)
+					VpPictureBox.Dispose
+				End If
+			Next VpPictureBox
+			For Each VpPictureBox As PictureBox In VpToRemove	'interdiction de supprimer des éléments d'une collection en cours d'énumération, d'où cette 2nde boucle
+				VmPictures.Remove(VpPictureBox)
+			Next VpPictureBox		
 			'Bibliothèque
-			.BibliTop.Hidden = Not Me.btBibliReveal.Checked
-			Call Me.DrawPicture(.BibliTop, True, Me.panelBibli, New EventHandler(AddressOf Me.CardBibliDoubleClick), New MouseEventHandler(AddressOf Me.CardBibliMouseUp))
+			If VpBibli Then
+				.BibliTop.Hidden = Not Me.btBibliReveal.Checked
+				Call Me.DrawPicture(.BibliTop, True, Me.panelBibli, New EventHandler(AddressOf Me.CardBibliDoubleClick), New MouseEventHandler(AddressOf Me.CardBibliMouseUp))
+			End If
 			'Cimetière
-			Call Me.DrawPicture(.GraveyardTop, True, Me.panelGraveyard, New EventHandler(AddressOf Me.CardGraveyardDoubleClick), New MouseEventHandler(AddressOf Me.CardGraveyardMouseUp))
+			If VpGraveyard Then
+				Call Me.DrawPicture(.GraveyardTop, True, Me.panelGraveyard, New EventHandler(AddressOf Me.CardGraveyardDoubleClick), New MouseEventHandler(AddressOf Me.CardGraveyardMouseUp))
+			End If
 			'Exil
-			Call Me.DrawPicture(.ExilTop, True, Me.panelExil, New EventHandler(AddressOf Me.CardExilDoubleClick), New MouseEventHandler(AddressOf Me.CardExilMouseUp))
+			If VpExil Then
+				Call Me.DrawPicture(.ExilTop, True, Me.panelExil, New EventHandler(AddressOf Me.CardExilDoubleClick), New MouseEventHandler(AddressOf Me.CardExilMouseUp))
+			End If
 			'Regard
-			Call Me.DrawPictures(.Regard, True, Me.panelRegard, New EventHandler(AddressOf Me.CardRegardDoubleClick), New MouseEventHandler(AddressOf Me.CardRegardMouseUp))
+			If VpRegard Then
+				Call Me.DrawPictures(.Regard, True, Me.panelRegard, New EventHandler(AddressOf Me.CardRegardDoubleClick), New MouseEventHandler(AddressOf Me.CardRegardMouseUp))
+			End If
 			'Main
-			Call Me.DrawPictures(.Main, True, Me.panelMain, New EventHandler(AddressOf Me.CardMainDoubleClick), New MouseEventHandler(AddressOf Me.CardMainMouseUp))
+			If VpMain Then
+				Call Me.DrawPictures(.Main, True, Me.panelMain, New EventHandler(AddressOf Me.CardMainDoubleClick), New MouseEventHandler(AddressOf Me.CardMainMouseUp))
+			End If
 			'Champ de bataille
-			Call Me.DrawPictures(.Field, False, Me.panelField, New EventHandler(AddressOf Me.CardFieldDoubleClick), New MouseEventHandler(AddressOf Me.CardFieldMouseUp))
+			If VpField Then
+				Call Me.DrawPictures(.Field, False, Me.panelField, New EventHandler(AddressOf Me.CardFieldDoubleClick), New MouseEventHandler(AddressOf Me.CardFieldMouseUp))
+			End If
+		End With
+	End Sub
+	Private Sub ManageReDraw
+		Call Me.ManageReDraw(True, True, True, True, True, True)
+	End Sub
+	Private Sub ManageReDraw(VpSource As List(Of clsPlateauCard), VpDestination As List(Of clsPlateauCard))
+		With VmPlateauPartie
+			Call Me.ManageReDraw(VpSource Is .Bibli Or VpDestination Is .Bibli, VpSource Is .Graveyard Or VpDestination Is .Graveyard, VpSource Is .Exil Or VpDestination Is .Exil, VpSource Is .Regard Or VpDestination Is .Regard, VpSource Is .Main Or VpDestination Is .Main, VpSource Is .Field Or VpDestination Is .Field)
+		End With
+	End Sub
+	Private Sub ManageReDraw(VpDestination As List(Of clsPlateauCard))
+		With VmPlateauPartie
+			Call Me.ManageReDraw(VpDestination Is .Bibli, VpDestination Is .Graveyard, VpDestination Is .Exil, VpDestination Is .Regard, VpDestination Is .Main, VpDestination Is .Field)
 		End With
 	End Sub
 	Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpIndexH As Integer, VpCount As Integer, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
@@ -166,7 +199,7 @@ Public Partial Class frmPlateau
 			If VpFound Then
 				VpListe.Item(VpIndex) = VpListe.Item(VpPosition)
 				VpListe.Item(VpPosition) = VpTmp
-				Call Me.ManageReDraw
+				Call Me.ManageReDraw(VpListe)
 				Call clsModule.ShowInformation(VpTmp.ToString + " a été placé(e) sur le dessus de la zone.")
 			End If
 		End If
@@ -242,9 +275,10 @@ Public Partial Class frmPlateau
 	'Gestion de la fin de l'opération de drag&drop
 	'---------------------------------------------
 	Dim VpCard As clsPlateauCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
+	Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
 		If VpCard.SendTo(VpDestination) Then
 			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw		
+			Call Me.ManageReDraw(VpSource, VpDestination)
 		End If
 	End Sub
 	#End Region
@@ -321,13 +355,13 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub BtBibliRevealClick(sender As Object, e As EventArgs)
 		Me.btBibliReveal.Checked = Not Me.btBibliReveal.Checked
-		Call Me.ManageReDraw
+		Call Me.ManageReDraw(VmPlateauPartie.Bibli)
 	End Sub
 	Sub BtFieldUntapAllClick(sender As Object, e As EventArgs)
 		For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
 			VpCard.Tapped = False
 		Next VpCard
-		Call Me.ManageReDraw
+		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
 	Sub BtBibliSearchClick(sender As Object, e As EventArgs)
 		Call Me.SearchIn(VmPlateauPartie.Bibli, 0)
@@ -360,6 +394,7 @@ Public Partial Class frmPlateau
 	Sub CmnuSendToClick(sender As Object, e As EventArgs)
 	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
 	Dim VpRedraw As Boolean
+	Dim VpSource As List(Of clsPlateauCard) = VpCurCard.Owner
 		Select Case CType(sender, ToolStripMenuItem).Name
 			Case Me.cmnuSendToBibliBottom.Name
 				VpRedraw = VpCurCard.SendTo(VmPlateauPartie.Bibli)
@@ -385,7 +420,7 @@ Public Partial Class frmPlateau
 		End Select
 		If VpRedraw Then
 			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw
+			Call Me.ManageReDraw(VpSource, VpCurCard.Owner)
 		End If
 	End Sub
 	Sub CmnuAttachToClick(sender As Object, e As EventArgs)
@@ -393,26 +428,26 @@ Public Partial Class frmPlateau
 	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
 		Call VpCurCard.AttachTo(VpHost)
 		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
 	Sub CmnuDetachFromClick(sender As Object, e As EventArgs)
 	Dim VpCurCard As clsPlateauCard = VmCurrentPicture.Tag
 		Call VpCurCard.AttachTo(Nothing)
 		Call VmPlateauPartie.SortAll
-		Call Me.ManageReDraw
+		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
 	Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
 	End Sub
 	Sub BtMainShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Main)
-		Call Me.ManageReDraw
+		Call Me.ManageReDraw(VmPlateauPartie.Main)
 	End Sub
 	Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Main) Then
 			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw
+			Call Me.ManageReDraw(VmPlateauPartie.Bibli, VmPlateauPartie.Main)
 		End If
 	End Sub
 	Sub CardGraveyardDoubleClick(sender As Object, e As EventArgs)
@@ -425,12 +460,13 @@ Public Partial Class frmPlateau
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Main) Then
 			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw
+			Call Me.ManageReDraw(VmPlateauPartie.Regard, VmPlateauPartie.Main)
 		End If
 	End Sub
 	Sub CardMainDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 	Dim VpRedraw As Boolean
+	Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
 		If VpCard.IsAPermanent Then
 			VpRedraw = VpCard.SendTo(VmPlateauPartie.Field)
 		Else
@@ -438,14 +474,14 @@ Public Partial Class frmPlateau
 		End If
 		If VpRedraw Then
 			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw
+			Call Me.ManageReDraw(VpSource, VpCard.Owner)
 		End If
 	End Sub
 	Sub CardFieldDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Graveyard) Then
 			Call VmPlateauPartie.SortAll
-			Call Me.ManageReDraw
+			Call Me.ManageReDraw(VmPlateauPartie.Field, VmPlateauPartie.Graveyard)
 		End If
 	End Sub
 	Sub CardBibliMouseUp(sender As Object, e As MouseEventArgs)
