@@ -1288,6 +1288,7 @@ Partial Class MainForm
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
 		Me.tvwExplore.Size = New System.Drawing.Size(272, 295)
 		Me.tvwExplore.TabIndex = 6
+		Me.tvwExplore.HideSelection = false
 		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
 		AddHandler Me.tvwExplore.AfterSelect, AddressOf Me.TvwExploreAfterSelect

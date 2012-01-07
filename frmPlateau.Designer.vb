@@ -812,6 +812,7 @@ Partial Class frmPlateau
 		Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
 		AddHandler Load, AddressOf Me.FrmPlateauLoad
 		AddHandler ResizeEnd, AddressOf Me.FrmPlateauResizeEnd
+		AddHandler Resize, AddressOf Me.FrmPlateauResize
 		Me.toolStrip.ResumeLayout(false)
 		Me.toolStrip.PerformLayout
 		Me.splitV1.Panel1.ResumeLayout(false)

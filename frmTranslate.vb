@@ -31,7 +31,7 @@ Public Partial Class frmTranslate
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmOwner = VpOwner
-		Me.CheckForIllegalCrossThreadCalls = False			'Fortement déconseillé en temps normal mais permet d'éviter un plantage lorsque l'utilisateur ferme sauvagement
+		CheckForIllegalCrossThreadCalls = False			'Fortement déconseillé en temps normal mais permet d'éviter un plantage lorsque l'utilisateur ferme sauvagement
 	End Sub	
 	Private Function Translate(VpIn As String) As String
 	'---------------------------------------------------------------------

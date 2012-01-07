@@ -31,7 +31,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 29563
+	Public Const CgCodeLines As Integer   		= 29704
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -108,6 +108,7 @@ Public Module clsModule
 	Public Const CgDL3b As String				= "La connexion au serveur a échoué..." + vbCrLf + "Vérifier la connectivité à Internet et les paramètres du pare-feu."
 	Public Const CgDL4 As String         		= "Téléchargement terminé"
 	Public Const CgDL5 As String         		= "Téléchargement annulé"
+	Public Const CgErr0 As String				= "Des fichiers nécessaires sont manquants..."
 	Public Const CgErr1 As String				= "Les modèles de simulation sont absents ou incomplets..." + vbCrLf + "Procédez à la mise à jour depuis le menu 'Fichier' de la fenêtre principale..."
 	Public Const CgErr2 As String				= "L'historique des prix est vide..."
 	Public Const CgErr3 As String				= "Impossible d'afficher les informations demandées maintenant..." + vbCrLf + "Si une mise à jour est en cours, merci d'attendre qu'elle se finisse."
@@ -295,7 +296,7 @@ Public Module clsModule
 				Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + VgOptions.VgSettings.DownloadServer + CgURL8 + VpFile.Replace("\", "")), VpFile)
 				'Si le fichier n'existe toujours pas, on ne démarre pas
 				If Not File.Exists(Application.StartupPath + VpFile) Then
-					Call ShowWarning("Des fichiers nécessaires à l'exécution sont manquants...")
+					Call ShowWarning(clsModule.CgErr0)
 					Return False
 				End If
 			End If

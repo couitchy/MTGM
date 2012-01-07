@@ -821,6 +821,8 @@ Public Partial Class MainForm
 				Return "DuelDecksPhyrexiavstheCoalition#" + VpStr
 			Case "D7"
 				Return "DuelDecksKnightsvsDragons#" + VpStr
+			Case "D8"
+				Return "DuelDecksAjanivsNicolBolas#" + VpStr
 			Case "V1"
 				Return "FromtheVaultDragons#" + VpStr
 			Case "V2"

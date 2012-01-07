@@ -98,7 +98,11 @@ Public Partial Class frmNewEdition
 			Me.txtSpoilerList.Tag = Application.StartupPath + VpTrad
 			Me.txtCheckList.Tag = Application.StartupPath + VpDouble
 			Me.chkNewEdition.Tag = VpInfos(2)
-			Call Me.AddNewEdition
+			If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
+				Call clsModule.ShowWarning(clsModule.CgErr0)			
+			Else
+				Call Me.AddNewEdition
+			End If
 		End If
 		'Suppression des fichiers temporaires
 		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
@@ -404,7 +408,7 @@ Public Partial Class frmNewEdition
 	'Vérifie la cohérence de la demande avant de lancer la procédure effective
 	'-------------------------------------------------------------------------
 		If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
-			Call clsModule.ShowWarning("Au moins un des deux fichiers spécifiés n'existe pas...")
+			Call clsModule.ShowWarning(clsModule.CgErr0)
 		Else
 			If Me.chkNewEdition.CheckedItems.Count > 0 Then
 				Me.chkNewEdition.Tag = Me.chkNewEdition.CheckedItems(0).ToString

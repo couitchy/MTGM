@@ -62,7 +62,7 @@ Public Partial Class frmPlateau
 			Next VpPictureBox
 			For Each VpPictureBox As PictureBox In VpToRemove	'interdiction de supprimer des éléments d'une collection en cours d'énumération, d'où cette 2nde boucle
 				VmPlateau.Pictures.Remove(VpPictureBox)
-			Next VpPictureBox		
+			Next VpPictureBox
 			'Bibliothèque
 			If VpBibli Then
 				.BibliTop.Hidden = Not Me.btBibliReveal.Checked
@@ -259,12 +259,14 @@ Public Partial Class frmPlateau
 	'----------------------------------------------------------------------------
 	'Recalcule la position des splitters après un redimensionnement de la fenêtre
 	'----------------------------------------------------------------------------
-		Me.splitV1.SplitterDistance = Me.splitV1.Width / 6
-		Me.splitH1.SplitterDistance = Me.splitH1.Height / 3
-		Me.splitH2.SplitterDistance = Me.splitH2.Height / 2
-		Me.splitH3.SplitterDistance = Me.splitH3.Height / 3
-		Me.splitH4.SplitterDistance = Me.splitH4.Height / 2
-		Call Me.ManageReDraw
+		If Me.WindowState <> FormWindowState.Minimized Then
+			Me.splitV1.SplitterDistance = Me.splitV1.Width / 6
+			Me.splitH1.SplitterDistance = Me.splitH1.Height / 3
+			Me.splitH2.SplitterDistance = Me.splitH2.Height / 2
+			Me.splitH3.SplitterDistance = Me.splitH3.Height / 3
+			Me.splitH4.SplitterDistance = Me.splitH4.Height / 2
+			Call Me.ManageReDraw
+		End If
 	End Sub
 	Private Sub ManageDrop(VpEventArgs As DragEventArgs, VpDestination As List(Of clsPlateauCard))
 	'---------------------------------------------
@@ -311,6 +313,12 @@ Public Partial Class frmPlateau
 				VpLeftToDraw -= 1
 			End While
 		End If
+		'Si la carte n'a pas d'image, écrit au moins le texte
+		If VpCard.MissingPicture Then
+			Using VpFont As Font = New Font("Arial", 14)
+	        	e.Graphics.DrawString(VpCard.NameVF, VpFont, Brushes.Green, New Point(5, 5))
+	    	End Using
+	    End If
 	End Sub
 	Sub FrmPlateauLoad(sender As Object, e As EventArgs)
 		Call Me.ManageResize
@@ -319,6 +327,11 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)
 		Call Me.ManageResize
+	End Sub
+	Sub FrmPlateauResize(sender As Object, e As EventArgs)
+		If Control.MouseButtons = MouseButtons.None Then
+			Call Me.ManageResize
+		End If
 	End Sub
 	Sub BtNewPartieClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
@@ -543,11 +556,11 @@ Public Partial Class frmPlateau
 		Else
 			e.Effect = DragDropEffects.None
 		End If
-	End Sub	
+	End Sub
 	Sub PanelDragOver(sender As Object, e As DragEventArgs)
 	Dim VpOrigPicture As PictureBox = e.Data.GetData(GetType(PictureBox))
 	Dim VpImg As Image
-		With VmPlateau.DraggedPicture
+		With clsPlateauDrawings.DraggedPicture
 			If .Image Is Nothing Then
 				VpImg = VpOrigPicture.Image
 				.Image = New Bitmap(VpImg.Width, VpImg.Height)
@@ -556,13 +569,13 @@ Public Partial Class frmPlateau
 				End Using
 				.Size = VpOrigPicture.Size
 			End If
-			sender.Controls.Add(VmPlateau.DraggedPicture)
+			sender.Controls.Add(clsPlateauDrawings.DraggedPicture)
 			.Location = sender.PointToClient(New Point(e.X - .Width / 2, e.Y - .Height / 2))
-		End With	
+		End With
 	End Sub
 	Sub PanelFieldDragDrop(sender As Object, e As DragEventArgs)
 		Call Me.ManageDrop(e, VmPlateauPartie.Field)
-	End Sub	
+	End Sub
 	Sub PanelMainDragDrop(sender As Object, e As DragEventArgs)
 		Call Me.ManageDrop(e, VmPlateauPartie.Main)
 	End Sub
@@ -788,6 +801,7 @@ Public Class clsPlateauCard
 	Private VmCounters As Integer
 	Private VmAttachedTo As clsPlateauCard
 	Private VmAttachments As New List(Of clsPlateauCard)
+	Private VmMissingImg As Boolean
 	Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String)
 		VmCardName = VpName
 		VmCardNameFR = VpNameFR
@@ -865,11 +879,24 @@ Public Class clsPlateauCard
 	End Property
 	Public ReadOnly Property PicturePath As String
 		Get
+		Dim VpFile As String
+			VmMissingImg = False
 			If Not VmHidden Then
-				Return Path.GetTempPath + clsModule.CgTemp + "\" + clsModule.AvoidForbiddenChr(VmCardName) + ".jpg"
+				VpFile = Path.GetTempPath + clsModule.CgTemp + "\" + clsModule.AvoidForbiddenChr(VmCardName) + ".jpg"
+				If File.Exists(VpFile) Then
+					Return VpFile
+				Else
+					VmMissingImg = True
+					Return Application.StartupPath + clsModule.CgMagicBack
+				End If
 			Else
 				Return Application.StartupPath + clsModule.CgMagicBack
 			End If
+		End Get
+	End Property
+	Public ReadOnly Property MissingPicture As Boolean
+		Get
+			Return VmMissingImg
 		End Get
 	End Property
 	Public ReadOnly Property IsAPermanent As Boolean
@@ -923,9 +950,9 @@ End Class
 Public Class clsPlateauDrawings
 	Private VmPictures As New List(Of PictureBox)
 	Private VmCurrentPicture As PictureBox
-	Private VmDragMode As Boolean	
-	Private VmDraggedPicture As PictureBox
-	Private VmAttrib As New Imaging.ImageAttributes
+	Private Shared VmDragMode As Boolean
+	Private Shared VmDraggedPicture As PictureBox
+	Private Shared VmAttrib As New Imaging.ImageAttributes
 	Public Sub New
 	Dim VpColorMatrix As New Imaging.ColorMatrix
 		VmDraggedPicture = New PictureBox
@@ -970,7 +997,7 @@ Public Class clsPlateauDrawings
 			End If
 		End Set
 	End Property
-	Public ReadOnly Property DraggedPicture As PictureBox
+	Public Shared ReadOnly Property DraggedPicture As PictureBox
 		Get
 			Return VmDraggedPicture
 		End Get
