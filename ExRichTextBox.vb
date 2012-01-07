@@ -26,30 +26,6 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Windows.Forms
 
-#Region "Public Enums"
-
-' Enum for possible RTF colors
-Public Enum eRtfColor
-	Black
-	Maroon
-	Green
-	Olive
-	Navy
-	Purple
-	Teal
-	Gray
-	Silver
-	Red
-	Lime
-	Yellow
-	Blue
-	Fuchsia
-	Aqua
-	White
-End Enum
-
-#End Region
-
 ''' <summary>
 ''' This class adds the following functionality to RichTextBox:
 ''' 
@@ -75,8 +51,27 @@ End Enum
 ''' </remarks>
 Public Class ExRichTextBox
 	Inherits System.Windows.Forms.RichTextBox
-
 	#Region "My Enums"
+
+	' Enum for possible RTF colors
+	Public Enum eRtfColor
+		Black
+		Maroon
+		Green
+		Olive
+		Navy
+		Purple
+		Teal
+		Gray
+		Silver
+		Red
+		Lime
+		Yellow
+		Blue
+		Fuchsia
+		Aqua
+		White
+	End Enum
 
 	' Specifies the flags/options for the unmanaged call to the GDI+ method
 	' Metafile.EmfToWmfBits().

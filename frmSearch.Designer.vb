@@ -500,7 +500,7 @@ Partial Class frmSearch
 		'txtCardText
 		'
 		Me.txtCardText.AcceptsTab = true
-		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.eRtfColor.White
+		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
 		Me.txtCardText.Location = New System.Drawing.Point(31, 233)
 		Me.txtCardText.Name = "txtCardText"
 		Me.txtCardText.ReadOnly = true
@@ -508,7 +508,7 @@ Partial Class frmSearch
 		Me.txtCardText.Size = New System.Drawing.Size(338, 67)
 		Me.txtCardText.TabIndex = 40
 		Me.txtCardText.Text = ""
-		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.eRtfColor.Black
+		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
 		'
 		'frmSearch
 		'
