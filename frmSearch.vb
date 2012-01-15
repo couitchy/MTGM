@@ -127,7 +127,7 @@ Public Partial Class frmSearch
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche étendue (toutes les cartes de la base de données)
 		Else
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
 		End If
 		Try
 			'Requête effective
@@ -208,7 +208,7 @@ Public Partial Class frmSearch
 		End If
 		Select Case VpType
 			'Recherche type string simple
-			Case 0, 1, 2, 3, 9
+			Case 0, 1, 2, 3, 9, 10
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq)
 			'Recherche type nombre / sur créatures
 			Case 4, 5

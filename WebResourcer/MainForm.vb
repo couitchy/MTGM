@@ -364,6 +364,56 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Sub FixTxtVO
+	'----------------------------------------------------------------------------------------------------------------
+	'Corrige les textes des cartes en anglais dont seule la première ligne aurait été prise depuis le fichier spoiler
+	'----------------------------------------------------------------------------------------------------------------
+	Dim VpCurSpoiler As StreamReader
+	Dim VpCategory As Boolean = False
+	Dim VpStr As String
+	Dim VpCard As String = ""
+	Dim VpSeriesCD As String = ""
+	Dim VpNewTxt As String = ""
+		Me.dlgBrowse.SelectedPath = ""
+		Me.dlgBrowse.ShowDialog
+		If Me.dlgBrowse.SelectedPath <> "" Then
+			Call Me.AddToLog("La mise à jour des textes VO multilignes a commencé...", eLogType.Information, True)
+			For Each VpFile As String In Directory.GetFiles(Me.dlgBrowse.SelectedPath, "*spoiler_en.txt")
+				VpSeriesCD = VpFile.Substring(VpFile.LastIndexOf("\") + 1)
+				VpSeriesCD = Me.SerieCode(VpSeriesCD.Substring(0, VpSeriesCD.IndexOf("_")))
+				VpCurSpoiler = New StreamReader(VpFile, Encoding.Default)
+				While Not VpCurSpoiler.EndOfStream
+					Application.DoEvents
+					VpStr = VpCurSpoiler.ReadLine
+					If VpStr.StartsWith("CardName:") Or VpStr.StartsWith("Card Name:") Or VpStr.StartsWith("Name:") Then
+						VpCard = VpStr.Substring(VpStr.IndexOf(":") + 1).Trim
+					ElseIf VpStr.StartsWith("Rules Text:") Then
+						VpCategory = True
+						VpNewTxt = VpStr.Substring(11).Trim
+					ElseIf VpStr.StartsWith("Set/Rarity:") Then
+						VpCategory = False
+						'Mise à jour du texte si nécessaire
+						If VpNewTxt.Contains(vbCrLf) Then
+							VmDBCommand.CommandText = "Update Card Set CardText = '" + VpNewTxt.Replace("'", "''") + "' Where Title = '" + VpCard.Replace("'", "''") + "' And Series = '" + VpSeriesCD + "';"
+							VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog("Nouveau texte VO pour la carte " + VpCard + " - " + VpSeriesCD, eLogType.Information)
+						End If
+						VpNewTxt = ""
+						VpCard = ""
+					ElseIf VpCategory Then
+						VpNewTxt = VpNewTxt + vbCrLf + VpStr
+					End If
+					If Me.btCancel.Tag Then Exit While
+				End While
+				VpCurSpoiler.Close
+			Next VpFile
+			If Me.btCancel.Tag Then
+				Call Me.AddToLog("La mise à jour des textes VO multilignes a été annulée.", eLogType.Warning, , True)
+			Else
+				Call Me.AddToLog("La mise à jour des textes VO multilignes est terminée.", eLogType.Information, , True)
+			End If			
+		End If
+	End Sub
 	Private Sub FixPictures
 	'------------------------------------------------------
 	'Correction des images erronées dans la base de données
@@ -855,6 +905,108 @@ Public Partial Class MainForm
 				Return "#" + VpStr
 		End Select
 	End Function
+	Private Function SerieCode(VpStr As String) As String
+		Select Case VpStr
+			Case "10th"
+				Return "1E"
+			Case "3rdBB"
+				Return "3B"
+			Case "3rdWB"
+				Return "3W"
+			Case "alarareborn"
+				Return "AR"
+			Case "beatdown"
+				Return "BT"
+			Case "conflux"
+				Return "CF"
+			Case "coldsnap"
+				Return "CS"
+			Case "dissension"
+				Return "DI"
+			Case "eventide"
+				Return "ET"
+			Case "fifthdawn"
+				Return "FD"
+			Case "futuresight"
+				Return "FS"
+			Case "guildpact"
+				Return "GP"
+			Case "lorwyn"
+				Return "LW"
+			Case "magic2010"
+				Return "M1"
+			Case "morningtide"
+				Return "MT"
+			Case "ravnica"
+				Return "RA"
+			Case "renaissance"
+				Return "RE"
+			Case "shardsofalara"
+				Return "SL"
+			Case "shadowmoor"
+				Return "SM"
+			Case "timespiral"
+				Return "TS"
+			Case "unhinged"
+				Return "UH"
+			Case "worldwake"
+				Return "WW"
+			Case "zendikar"
+				Return "ZK"
+			Case "riseoftheeldrazi"
+				Return "RI"
+			Case "magic2011"
+				Return "M2"
+			Case "timeshifted"
+				Return "TD"
+			Case "DuelDecksDivinevsDemonic"
+				Return "D1"
+			Case "DuelDecksElspethvsTezzeret"
+				Return "D2"
+			Case "DuelDecksElvesvsGoblins"
+				Return "D3"
+			Case "DuelDecksGarrukvsLiliana"
+				Return "D4"
+			Case "DuelDecksJacevsChandra"
+				Return "D5"
+			Case "DuelDecksPhyrexiavstheCoalition"
+				Return "D6"
+			Case "DuelDecksKnightsvsDragons"
+				Return "D7"
+			Case "DuelDecksAjanivsNicolBolas"
+				Return "D8"
+			Case "FromtheVaultDragons"
+				Return "V1"
+			Case "FromtheVaultExiled"
+				Return "V2"
+			Case "FromtheVaultRelics"
+				Return "V3"
+			Case "scarsofmirrodin"
+				Return "SD"
+			Case "fireandlightining"
+				Return "R1"
+			Case "slivers"
+				Return "R2"
+			Case "mirrodinbesieged"
+				Return "MB"
+			Case "darksteel"
+				Return "DS"
+			Case "planarchaos"
+				Return "PC"
+			Case "newphyrexia"
+				Return "NP"
+			Case "magic2012"
+				Return "M3"
+			Case "commander"
+				Return "CD"
+			Case "FromtheVaultLegends"
+				Return "V4"
+			Case "innistrad"
+				Return "IN"
+			Case Else
+				Return ""
+		End Select
+	End Function
 	Private Sub BuildHeaders
 	'-------------------------------------------
 	'Génération du fichier d'en-têtes des séries
@@ -1053,7 +1205,7 @@ Public Partial Class MainForm
 				Else
 					Call Me.AddToLog("La construction du fichier des titres traduits est terminée.", eLogType.Information, , True)
 				End If
-			End If			
+			End If
 		End If
 	End Sub
 	Private Sub BuildDouble
@@ -1081,7 +1233,7 @@ Public Partial Class MainForm
 							VpOut.WriteLine(VpDown.Item(VpEncNbr1) + "#" + VpTop.Item(VpEncNbr1))
 							Exit For
 						End If
-					Next VpEncNbr2					
+					Next VpEncNbr2
 					If Me.btCancel.Tag Then Exit For
 				Next VpEncNbr1
 				VpOut.Flush
@@ -1090,9 +1242,9 @@ Public Partial Class MainForm
 					Call Me.AddToLog("La construction du fichier des doubles cartes a été annulée.", eLogType.Warning, , True)
 				Else
 					Call Me.AddToLog("La construction du fichier des doubles cartes est terminée.", eLogType.Information, , True)
-				End If				
+				End If
 			End If
-		End If				
+		End If
 	End Sub
 	Private Function BuildDoubleHash(VpField As String, VpSerie As String) As Hashtable
 	Dim VpHash As New Hashtable
@@ -1330,7 +1482,7 @@ Public Partial Class MainForm
 					ReDim Preserve VpEncNbrs(0 To VpEncNbrs.Length)
 				End While
 				.Close
-			End With		
+			End With
 			ReDim Preserve VpEncNbrs(0 To VpEncNbrs.Length - 2)
 			For VpI As Integer = 1 To VpEncNbrs.Length - 1
 				If VpEncNbrs(VpI) > 1 + VpEncNbrs(VpI - 1) Then
@@ -1491,11 +1643,16 @@ Public Partial Class MainForm
 	Sub MnuBuildDoubleClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.BuildDouble
-		End If		
+		End If
 	End Sub
 	Sub MnuFindHolesClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.FindHoles
+		End If
+	End Sub
+	Sub MnuFixTxtVOClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.FixTxtVO
 		End If
 	End Sub
 End Class

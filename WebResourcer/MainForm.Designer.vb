@@ -56,6 +56,7 @@ Partial Class MainForm
 		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
@@ -99,7 +100,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -262,9 +263,16 @@ Partial Class MainForm
 		Me.mnuCardsAut.Text = "Récupérer les autorisations en tournois"
 		AddHandler Me.mnuCardsAut.Click, AddressOf Me.MnuCardsAutClick
 		'
+		'mnuFindHoles
+		'
+		Me.mnuFindHoles.Name = "mnuFindHoles"
+		Me.mnuFindHoles.Size = New System.Drawing.Size(278, 22)
+		Me.mnuFindHoles.Text = "Trouve-trous (expérimental)"
+		AddHandler Me.mnuFindHoles.Click, AddressOf Me.MnuFindHolesClick
+		'
 		'mnuSeries
 		'
-		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGen, Me.mnuBuildDouble})
+		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO})
 		Me.mnuSeries.Name = "mnuSeries"
 		Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
 		Me.mnuSeries.Text = "Séries"
@@ -613,12 +621,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuFindHoles
+		'mnuFixTxtVO
 		'
-		Me.mnuFindHoles.Name = "mnuFindHoles"
-		Me.mnuFindHoles.Size = New System.Drawing.Size(278, 22)
-		Me.mnuFindHoles.Text = "Trouve-trous (expérimental)"
-		AddHandler Me.mnuFindHoles.Click, AddressOf Me.MnuFindHolesClick
+		Me.mnuFixTxtVO.Name = "mnuFixTxtVO"
+		Me.mnuFixTxtVO.Size = New System.Drawing.Size(432, 22)
+		Me.mnuFixTxtVO.Text = "Corriger les textes VO multilignes"
+		AddHandler Me.mnuFixTxtVO.Click, AddressOf Me.MnuFixTxtVOClick
 		'
 		'MainForm
 		'
@@ -647,6 +655,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuFixTxtVO As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFindHoles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem

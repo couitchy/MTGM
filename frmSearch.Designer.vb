@@ -267,7 +267,7 @@ Partial Class frmSearch
 		'
 		'cboSearchType
 		'
-		Me.cboSearchType.Items.AddRange(New Object() {"Nom de la carte (VO)", "Nom de la carte (VF)", "Texte détaillé (VO)", "Texte détaillé (VF)", "Force", "Endurance", "Prix", "Edition", "Coût converti de mana", "Type / Sous-type (VO)"})
+		Me.cboSearchType.Items.AddRange(New Object() {"Nom de la carte (VO)", "Nom de la carte (VF)", "Texte détaillé (VO)", "Texte détaillé (VF)", "Force", "Endurance", "Prix", "Edition", "Coût converti de mana", "Type / Sous-type (VO)", "Type / Sous-type (VF)"})
 		Me.cboSearchType.Location = New System.Drawing.Point(62, 16)
 		Me.cboSearchType.Name = "cboSearchType"
 		Me.cboSearchType.Size = New System.Drawing.Size(150, 21)

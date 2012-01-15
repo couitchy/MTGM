@@ -82,7 +82,7 @@ Public Partial Class frmStats
 				VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 				.Rows.Insert(.RowsCount)
 				Me.grdDetails(.RowsCount - 1, 1) = New Cells.Cell(VgDBCommand.ExecuteScalar)
-				Me.grdDetails(.RowsCount - 1, 0) = New Cells.Cell(clsModule.FormatTitle(clsModule.CgCriteres.Item(Me.cboCriterion.ControlText), VpValue, False))
+				Me.grdDetails(.RowsCount - 1, 0) = New Cells.Cell(clsModule.FormatTitle(clsModule.CgCriteres.Item(Me.cboCriterion.ControlText), VpValue, , False))
 			Next VpValue
 			.AutoSize
 		End With

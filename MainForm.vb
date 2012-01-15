@@ -898,7 +898,7 @@ Public Partial Class MainForm
 			'Restauration des paramètres langue / tri (NB. Si on est en VO on est toujours en ordre alphabétique)
 			If Me.mnuCardsFR.Checked Then
 				Me.tvwExplore.BeginUpdate
-				Call Me.RecurChangeLanguage
+				Call Me.RecurChangeLanguage(True)
 				Call Me.SortTvw
 				Me.tvwExplore.EndUpdate
 			End If
@@ -977,7 +977,7 @@ Public Partial Class MainForm
 					If VpRecurLevel < VmFilterCriteria.NSelectedCriteria Then
 						VpChildTag.Key = clsModule.CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(VpRecurLevel))
 						'Caption explicite
-						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value)
+						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value, Me.mnuCardsFR.Checked)
 					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag des paramètres supplémentaires
 					ElseIf VpCurTag.Key = "Card.Title"
 						'Traduction
@@ -1284,11 +1284,18 @@ Public Partial Class MainForm
 		Next VpItem
 		Return ""
 	End Function
-	Private Sub ChangeLanguage(VpNode As TreeNode)
-	'-------------------------------------
-	'Commute la langue du titre des cartes
-	'-------------------------------------
+	Private Sub ChangeLanguage(VpNode As TreeNode, VpSeriesAldreadyDone As Boolean)
+	'-----------------------------------------------------
+	'Commute la langue du titre des cartes et des éditions
+	'-----------------------------------------------------
 	Dim VpChild As TreeNode
+		'1. Gestion titres des éditions
+		If Not VpSeriesAldreadyDone Then
+			If VpNode.Parent IsNot Nothing AndAlso VpNode.Parent.Tag.Key = "Card.Series" Then
+				VpNode.Text = clsModule.FormatTitle("Card.Series", clsModule.GetSerieCodeFromName(VpNode.Text, , Not Me.mnuCardsFR.Checked), Me.mnuCardsFR.Checked)
+			End If
+		End If
+		'2. Gestion titres des cartes
 		If VpNode.Tag.Key = "Card.Title" Then
 			If Me.mnuCardsFR.Checked Then
 				For Each VpChild In VpNode.Nodes
@@ -1301,13 +1308,13 @@ Public Partial Class MainForm
 			End If
 		Else
 			For Each VpChild In VpNode.Nodes
-				Call Me.ChangeLanguage(VpChild)
+				Call Me.ChangeLanguage(VpChild, VpSeriesAldreadyDone)
 			Next VpChild
 		End If
 	End Sub
-	Private Sub RecurChangeLanguage
+	Private Sub RecurChangeLanguage(VpSeriesAldreadyDone As Boolean)
 		For Each VpNode As TreeNode In Me.tvwExplore.Nodes
-			Call Me.ChangeLanguage(VpNode)
+			Call Me.ChangeLanguage(VpNode, VpSeriesAldreadyDone)
 		Next VpNode
 	End Sub
 	Private Function FindImageIndex(VpTag As String, VpStr As String) As Integer
@@ -1902,10 +1909,10 @@ Public Partial Class MainForm
 		Me.mnuCardsFR.Checked = Not Me.mnuCardsFR.Checked
 		Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
-			Me.txtCardText.Text = clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked, True, Me.IsDownFace(Me.tvwExplore.SelectedNode))	'change de suite la traduction de la carte courante
+			Call clsModule.PutInRichText(Me.txtCardText, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked, True, Me.IsDownFace(Me.tvwExplore.SelectedNode)))	'change de suite la traduction de la carte courante
 		End If
 		Me.tvwExplore.BeginUpdate
-		Call Me.RecurChangeLanguage
+		Call Me.RecurChangeLanguage(False)
 		Me.tvwExplore.EndUpdate
 	End Sub
 	Sub TvwExploreMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -1975,7 +1982,7 @@ Public Partial Class MainForm
 					Call Me.ManageSerieGrp(Me.grpSerie2, Me.grpSerie)
 					Call Me.LoadCaracOther(e.Node.Tag.Value, clsModule.eModeCarac.Serie, VpElderCriteria)
 					If Not Me.splitV2.Panel2Collapsed Then
-						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text), Me.picScanCard)
+						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text, , Me.mnuCardsFR.Checked), Me.picScanCard)
 					End If
 					Call Me.LoadAutorisations("")
 				'Sélection d'un élément de type 'couleur'
@@ -2007,7 +2014,7 @@ Public Partial Class MainForm
 	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
 	Dim VpTitle As String = VpNode.Tag.Value
 	Dim VpFoil As Boolean = Me.IsFoil(VpNode)
-	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
+	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text, , Me.mnuCardsFR.Checked)
 	Dim VpDownFace As Boolean = Me.IsDownFace(VpNode)
 	Dim VpTransformed As Boolean = Me.IsTransformed(VpNode)
 		Me.SuspendLayout
@@ -2499,7 +2506,7 @@ Public Partial Class MainForm
 	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
 	Dim VpEncNbr As Long
- 		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
+ 		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text, , Me.mnuCardsFR.Checked))
 		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll Then
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
 				If Val(Me.lblStock.Text) > 1 Then
@@ -2529,7 +2536,7 @@ Public Partial Class MainForm
 				Else
 					VpPricesHistory = VmMyChildren.PricesHistory
 				End If
-				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
+				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text, , Me.mnuCardsFR.Checked), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
 				VpPricesHistory.Show
 				VpPricesHistory.BringToFront
 			Else

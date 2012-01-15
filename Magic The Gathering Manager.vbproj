@@ -85,6 +85,7 @@
     <Compile Include="About.vb" />
     <Compile Include="AssemblyInfo.vb" />
     <Compile Include="clsModule.vb" />
+    <Compile Include="ExListView.vb" />
     <Compile Include="ExRichTextBox.vb" />
     <Compile Include="frmAddCards.Designer.vb">
       <DependentUpon>frmAddCards.vb</DependentUpon>
