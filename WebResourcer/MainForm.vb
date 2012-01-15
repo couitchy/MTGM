@@ -73,6 +73,7 @@ Public Partial Class MainForm
 		VpLog = New ListViewItem(Now.ToLongTimeString, CInt(VpType))
 		VpLog.SubItems.Add(VpText)
 		Me.lvwLog.Items.Add(VpLog)
+		VpLog.EnsureVisible
 	End Sub
 	Private Sub ETA
 	'-------------------------------------------------------

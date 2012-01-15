@@ -144,7 +144,7 @@ Partial Class MainForm
 		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
 		Me.btExcelGen = New System.Windows.Forms.ToolStripButton
 		Me.btWordGen = New System.Windows.Forms.ToolStripButton
-		Me.btSimu = New System.Windows.Forms.ToolStripButton
+		Me.btPlateau = New System.Windows.Forms.ToolStripButton
 		Me.btStats = New System.Windows.Forms.ToolStripButton
 		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton
 		Me.btWebsite = New System.Windows.Forms.ToolStripButton
@@ -1102,7 +1102,7 @@ Partial Class MainForm
 		'toolStrip
 		'
 		Me.toolStrip.ImageScalingSize = New System.Drawing.Size(32, 32)
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btSimu, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btPlateau, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(774, 54)
@@ -1187,16 +1187,17 @@ Partial Class MainForm
 		Me.btWordGen.ToolTipText = "Préparer des pages de cartes à imprimer sous Word"
 		AddHandler Me.btWordGen.Click, AddressOf Me.MnuWordGenClick
 		'
-		'btSimu
+		'btPlateau
 		'
-		Me.btSimu.Image = CType(resources.GetObject("btSimu.Image"),System.Drawing.Image)
-		Me.btSimu.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btSimu.Name = "btSimu"
-		Me.btSimu.Size = New System.Drawing.Size(73, 51)
-		Me.btSimu.Text = "Simulations"
-		Me.btSimu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-		Me.btSimu.ToolTipText = "Evaluer les performances de ma sélection"
-		AddHandler Me.btSimu.Click, AddressOf Me.MnuSimuActivate
+		Me.btPlateau.AutoSize = false
+		Me.btPlateau.Image = CType(resources.GetObject("btPlateau.Image"),System.Drawing.Image)
+		Me.btPlateau.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btPlateau.Name = "btPlateau"
+		Me.btPlateau.Size = New System.Drawing.Size(60, 51)
+		Me.btPlateau.Text = "Plateau"
+		Me.btPlateau.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btPlateau.ToolTipText = "Simuler une partie complète avec ma sélection"
+		AddHandler Me.btPlateau.Click, AddressOf Me.MnuPlateauClick
 		'
 		'btStats
 		'
@@ -1280,6 +1281,7 @@ Partial Class MainForm
 		Me.tvwExplore.AllowDrop = true
 		Me.tvwExplore.BackColor = System.Drawing.SystemColors.Window
 		Me.tvwExplore.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.tvwExplore.HideSelection = false
 		Me.tvwExplore.ImageIndex = 0
 		Me.tvwExplore.ImageList = Me.imglstTvw
 		Me.tvwExplore.Location = New System.Drawing.Point(24, 0)
@@ -1288,7 +1290,6 @@ Partial Class MainForm
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
 		Me.tvwExplore.Size = New System.Drawing.Size(272, 295)
 		Me.tvwExplore.TabIndex = 6
-		Me.tvwExplore.HideSelection = false
 		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
 		AddHandler Me.tvwExplore.AfterSelect, AddressOf Me.TvwExploreAfterSelect
@@ -1916,6 +1917,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btPlateau As System.Windows.Forms.ToolStripButton
 	Private mnuPlateau As System.Windows.Forms.ToolStripMenuItem
 	Public txtCardText As Magic_The_Gathering_Manager.ExRichTextBox
 	Private mnuTransform As System.Windows.Forms.ToolStripMenuItem
@@ -1984,7 +1986,6 @@ Partial Class MainForm
 	Private toolStrip As System.Windows.Forms.ToolStrip
 	Private btCheckForUpdates As System.Windows.Forms.ToolStripButton
 	Private btStats As System.Windows.Forms.ToolStripButton
-	Private btSimu As System.Windows.Forms.ToolStripButton
 	Private btExport As System.Windows.Forms.ToolStripButton
 	Private btGestDecks As System.Windows.Forms.ToolStripButton
 	Private btSeparator2 As System.Windows.Forms.ToolStripSeparator

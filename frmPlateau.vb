@@ -336,6 +336,7 @@ Public Partial Class frmPlateau
 	Sub BtNewPartieClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
 		Me.btPoisons.Text = "Poisons"
+		Me.btTurns.Text = "Tours"
 		VmPlateauPartie.Mulligan = 0
 		Call VmPlateauPartie.BeginPlateauPartie
 		Call Me.ManageReDraw
@@ -343,6 +344,7 @@ Public Partial Class frmPlateau
 	Sub BtMulliganClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
 		Me.btPoisons.Text = "Poisons"
+		Me.btTurns.Text = "Tours"
 		VmPlateauPartie.Mulligan = Math.Min(VmPlateauPartie.Mulligan + 1, clsModule.CgNMain - 1)
 		Call VmPlateauPartie.BeginPlateauPartie
 		Call Me.ManageReDraw
@@ -362,6 +364,14 @@ Public Partial Class frmPlateau
 			VmPlateauPartie.Poisons -= 1
 		End If
 		Me.btPoisons.Text = VmPlateauPartie.Poisons.ToString
+	End Sub
+	Sub BtTurnsMouseUp(sender As Object, e As MouseEventArgs)
+		If e.Button = MouseButtons.Left Then
+			VmPlateauPartie.Tours += 1
+		Else
+			VmPlateauPartie.Tours -= 1
+		End If
+		Me.btTurns.Text = VmPlateauPartie.Tours.ToString		
 	End Sub
 	Sub BtBibliRevealClick(sender As Object, e As EventArgs)
 		Me.btBibliReveal.Checked = Not Me.btBibliReveal.Checked
@@ -604,6 +614,7 @@ Public Class clsPlateauPartie
 	Private VmMulligan As Integer = 0
 	Private VmLives As Integer
 	Private VmPoisons As Integer
+	Private VmTours As Integer
 	Public Sub New(VpSource As String, VpRestriction As String)
 	'-------------------
 	'Construction du jeu
@@ -645,6 +656,7 @@ Public Class clsPlateauPartie
 		Call Me.SortAll
 		VmLives = clsModule.CgNLives
 		VmPoisons = 0
+		VmTours = 0
 	End Sub
 	Public Sub SortAll
 	'-----------------------------------------
@@ -781,6 +793,14 @@ Public Class clsPlateauPartie
 		End Get
 		Set (VpPoisons As Integer)
 			VmPoisons = VpPoisons
+		End Set
+	End Property
+	Public Property Tours As Integer
+		Get
+			Return VmTours
+		End Get
+		Set (VpTours As Integer)
+			VmTours = VpTours
 		End Set
 	End Property
 	#End Region

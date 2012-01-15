@@ -100,7 +100,7 @@ Public Partial Class frmNewEdition
 			Me.txtCheckList.Tag = Application.StartupPath + VpDouble
 			Me.chkNewEdition.Tag = VpInfos(2)
 			If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
-				Call clsModule.ShowWarning(clsModule.CgErr0)			
+				Call clsModule.ShowWarning(clsModule.CgErr0)
 			Else
 				Call Me.AddNewEdition
 			End If
@@ -289,17 +289,32 @@ Public Partial Class frmNewEdition
 	Dim VpLine As String
 	Dim VpCarac(0 To clsModule.CgBalises.Length - 1) As String
 	Dim VpFound As Boolean
+	Dim VpMulti As Boolean
 		VpLine = VpFile.ReadLine.Trim
 		If VpLine.StartsWith(clsModule.CgBalises(0)) Or VpLine.StartsWith(clsModule.CgAlternateStart) Or VpLine.StartsWith(clsModule.CgAlternateStart2) Then
-			For VpI As Integer = 0 To clsModule.CgBalises.Length - 1
+			For VpI As Integer = 0 To clsModule.CgBalises.Length - 2
 				VpFound = False
+				VpMulti = False
 				Do
+					'Analyse de la ligne selon les balises
 					If VpLine.StartsWith(clsModule.CgBalises(VpI)) Or VpI = 0 Then
 						VpCarac(VpI) = VpLine.Replace(clsModule.CgBalises(VpI), "").Replace(clsModule.CgAlternateStart, "").Replace(clsModule.CgAlternateStart2, "").Trim
 						VpFound = True
+						If VpI = 4 Then	'La 5ème balise (indicée 4) "Rules Text:" est une balise dont le contenu peut prendre plusieurs lignes
+							VpMulti = True
+						End If
+					ElseIf VpMulti And VpLine.StartsWith(clsModule.CgBalises(VpI + 1)) Then	'si on voit la balise suivante, c'est qu'on a fini
+						VpMulti = False
+					ElseIf VpMulti Then
+						VpCarac(VpI) = VpCarac(VpI) + vbCrLf + VpLine
 					End If
-					VpLine = VpFile.ReadLine.Trim
-				Loop Until VpFound
+					'Préaparation de la ligne suivante
+					If Not VpFile.EndOfStream Then
+						VpLine = VpFile.ReadLine.Trim
+					Else
+						Exit Do	'si tout se passe bien, cette ligne ne devrait jamais être exécutée avant l'insertion de la dernière carte
+					End If
+				Loop Until VpFound And Not VpMulti
 			Next VpI
 			Return VpCarac
 		End If
@@ -353,7 +368,7 @@ Public Partial Class frmNewEdition
 				VgDBCommand.ExecuteNonQuery
 	    	End While
 			VpFile.Close
-		End If		
+		End If
 		Me.lblStatus.Text = "Terminé."
 		Call clsModule.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
 		Me.txtCheckList.Text = ""

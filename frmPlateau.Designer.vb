@@ -42,7 +42,7 @@ Partial Class frmPlateau
 		Me.btLives = New System.Windows.Forms.ToolStripButton
 		Me.btPoisons = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator1 = New System.Windows.Forms.ToolStripSeparator
-		Me.btInfos = New System.Windows.Forms.ToolStripButton
+		Me.btTurns = New System.Windows.Forms.ToolStripButton
 		Me.splitV1 = New System.Windows.Forms.SplitContainer
 		Me.splitH3 = New System.Windows.Forms.SplitContainer
 		Me.cbarBibli = New TD.SandBar.ContainerBar
@@ -138,7 +138,7 @@ Partial Class frmPlateau
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btInfos})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(727, 54)
@@ -203,16 +203,18 @@ Partial Class frmPlateau
 		Me.btSeparator1.Name = "btSeparator1"
 		Me.btSeparator1.Size = New System.Drawing.Size(6, 54)
 		'
-		'btInfos
+		'btTurns
 		'
-		Me.btInfos.AutoSize = false
-		Me.btInfos.Image = CType(resources.GetObject("btInfos.Image"),System.Drawing.Image)
-		Me.btInfos.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-		Me.btInfos.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btInfos.Name = "btInfos"
-		Me.btInfos.Size = New System.Drawing.Size(74, 51)
-		Me.btInfos.Text = "Infos."
-		Me.btInfos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btTurns.AutoSize = false
+		Me.btTurns.Image = CType(resources.GetObject("btTurns.Image"),System.Drawing.Image)
+		Me.btTurns.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btTurns.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btTurns.Name = "btTurns"
+		Me.btTurns.Size = New System.Drawing.Size(74, 51)
+		Me.btTurns.Text = "Tours"
+		Me.btTurns.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btTurns.ToolTipText = "Clic gauche pour +, droit pour -"
+		AddHandler Me.btTurns.MouseUp, AddressOf Me.BtTurnsMouseUp
 		'
 		'splitV1
 		'
@@ -811,8 +813,8 @@ Partial Class frmPlateau
 		Me.Text = "Plateau de jeu"
 		Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
 		AddHandler Load, AddressOf Me.FrmPlateauLoad
-		AddHandler ResizeEnd, AddressOf Me.FrmPlateauResizeEnd
 		AddHandler Resize, AddressOf Me.FrmPlateauResize
+		AddHandler ResizeEnd, AddressOf Me.FrmPlateauResizeEnd
 		Me.toolStrip.ResumeLayout(false)
 		Me.toolStrip.PerformLayout
 		Me.splitV1.Panel1.ResumeLayout(false)
@@ -864,6 +866,7 @@ Partial Class frmPlateau
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btTurns As System.Windows.Forms.ToolStripButton
 	Private cmnuDetachFrom As System.Windows.Forms.ToolStripMenuItem
 	Private btSeparator1 As System.Windows.Forms.ToolStripSeparator
 	Private btPoisons As System.Windows.Forms.ToolStripButton
@@ -907,7 +910,6 @@ Partial Class frmPlateau
 	Private panelGraveyard As System.Windows.Forms.Panel
 	Private panelBibli As System.Windows.Forms.Panel
 	Private btBibliShuffle As System.Windows.Forms.ToolStripButton
-	Private btInfos As System.Windows.Forms.ToolStripButton
 	Private btMulligan As System.Windows.Forms.ToolStripButton
 	Private toolStrip As System.Windows.Forms.ToolStrip
 	Private btNewPartie As System.Windows.Forms.ToolStripButton
