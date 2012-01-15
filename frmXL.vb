@@ -67,7 +67,7 @@ Public Partial Class frmXL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal("SeriesNM")).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal("CardText")).ToString.Trim))
+				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "SeriesNM_FR", "SeriesNM"))).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal("CardText")).ToString.Trim))
 			End While
 			.Close
 		End With

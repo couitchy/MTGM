@@ -2014,7 +2014,7 @@ Public Partial Class MainForm
 	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
 	Dim VpTitle As String = VpNode.Tag.Value
 	Dim VpFoil As Boolean = Me.IsFoil(VpNode)
-	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text, , Me.mnuCardsFR.Checked)
+	Dim VpSerie As String = clsModule.GetSerieCodeFromName(Me.cboEdition.Text)
 	Dim VpDownFace As Boolean = Me.IsDownFace(VpNode)
 	Dim VpTransformed As Boolean = Me.IsTransformed(VpNode)
 		Me.SuspendLayout
@@ -2506,7 +2506,7 @@ Public Partial Class MainForm
 	Dim VpCard As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
 	Dim VpEncNbr As Long
- 		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text, , Me.mnuCardsFR.Checked))
+ 		VpEncNbr = clsModule.GetEncNbr(VpCard, clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
 		If VpEncNbr <> 0 And e.Type <> ScrollEventType.EndScroll Then
 			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
 				If Val(Me.lblStock.Text) > 1 Then
@@ -2536,7 +2536,7 @@ Public Partial Class MainForm
 				Else
 					VpPricesHistory = VmMyChildren.PricesHistory
 				End If
-				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text, , Me.mnuCardsFR.Checked), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
+				VpPricesHistory.AddNewPlot(clsModule.GetPriceHistory(VpCardName.Replace("'", "''"), clsModule.GetSerieCodeFromName(Me.cboEdition.Text), VpFoil), VpCardName + " (" + Me.cboEdition.Text + ")")
 				VpPricesHistory.Show
 				VpPricesHistory.BringToFront
 			Else

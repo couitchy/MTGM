@@ -25,6 +25,7 @@ Public Partial Class frmAddCards
 	Private VmMousePos As Point						'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False  			'Formulaire peut être fermé
 	Private VmChangesCommited As Boolean = False	'Modifications en cours sur ComboBoxes
+	Private VmFR As Boolean							'Vrai si saisie depuis la combobox FR, faux si saisie depuis la combobox EN
 	Private VmKeyChange As Boolean = False	
 	Private VmOwner As MainForm
 	#End Region
@@ -68,7 +69,7 @@ Public Partial Class frmAddCards
 			VpCbo1.Text = ""
 		End Try
 		Me.cboSerie.Items.Clear
-		VgDBCommand.CommandText = "Select Card.Series, Series.SeriesNM From Series Inner Join Card On Series.SeriesCD = Card.Series Where Card.Title = '" + Me.cboTitleEN.Text.Replace("'", "''") + "';"
+		VgDBCommand.CommandText = "Select Card.Series, " + If(VmFR, "Series.SeriesNM_FR", "Series.SeriesNM") + " From Series Inner Join Card On Series.SeriesCD = Card.Series Where Card.Title = '" + Me.cboTitleEN.Text.Replace("'", "''") + "';"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -92,7 +93,7 @@ Public Partial Class frmAddCards
 	'Retourne le numéro encyclopédique de la carte passée en paramètre pour l'édition spécifiée
 	'------------------------------------------------------------------------------------------
 	Dim VpO As Object
-		VgDBCommand.CommandText = "Select Card.EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpTitle.Replace("'", "''") + "' And Series.SeriesNM = '" + VpSerie + "';"
+		VgDBCommand.CommandText = "Select Card.EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpTitle.Replace("'", "''") + "' And Series.SeriesCD = '" + VpSerie + "';"
 		VpO = VgDBCommand.ExecuteScalar
 		If Not VpO Is Nothing Then
 			Return VpO.ToString
@@ -104,7 +105,7 @@ Public Partial Class frmAddCards
 	'--------------------------------------------------------------
 	'Retourne la date d'impression de l'édition passée en paramètre
 	'--------------------------------------------------------------
-		VgDBCommand.CommandText = "Select Release From Series Where SeriesNM = '" + VpSerie + "';"
+		VgDBCommand.CommandText = "Select Release From Series Where SeriesCD = '" + VpSerie + "';"
 		Return CDate(VgDBCommand.ExecuteScalar).Year
 	End Function
 	Private Function FindQuant(VpEncNbr As String, VpFoil As Boolean) As String
@@ -205,9 +206,10 @@ Public Partial Class frmAddCards
 		Me.cboTitleEN.Tag = Me.cboTitleEN.Text
 	End Sub
 	Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + Me.cboSerie.Text.Substring(1, 2) + CgIconsExt)
-		Me.lblYear.Text = Me.FindDateSerie(Me.cboSerie.Text.Substring(5))
-		Me.lblEncNbr.Text = Me.AdjustEncNbr(Me.cboTitleEN.Text, Me.cboSerie.Text.Substring(5))
+	Dim VpSerieCD As String = Me.cboSerie.Text.Substring(1, 2)
+	Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + VpSerieCD + CgIconsExt)
+		Me.lblYear.Text = Me.FindDateSerie(VpSerieCD)
+		Me.lblEncNbr.Text = Me.AdjustEncNbr(Me.cboTitleEN.Text, VpSerieCD)
 		If VpKey <> -1 Then
 			Me.imgEdition.Image = clsModule.VgImgSeries.Images(VpKey)
 		Else
@@ -299,6 +301,12 @@ Public Partial Class frmAddCards
 	End Sub
 	Sub CmdCloseClick(sender As Object, e As EventArgs)
 		Me.Close
+	End Sub
+	Sub CboTitleFREnter(sender As Object, e As EventArgs)
+		VmFR = True
+	End Sub
+	Sub CboTitleENEnter(sender As Object, e As EventArgs)
+		VmFR = False
 	End Sub
 	#End Region
 End Class

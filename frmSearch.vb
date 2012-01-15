@@ -208,17 +208,20 @@ Public Partial Class frmSearch
 		End If
 		Select Case VpType
 			'Recherche type string simple
-			Case 0, 1, 2, 3, 9, 10
+			Case 0, 1, 2, 3, 10, 11
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq)
 			'Recherche type nombre / sur créatures
 			Case 4, 5
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, True, clsModule.eSearchType.NumOverAlpha)
 			'Recherche type nombre / égalité
-			Case 6, 8
+			Case 6, 9
 				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, , clsModule.eSearchType.Num)
-			'Recherche type string / sur éditions
+			'Recherche type string / sur éditions VO
 			Case 7
-				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(VpReq, True))
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(Me.cboFind.Text, True))
+			'Recherche type string / sur éditions VF
+			Case 8
+				VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(Me.cboFind.Text, True, True))
 			Case Else
 		End Select
 		'Nombre de réponses
@@ -358,7 +361,7 @@ Public Partial Class frmSearch
 	End Sub
 	Sub CboSearchTypeSelectedIndexChanged(sender As Object, e As EventArgs)
 		Select Case Me.cboSearchType.SelectedIndex
-			Case 4, 5, 6, 8
+			Case 4, 5, 6, 9
 				Me.chkInf.Visible = True
 				Me.chkEq.Visible = True
 				Me.chkSup.Visible = True

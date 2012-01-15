@@ -293,6 +293,7 @@ Partial Class frmAddCards
 		Me.cboTitleEN.Size = New System.Drawing.Size(277, 21)
 		Me.cboTitleEN.TabIndex = 1
 		AddHandler Me.cboTitleEN.SelectedIndexChanged, AddressOf Me.CboTitleENSelectedIndexChanged
+		AddHandler Me.cboTitleEN.Enter, AddressOf Me.CboTitleENEnter
 		AddHandler Me.cboTitleEN.KeyUp, AddressOf Me.CboTitleKeyUp
 		AddHandler Me.cboTitleEN.KeyDown, AddressOf Me.CboTitleKeyDown
 		'
@@ -306,6 +307,7 @@ Partial Class frmAddCards
 		Me.cboTitleFR.Size = New System.Drawing.Size(277, 21)
 		Me.cboTitleFR.TabIndex = 0
 		AddHandler Me.cboTitleFR.SelectedIndexChanged, AddressOf Me.CboTitleFRSelectedIndexChanged
+		AddHandler Me.cboTitleFR.Enter, AddressOf Me.CboTitleFREnter
 		AddHandler Me.cboTitleFR.KeyUp, AddressOf Me.CboTitleKeyUp
 		AddHandler Me.cboTitleFR.KeyDown, AddressOf Me.CboTitleKeyDown
 		'

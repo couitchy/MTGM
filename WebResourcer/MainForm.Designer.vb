@@ -320,7 +320,7 @@ Partial Class MainForm
 		Me.mnuBuildPatch.Image = CType(resources.GetObject("mnuBuildPatch.Image"),System.Drawing.Image)
 		Me.mnuBuildPatch.Name = "mnuBuildPatch"
 		Me.mnuBuildPatch.Size = New System.Drawing.Size(259, 22)
-		Me.mnuBuildPatch.Text = "Construction du patch r9"
+		Me.mnuBuildPatch.Text = "Construction du patch r13"
 		AddHandler Me.mnuBuildPatch.Click, AddressOf Me.MnuBuildPatchClick
 		'
 		'mnuPictures

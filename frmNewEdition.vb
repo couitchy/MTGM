@@ -35,8 +35,8 @@ Public Partial Class frmNewEdition
 	'--------------------------------------------------------------
 		Try
 			With VmEditionHeader
-				'(SeriesCD, SeriesNM, SeriesNM_MtG, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Nullx13, Notes)
-				VgDBCommand.CommandText = "Insert Into Series Values ('" + .SeriesCD + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', Null, Null, True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", Null, " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, '" + .NotesEdition.Replace("'", "''") + "');"
+				'(SeriesCD, SeriesNM, SeriesNM_MtG, SeriesNM_FR, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Foils, Nullx12, Notes)
+				VgDBCommand.CommandText = "Insert Into Series (SeriesCD, SeriesNM, SeriesNM_MtG, SeriesNM_FR, LegalE, LegalS, Border, Release, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, Notes) Values ('" + .SeriesCD + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', '" + .SeriesNM_FR.Replace("'", "''") + "', True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", True, '" + .NotesEdition.Replace("'", "''") + "');"
 				VgDBCommand.ExecuteNonQuery
 			End With
 		Catch
@@ -61,6 +61,7 @@ Public Partial Class frmNewEdition
 			.SeriesCD = VpInfos(1)
 			.SeriesNM = VpInfos(2)
 			.SeriesNM_MtG = VpInfos(3)
+			.SeriesNM_FR = VpInfos(31)
 			.Border = .SetBorder(VpInfos(8))
 			.Release = Date.Parse(VpInfos(9), New CultureInfo("fr-FR", True), DateTimeStyles.NoCurrentDateDefault)
 			.TotCards = Val(VpInfos(11))
@@ -128,7 +129,7 @@ Public Partial Class frmNewEdition
 					Call Me.FillHeader(VpInfos)
 					Try
 						With VmEditionHeader
-							VgDBCommand.CommandText = "Update Series Set SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+							VgDBCommand.CommandText = "Update Series Set SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
 							VgDBCommand.ExecuteNonQuery
 						End With
 					Catch
@@ -137,7 +138,7 @@ Public Partial Class frmNewEdition
 				End If
 			Loop
 			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
-			Call clsModule.ShowInformation("Terminé !")
+			Call clsModule.ShowInformation("Terminé !" + vbCrLf + "Il est recommandé de relancer l'application...")
 		Else
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
 		End If
@@ -690,6 +691,7 @@ Public Class clsEditionHeader
 	End Enum
 	Private VmSeriesCD As String = "ME"
 	Private VmSeriesNM As String = "Magic Edition"
+	Private VmSeriesNM_FR As String = "Édition Magic"
 	Private VmSeriesNM_MtG As String = "Magic Ed..."
 	Private VmBorder As eBorder = eBorder.White
 	Private VmRelease As Date = Date.Now.ToShortDateString
@@ -709,13 +711,22 @@ Public Class clsEditionHeader
 			VmSeriesCD = VpSeriesCD
 		End Set
 	End Property
-	<Category("Identification"), Description("Nom de la série")> _
+	<Category("Identification"), Description("Nom de la série (VO)")> _
 	Public Property SeriesNM As String
 		Get
 			Return VmSeriesNM
 		End Get
 		Set (VpSeriesNM As String)
 			VmSeriesNM = VpSeriesNM
+		End Set
+	End Property
+	<Category("Identification"), Description("Nom de la série (VF)")> _
+	Public Property SeriesNM_FR As String
+		Get
+			Return VmSeriesNM_FR
+		End Get
+		Set (VpSeriesNM_FR As String)
+			VmSeriesNM_FR = VpSeriesNM_FR
 		End Set
 	End Property
 	<Category("Identification"), Description("Nom raccourci de la série sur magiccorportation.com (correspondance requise pour la mise à jour des prix...)")> _

@@ -31,7 +31,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 29719
+	Public Const CgCodeLines As Integer   		= 30376
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7
@@ -79,8 +79,8 @@ Public Module clsModule
 	Public Const CgURL1 As String         		= "/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         		= "/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         		= "/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         		= "/Updates/ContenuStamp r9b.txt"
-	Public Const CgURL1E As String         		= "/Updates/ContenuSizes r9.txt"
+	Public Const CgURL1D As String         		= "/Updates/ContenuStamp r13.txt"
+	Public Const CgURL1E As String         		= "/Updates/ContenuSizes r13.txt"
 	Public Const CgURL2 As String         		= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         		= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         		= "/Updates/Images DB.mdb"
@@ -93,7 +93,7 @@ Public Module clsModule
 	Public Const CgURL9 As String         		= "/Updates/LastPrices.txt"
 	Public Const CgURL10 As String				= "/Images%20des%20cartes/"
 	Public Const CgURL11 As String         		= "/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         		= "/Updates/Series r11.txt"
+	Public Const CgURL12 As String         		= "/Updates/Series r13.txt"
 	Public Const CgURL13 As String         		= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         		= "/Updates/MD_Trad.log"
 	Public Const CgURL15 As String         		= "/Updates/Tournois r11.txt"
@@ -159,7 +159,7 @@ Public Module clsModule
 	Public CgCriterionsFields() As String 		= {"", "Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
 	Public CgNumbers() As String 				= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgRarities() As String				= {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
-	Public CgSearchFields() As String 			= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Spell.myCost", "Card.SubType", "SubTypes.SubTypeVF"}
+	Public CgSearchFields() As String 			= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Card.Series", "Spell.myCost", "Card.SubType", "SubTypes.SubTypeVF"}
 	Public CgRequiredFiles() As String			= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgMagicBack, CgUpdater}
 	Public CgStrConn() As String      			= {"Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source=", "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="}
 	Public CgCriteres As New Hashtable(CgNCriterions)

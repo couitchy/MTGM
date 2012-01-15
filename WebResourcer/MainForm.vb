@@ -37,7 +37,7 @@ Public Partial Class MainForm
 	Private Const CmKey5 As String  	= "Texte Français"
 	Private Const CmFrench  As Integer 	= 2
 	Private Const CmMe As String		= "Moi"
-	Private Const CmStamp As String		= "ContenuStamp r9.txt"
+	Private Const CmStamp As String		= "ContenuStamp r13.txt"
 	Private Const CmCategory As String	= "Properties"
 	Private CmFields() As String 		= {"LastUpdateAut", "LastUpdateSimu", "LastUpdateTxtVF", "LastUpdateTradPatch"}
 	Private CmIndexes() As Integer 		= {2, 3, 4, 6}
@@ -1018,13 +1018,13 @@ Public Partial Class MainForm
 		If Me.dlgSave.FileName <> "" Then
 			VpTxt = New StreamWriter(Me.dlgSave.FileName)
 			Call Me.AddToLog("La construction du fichier d'en-têtes a commencé...", eLogType.Information, True)
-	    	VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes From Series;"
+	    	VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR From Series;"
 	    	VmDBReader = VmDBCommand.ExecuteReader
 			With VmDBReader
 				While .Read
 					Application.DoEvents
 					VpStr = ""
-					For VpI As Integer = 0 To 29
+					For VpI As Integer = 0 To 30
 						VpStr = VpStr + Me.Matching(.GetValue(VpI).ToString) + "#"
 					Next VpI
 					VpStr = Me.SerieShortcut(VpStr.Substring(0, VpStr.Length - 1))
@@ -1033,12 +1033,12 @@ Public Partial Class MainForm
 				End While
 				.Close
 			End With
-			VpTxt.WriteLine("3rdBB#3B#Third Edition (Black Border)#Revised###1#1#B#02/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition a été éditée en bords noirs en Italien, Français et Allemand, cette édition est aussi appelée ""Beta"" puisque c'est la première édition de base à sortir dans ces pays. Cette édition est datée de 1994 et cette date suffit a reconnaître les cartes de cette édition.")
-			VpTxt.WriteLine("3rdWB#3W#Third Edition (White Border)#Revised###1#1#W#03/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition est sortie en 1994 en français, et en 1995 en italien et en allemand (la 3ème édition anglaise étant Revised). Cette édition est donc datée de 1994, cette date suffit a reconnaître les cartes de cette édition.")
-			VpTxt.WriteLine("coldsnapthemedecks#CT#Coldsnap Theme Decks#Coldsnap Theme De...###1#1#B#22/07/2006 00:00:00##62#52#0#0#0#0#0#############Cette édition, sortie à l'occasion de Coldsnap en Juillet 2006, est une réédition de certaines cartes du bloc Ère glaciaire. À noter qu'il s'agit seulement de decks préconstruits, vous n'aurez donc aucune carte rare dans cette édition spéciale de 62 cartes. On retrouve toutefois des cartes assez mythiques comme Brainstorm, Disanchant, Swords to Plowshare, Dark Ritual, Tinder Wall, Incinerate...")
-			VpTxt.WriteLine("deckmasters#DM#Deckmasters#Deckmasters###1#1#W#01/12/2001 00:00:00##124#44#0#0#0#0#0#############Deckmasters: Garfield vs. Finkel, usually known as simply Deckmasters, was a set created in 2001 to showcase the epic match between Richard Garfield, the creator of the card game, and Jon Finkel, a Magic World Champion. Two decks were included in the set, a red/green deck that Richard Garfield used, and a red/black deck that was played by Finkel. This set was created to let players relive this famous match. It is the fifth compilation set.")
-			VpTxt.WriteLine("planechase#PH#Planechase#Planechase###1#1#B#04/09/2004 00:00:00##240#169#0#0#0#0#0#############Planechase is a new variant of Magic: The Gathering with an emphasis on multiplayer games. The set utilizes new oversized Plane cards, cards that are based on various locations (Planes) within the Magic multiverse, to modify the rules of gameplay. Four game packs were released on September 4, 2009: Elemental Thunder, Metallic Dreams, Strike Force, and Zombie Empire. Each game pack comes with a 60-card preconstructed deck, 10 Plane cards, a six-sided Planar die, and multiplayer rules. The cards within each preconstructed deck have all been reprinted from various Magic sets. All of the cards are black bordered and tournament legal in their original formats. Outside of the initial release, there have been five promotional cards released.")
-			VpTxt.WriteLine("pegase#PG#Pégase#Pégase###1#1#W#02/03/2006 00:00:00##600#236#0#0#0#0#0#############Pégase est une édition particulière de Magic, car éditée en collaboration entre Wizard of The Coast et Hachette. Les collectionneurs sont ainsi invités à construire 10 decks (Rats, Elves, Spirits, Slivers, Ninjas, Zombies, Angels, Wizards, Berserk et Thallids) au fur et à mesure de leurs passages chez leur marchand de journaux. Les publications s'étendent du 2 mars 2006 au 3 juillet 2007. Pégase n'est disponible qu'en français et en italien.")
+			VpTxt.WriteLine("3rdBB#3B#Third Edition (Black Border)#Revised###1#1#B#02/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition a été éditée en bords noirs en Italien, Français et Allemand, cette édition est aussi appelée ""Beta"" puisque c'est la première édition de base à sortir dans ces pays. Cette édition est datée de 1994 et cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord noir)")
+			VpTxt.WriteLine("3rdWB#3W#Third Edition (White Border)#Revised###1#1#W#03/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition est sortie en 1994 en français, et en 1995 en italien et en allemand (la 3ème édition anglaise étant Revised). Cette édition est donc datée de 1994, cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord blanc)")
+			VpTxt.WriteLine("coldsnapthemedecks#CT#Coldsnap Theme Decks#Coldsnap Theme De...###1#1#B#22/07/2006 00:00:00##62#52#0#0#0#0#0#############Cette édition, sortie à l'occasion de Coldsnap en Juillet 2006, est une réédition de certaines cartes du bloc Ère glaciaire. À noter qu'il s'agit seulement de decks préconstruits, vous n'aurez donc aucune carte rare dans cette édition spéciale de 62 cartes. On retrouve toutefois des cartes assez mythiques comme Brainstorm, Disanchant, Swords to Plowshare, Dark Ritual, Tinder Wall, Incinerate...#Coldsnap Theme Decks")
+			VpTxt.WriteLine("deckmasters#DM#Deckmasters#Deckmasters###1#1#W#01/12/2001 00:00:00##124#44#0#0#0#0#0#############Deckmasters: Garfield vs. Finkel, usually known as simply Deckmasters, was a set created in 2001 to showcase the epic match between Richard Garfield, the creator of the card game, and Jon Finkel, a Magic World Champion. Two decks were included in the set, a red/green deck that Richard Garfield used, and a red/black deck that was played by Finkel. This set was created to let players relive this famous match. It is the fifth compilation set.#Deckmasters")
+			VpTxt.WriteLine("planechase#PH#Planechase#Planechase###1#1#B#04/09/2004 00:00:00##240#169#0#0#0#0#0#############Planechase is a new variant of Magic: The Gathering with an emphasis on multiplayer games. The set utilizes new oversized Plane cards, cards that are based on various locations (Planes) within the Magic multiverse, to modify the rules of gameplay. Four game packs were released on September 4, 2009: Elemental Thunder, Metallic Dreams, Strike Force, and Zombie Empire. Each game pack comes with a 60-card preconstructed deck, 10 Plane cards, a six-sided Planar die, and multiplayer rules. The cards within each preconstructed deck have all been reprinted from various Magic sets. All of the cards are black bordered and tournament legal in their original formats. Outside of the initial release, there have been five promotional cards released.#Planechase")
+			VpTxt.WriteLine("pegase#PG#Pégase#Pégase###1#1#W#02/03/2006 00:00:00##600#236#0#0#0#0#0#############Pégase est une édition particulière de Magic, car éditée en collaboration entre Wizard of The Coast et Hachette. Les collectionneurs sont ainsi invités à construire 10 decks (Rats, Elves, Spirits, Slivers, Ninjas, Zombies, Angels, Wizards, Berserk et Thallids) au fur et à mesure de leurs passages chez leur marchand de journaux. Les publications s'étendent du 2 mars 2006 au 3 juillet 2007. Pégase n'est disponible qu'en français et en italien.#Pégase")
 			VpTxt.Flush
 			VpTxt.Close
 			If Me.btCancel.Tag Then
