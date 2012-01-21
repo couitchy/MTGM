@@ -88,7 +88,6 @@ Partial Class frmPlateau
 		Me.cmnuCountersAdd = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuCountersSub = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuCountersRemove = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuSeparator1 = New System.Windows.Forms.ToolStripSeparator
 		Me.cmnuSendTo = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToBibliTop = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToBibliBottom = New System.Windows.Forms.ToolStripMenuItem
@@ -99,6 +98,7 @@ Partial Class frmPlateau
 		Me.cmnuSendToExil = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuAttachTo = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuDetachFrom = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuTransform = New System.Windows.Forms.ToolStripMenuItem
 		Me.toolStrip.SuspendLayout
 		Me.splitV1.Panel1.SuspendLayout
 		Me.splitV1.Panel2.SuspendLayout
@@ -667,9 +667,9 @@ Partial Class frmPlateau
 		'
 		'cmnuCardContext
 		'
-		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuCounters, Me.cmnuSeparator1, Me.cmnuSendTo, Me.cmnuAttachTo, Me.cmnuDetachFrom})
+		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuSendTo, Me.cmnuTransform, Me.cmnuAttachTo, Me.cmnuDetachFrom, Me.cmnuCounters})
 		Me.cmnuCardContext.Name = "cmnuCardContext"
-		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 148)
+		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 186)
 		'
 		'cmnuName
 		'
@@ -704,7 +704,7 @@ Partial Class frmPlateau
 		'
 		Me.cmnuCountersAdd.Image = CType(resources.GetObject("cmnuCountersAdd.Image"),System.Drawing.Image)
 		Me.cmnuCountersAdd.Name = "cmnuCountersAdd"
-		Me.cmnuCountersAdd.Size = New System.Drawing.Size(129, 22)
+		Me.cmnuCountersAdd.Size = New System.Drawing.Size(152, 22)
 		Me.cmnuCountersAdd.Text = "Ajouter"
 		AddHandler Me.cmnuCountersAdd.Click, AddressOf Me.CmnuCountersAddClick
 		'
@@ -712,7 +712,7 @@ Partial Class frmPlateau
 		'
 		Me.cmnuCountersSub.Image = CType(resources.GetObject("cmnuCountersSub.Image"),System.Drawing.Image)
 		Me.cmnuCountersSub.Name = "cmnuCountersSub"
-		Me.cmnuCountersSub.Size = New System.Drawing.Size(129, 22)
+		Me.cmnuCountersSub.Size = New System.Drawing.Size(152, 22)
 		Me.cmnuCountersSub.Text = "Retirer"
 		AddHandler Me.cmnuCountersSub.Click, AddressOf Me.CmnuCountersSubClick
 		'
@@ -720,14 +720,9 @@ Partial Class frmPlateau
 		'
 		Me.cmnuCountersRemove.Image = CType(resources.GetObject("cmnuCountersRemove.Image"),System.Drawing.Image)
 		Me.cmnuCountersRemove.Name = "cmnuCountersRemove"
-		Me.cmnuCountersRemove.Size = New System.Drawing.Size(129, 22)
+		Me.cmnuCountersRemove.Size = New System.Drawing.Size(152, 22)
 		Me.cmnuCountersRemove.Text = "Supprimer"
 		AddHandler Me.cmnuCountersRemove.Click, AddressOf Me.CmnuCountersRemoveClick
-		'
-		'cmnuSeparator1
-		'
-		Me.cmnuSeparator1.Name = "cmnuSeparator1"
-		Me.cmnuSeparator1.Size = New System.Drawing.Size(169, 6)
 		'
 		'cmnuSendTo
 		'
@@ -801,6 +796,15 @@ Partial Class frmPlateau
 		Me.cmnuDetachFrom.Text = "Détacher"
 		AddHandler Me.cmnuDetachFrom.Click, AddressOf Me.CmnuDetachFromClick
 		'
+		'cmnuTransform
+		'
+		Me.cmnuTransform.Enabled = false
+		Me.cmnuTransform.Image = CType(resources.GetObject("cmnuTransform.Image"),System.Drawing.Image)
+		Me.cmnuTransform.Name = "cmnuTransform"
+		Me.cmnuTransform.Size = New System.Drawing.Size(172, 22)
+		Me.cmnuTransform.Text = "Transformer"
+		AddHandler Me.cmnuTransform.Click, AddressOf Me.CmnuTransformClick
+		'
 		'frmPlateau
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -866,6 +870,7 @@ Partial Class frmPlateau
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private cmnuTransform As System.Windows.Forms.ToolStripMenuItem
 	Private btTurns As System.Windows.Forms.ToolStripButton
 	Private cmnuDetachFrom As System.Windows.Forms.ToolStripMenuItem
 	Private btSeparator1 As System.Windows.Forms.ToolStripSeparator
@@ -874,7 +879,6 @@ Partial Class frmPlateau
 	Private btSeparator0 As System.Windows.Forms.ToolStripSeparator
 	Private cmnuCountersRemove As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuAttachTo As System.Windows.Forms.ToolStripMenuItem
-	Private cmnuSeparator1 As System.Windows.Forms.ToolStripSeparator
 	Private cmnuSeparator0 As System.Windows.Forms.ToolStripSeparator
 	Private cmnuName As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuTapUntap As System.Windows.Forms.ToolStripMenuItem

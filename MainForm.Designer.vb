@@ -623,7 +623,7 @@ Partial Class MainForm
 		Me.mnuNewEdition.Image = CType(resources.GetObject("mnuNewEdition.Image"),System.Drawing.Image)
 		Me.mnuNewEdition.Name = "mnuNewEdition"
 		Me.mnuNewEdition.Size = New System.Drawing.Size(279, 22)
-		Me.mnuNewEdition.Text = "Ajouter une série..."
+		Me.mnuNewEdition.Text = "Ajouter des séries..."
 		AddHandler Me.mnuNewEdition.Click, AddressOf Me.MnuNewEditionActivate
 		'
 		'mnuRemEdition

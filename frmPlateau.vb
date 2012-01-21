@@ -39,7 +39,7 @@ Public Partial Class frmPlateau
 		If Not Directory.Exists(VpPath) Then
 			Directory.CreateDirectory(VpPath)
 		End If
-		Call clsModule.ExtractPictures(VpPath.Replace("\\", "\"), VmSource, VmRestriction)
+		Call clsModule.ExtractPictures(VpPath.Replace("\\", "\"), VmSource, VmRestriction, True)
 		'Nouvelle partie
 		VmPlateauPartie = New clsPlateauPartie(VmSource, VmRestriction)
 		Call VmPlateauPartie.BeginPlateauPartie
@@ -236,22 +236,27 @@ Public Partial Class frmPlateau
 	'-------------------------------------
 	Dim VpDropDown As ToolStripItem
 		VmPlateau.CurrentPicture = VpPictureBox
-		'Nom de la carte (titre du menu contextuel)
-		If VmPlateau.CurrentCard.Owner Is VmPlateauPartie.Bibli And Not Me.btBibliReveal.Checked Then
-			Me.cmnuName.Text = "(Face cachée)"
-		Else
-			Me.cmnuName.Text = VmPlateau.CurrentCard.NameVF
-		End If
-		'Liste des autres cartes auxquelles on pourrait potentiellement attacher la carte courante
-		Me.cmnuAttachTo.DropDownItems.Clear
-		If VmPlateau.CurrentCard.Attachments.Count = 0 Then									'on peut s'attacher à une autre carte que si personne n'est attaché à soi
-			For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
-				If Not VpCard Is VmPlateau.CurrentCard AndAlso Not VpCard.IsAttached Then	'on ne peut ni s'attacher à soi-même ni à une carte déjà attachée à une autre carte
-					VpDropDown = Me.cmnuAttachTo.DropDownItems.Add(VpCard.NameVF, Nothing, AddressOf CmnuAttachToClick)
-					VpDropDown.Tag = VpCard										'conserve la référence de l'hôte potentiel
-				End If
-			Next VpCard
-		End If
+		With VmPlateau.CurrentCard
+			'Nom de la carte (titre du menu contextuel)
+			If .Owner Is VmPlateauPartie.Bibli And Not Me.btBibliReveal.Checked Then
+				Me.cmnuName.Text = "(Face cachée)"
+			Else
+				Me.cmnuName.Text = .NameVF
+			End If
+			'Carte éventuellement transformable
+			Me.cmnuTransform.Enabled = .Transformable
+			Me.cmnuTransform.Checked = .Transformed
+			'Liste des autres cartes auxquelles on pourrait potentiellement attacher la carte courante
+			Me.cmnuAttachTo.DropDownItems.Clear
+			If .Attachments.Count = 0 Then									'on peut s'attacher à une autre carte que si personne n'est attaché à soi
+				For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
+					If Not VpCard Is VmPlateau.CurrentCard AndAlso Not VpCard.IsAttached Then	'on ne peut ni s'attacher à soi-même ni à une carte déjà attachée à une autre carte
+						VpDropDown = Me.cmnuAttachTo.DropDownItems.Add(VpCard.NameVF, Nothing, AddressOf CmnuAttachToClick)
+						VpDropDown.Tag = VpCard										'conserve la référence de l'hôte potentiel
+					End If
+				Next VpCard
+			End If
+		End With
 		'Affichage effectif
 		Me.cmnuCardContext.Show(VpPictureBox, VpPoint)
 	End Sub
@@ -316,7 +321,7 @@ Public Partial Class frmPlateau
 		'Si la carte n'a pas d'image, écrit au moins le texte
 		If VpCard.MissingPicture Then
 			Using VpFont As Font = New Font("Arial", 14)
-	        	e.Graphics.DrawString(VpCard.NameVF, VpFont, Brushes.Green, New Point(5, 5))
+	        	e.Graphics.DrawString(If(VpCard.Transformed, VpCard.TransformedName, VpCard.NameVF), VpFont, Brushes.Green, New Point(5, 5))
 	    	End Using
 	    End If
 	End Sub
@@ -371,7 +376,7 @@ Public Partial Class frmPlateau
 		Else
 			VmPlateauPartie.Tours -= 1
 		End If
-		Me.btTurns.Text = VmPlateauPartie.Tours.ToString		
+		Me.btTurns.Text = VmPlateauPartie.Tours.ToString
 	End Sub
 	Sub BtBibliRevealClick(sender As Object, e As EventArgs)
 		Me.btBibliReveal.Checked = Not Me.btBibliReveal.Checked
@@ -452,6 +457,12 @@ Public Partial Class frmPlateau
 		Call VmPlateau.CurrentCard.AttachTo(Nothing)
 		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw(VmPlateauPartie.Field)
+	End Sub
+	Sub CmnuTransformClick(sender As Object, e As EventArgs)
+		With VmPlateau.CurrentCard
+			.Transformed = Not .Transformed
+			VmPlateau.CurrentPicture.Image = Image.FromFile(.PicturePath)
+		End With
 	End Sub
 	Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
@@ -620,14 +631,20 @@ Public Class clsPlateauPartie
 	'Construction du jeu
 	'-------------------
 	Dim VpSQL As String
-		VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
+		VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type, Card.SpecialDoubleCard From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3))
+				'Carte normale
+				If Not .GetBoolean(4) Then
+					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0))
+				'Carte transformable
+				Else
+					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, clsModule.GetTransformedName(.GetString(0)))
+				End If
 			End While
 			.Close
 		End With
@@ -667,12 +684,12 @@ Public Class clsPlateauPartie
 		'VmMain.Sort(VpComparer)
 		VmField.Sort(VpComparer)
 	End Sub
-	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, VpType As String)
+	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String)
 	'--------------------
 	'Construction du deck
 	'--------------------
 		For VpI As Integer = 1 To VpCount
-			VmDeck.Add(New clsPlateauCard(VmDeck, VpName, VpNameFR, VpType))
+			VmDeck.Add(New clsPlateauCard(VmDeck, VpName, VpNameFR, VpType, VpTransformable, VpTransformedCardName))
 		Next VpI
 	End Sub
 	Public Shared Sub Shuffle(ByRef VpListe As List(Of clsPlateauCard))
@@ -814,18 +831,23 @@ End Class
 Public Class clsPlateauCard
 	Private VmOwner As List(Of clsPlateauCard)
 	Private VmCardName As String
+	Private VmTransformedCardName As String
 	Private VmCardNameFR As String
 	Private VmCardType As String
 	Private VmTapped As Boolean
 	Private VmHidden As Boolean
+	Private VmTransformable As Boolean
+	Private VmTransformed As Boolean
 	Private VmCounters As Integer
 	Private VmAttachedTo As clsPlateauCard
 	Private VmAttachments As New List(Of clsPlateauCard)
 	Private VmMissingImg As Boolean
-	Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String)
+	Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String)
 		VmCardName = VpName
 		VmCardNameFR = VpNameFR
 		VmCardType = VpType
+		VmTransformable = VpTransformable
+		VmTransformedCardName = VpTransformedCardName
 		Call Me.ReInit(VpOwner)
 	End Sub
 	Public Sub ReInit(VpOwner As List(Of clsPlateauCard))
@@ -900,9 +922,11 @@ Public Class clsPlateauCard
 	Public ReadOnly Property PicturePath As String
 		Get
 		Dim VpFile As String
+		Dim VpCardName As String
+			VpCardName = If(VmTransformed, VmTransformedCardName, VmCardName)
 			VmMissingImg = False
 			If Not VmHidden Then
-				VpFile = Path.GetTempPath + clsModule.CgTemp + "\" + clsModule.AvoidForbiddenChr(VmCardName) + ".jpg"
+				VpFile = Path.GetTempPath + clsModule.CgTemp + "\" + clsModule.AvoidForbiddenChr(VpCardName) + ".jpg"
 				If File.Exists(VpFile) Then
 					Return VpFile
 				Else
@@ -936,6 +960,24 @@ Public Class clsPlateauCard
 		Set (VpTapped As Boolean)
 			VmTapped = VpTapped
 		End Set
+	End Property
+	Public ReadOnly Property Transformable As Boolean
+		Get
+			Return VmTransformable
+		End Get
+	End Property
+	Public Property Transformed As Boolean
+		Get
+			Return VmTransformed
+		End Get
+		Set (VpTransformed As Boolean)
+			VmTransformed = VpTransformed
+		End Set
+	End Property
+	Public ReadOnly Property TransformedName As String
+		Get
+			Return VmTransformedCardName
+		End Get
 	End Property
 	Public Property Hidden As Boolean
 		Get

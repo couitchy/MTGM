@@ -1632,6 +1632,18 @@ Public Module clsModule
 			End If
 		End If
 	End Function
+	Public Function GetTransformedName(VpCard As String) As String
+	Dim VpDBCommand As OleDbCommand
+		Try
+			VpDBCommand = New OleDbCommand
+			VpDBCommand.Connection = VgDB
+			VpDBCommand.CommandType = CommandType.Text
+			VpDBCommand.CommandText = "Select Top 1 Card.Title From Card Where Card.EncNbr In (Select CardDouble.EncNbrDownFace From Card Inner Join CardDouble On Card.EncNbr = CardDouble.EncNbrTopFace Where Card.Title = '" + VpCard.Replace("'", "''") + "');"
+			Return VpDBCommand.ExecuteScalar.ToString
+		Catch
+			Return ""
+		End Try
+	End Function
 	Public Function HasPriceHistory As Boolean
 		VgDBCommand.CommandText = "Select Count(*) From PricesHistory;"
 		Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
@@ -1672,7 +1684,7 @@ Public Module clsModule
 		End With
 		VpCbo.Sorted = True
 	End Sub
-	Public Sub ExtractPictures(VpSaveFolder As String, VpSource As String, VpRestriction As String)
+	Public Sub ExtractPictures(VpSaveFolder As String, VpSource As String, VpRestriction As String, Optional VpExtractTransformed As Boolean = False)
 	'-------------------------------------------------------------------------------------------------
 	'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection
 	'-------------------------------------------------------------------------------------------------
@@ -1680,7 +1692,12 @@ Public Module clsModule
 	Dim VpCards As New List(Of String)
 		VpSQL = "Select Distinct Card.Title From " + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr Where "
 		VpSQL = VpSQL + VpRestriction
-		VpSQL = TrimQuery(VpSQL)
+		VpSQL = TrimQuery(VpSQL, False)
+		If VpExtractTransformed Then
+			VpSQL = VpSQL + " Union Select Distinct Card.Title From Card Where Card.EncNbr In (Select EncNbrDownFace From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardDouble On Card.EncNbr = CardDouble.EncNbrTopFace Where "
+			VpSQL = VpSQL + VpRestriction
+			VpSQL = TrimQuery(VpSQL, True, ")")
+		End If
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
