@@ -1336,7 +1336,10 @@ Public Partial Class MainForm
 				End If
 			Case "Card.Rarity"
 				Return FindImageIndexRarity(VpStr)
+			Case "Card.Type"
+				Return FindImageIndexType(VpStr)
 			Case Else
+				Stop
 				Return 0
 		End Select
 	End Function
@@ -1365,7 +1368,7 @@ Public Partial Class MainForm
 		End Select
 	End Function
 	Private Function FindImageIndexRarity(VpRarity As String) As Integer
-		Select Case VpRarity.Substring(0, 1)
+		Select Case VpRarity.Substring(0, 1).ToUpper
 			Case "D", "L", "S"
 				Return 30
 			Case "C"
@@ -1376,6 +1379,24 @@ Public Partial Class MainForm
 				Return 33
 			Case "M"
 				Return 34
+			Case Else
+				Return 0
+		End Select
+	End Function
+	Private Function FindImageIndexType(VpType As String) As Integer
+		Select Case VpType.Substring(0, 1).ToUpper
+			Case "C", "U", "P"
+				Return 45
+			Case "I", "N"
+				Return 46
+			Case "A"
+				Return 43
+			Case "E", "T"
+				Return 44
+			Case "L"
+				Return 47
+			Case "S"
+				Return 48
 			Case Else
 				Return 0
 		End Select

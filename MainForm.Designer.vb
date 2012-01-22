@@ -338,6 +338,12 @@ Partial Class MainForm
 		Me.imglstTvw.Images.SetKeyName(40, "_p5.png")
 		Me.imglstTvw.Images.SetKeyName(41, "_p6.png")
 		Me.imglstTvw.Images.SetKeyName(42, "_p7.png")
+		Me.imglstTvw.Images.SetKeyName(43, "_startifact.png")
+		Me.imglstTvw.Images.SetKeyName(44, "_staura.png")
+		Me.imglstTvw.Images.SetKeyName(45, "_stcreature.png")
+		Me.imglstTvw.Images.SetKeyName(46, "_stinstant.png")
+		Me.imglstTvw.Images.SetKeyName(47, "_stland.png")
+		Me.imglstTvw.Images.SetKeyName(48, "_stsorcery.png")
 		'
 		'imglstCarac
 		'
