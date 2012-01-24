@@ -12,6 +12,7 @@
 '| Release 8      |                        03/10/2010 |
 '| Release 9      |                        05/02/2011 |
 '| Release 10     |                        10/09/2011 |
+'| Release 11     |                        24/01/2012 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -31,7 +32,7 @@ Public Module clsModule
 	Public Declare Function SetForegroundWindow 	  Lib "user32" (ByVal hwnd As Long) As Long
 	Public Const CgProject As String			= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String					= "Moi"
-	Public Const CgCodeLines As Integer   		= 30478
+	Public Const CgCodeLines As Integer   		= 30529
 	Public Const CgNCriterions As Integer 		= 8
 	Public Const CgNDispMenuBase As Integer 	= 3
 	Public Const CgNMain As Integer				= 7

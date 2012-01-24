@@ -1,12 +1,4 @@
-﻿'
-' Crée par SharpDevelop.
-' Utilisateur: Couitchy
-' Date: 18/01/2011
-' Heure: 20:32
-' 
-' Pour changer ce modèle utiliser Outils | Options | Codage | Editer les en-têtes standards.
-'
-Imports Microsoft.VisualBasic.ApplicationServices
+﻿Imports Microsoft.VisualBasic.ApplicationServices
 
 Namespace My
 	' This file controls the behaviour of the application.
