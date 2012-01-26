@@ -18,6 +18,7 @@
 '| Modifications :                                    |
 '| - formatage des colonnes spéciales	   20/03/2010 |
 '| - extraction des images de la sélection 24/07/2010 |
+'| - ajout de la colonne opt. force / end. 26/01/2012 |
 '------------------------------------------------------
 Public Partial Class frmXL
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
@@ -61,14 +62,14 @@ Public Partial Class frmXL
 			Exit Sub
 		End Try
 		'Récupération de la liste
-		VpSQL = "Select * From ((((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title Where "
+		VpSQL = "Select * From (((((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title Where "
 		VpSQL = VpSQL + VmRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL, True, " Order By Card.Title")
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "SeriesNM_FR", "SeriesNM"))).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "TexteFR", "CardText"))).ToString.Trim))
+				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Power")).ToString, .GetValue(.GetOrdinal("Tough")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "SeriesNM_FR", "SeriesNM"))).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "TexteFR", "CardText"))).ToString.Trim))
 			End While
 			.Close
 		End With
@@ -108,12 +109,12 @@ Public Partial Class frmXL
 					.Cells(VpY, VpX) = "Nom"
 					VpX = VpX + 1				
 					'Type
-					If Me.chklstXL.GetItemChecked(6) Then
+					If Me.chklstXL.GetItemChecked(7) Then
 						.Cells(VpY, VpX) = "Type"
 						VpX = VpX + 1
 					End If
 					'Sous-type
-					If Me.chklstXL.GetItemChecked(5) Then
+					If Me.chklstXL.GetItemChecked(6) Then
 						.Cells(VpY, VpX) = "Sous-type"
 						VpX = VpX + 1
 					End If
@@ -122,28 +123,33 @@ Public Partial Class frmXL
 						.Cells(VpY, VpX) = "Couleur"
 						VpX = VpX + 1
 					End If
-					'Coût d'invocation
+					'Force / Endurance
 					If Me.chklstXL.GetItemChecked(1) Then
+						.Cells(VpY, VpX) = "Force / Endurance"
+						VpX = VpX + 1
+					End If
+					'Coût d'invocation
+					If Me.chklstXL.GetItemChecked(2) Then
 						.Cells(VpY, VpX) = "Coût d'invocation"
 						VpX = VpX + 1
 					End If
 					'Edition
-					If Me.chklstXL.GetItemChecked(2) Then
+					If Me.chklstXL.GetItemChecked(3) Then
 						.Cells(VpY, VpX) = "Edition"
 						VpX = VpX + 1
 					End If
 					'Prix
-					If Me.chklstXL.GetItemChecked(3) Then
+					If Me.chklstXL.GetItemChecked(4) Then
 						.Cells(VpY, VpX) = "Prix unitaire"
 						VpX = VpX + 1
 					End If
 					'Rareté
-					If Me.chklstXL.GetItemChecked(4) Then
+					If Me.chklstXL.GetItemChecked(5) Then
 						.Cells(VpY, VpX) = "Rareté"
 						VpX = VpX + 1
 					End If
 					'Texte
-					If Me.chklstXL.GetItemChecked(7) Then
+					If Me.chklstXL.GetItemChecked(8) Then
 						.Cells(VpY, VpX) = "Texte descriptif"
 						VpX = VpX + 1						
 					End If
@@ -160,12 +166,12 @@ Public Partial Class frmXL
 					.Cells(VpY, VpX) = VpCur.Title
 					VpX = VpX + 1
 					'Type
-					If Me.chklstXL.GetItemChecked(6) Then
+					If Me.chklstXL.GetItemChecked(7) Then
 						.Cells(VpY, VpX) = VpCur.Type
 						VpX = VpX + 1
 					End If
 					'Sous-type
-					If Me.chklstXL.GetItemChecked(5) Then
+					If Me.chklstXL.GetItemChecked(6) Then
 						.Cells(VpY, VpX) = VpCur.SubType
 						VpX = VpX + 1
 					End If
@@ -174,30 +180,35 @@ Public Partial Class frmXL
 						.Cells(VpY, VpX) = VpCur.Color
 						VpX = VpX + 1
 					End If
-					'Coût d'invocation
+					'Force / Endurance
 					If Me.chklstXL.GetItemChecked(1) Then
+						.Cells(VpY, VpX) = VpCur.ForceEndurance
+						VpX = VpX + 1
+					End If
+					'Coût d'invocation
+					If Me.chklstXL.GetItemChecked(2) Then
 						.Cells(VpY, VpX) = VpCur.Invoc
 						VpForceText = VpX
 						VpX = VpX + 1
 					End If
 					'Edition
-					If Me.chklstXL.GetItemChecked(2) Then
+					If Me.chklstXL.GetItemChecked(3) Then
 						.Cells(VpY, VpX) = VpCur.Serie
 						VpX = VpX + 1
 					End If
 					'Prix
-					If Me.chklstXL.GetItemChecked(3) Then
+					If Me.chklstXL.GetItemChecked(4) Then
 						.Cells(VpY, VpX) = VpCur.Price
 						VpForceCurrency = VpX
 						VpX = VpX + 1
 					End If
 					'Rareté
-					If Me.chklstXL.GetItemChecked(4) Then
+					If Me.chklstXL.GetItemChecked(5) Then
 						.Cells(VpY, VpX) = VpCur.Rarity
 						VpX = VpX + 1
 					End If
 					'Texte
-					If Me.chklstXL.GetItemChecked(7) Then
+					If Me.chklstXL.GetItemChecked(8) Then
 						.Cells(VpY, VpX) = VpCur.CardText
 						VpX = VpX + 1
 					End If
@@ -301,6 +312,7 @@ Public Class clsXLItem
 	Private VmTitle As String
 	Private VmQuant As Integer
 	Private VmColor As String = ""
+	Private VmForceEndurance As String = ""
 	Private VmInvoc As String = ""
 	Private VmSerie As String = ""
 	Private VmPrice As String = 0
@@ -308,39 +320,42 @@ Public Class clsXLItem
 	Private VmSubType As String = ""
 	Private VmType As String = ""
 	Private VmCardText As String = ""
-	Public Sub New(VpChk As CheckedListBox, VpTitle As String, VpQuant As Integer, VpColor As String, VpInvoc As String, VpSerie As String, VpPrice As String, VpRarity As String, VpSubType As String, VpType As String, VpCardText As String)
+	Public Sub New(VpChk As CheckedListBox, VpTitle As String, VpQuant As Integer, VpColor As String, VpForce As String, VpEndurance As String, VpInvoc As String, VpSerie As String, VpPrice As String, VpRarity As String, VpSubType As String, VpType As String, VpCardText As String)
 		VmTitle = VpTitle
 		VmQuant = VpQuant
 		'Type
-		If VpChk.GetItemChecked(6) Then
+		If VpChk.GetItemChecked(7) Then
 			VmType = clsModule.FormatTitle("Card.Type", VpType)
 		End If
 		'Sous-type
-		If VpChk.GetItemChecked(5) Then
+		If VpChk.GetItemChecked(6) Then
 			VmSubType = VpSubType
 		End If
 		'Couleur
 		If VpChk.GetItemChecked(0) Then
 			VmColor = clsModule.FormatTitle("Spell.Color", VpColor)
 		End If
-		'Coût d'invocation
+		'Force / Endurance
 		If VpChk.GetItemChecked(1) Then
+			VmForceEndurance = If(VpForce = "" And VpEndurance = "", "", "'" + VpForce + " / " + VpEndurance)
+		End If		'Coût d'invocation
+		If VpChk.GetItemChecked(2) Then
 			VmInvoc = VpInvoc
 		End If
 		'Edition
-		If VpChk.GetItemChecked(2) Then
+		If VpChk.GetItemChecked(3) Then
 			VmSerie = VpSerie
 		End If
 		'Prix
-		If VpChk.GetItemChecked(3) Then
+		If VpChk.GetItemChecked(4) Then
 			VmPrice = VpPrice
 		End If
 		'Rareté
-		If VpChk.GetItemChecked(4) Then
+		If VpChk.GetItemChecked(5) Then
 			VmRarity = clsModule.FormatTitle("Card.Rarity", VpRarity)
 		End If
 		'Texte
-		If VpChk.GetItemChecked(7) Then
+		If VpChk.GetItemChecked(8) Then
 			VmCardText = VpCardText
 		End If
 	End Sub
@@ -365,6 +380,11 @@ Public Class clsXLItem
 			Return VmColor
 		End Get
 	End Property
+	Public ReadOnly Property ForceEndurance As String
+		Get
+			Return VmForceEndurance
+		End Get
+	End Property	
 	Public ReadOnly Property Invoc As String
 		Get
 			Return VmInvoc

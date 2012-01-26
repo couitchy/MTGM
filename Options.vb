@@ -95,11 +95,11 @@ Public Class clsSettings
 	Private VmRestoredSplitterDistance As Integer = 68
 	Private VmFormWindowState As FormWindowState = FormWindowState.Normal
 	Private VmForceSingleSource As Boolean = True
-	Private VmLastUpdateAut As String = ""
-	Private VmLastUpdateSimu As String = ""
-	Private VmLastUpdateTxtVF As String = ""
+	Private VmLastUpdateAut As String = clsModule.CgLastUpdateAut
+	Private VmLastUpdateSimu As String = clsModule.CgLastUpdateSimu
+	Private VmLastUpdateTxtVF As String = clsModule.CgLastUpdateTxtVF
 	Private VmLastUpdatePictPatch As String = ""
-	Private VmLastUpdateTradPatch As String = ""
+	Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
 	Private VmShowUpdateMenus As Boolean = False
 	Private VmPrevSearches As String = ""
 	Private VmVFDefault As Boolean = True

@@ -70,7 +70,7 @@ Partial Class frmXL
 		Me.cbarXL.Location = New System.Drawing.Point(0, 0)
 		Me.cbarXL.Movable = false
 		Me.cbarXL.Name = "cbarXL"
-		Me.cbarXL.Size = New System.Drawing.Size(284, 275)
+		Me.cbarXL.Size = New System.Drawing.Size(284, 293)
 		Me.cbarXL.TabIndex = 0
 		Me.cbarXL.Text = "Génération Excel"
 		AddHandler Me.cbarXL.VisibleChanged, AddressOf Me.CbarXLVisibleChanged
@@ -85,7 +85,7 @@ Partial Class frmXL
 		Me.pnlXL.Controls.Add(Me.grpOptions)
 		Me.pnlXL.Location = New System.Drawing.Point(2, 49)
 		Me.pnlXL.Name = "pnlXL"
-		Me.pnlXL.Size = New System.Drawing.Size(280, 224)
+		Me.pnlXL.Size = New System.Drawing.Size(280, 242)
 		Me.pnlXL.TabIndex = 0
 		'
 		'grpColumns
@@ -96,7 +96,7 @@ Partial Class frmXL
 		Me.grpColumns.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpColumns.Location = New System.Drawing.Point(0, 0)
 		Me.grpColumns.Name = "grpColumns"
-		Me.grpColumns.Size = New System.Drawing.Size(280, 201)
+		Me.grpColumns.Size = New System.Drawing.Size(280, 219)
 		Me.grpColumns.TabIndex = 13
 		Me.grpColumns.TabStop = false
 		'
@@ -105,17 +105,17 @@ Partial Class frmXL
 		Me.chklstXL.CheckOnClick = true
 		Me.chklstXL.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.chklstXL.FormattingEnabled = true
-		Me.chklstXL.Items.AddRange(New Object() {"Couleur", "Coût d'invocation", "Edition", "Prix", "Rareté", "Sous-type", "Type", "Texte"})
+		Me.chklstXL.Items.AddRange(New Object() {"Couleur", "Force / Endurance", "Coût d'invocation", "Edition", "Prix", "Rareté", "Sous-type", "Type", "Texte"})
 		Me.chklstXL.Location = New System.Drawing.Point(3, 49)
 		Me.chklstXL.Name = "chklstXL"
-		Me.chklstXL.Size = New System.Drawing.Size(274, 124)
+		Me.chklstXL.Size = New System.Drawing.Size(274, 139)
 		Me.chklstXL.TabIndex = 8
 		AddHandler Me.chklstXL.SelectedValueChanged, AddressOf Me.ChklstXLSelectedValueChanged
 		'
 		'chkAllNone
 		'
 		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.chkAllNone.Location = New System.Drawing.Point(3, 173)
+		Me.chkAllNone.Location = New System.Drawing.Point(3, 191)
 		Me.chkAllNone.Name = "chkAllNone"
 		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
 		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
@@ -138,7 +138,7 @@ Partial Class frmXL
 		'cmdXL
 		'
 		Me.cmdXL.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdXL.Location = New System.Drawing.Point(0, 201)
+		Me.cmdXL.Location = New System.Drawing.Point(0, 219)
 		Me.cmdXL.Name = "cmdXL"
 		Me.cmdXL.Size = New System.Drawing.Size(280, 23)
 		Me.cmdXL.TabIndex = 7
@@ -158,7 +158,7 @@ Partial Class frmXL
 		Me.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpOptions.Location = New System.Drawing.Point(0, 0)
 		Me.grpOptions.Name = "grpOptions"
-		Me.grpOptions.Size = New System.Drawing.Size(280, 224)
+		Me.grpOptions.Size = New System.Drawing.Size(280, 242)
 		Me.grpOptions.TabIndex = 10
 		Me.grpOptions.TabStop = false
 		Me.grpOptions.Visible = false
@@ -207,13 +207,14 @@ Partial Class frmXL
 		'chkVF
 		'
 		Me.chkVF.AutoSize = true
+		Me.chkVF.Checked = true
+		Me.chkVF.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkVF.Location = New System.Drawing.Point(39, 87)
 		Me.chkVF.Name = "chkVF"
 		Me.chkVF.Size = New System.Drawing.Size(154, 17)
 		Me.chkVF.TabIndex = 2
 		Me.chkVF.Text = "Titre des cartes en français"
-		Me.chkVF.UseVisualStyleBackColor = True
-		Me.chkVF.Checked = True
+		Me.chkVF.UseVisualStyleBackColor = true
 		'
 		'chkTextMode
 		'
@@ -258,7 +259,7 @@ Partial Class frmXL
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(284, 275)
+		Me.ClientSize = New System.Drawing.Size(284, 293)
 		Me.Controls.Add(Me.cbarXL)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
