@@ -16,6 +16,7 @@
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - gestion de la position d'insertion	   29/01/2012 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmPlateau
@@ -141,7 +142,7 @@ Public Partial Class frmPlateau
 	Dim VpPicture As PictureBox
 		VpPicture = New PictureBox
 		With VpPicture
-			.Location = New System.Drawing.Point(If(VpIndexH = 0, 0, VpIndexH * (VpParent.Width - VpW) / (VpCount - 1)), CgChevauchFactor * VpH * VpIndexV)
+			.Location = New System.Drawing.Point(If(VpIndexH = 0, 0, Math.Min(VpIndexH * (VpParent.Width - VpW) / (VpCount - 1), VpIndexH * VpW * CgSpacingFactor)), CgChevauchFactor * VpH * VpIndexV)
 			.Size = New System.Drawing.Size(VpW, VpH)
 			.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 			.Image = Image.FromFile(VpCard.PicturePath)
@@ -274,14 +275,25 @@ Public Partial Class frmPlateau
 			Call Me.ManageReDraw
 		End If
 	End Sub
-	Private Sub ManageDrop(VpEventArgs As DragEventArgs, VpDestination As List(Of clsPlateauCard))
+	Private Function CalcNewPosition(VpMouseLocation As Point, VpDestinationPanel As Panel, VpDestination As List(Of clsPlateauCard)) As Integer
+	Dim VpPos As Integer
+		If VpDestination.Count > 0 And ( VpDestination Is VmPlateauPartie.Regard Or VpDestination Is VmPlateauPartie.Main Or VpDestination Is VmPlateauPartie.Field ) Then
+			VpPos = VpDestination.Count
+			While VpPos > 0 AndAlso VpDestinationPanel.PointToClient(VpMouseLocation).X < VmPlateau.GetRightBorder(VpDestination.Item(VpPos - 1))
+				VpPos -= 1
+			End While
+			Return VpPos
+		Else
+			Return -1
+		End If
+	End Function
+	Private Sub ManageDrop(VpEventArgs As DragEventArgs, VpDestinationPanel As Panel, VpDestination As List(Of clsPlateauCard))
 	'---------------------------------------------
 	'Gestion de la fin de l'opération de drag&drop
 	'---------------------------------------------
 	Dim VpCard As clsPlateauCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
 	Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
-		If VpCard.SendTo(VpDestination) Then
-			Call VmPlateauPartie.SortAll
+		If VpCard.SendTo(VpDestination, Me.CalcNewPosition(New Point(VpEventArgs.X, VpEventArgs.Y), VpDestinationPanel, VpDestination)) Then
 			Call Me.ManageReDraw(VpSource, VpDestination)
 		End If
 		Call VmPlateau.StopDragging
@@ -426,7 +438,7 @@ Public Partial Class frmPlateau
 						.Hidden = True
 					End If
 				Case Me.cmnuSendToBibliTop.Name
-					VpRedraw = .SendTo(VmPlateauPartie.Bibli, True)
+					VpRedraw = .SendTo(VmPlateauPartie.Bibli, 0)
 					If VpRedraw Then
 						.Hidden = True
 					End If
@@ -443,7 +455,6 @@ Public Partial Class frmPlateau
 				Case Else
 			End Select
 			If VpRedraw Then
-				Call VmPlateauPartie.SortAll
 				Call Me.ManageReDraw(VpSource, .Owner)
 			End If
 		End With
@@ -451,12 +462,10 @@ Public Partial Class frmPlateau
 	Sub CmnuAttachToClick(sender As Object, e As EventArgs)
 	Dim VpHost As clsPlateauCard = sender.Tag
 		Call VmPlateau.CurrentCard.AttachTo(VpHost)
-		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
 	Sub CmnuDetachFromClick(sender As Object, e As EventArgs)
 		Call VmPlateau.CurrentCard.AttachTo(Nothing)
-		Call VmPlateauPartie.SortAll
 		Call Me.ManageReDraw(VmPlateauPartie.Field)
 	End Sub
 	Sub CmnuTransformClick(sender As Object, e As EventArgs)
@@ -475,9 +484,10 @@ Public Partial Class frmPlateau
 	Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Main) Then
-			Call VmPlateauPartie.SortAll
 			Call Me.ManageReDraw(VmPlateauPartie.Bibli, VmPlateauPartie.Main)
 		End If
+		VmPlateauPartie.Tours += 1
+		Me.btTurns.Text = VmPlateauPartie.Tours.ToString
 	End Sub
 	Sub CardGraveyardDoubleClick(sender As Object, e As EventArgs)
 		
@@ -488,7 +498,6 @@ Public Partial Class frmPlateau
 	Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Main) Then
-			Call VmPlateauPartie.SortAll
 			Call Me.ManageReDraw(VmPlateauPartie.Regard, VmPlateauPartie.Main)
 		End If
 	End Sub
@@ -502,14 +511,12 @@ Public Partial Class frmPlateau
 			VpRedraw = VpCard.SendTo(VmPlateauPartie.Graveyard)
 		End If
 		If VpRedraw Then
-			Call VmPlateauPartie.SortAll
 			Call Me.ManageReDraw(VpSource, VpCard.Owner)
 		End If
 	End Sub
 	Sub CardFieldDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Graveyard) Then
-			Call VmPlateauPartie.SortAll
 			Call Me.ManageReDraw(VmPlateauPartie.Field, VmPlateauPartie.Graveyard)
 		End If
 	End Sub
@@ -596,22 +603,22 @@ Public Partial Class frmPlateau
 		End With
 	End Sub
 	Sub PanelFieldDragDrop(sender As Object, e As DragEventArgs)
-		Call Me.ManageDrop(e, VmPlateauPartie.Field)
+		Call Me.ManageDrop(e, Me.panelField, VmPlateauPartie.Field)
 	End Sub
 	Sub PanelMainDragDrop(sender As Object, e As DragEventArgs)
-		Call Me.ManageDrop(e, VmPlateauPartie.Main)
+		Call Me.ManageDrop(e, Me.panelMain, VmPlateauPartie.Main)
 	End Sub
 	Sub PanelRegardDragDrop(sender As Object, e As DragEventArgs)
-		Call Me.ManageDrop(e, VmPlateauPartie.Regard)
+		Call Me.ManageDrop(e, Me.panelRegard, VmPlateauPartie.Regard)
 	End Sub
 	Sub PanelBibliDragDrop(sender As Object, e As DragEventArgs)
-		Call Me.ManageDrop(e, VmPlateauPartie.Bibli)
+		Call Me.ManageDrop(e, Me.PanelBibli, VmPlateauPartie.Bibli)
 	End Sub
 	Sub PanelGraveyardDragDrop(sender As Object, e As DragEventArgs)
-		Call Me.ManageDrop(e, VmPlateauPartie.Graveyard)
+		Call Me.ManageDrop(e, Me.panelGraveyard, VmPlateauPartie.Graveyard)
 	End Sub
 	Sub PanelExilDragDrop(sender As Object, e As DragEventArgs)
-		Call Me.ManageDrop(e, VmPlateauPartie.Exil)
+		Call Me.ManageDrop(e, Me.panelExil, VmPlateauPartie.Exil)
 	End Sub
 	#End Region
 End Class
@@ -671,19 +678,9 @@ Public Class clsPlateauPartie
 			VpCard.Hidden = False
 			VpCard.Owner = VmMain
 		Next VpCard
-		Call Me.SortAll
 		VmLives = clsModule.CgNLives
 		VmPoisons = 0
 		VmTours = 0
-	End Sub
-	Public Sub SortAll
-	'-----------------------------------------
-	'Tri les cartes des listes selon leur type
-	'-----------------------------------------
-	Dim VpComparer As New clsPlateauCardComparer
-		VmRegard.Sort(VpComparer)
-		'VmMain.Sort(VpComparer)
-		VmField.Sort(VpComparer)
 	End Sub
 	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String)
 	'--------------------
@@ -822,12 +819,6 @@ Public Class clsPlateauPartie
 		End Set
 	End Property
 	#End Region
-	Private Class clsPlateauCardComparer
-		Implements IComparer(Of clsPlateauCard)
-		Public Function Compare(ByVal x As clsPlateauCard, ByVal y As clsPlateauCard) As Integer Implements IComparer(Of clsPlateauCard).Compare
-			Return String.Compare(x.MyType, y.MyType)
-		End Function
-	End Class
 End Class
 Public Class clsPlateauCard
 	Private VmOwner As List(Of clsPlateauCard)
@@ -859,7 +850,7 @@ Public Class clsPlateauCard
 		VmAttachedTo = Nothing
 		VmAttachments.Clear
 	End Sub
-	Public Function SendTo(VpNewOwner As List(Of clsPlateauCard), Optional VpTop As Boolean = False) As Boolean
+	Public Function SendTo(VpNewOwner As List(Of clsPlateauCard), Optional VpIndex As Integer = -1) As Boolean
 	'-----------------------
 	'Change la carte de zone
 	'-----------------------
@@ -876,8 +867,8 @@ Public Class clsPlateauCard
 			VmHidden = False
 			VmOwner.Remove(Me)
 			VmOwner = VpNewOwner
-			If VpTop Then
-				VmOwner.Insert(0, Me)
+			If VpIndex <> -1 Then
+				VmOwner.Insert(VpIndex, Me)
 			Else
 				VmOwner.Add(Me)
 			End If
@@ -1021,9 +1012,23 @@ Public Class clsPlateauDrawings
 		VmDraggedPicture = New PictureBox
 		VmDraggedPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 		VmDraggedPicture.BackColor = Color.Transparent
-		VpColorMatrix.Matrix00 = 1 : VpColorMatrix.Matrix11 = 1 : VpColorMatrix.Matrix22 = 1 : VpColorMatrix.Matrix33 = 0.5 : VpColorMatrix.Matrix44 = 1
+		With VpColorMatrix
+			.Matrix00 = 1
+			.Matrix11 = 1
+			.Matrix22 = 1
+			.Matrix33 = 0.5
+			.Matrix44 = 1
+		End With
 		VmAttrib.SetColorMatrix(VpColorMatrix)
 	End Sub
+	Public Function GetRightBorder(VpCard As clsPlateauCard) As Integer
+		For Each VpPicture As PictureBox In VmPictures
+			If CType(VpPicture.Tag, clsPlateauCard) Is VpCard Then
+				Return VpPicture.Left + VpPicture.Width
+			End If
+		Next VpPicture
+		Return Nothing
+	End Function
 	Public Sub StopDragging
 		VmDraggedPicture.Visible = False
 		VmDraggedPicture.Image = Nothing

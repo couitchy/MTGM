@@ -30,7 +30,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30533
+	Public Const CgCodeLines As Integer   			= 30560
 	Public Const CgLastUpdateAut As String			= "05/10/2011"
 	Public Const CgLastUpdateSimu As String			= "15/01/2012"
 	Public Const CgLastUpdateTxtVF As String		= "06/10/2011"
@@ -54,6 +54,7 @@ Public Module clsModule
 	Public Const CgMTGCardHeight_px As Integer		= 300
 	Public Const CgCounterDiametr_px As Integer 	= 20
 	Public Const CgChevauchFactor As Single			= 0.14
+	Public Const CgSpacingFactor As Single			= 1.1
 	Public Const CgXMargin As Integer				= 5
 	Public Const CgYMargin As Integer				= 8
 	Public Const CgTemp As String					= "\mtgmgr"
