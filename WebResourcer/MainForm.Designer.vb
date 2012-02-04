@@ -56,10 +56,12 @@ Partial Class MainForm
 		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCardReplaceTitle = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPricesUpdate = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem
@@ -100,7 +102,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem
+		Me.btReplaceTitle = New System.Windows.Forms.ToolStripButton
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -171,7 +173,7 @@ Partial Class MainForm
 		'
 		'mnuCards
 		'
-		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuFindHoles})
+		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuCardReplaceTitle, Me.mnuFindHoles})
 		Me.mnuCards.Name = "mnuCards"
 		Me.mnuCards.Size = New System.Drawing.Size(152, 22)
 		Me.mnuCards.Text = "Cartes"
@@ -263,6 +265,14 @@ Partial Class MainForm
 		Me.mnuCardsAut.Text = "Récupérer les autorisations en tournois"
 		AddHandler Me.mnuCardsAut.Click, AddressOf Me.MnuCardsAutClick
 		'
+		'mnuCardReplaceTitle
+		'
+		Me.mnuCardReplaceTitle.Image = CType(resources.GetObject("mnuCardReplaceTitle.Image"),System.Drawing.Image)
+		Me.mnuCardReplaceTitle.Name = "mnuCardReplaceTitle"
+		Me.mnuCardReplaceTitle.Size = New System.Drawing.Size(278, 22)
+		Me.mnuCardReplaceTitle.Text = "Remplacer un nom"
+		AddHandler Me.mnuCardReplaceTitle.Click, AddressOf Me.MnuCardReplaceTitleClick
+		'
 		'mnuFindHoles
 		'
 		Me.mnuFindHoles.Name = "mnuFindHoles"
@@ -291,6 +301,13 @@ Partial Class MainForm
 		Me.mnuBuildDouble.Size = New System.Drawing.Size(432, 22)
 		Me.mnuBuildDouble.Text = "Construire le fichier des doubles cartes pour une série depuis la base"
 		AddHandler Me.mnuBuildDouble.Click, AddressOf Me.MnuBuildDoubleClick
+		'
+		'mnuFixTxtVO
+		'
+		Me.mnuFixTxtVO.Name = "mnuFixTxtVO"
+		Me.mnuFixTxtVO.Size = New System.Drawing.Size(432, 22)
+		Me.mnuFixTxtVO.Text = "Corriger les textes VO multilignes"
+		AddHandler Me.mnuFixTxtVO.Click, AddressOf Me.MnuFixTxtVOClick
 		'
 		'mnuPrices
 		'
@@ -379,7 +396,7 @@ Partial Class MainForm
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBOpen, Me.btPricesUpdate, Me.btPricesHistoryAdd, Me.btPicturesFix, Me.btCancel})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBOpen, Me.btPricesUpdate, Me.btPricesHistoryAdd, Me.btPicturesFix, Me.btCancel, Me.btReplaceTitle})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(670, 25)
@@ -621,12 +638,15 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuFixTxtVO
+		'btReplaceTitle
 		'
-		Me.mnuFixTxtVO.Name = "mnuFixTxtVO"
-		Me.mnuFixTxtVO.Size = New System.Drawing.Size(432, 22)
-		Me.mnuFixTxtVO.Text = "Corriger les textes VO multilignes"
-		AddHandler Me.mnuFixTxtVO.Click, AddressOf Me.MnuFixTxtVOClick
+		Me.btReplaceTitle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btReplaceTitle.Image = CType(resources.GetObject("btReplaceTitle.Image"),System.Drawing.Image)
+		Me.btReplaceTitle.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btReplaceTitle.Name = "btReplaceTitle"
+		Me.btReplaceTitle.Size = New System.Drawing.Size(23, 22)
+		Me.btReplaceTitle.Text = "Remplacer un nom"
+		AddHandler Me.btReplaceTitle.Click, AddressOf Me.MnuCardReplaceTitleClick
 		'
 		'MainForm
 		'
@@ -655,6 +675,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btReplaceTitle As System.Windows.Forms.ToolStripButton
+	Private mnuCardReplaceTitle As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFixTxtVO As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFindHoles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem

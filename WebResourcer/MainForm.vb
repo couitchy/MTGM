@@ -413,7 +413,7 @@ Public Partial Class MainForm
 				Call Me.AddToLog("La mise à jour des textes VO multilignes a été annulée.", eLogType.Warning, , True)
 			Else
 				Call Me.AddToLog("La mise à jour des textes VO multilignes est terminée.", eLogType.Information, , True)
-			End If			
+			End If
 		End If
 	End Sub
 	Private Sub FixPictures
@@ -471,6 +471,93 @@ Public Partial Class MainForm
 					Call Me.AddToLog("La correction des images est terminée.", eLogType.Information, , True)
 				End If
 			End If
+		End If
+	End Sub
+	Private Sub ReplaceTitle
+	'--------------------------------------------------------------------------------------------------------------------
+	'Correction d'un titre de carte erroné dans les tables Autorisations, Card, CardPictures, Creature, Spell et TextesFR
+	'--------------------------------------------------------------------------------------------------------------------
+	Dim VpOldTitle As String
+	Dim VpNewTitle As String
+	Dim VpO As Object
+		Call Me.AddToLog("La mise à jour d'un nom de carte a commencé...", eLogType.Information, True)
+		VpOldTitle = InputBox("Quel est le nom de la carte à remplacer ?", "Mise à jour de nom", "(carte)")
+		If VpOldTitle <> "" Then
+			VmDBCommand.CommandText = "Select Title From Card Where InStr(UCase(Title), '" + VpOldTitle.Replace("'", "''").ToUpper + "') > 0;"
+			VpO = VmDBCommand.ExecuteScalar
+			If Not VpO Is Nothing
+				VpOldTitle = VpO.ToString
+				If MessageBox.Show("Carte correspondante trouvée : " + VpOldTitle + vbCrLf + "Voulez-vous changer son nom ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+					VpNewTitle = InputBox("Quel est le nouveau nom pour cette carte ?", "Mise à jour de nom", VpOldTitle)
+					If VpNewTitle <> "" Then
+						VpOldTitle = VpOldTitle.Replace("'", "''")
+						VpNewTitle = VpNewTitle.Replace("'", "''")
+						'Autorisations
+						Try
+					    	VmDBCommand.CommandText = "Update Autorisations Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Autorisations", eLogType.Information)
+						Catch							
+					    	VmDBCommand.CommandText = "Delete * From Autorisations Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Autorisations afin d'éviter un doublon", eLogType.Information)
+						End Try
+				    	'Card
+				    	VmDBCommand.CommandText = "Update Card Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
+				    	VmDBCommand.ExecuteNonQuery
+						Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Card", eLogType.Information)
+				    	'CardPictures
+				    	Try
+					    	VmDBCommand.CommandText = "Update CardPictures Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table CardPictures", eLogType.Information)
+						Catch							
+					    	VmDBCommand.CommandText = "Delete * From CardPictures Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " supprimée dans la table CardPictures afin d'éviter un doublon", eLogType.Information)
+						End Try
+				    	'Creature
+				    	Try
+					    	VmDBCommand.CommandText = "Update Creature Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Creature", eLogType.Information)
+						Catch							
+					    	VmDBCommand.CommandText = "Delete * From Creature Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Creature afin d'éviter un doublon", eLogType.Information)
+						End Try						
+				    	'Spell
+				    	Try
+					    	VmDBCommand.CommandText = "Update Spell Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Spell", eLogType.Information)						
+						Catch							
+					    	VmDBCommand.CommandText = "Delete * From Spell Where Title = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Spell afin d'éviter un doublon", eLogType.Information)
+						End Try
+				    	'TextesFR
+				    	Try
+					    	VmDBCommand.CommandText = "Update TextesFR Set CardName = '" + VpNewTitle + "' Where CardName = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table TextesFR", eLogType.Information)						
+						Catch							
+					    	VmDBCommand.CommandText = "Delete * From TextesFR Where CardName = '" + VpOldTitle + "';"
+					    	VmDBCommand.ExecuteNonQuery
+							Call Me.AddToLog(VpOldTitle + " supprimée dans la table TextesFR afin d'éviter un doublon", eLogType.Information)
+						End Try						
+						Call Me.AddToLog("La mise à jour d'un nom de carte est terminée.", eLogType.Information, , True)
+					Else
+						Call Me.AddToLog("La mise à jour d'un nom de carte a été annulée.", eLogType.Warning, , True)
+					End If
+				Else
+					Call Me.AddToLog("La mise à jour d'un nom de carte a été annulée.", eLogType.Warning, , True)
+				End If
+			Else
+				Call Me.AddToLog("La mise à jour d'un nom de carte a été annulée (aucune correspondance trouvée).", eLogType.Warning, , True)
+			End If
+		Else
+			Call Me.AddToLog("La mise à jour d'un nom de carte a été annulée.", eLogType.Warning, , True)
 		End If
 	End Sub
 	Private Sub ExtractModIm
@@ -1655,6 +1742,11 @@ Public Partial Class MainForm
 	Sub MnuFixTxtVOClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.FixTxtVO
+		End If
+	End Sub
+	Sub MnuCardReplaceTitleClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.ReplaceTitle
 		End If
 	End Sub
 End Class
