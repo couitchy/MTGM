@@ -497,7 +497,7 @@ Public Partial Class MainForm
 					    	VmDBCommand.CommandText = "Update Autorisations Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Autorisations", eLogType.Information)
-						Catch							
+						Catch
 					    	VmDBCommand.CommandText = "Delete * From Autorisations Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Autorisations afin d'éviter un doublon", eLogType.Information)
@@ -511,7 +511,7 @@ Public Partial Class MainForm
 					    	VmDBCommand.CommandText = "Update CardPictures Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table CardPictures", eLogType.Information)
-						Catch							
+						Catch
 					    	VmDBCommand.CommandText = "Delete * From CardPictures Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " supprimée dans la table CardPictures afin d'éviter un doublon", eLogType.Information)
@@ -521,17 +521,17 @@ Public Partial Class MainForm
 					    	VmDBCommand.CommandText = "Update Creature Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Creature", eLogType.Information)
-						Catch							
+						Catch
 					    	VmDBCommand.CommandText = "Delete * From Creature Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Creature afin d'éviter un doublon", eLogType.Information)
-						End Try						
+						End Try
 				    	'Spell
 				    	Try
 					    	VmDBCommand.CommandText = "Update Spell Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
-							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Spell", eLogType.Information)						
-						Catch							
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Spell", eLogType.Information)
+						Catch
 					    	VmDBCommand.CommandText = "Delete * From Spell Where Title = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Spell afin d'éviter un doublon", eLogType.Information)
@@ -540,12 +540,12 @@ Public Partial Class MainForm
 				    	Try
 					    	VmDBCommand.CommandText = "Update TextesFR Set CardName = '" + VpNewTitle + "' Where CardName = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
-							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table TextesFR", eLogType.Information)						
-						Catch							
+							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table TextesFR", eLogType.Information)
+						Catch
 					    	VmDBCommand.CommandText = "Delete * From TextesFR Where CardName = '" + VpOldTitle + "';"
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " supprimée dans la table TextesFR afin d'éviter un doublon", eLogType.Information)
-						End Try						
+						End Try
 						Call Me.AddToLog("La mise à jour d'un nom de carte est terminée.", eLogType.Information, , True)
 					Else
 						Call Me.AddToLog("La mise à jour d'un nom de carte a été annulée.", eLogType.Warning, , True)
@@ -779,7 +779,7 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
-	Private Sub BrowseAndWait(Optional VpURL As String = "")
+	Private Sub BrowseAndWait(Optional VpURL As String = "", Optional VpExplicitWaitFor As String = "")
 	'---------------------------------------------------------------------------
 	'Navigue sur la page passée en paramètre en respectant le délai d'expiration
 	'---------------------------------------------------------------------------
@@ -790,8 +790,22 @@ Public Partial Class MainForm
 		End If
 		While Not VmIsComplete
 			If Now.Subtract(VpStart).TotalSeconds > 5 Then
-				Me.wbMV.Stop
-				VmIsComplete = True
+				If VpExplicitWaitFor <> "" Then
+					Try
+						If Not Me.wbMV.Document.All Is Nothing Then
+							For Each VpElement As HtmlElement In Me.wbMV.Document.All
+								If VpElement.Name = VpExplicitWaitFor Then
+									Me.wbMV.Stop
+									VmIsComplete = True
+								End If
+							Next VpElement
+						End If
+					Catch
+					End Try
+				Else
+					Me.wbMV.Stop
+					VmIsComplete = True
+				End If
 			End If
 			Application.DoEvents
 		End While
@@ -803,7 +817,7 @@ Public Partial Class MainForm
 	Dim VpElement As HtmlElement
 	Dim VpLastId As Integer = 0
 		'Site de Magic-Ville
-		Call Me.BrowseAndWait("http://magic-ville.fr/fr/")
+		Call Me.BrowseAndWait("http://magic-ville.fr/fr/", "recherche_titre")
 		'Saisie de la carte dans la zone de recherche
 		VpElement = Me.wbMV.Document.All.GetElementsByName("recherche_titre").Item(0)
 		VpElement.SetAttribute("value", VpCard)
@@ -990,6 +1004,8 @@ Public Partial Class MainForm
 				Return "FromtheVaultLegends#" + VpStr
 			Case "IN"
 				Return "innistrad#" + VpStr
+			Case "DA"
+				Return "darkascension#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select

@@ -38,6 +38,8 @@ Partial Class frmWord
 		Me.pnlWord = New TD.SandBar.ContainerBarClientPanel
 		Me.cmdWord = New System.Windows.Forms.Button
 		Me.grpOptions = New System.Windows.Forms.GroupBox
+		Me.optTextOnly = New System.Windows.Forms.RadioButton
+		Me.optSaveImg = New System.Windows.Forms.RadioButton
 		Me.prgAvance = New System.Windows.Forms.ProgressBar
 		Me.cmdSaveImg = New System.Windows.Forms.Button
 		Me.txtSaveImg = New System.Windows.Forms.TextBox
@@ -50,8 +52,7 @@ Partial Class frmWord
 		Me.btVignettes = New TD.SandBar.ButtonItem
 		Me.btAdvance = New TD.SandBar.ButtonItem
 		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
-		Me.optSaveImg = New System.Windows.Forms.RadioButton
-		Me.optTextOnly = New System.Windows.Forms.RadioButton
+		Me.chkVF = New System.Windows.Forms.CheckBox
 		Me.cbarWord.SuspendLayout
 		Me.pnlWord.SuspendLayout
 		Me.grpOptions.SuspendLayout
@@ -101,6 +102,7 @@ Partial Class frmWord
 		'
 		'grpOptions
 		'
+		Me.grpOptions.Controls.Add(Me.chkVF)
 		Me.grpOptions.Controls.Add(Me.optTextOnly)
 		Me.grpOptions.Controls.Add(Me.optSaveImg)
 		Me.grpOptions.Controls.Add(Me.prgAvance)
@@ -116,16 +118,38 @@ Partial Class frmWord
 		Me.grpOptions.TabStop = false
 		Me.grpOptions.Visible = false
 		'
+		'optTextOnly
+		'
+		Me.optTextOnly.AutoSize = true
+		Me.optTextOnly.Location = New System.Drawing.Point(39, 150)
+		Me.optTextOnly.Name = "optTextOnly"
+		Me.optTextOnly.Size = New System.Drawing.Size(219, 17)
+		Me.optTextOnly.TabIndex = 9
+		Me.optTextOnly.Text = "Mode texte (uniquement titres des cartes)"
+		Me.optTextOnly.UseVisualStyleBackColor = true
+		'
+		'optSaveImg
+		'
+		Me.optSaveImg.AutoSize = true
+		Me.optSaveImg.Checked = true
+		Me.optSaveImg.Location = New System.Drawing.Point(39, 101)
+		Me.optSaveImg.Name = "optSaveImg"
+		Me.optSaveImg.Size = New System.Drawing.Size(203, 17)
+		Me.optSaveImg.TabIndex = 8
+		Me.optSaveImg.TabStop = true
+		Me.optSaveImg.Text = "Extraire les fichiers d'image des cartes"
+		Me.optSaveImg.UseVisualStyleBackColor = true
+		'
 		'prgAvance
 		'
-		Me.prgAvance.Location = New System.Drawing.Point(39, 36)
+		Me.prgAvance.Location = New System.Drawing.Point(39, 16)
 		Me.prgAvance.Name = "prgAvance"
 		Me.prgAvance.Size = New System.Drawing.Size(212, 23)
 		Me.prgAvance.TabIndex = 7
 		'
 		'cmdSaveImg
 		'
-		Me.cmdSaveImg.Location = New System.Drawing.Point(231, 144)
+		Me.cmdSaveImg.Location = New System.Drawing.Point(231, 124)
 		Me.cmdSaveImg.Name = "cmdSaveImg"
 		Me.cmdSaveImg.Size = New System.Drawing.Size(20, 20)
 		Me.cmdSaveImg.TabIndex = 6
@@ -135,7 +159,7 @@ Partial Class frmWord
 		'
 		'txtSaveImg
 		'
-		Me.txtSaveImg.Location = New System.Drawing.Point(59, 144)
+		Me.txtSaveImg.Location = New System.Drawing.Point(59, 124)
 		Me.txtSaveImg.Name = "txtSaveImg"
 		Me.txtSaveImg.ReadOnly = true
 		Me.txtSaveImg.Size = New System.Drawing.Size(166, 20)
@@ -144,7 +168,7 @@ Partial Class frmWord
 		'chkWordShow
 		'
 		Me.chkWordShow.AutoSize = true
-		Me.chkWordShow.Location = New System.Drawing.Point(39, 98)
+		Me.chkWordShow.Location = New System.Drawing.Point(39, 78)
 		Me.chkWordShow.Name = "chkWordShow"
 		Me.chkWordShow.Size = New System.Drawing.Size(197, 17)
 		Me.chkWordShow.TabIndex = 3
@@ -154,7 +178,7 @@ Partial Class frmWord
 		'chkSingle
 		'
 		Me.chkSingle.AutoSize = true
-		Me.chkSingle.Location = New System.Drawing.Point(39, 75)
+		Me.chkSingle.Location = New System.Drawing.Point(39, 55)
 		Me.chkSingle.Name = "chkSingle"
 		Me.chkSingle.Size = New System.Drawing.Size(145, 17)
 		Me.chkSingle.TabIndex = 2
@@ -225,26 +249,17 @@ Partial Class frmWord
 		'
 		Me.dlgBrowse.Description = "Répertoire d'extraction des images"
 		'
-		'optSaveImg
+		'chkVF
 		'
-		Me.optSaveImg.AutoSize = true
-		Me.optSaveImg.Checked = true
-		Me.optSaveImg.Location = New System.Drawing.Point(39, 121)
-		Me.optSaveImg.Name = "optSaveImg"
-		Me.optSaveImg.Size = New System.Drawing.Size(203, 17)
-		Me.optSaveImg.TabIndex = 8
-		Me.optSaveImg.Text = "Extraire les fichiers d'image des cartes"
-		Me.optSaveImg.UseVisualStyleBackColor = true
-		'
-		'optTextOnly
-		'
-		Me.optTextOnly.AutoSize = true
-		Me.optTextOnly.Location = New System.Drawing.Point(39, 170)
-		Me.optTextOnly.Name = "optTextOnly"
-		Me.optTextOnly.Size = New System.Drawing.Size(219, 17)
-		Me.optTextOnly.TabIndex = 9
-		Me.optTextOnly.Text = "Mode texte (uniquement titres des cartes)"
-		Me.optTextOnly.UseVisualStyleBackColor = true
+		Me.chkVF.AutoSize = true
+		Me.chkVF.Checked = true
+		Me.chkVF.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkVF.Location = New System.Drawing.Point(39, 173)
+		Me.chkVF.Name = "chkVF"
+		Me.chkVF.Size = New System.Drawing.Size(154, 17)
+		Me.chkVF.TabIndex = 10
+		Me.chkVF.Text = "Titre des cartes en français"
+		Me.chkVF.UseVisualStyleBackColor = true
 		'
 		'frmWord
 		'
@@ -266,6 +281,7 @@ Partial Class frmWord
 		Me.grpVignettes.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private chkVF As System.Windows.Forms.CheckBox
 	Private optSaveImg As System.Windows.Forms.RadioButton
 	Private optTextOnly As System.Windows.Forms.RadioButton
 	Private prgAvance As System.Windows.Forms.ProgressBar

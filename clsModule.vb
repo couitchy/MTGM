@@ -802,7 +802,7 @@ Public Module clsModule
 					Case "A"
 						Return "Artefacts"
 					Case "E"
-						Return "Enchanter-permanents"
+						Return "Auras"
 					Case "L"
 						Return "Terrains"
 					Case "N"

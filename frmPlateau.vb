@@ -67,7 +67,9 @@ Public Partial Class frmPlateau
 			Next VpPictureBox
 			'Bibliothèque
 			If VpBibli Then
-				.BibliTop.Hidden = Not Me.btBibliReveal.Checked
+				If .BibliTop IsNot Nothing Then
+					.BibliTop.Hidden = Not Me.btBibliReveal.Checked
+				End If
 				Call Me.DrawPicture(.BibliTop, True, Me.panelBibli, New EventHandler(AddressOf Me.CardBibliDoubleClick), New MouseEventHandler(AddressOf Me.CardBibliMouseUp))
 			End If
 			'Cimetière

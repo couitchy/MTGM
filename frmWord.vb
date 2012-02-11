@@ -53,7 +53,7 @@ Public Partial Class frmWord
 	Dim VpLeft As Integer
 	Dim VpCount As Integer
 	Dim VpTotal As Integer
-	Dim VpItems As New Hashtable
+	Dim VpItems As New List(Of clsWordItem)
 		Try
 			VpWordApp = CreateObject("Word.Application")
 		Catch
@@ -70,17 +70,17 @@ Public Partial Class frmWord
 		VpWordApp.Visible = Me.chkWordShow.Checked
 		MainForm.VgMe.IsMainReaderBusy = True
 		'Récupération de la liste
-		VpSQL = "Select Card.Title, Sum(Items) From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where "
+		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr Where "
 		VpSQL = VpSQL + VmRestriction
-		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By Card.Title")
+		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title")
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			VpTotal = 0
 			While .Read
-				If Me.chklstWord.CheckedItems.Contains(.GetString(0)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
+				If Me.chklstWord.CheckedItems.Contains(.GetString(2)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
 					VpCount = If(Me.chkSingle.Checked, 1, .GetValue(1))
-					VpItems.Add(.GetString(0), VpCount)
+					VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), VpCount))
 					VpTotal = VpTotal + VpCount
 				End If
 			End While
@@ -101,10 +101,10 @@ Public Partial Class frmWord
 			VpTop = 0
 			VpLeft = 0
 			VpCount = 0
-			For Each VpItem As String In VpItems.Keys
+			For Each VpItem As clsWordItem In VpItems
 				Try
-					For VpI As Integer = 1 To VpItems.Item(VpItem)
-	 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem) + ".jpg", False, True, 1, 1, 1, 1)
+					For VpI As Integer = 1 To VpItem.Quant
+	 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem.TitleVO) + ".jpg", False, True, 1, 1, 1, 1)
 	 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm)
 	 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm)
 	 					VpPicture.Top = VpTop
@@ -125,7 +125,7 @@ Public Partial Class frmWord
 						Application.DoEvents	 					
 	 				Next VpI
 				Catch
-					Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + VpItem + "...")
+					Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + VpItem.Title + "...")
 				End Try
 			Next VpItem
 		'2. Génération mode texte
@@ -134,9 +134,9 @@ Public Partial Class frmWord
  			VpTable = VpDocument.Tables.Add(VpDocument.Range(0, 0), Math.Ceiling(VpTotal / 6), 6, 1, 0)
 			'Remplissage
 			VpCount = 0
-			For Each VpItem As String In VpItems.Keys
-				For VpI As Integer = 1 To VpItems.Item(VpItem)
-					VpTable.Cell(1 + (VpCount \ 6), 1 + (VpCount Mod 6)).Range.Text = VpItem	'6 vignettes par ligne
+			For Each VpItem As clsWordItem In VpItems
+				For VpI As Integer = 1 To VpItem.Quant
+					VpTable.Cell(1 + (VpCount \ 6), 1 + (VpCount Mod 6)).Range.Text = VpItem.Title	'6 vignettes par ligne
 					VpCount = VpCount + 1
 					Me.prgAvance.Increment(1)
 					Application.DoEvents					
@@ -250,4 +250,29 @@ Public Partial Class frmWord
 		Me.grpVignettes.Visible = False
 		Me.grpOptions.Visible = True
 	End Sub
+End Class
+Public Class clsWordItem
+	Private VmTitleVO As String
+	Private VmTitle As String
+	Private VmQuant As Integer
+	Public Sub New(VpTitle As String, VpTitleVO As String, VpQuant As Integer)
+		VmTitle = VpTitle
+		VmTitleVO = VpTitleVO
+		VmQuant = VpQuant
+	End Sub
+	Public ReadOnly Property Title As String
+		Get
+			Return VmTitle
+		End Get
+	End Property
+	Public ReadOnly Property TitleVO As String
+		Get
+			Return VmTitleVO
+		End Get
+	End Property
+	Public ReadOnly Property Quant As Integer
+		Get
+			Return VmQuant
+		End Get
+	End Property
 End Class
