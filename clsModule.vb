@@ -498,7 +498,7 @@ Public Module clsModule
 					'Passage version 12 à 13
 					If CInt(VpDBVersion) < 13 Then
 						VgDBCommand.CommandText = "Create Table SubTypes (SubTypeVO Text(32) With Compression, SubTypeVF Text(32) With Compression);"
-						VgDBCommand.ExecuteNonQuery	
+						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Alter Table Series Add SeriesNM_FR Text(50) With Compression;"
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update Series Set SeriesNM_FR = SeriesNM;"
@@ -1561,27 +1561,47 @@ Public Module clsModule
 	'--------------------------------------------------------------------
 	'Affiche le coût d'invocation du sort sélectioné de manière graphique
 	'--------------------------------------------------------------------
-	Dim VpPictureBox As PictureBox			'Objet image icône courante
-	Dim VpOffset As Integer					'Décalage courant pour présenter à l'endroit le coût d'invocation
-	Dim VpInvoc As New clsManas(VpCost)		'Classe formatée correspondant au coût passé en paramètre
+	Dim VpPictureBox As PictureBox				'Objet image icône courante
+	Dim VpOffset As Integer						'Décalage courant pour présenter à l'endroit le coût d'invocation
+	Dim VpInvocListe As New List(Of clsManas)	'Liste d'instance classe formatée correspondant au coût passé en paramètre
+	Dim VpCosts() As String
+	Dim VpEffectiveLength As Integer
 		Call DeBuildCost(VpMainForm, VpForm)
 		If VpCost.Trim = "" Then
 			VpForm.lblProp1.Enabled = False
 		Else
 			VpForm.lblProp1.Enabled = True
+			If Not VpCost.Contains("//") Then
+				VpInvocListe.Add(New clsManas(VpCost))
+			'Cas des multi-cartes
+			Else
+				VpCosts = VpCost.Split(New String() {"//"}, StringSplitOptions.None)
+				For VpI As Integer = 0 To VpCosts.Length - 1
+					VpInvocListe.Add(New clsManas(VpCosts(VpI).Trim))
+				Next VpI
+			End If
+			'Comence par calculer le décalage nécessaire pour l'affichage
+			VpEffectiveLength = 0
+			For Each VpInvoc As clsManas In VpInvocListe
+				VpEffectiveLength += VpInvoc.EffectiveLength
+			Next VpInvoc
+			VpEffectiveLength += VpInvocListe.Count - 1
 			VpOffset = 0
-			For Each VpImg As Integer In VpInvoc.ImgIndexes
-				VpPictureBox = New PictureBox
-				VpForm.grpSerie.Controls.Add(VpPictureBox)
-				With VpPictureBox
-					.Top = VpForm.lblProp1.Top
-					.Size = New Size(18, 18)
-					.Left = VpForm.cboEdition.Left + VpForm.cboEdition.Width - .Width * (VpInvoc.EffectiveLength - VpOffset)
-					.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-					.Image = VpMainForm.imglstCarac.Images(VpImg)
-				End With
+			For Each VpInvoc As clsManas In VpInvocListe
+				For Each VpImg As Integer In VpInvoc.ImgIndexes
+					VpPictureBox = New PictureBox
+					VpForm.grpSerie.Controls.Add(VpPictureBox)
+					With VpPictureBox
+						.Top = VpForm.lblProp1.Top
+						.Size = New Size(18, 18)
+						.Left = VpForm.cboEdition.Left + VpForm.cboEdition.Width - .Width * (VpEffectiveLength - VpOffset)
+						.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+						.Image = VpMainForm.imglstCarac.Images(VpImg)
+					End With
+					VpOffset = VpOffset + 1
+				Next VpImg
 				VpOffset = VpOffset + 1
-			Next VpImg
+			Next VpInvoc
 		End If
 	End Sub
 	Public Sub DeBuildCost(VpMainForm As MainForm, VpForm As Object)
