@@ -1565,6 +1565,40 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Sub RevertSP
+	'-----------------------------------------------------
+	'Reconstruit la base des images dans un état antérieur
+	'-----------------------------------------------------
+	Dim VpOut As FileStream
+	Dim VpOutB As BinaryWriter
+	Dim VpIn As StreamReader
+	Dim VpInB As BinaryReader
+	Dim VpSize As Integer
+		Me.dlgOpen3.FileName = ""
+		Me.dlgOpen3.ShowDialog
+		If Me.dlgOpen3.FileName <> "" Then
+			Me.dlgSave2.FileName = ""
+			Me.dlgSave2.ShowDialog
+			If Me.dlgSave2.FileName <> "" Then
+				Call Me.AddToLog("La reconstruction des images dans un état antérieur a commencé...", eLogType.Information, True)
+				VpSize = CInt(Val(InputBox("Taille du fichier de sortie ?")))
+				If VpSize <> 0 Then
+					VpOut = New FileStream(Me.dlgSave2.FileName, FileMode.OpenOrCreate)
+					VpOutB = New BinaryWriter(VpOut)
+					VpIn = New StreamReader(Me.dlgOpen3.FileName)
+					VpInB = New BinaryReader(VpIn.BaseStream)
+	    			VpOutB.Seek(0, SeekOrigin.Begin)
+	    			VpOutB.Write(VpInB.ReadBytes(VpSize))
+					VpIn.Close
+					VpOutB.Flush
+					VpOutB.Close
+					Call Me.AddToLog("La reconstruction des images dans un état antérieur est terminée.", eLogType.Information, , True)
+				Else
+					Call Me.AddToLog("La reconstruction des images dans un état antérieur a été annulée.", eLogType.Warning, , True)
+				End If
+			End If
+		End If
+	End Sub
 	Private Sub FindHoles
 	Dim VpEncNbrs() As Long
 	Dim VpMin As Long
@@ -1739,6 +1773,9 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuPicturesNewSPClick(sender As Object, e As EventArgs)
 		Call Me.BuildSP
+	End Sub
+	Sub MnuPicturesRevertSPClick(sender As Object, e As EventArgs)
+		Call Me.RevertSP
 	End Sub
 	Sub MnuBuildTitlesClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then

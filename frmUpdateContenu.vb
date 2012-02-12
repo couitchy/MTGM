@@ -235,13 +235,13 @@ Public Partial Class frmUpdateContenu
 	'Regarde s'il existe des mises à jour disponibles pour :
 	'- les prix (bdd)
 	'- les images (taille fichier)
-	'- les autorisations de tournoi (.ini)
-	'- les modèles et historiques (.ini)
-	'- le texte des cartes en vf (.ini)
+	'- les autorisations de tournoi (.xml)
+	'- les modèles et historiques (.xml)
+	'- le texte des cartes en vf (.xml)
 	'- les éditions (liste serveur | PAS ENCORE GERE)
-	'- le titre des cartes en vf (.ini | PAS ENCORE GERE)
-	'- les corrections sur les images (.ini)
-	'- les corrections sur les titres des cartes (.ini)
+	'- le titre des cartes en vf (.xml)
+	'- les corrections sur les images (.xml)
+	'- les corrections sur les titres des cartes (.xml)
 	'-------------------------------------------------------
 	Dim VpStamps() As String = Me.GetStamps
 	Dim VpSizes() As Integer = Me.GetSizes

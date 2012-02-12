@@ -79,6 +79,7 @@ Partial Class MainForm
 		Me.btPricesHistoryAdd = New System.Windows.Forms.ToolStripButton
 		Me.btPicturesFix = New System.Windows.Forms.ToolStripButton
 		Me.btCancel = New System.Windows.Forms.ToolStripButton
+		Me.btReplaceTitle = New System.Windows.Forms.ToolStripButton
 		Me.statusStrip = New System.Windows.Forms.StatusStrip
 		Me.prgAvance = New System.Windows.Forms.ProgressBar
 		Me.tabMain = New System.Windows.Forms.TabControl
@@ -102,7 +103,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.btReplaceTitle = New System.Windows.Forms.ToolStripButton
+		Me.mnuPicturesRevertSP = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -342,7 +343,7 @@ Partial Class MainForm
 		'
 		'mnuPictures
 		'
-		Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesUpdate, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP})
+		Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesUpdate, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP})
 		Me.mnuPictures.Name = "mnuPictures"
 		Me.mnuPictures.Size = New System.Drawing.Size(152, 22)
 		Me.mnuPictures.Text = "Images"
@@ -351,7 +352,7 @@ Partial Class MainForm
 		'
 		Me.mnuPicturesUpdate.Image = CType(resources.GetObject("mnuPicturesUpdate.Image"),System.Drawing.Image)
 		Me.mnuPicturesUpdate.Name = "mnuPicturesUpdate"
-		Me.mnuPicturesUpdate.Size = New System.Drawing.Size(263, 22)
+		Me.mnuPicturesUpdate.Size = New System.Drawing.Size(316, 22)
 		Me.mnuPicturesUpdate.Text = "Récupérer les images"
 		AddHandler Me.mnuPicturesUpdate.Click, AddressOf Me.MnuPicturesUpdateClick
 		'
@@ -359,7 +360,7 @@ Partial Class MainForm
 		'
 		Me.mnuPicturesFix.Image = CType(resources.GetObject("mnuPicturesFix.Image"),System.Drawing.Image)
 		Me.mnuPicturesFix.Name = "mnuPicturesFix"
-		Me.mnuPicturesFix.Size = New System.Drawing.Size(263, 22)
+		Me.mnuPicturesFix.Size = New System.Drawing.Size(316, 22)
 		Me.mnuPicturesFix.Text = "Corriger les images"
 		AddHandler Me.mnuPicturesFix.Click, AddressOf Me.MnuPicturesFixClick
 		'
@@ -367,7 +368,7 @@ Partial Class MainForm
 		'
 		Me.mnuPicturesDelta.Image = CType(resources.GetObject("mnuPicturesDelta.Image"),System.Drawing.Image)
 		Me.mnuPicturesDelta.Name = "mnuPicturesDelta"
-		Me.mnuPicturesDelta.Size = New System.Drawing.Size(263, 22)
+		Me.mnuPicturesDelta.Size = New System.Drawing.Size(316, 22)
 		Me.mnuPicturesDelta.Text = "Extraire les images modifiées"
 		AddHandler Me.mnuPicturesDelta.Click, AddressOf Me.MnuPicturesDeltaClick
 		'
@@ -375,7 +376,7 @@ Partial Class MainForm
 		'
 		Me.mnuPicturesNewSP.Image = CType(resources.GetObject("mnuPicturesNewSP.Image"),System.Drawing.Image)
 		Me.mnuPicturesNewSP.Name = "mnuPicturesNewSP"
-		Me.mnuPicturesNewSP.Size = New System.Drawing.Size(263, 22)
+		Me.mnuPicturesNewSP.Size = New System.Drawing.Size(316, 22)
 		Me.mnuPicturesNewSP.Text = "Assembler un nouveau Service Pack"
 		AddHandler Me.mnuPicturesNewSP.Click, AddressOf Me.MnuPicturesNewSPClick
 		'
@@ -454,6 +455,16 @@ Partial Class MainForm
 		Me.btCancel.Size = New System.Drawing.Size(23, 22)
 		Me.btCancel.Text = "Annuler"
 		AddHandler Me.btCancel.Click, AddressOf Me.BtCancelClick
+		'
+		'btReplaceTitle
+		'
+		Me.btReplaceTitle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btReplaceTitle.Image = CType(resources.GetObject("btReplaceTitle.Image"),System.Drawing.Image)
+		Me.btReplaceTitle.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btReplaceTitle.Name = "btReplaceTitle"
+		Me.btReplaceTitle.Size = New System.Drawing.Size(23, 22)
+		Me.btReplaceTitle.Text = "Remplacer un nom"
+		AddHandler Me.btReplaceTitle.Click, AddressOf Me.MnuCardReplaceTitleClick
 		'
 		'statusStrip
 		'
@@ -638,15 +649,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'btReplaceTitle
+		'mnuPicturesRevertSP
 		'
-		Me.btReplaceTitle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-		Me.btReplaceTitle.Image = CType(resources.GetObject("btReplaceTitle.Image"),System.Drawing.Image)
-		Me.btReplaceTitle.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btReplaceTitle.Name = "btReplaceTitle"
-		Me.btReplaceTitle.Size = New System.Drawing.Size(23, 22)
-		Me.btReplaceTitle.Text = "Remplacer un nom"
-		AddHandler Me.btReplaceTitle.Click, AddressOf Me.MnuCardReplaceTitleClick
+		Me.mnuPicturesRevertSP.Name = "mnuPicturesRevertSP"
+		Me.mnuPicturesRevertSP.Size = New System.Drawing.Size(316, 22)
+		Me.mnuPicturesRevertSP.Text = "Reconstruire jusqu'à un Service Pack antérieur"
+		AddHandler Me.mnuPicturesRevertSP.Click, AddressOf Me.MnuPicturesRevertSPClick
 		'
 		'MainForm
 		'
@@ -675,6 +683,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuPicturesRevertSP As System.Windows.Forms.ToolStripMenuItem
 	Private btReplaceTitle As System.Windows.Forms.ToolStripButton
 	Private mnuCardReplaceTitle As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFixTxtVO As System.Windows.Forms.ToolStripMenuItem
