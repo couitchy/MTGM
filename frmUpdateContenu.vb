@@ -16,6 +16,7 @@
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - gestion des règles spécifiques		   18/02/2012 |
 '------------------------------------------------------
 Imports System.Text
 Imports System.Net
@@ -25,7 +26,7 @@ Public Partial Class frmUpdateContenu
 	Private VmMousePos As Point						'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False   		'Formulaire peut être fermé
 	Private VmNewContenu As List(Of clsMAJContenu)	'Eléments de mise à jour
-	Private VmPassiveUpdate As Magic_The_Gathering_Manager.frmUpdateContenu.EgPassiveUpdate = EgPassiveUpdate.NotNow
+	Private VmPassiveUpdate As EgPassiveUpdate = EgPassiveUpdate.NotNow
 	Public Enum EgPassiveUpdate
 		NotNow = 0
 		InProgress
@@ -39,25 +40,25 @@ Public Partial Class frmUpdateContenu
 	'----------------------------
 	'Récupération des horodatages
 	'----------------------------
-	Dim VpStamps(0 To 8) As String		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = patch images, 6 = patch trad, 7 = series, 8 = trad
+	Dim VpStamps(0 To 9) As String		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = series, 9 = trad
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
-	Dim VpBuf(0 To 69) As Byte
+	Dim VpBuf(0 To 81) As Byte
 	DIm VpLength As Integer
 		Try
 			'Gestion cas 0
 			VpStamps(0) = clsModule.GetPictSP
-			'Gestion cas 1 à 6
+			'Gestion cas 1 à 7
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1D)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
 			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)
-			For VpI As Integer = 0 To 5
+			For VpI As Integer = 0 To 6
 				VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 10)
 			Next VpI
-			'Gestion cas 7
-
 			'Gestion cas 8
+
+			'Gestion cas 9
 			
 			Return VpStamps
 		Catch
@@ -69,25 +70,23 @@ Public Partial Class frmUpdateContenu
 	'------------------------------------
 	'Récupération des tailles des patches
 	'------------------------------------
-	Dim VpSizes(0 To 8) As Integer		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = patch images, 6 = patch trad, 7 = series, 8 = trad
+	Dim VpSizes(0 To 9) As Integer		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = series, 9 = trad
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
-	Dim VpBuf(0 To 46) As Byte
+	Dim VpBuf(0 To 53) As Byte
 	DIm VpLength As Integer
 		Try
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1E)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
 			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
-			'Gestion cas 0
-			
-			'Gestion cas 1 à 6
-			For VpI As Integer = 0 To 6
+			'Gestion cas 0 à 7
+			For VpI As Integer = 0 To 7
 				VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 5))
 			Next VpI
-			'Gestion cas 7
-
 			'Gestion cas 8
+
+			'Gestion cas 9
 			
 			Return VpSizes
 		Catch
@@ -115,6 +114,8 @@ Public Partial Class frmUpdateContenu
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTradPatch, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewTxtVF
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTxtVF, VpStamp, VpSize)
+			Case clsMAJContenu.EgMAJContenu.NewRulings
+				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateRulings, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewPrix
 				VpMAJContenu = New clsMAJContenu(VpType, clsModule.GetLastPricesDate.ToShortDateString, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewPict
@@ -195,6 +196,19 @@ Public Partial Class frmUpdateContenu
 				Else
 					Return False
 				End If
+			Case clsMAJContenu.EgMAJContenu.NewRulings
+				'Appel silencieux pour mise à jour texte des règles spécifiques
+				VmPassiveUpdate = EgPassiveUpdate.InProgress
+				Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL19), clsModule.CgUpRulings)
+				While VmPassiveUpdate = EgPassiveUpdate.InProgress
+					Application.DoEvents
+				End While
+				If VmPassiveUpdate = EgPassiveUpdate.Failed Then
+					Return False
+				Else
+					VgOptions.VgSettings.LastUpdateRulings = VpElement.Serveur
+				End If
+				VmPassiveUpdate = EgPassiveUpdate.NotNow
 			Case clsMAJContenu.EgMAJContenu.NewPrix
 				'Appel silencieux pour mise à jour prix
 				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL9), clsModule.CgUpPrices)
@@ -238,6 +252,7 @@ Public Partial Class frmUpdateContenu
 	'- les autorisations de tournoi (.xml)
 	'- les modèles et historiques (.xml)
 	'- le texte des cartes en vf (.xml)
+	'- les régles spécifiques des cartes en vo (.xml)
 	'- les éditions (liste serveur | PAS ENCORE GERE)
 	'- le titre des cartes en vf (.xml)
 	'- les corrections sur les images (.xml)
@@ -275,20 +290,20 @@ Public Partial Class frmUpdateContenu
 		Me.prgWait.Style = ProgressBarStyle.Blocks
 		Call clsModule.ShowInformation("Opération terminée.")
 	End Sub
-	Sub CbarCbarUpdateMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
+	Sub CbarUpdateMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
 		VmCanClose = True
 		VmMousePos = New Point(e.X, e.Y)
 	End Sub
-	Sub CbarCbarUpdateMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
+	Sub CbarUpdateMouseMove(ByVal sender As Object, ByVal e As MouseEventArgs)
 		If VmFormMove Then
 			Me.Location = New Point(MousePosition.X - VmMousePos.X, MousePosition.Y - VmMousePos.Y)
 		End If
 	End Sub
-	Sub CbarCbarUpdateMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
+	Sub CbarUpdateMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = False
 	End Sub
-	Sub CbarCbarUpdateVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
+	Sub CbarUpdateVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
 		If VmCanClose Then
 			Me.Close
 		End If
@@ -339,6 +354,7 @@ Public Class clsMAJContenu
 		NewAut
 		NewSimu
 		NewTxtVF
+		NewRulings
 		PatchPict
 		PatchTrad
 		NewSerie
@@ -366,6 +382,8 @@ Public Class clsMAJContenu
 					Return "Mise à jour des modèles et/ou historiques"
 				Case clsMAJContenu.EgMAJContenu.NewTxtVF
 					Return "Mise à jour des textes des cartes en français"
+				Case clsMAJContenu.EgMAJContenu.NewRulings
+					Return "Mise à jour des règles spécifiques des cartes"
 				Case clsMAJContenu.EgMAJContenu.PatchPict
 					Return "Correctif d'images de cartes"
 				Case clsMAJContenu.EgMAJContenu.PatchTrad

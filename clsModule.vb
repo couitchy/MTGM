@@ -24,16 +24,18 @@
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports System.Net
 Imports System.IO
 Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30560
+	Public Const CgCodeLines As Integer   			= 30950
 	Public Const CgLastUpdateAut As String			= "05/10/2011"
 	Public Const CgLastUpdateSimu As String			= "15/01/2012"
 	Public Const CgLastUpdateTxtVF As String		= "06/10/2011"
+	Public Const CgLastUpdateRulings As String		= "N/C"
 	Public Const CgLastUpdateTradPatch As String	= "10/12/2011"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
@@ -76,6 +78,7 @@ Public Module clsModule
 	Public Const CgUpTXTFR As String				= "\TextesVF.txt"
 	Public Const CgUpSeries As String				= "\Series.txt"
 	Public Const CgUpAutorisations As String		= "\Tournois.txt"
+	Public Const CgUpRulings As String				= "\Rulings.xml"
 	Public Const CgUpPrices As String				= "\LastPrices.txt"
 	Public Const CgUpPic As String					= "\SP_Pict"
 	Public Const CgMdPic As String					= "MD_Pict"
@@ -85,8 +88,8 @@ Public Module clsModule
 	Public Const CgURL1 As String         			= "/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         			= "/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         			= "/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r13.txt"
-	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r13.txt"
+	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r14.txt"
+	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r14.txt"
 	Public Const CgURL2 As String         			= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         			= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         			= "/Updates/Images DB.mdb"
@@ -106,6 +109,7 @@ Public Module clsModule
 	Public Const CgURL16 As String					= "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
 	Public Const CgURL17 As String					= "http://mtgm.free.fr"
 	Public Const CgURL18 As String					= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
+	Public Const CgURL19 As String         			= "/Updates/Rulings.xml"
 	Public Const CgDL1 As String         			= "Vérification des mises à jour..."
 	Public Const CgDL2 As String         			= "Téléchargement en cours"
 	Public Const CgDL2b As String         			= "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
@@ -1158,6 +1162,12 @@ Public Module clsModule
 		Next VpI
 		Return VpStr
 	End Function
+	Public Function StrSplice(VpStr As String, VpN As Integer) As String
+	'----------------------------------------------
+	'Insère un retour chariot tous les n caractères
+	'----------------------------------------------
+		Return Regex.Replace(VpStr, "(.{" & VpN & "})", "$1" & Environment.NewLine)
+	End Function	
 	Public Function MyVal(VpStr As String) As Double
 		Return Val(VpStr.Replace(",", "."))
 	End Function
@@ -1354,6 +1364,15 @@ Public Module clsModule
 		Call CheckForUpdates
 		VgTimer.Stop
 	End Sub
+	Public Sub DownloadNow(VpURI As System.Uri, VpOutput As String)
+	'----------------------------------------------------------------------------
+	'Télécharge immédiatement l'application mise à jour ou une de ses dépendances
+	'----------------------------------------------------------------------------
+		Try
+			VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
+		Catch
+		End Try
+	End Sub
 	Public Sub DownloadUpdate(VpURI As System.Uri, VpOutput As String, Optional VpBaseDir As Boolean = True, Optional VpSilent As Boolean = False)
 	'------------------------------------------------------------------------------
 	'Télécharge en arrière-plan l'application mise à jour ou une de ses dépendances
@@ -1377,17 +1396,6 @@ Public Module clsModule
 			Catch
 			End Try
 		End If
-	End Sub
-	Public Sub DownloadNow(VpURI As System.Uri, VpOutput As String)
-	'----------------------------------------------------------------------------
-	'Télécharge immédiatement l'application mise à jour ou une de ses dépendances
-	'----------------------------------------------------------------------------
-		Try
-			VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
-		Catch' VpEx As Exception
-			'MessageBox.Show(VpEx.GetType.FullName)
-			'VgClient.DownloadFile(VpURI, CgVirtualPath + VpOutput)
-		End Try
 	End Sub
 	Public Sub ClientDownloadProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs) Handles VgClient.DownloadProgressChanged
 '		MainForm.VgMe.VgBar.Style = ProgressBarStyle.Blocks
@@ -1416,6 +1424,7 @@ Public Module clsModule
 				Exit Sub
 			ElseIf VpResult.Status = WebExceptionStatus.RequestCanceled Then
 				Call MainForm.VgMe.StatusText(CgDL5)
+				Call DeleteTempFiles(True)
 				Exit Sub
 			End If
 		End If
@@ -1438,6 +1447,9 @@ Public Module clsModule
 		'Maj TXTFR
 		ElseIf File.Exists(Application.StartupPath + CgUpTXTFR) Then
 			Call MainForm.VgMe.UpdateTxtFR
+		'Maj Rulings
+		ElseIf File.Exists(Application.StartupPath + CgUpRulings) Then
+			Call MainForm.VgMe.UpdateRulings(Not MainForm.VgMe.MyChildren.DoesntExist(MainForm.VgMe.MyChildren.ContenuUpdater) AndAlso MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.InProgress)
 		End If
 	End Sub
 	Public Sub LoadCarac(VpMainForm As MainForm, VpForm As Object, VpCard As String, VpGestFoil As Boolean, VpGestDownFace As Boolean, Optional VpSource As String = "", Optional VpEdition As String = "", Optional VpFoil As Boolean = False, Optional VpDownFace As Boolean = False, Optional VpTransformed As Boolean = False)
@@ -1929,7 +1941,7 @@ Public Module clsModule
 		End If
 		Return Path.GetTempPath + "\mtgm~" + VsI.ToString + ".jpg"
 	End Function
-	Public Sub DeleteTempFiles
+	Public Sub DeleteTempFiles(Optional VpSilent As Boolean = False)
 	'------------------------------------
 	'Suppression des fichiers temporaires
 	'------------------------------------
@@ -1939,9 +1951,12 @@ Public Module clsModule
 				Call SecureDelete(VpFile.FullName)
 			Next VpFile
 		Catch
-			Call ShowWarning("Impossible d'accéder au répertoire temporaire...")
+			If Not VpSilent Then
+				Call ShowWarning("Impossible d'accéder au répertoire temporaire...")
+			End If
 		End Try
 		'Updates
+		Call SecureDelete(Application.StartupPath + CgUpRulings)
 		Call SecureDelete(Application.StartupPath + CgUpTXTFR)
 		Call SecureDelete(Application.StartupPath + CgUpDFile)
 		Call SecureDelete(Application.StartupPath + CgUpDDB)

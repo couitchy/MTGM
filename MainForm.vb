@@ -32,6 +32,7 @@
 '| - délocalisation du filtrage			   09/07/2011 |
 '| - gestion des cartes transformables	   29/10/2011 |
 '| - icônes des symboles dans le texte	   12/11/2011 |
+'| - gestion des règles spécifiques		   18/02/2012 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -42,6 +43,7 @@ Imports System.Resources
 Imports System.Reflection
 Imports System.Data
 Imports System.Data.OleDb
+Imports System.Xml
 #End Region
 Public Partial Class MainForm
 	#Region "Sous-classes"
@@ -110,6 +112,7 @@ Public Partial Class MainForm
 	Private VmImgDL As Boolean = False
 	Private VmMainReaderBusy As Boolean = False
 	Private VmStartup As String = ""
+	Private VmBalloonTip As New ToolTip
 '	Public  VgBar As Windows7ProgressBar
 	Public Shared VgMe As MainForm
 	#End Region
@@ -293,6 +296,52 @@ Public Partial Class MainForm
 			End While
 			.Close
 		End With
+	End Sub
+	Public Sub UpdateRulings(Optional VpSilent As Boolean = False)
+	'--------------------------------------------
+	'Met à jour les règles spécifiques des cartes
+	'--------------------------------------------
+	Dim VpIn As New StreamReader(Application.StartupPath + clsModule.CgUpRulings)
+	Dim VpReader As New XmlTextReader(VpIn)
+	Dim VpName As String
+	Dim VpRuling As String
+	Dim VpRulings As New Hashtable
+		If Not VpSilent Then
+			If Not clsModule.ShowQuestion("Les règles spécifiques vont être mises à jour..." + vbCrLf + "L'opération pourra durer plusieurs secondes, patienter jusqu'à la notification. Continuer ?") = System.Windows.Forms.DialogResult.Yes Then
+				Exit Sub
+			End If
+		End If
+		With VpReader
+			While VpReader.Read
+				If VpReader.Name = "name" Then
+					VpName = VpReader.ReadElementContentAsString
+					VpReader.ReadToFollowing("ruling")
+					VpRuling = VpReader.ReadElementContentAsString
+					If VpRuling.Trim <> "" Then
+						If Not VpRulings.Contains(VpName) Then
+							VpRulings.Add(VpName, VpRuling)
+						End If
+					End If
+				End If
+			End While
+		End With
+		VpReader.Close
+		VpIn.Close
+		Me.prgAvance.Visible = True
+		Call Me.InitBars(VpRulings.Count)
+		For Each VpCard As String In VpRulings.Keys
+			VgDBCommand.CommandText = "Update Spell Set Rulings = '" + VpRulings.Item(VpCard).ToString.Replace("'", "''") + "' Where Title = '" + VpCard.Replace("'", "''") + "';"
+			VgDBCommand.ExecuteNonQuery
+			Me.prgAvance.Increment(1)
+			Application.DoEvents
+		Next VpCard
+		If Not VpSilent Then
+			Call clsModule.ShowInformation("Mise à jour des règles spécifiques terminée !")
+		Else
+			VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.Done
+		End If
+		Me.prgAvance.Visible = False
+		Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpRulings)
 	End Sub
 	Public Sub UpdateTxtFR(Optional VpSilent As Boolean = False)
 	'-----------------------------------------------------
@@ -1063,6 +1112,23 @@ Public Partial Class MainForm
 			Return "0"
 		End If
 	End Function
+	Private Sub LoadRuling(VpCard As String)
+	'----------------------------------------------------------------------------------------
+	'Affiche une info-bulle contenant les points de règle spécifiques à la carte sélectionnée
+	'----------------------------------------------------------------------------------------
+	Dim VpRuling As String
+		VgDBCommand.CommandText = "Select Rulings From Spell Where Title = '" + VpCard.Replace("'", "''") + "';"
+		VpRuling = VgDBCommand.ExecuteScalar.ToString.Trim
+		If VpRuling <> "" Then
+			VpRuling = VpRuling.Substring(1)
+			VpRuling = VpRuling.Replace("£", vbCrLf)
+			'max. 30 caractères par ligne si texte très long
+			If VpRuling.Length > 300 Then
+				VpRuling = clsModule.StrSplice(VpRuling, 100)
+			End If
+			VmBalloonTip.Show(VpRuling, Me.picScanCard)
+		End If
+	End Sub
 	Private Sub LoadCaracOther(VpCritere As String, VpModeCarac As clsModule.eModeCarac, VpElderCriteria As String)
 	'------------------------------------------------------------------------------------
 	'Charge des informations sur {édition, couleur, type} sélectionné(e) dans le treeview
@@ -1733,6 +1799,7 @@ Public Partial Class MainForm
 		Me.picScanCard.SizeMode = VgOptions.VgSettings.ImageMode
 		Me.grpAutorisations.Visible = Not VgOptions.VgSettings.AutoHideAutorisations
 		Me.mnuUpdateAutorisations.Visible = VgOptions.VgSettings.ShowUpdateMenus
+		Me.mnuUpdateRulings.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuUpdatePrices.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuUpdateSimu.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuUpdateTxtFR.Visible = VgOptions.VgSettings.ShowUpdateMenus
@@ -1758,6 +1825,7 @@ Public Partial Class MainForm
 		'Anciens menus de mises à jour
 		If Not VgOptions.VgSettings.ShowUpdateMenus Then
 			Me.mnuUpdateAutorisations.Visible = False
+			Me.mnuUpdateRulings.Visible = False
 			Me.mnuUpdatePrices.Visible = False
 			Me.mnuUpdateSimu.Visible = False
 			Me.mnuUpdateTxtFR.Visible = False
@@ -1805,6 +1873,9 @@ Public Partial Class MainForm
 		End If
 		'Divers
 		Call Me.LoadAutorisations("")
+		VmBalloonTip.IsBalloon = True
+		VmBalloonTip.ToolTipTitle = "Règles spécifiques"		
+		VmBalloonTip.AutoPopDelay = 30000
 '		Me.VgBar = New Windows7ProgressBar(Me)
 		'Argument éventuel
 		If VmStartup.EndsWith(clsModule.CgFExtN) Or VmStartup.EndsWith(clsModule.CgFExtO) Then
@@ -2031,6 +2102,7 @@ Public Partial Class MainForm
 		Else
 			Call Me.ClearCarac
 		End If
+		VmBalloonTip.RemoveAll
 	End Sub
 	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
@@ -2071,6 +2143,19 @@ Public Partial Class MainForm
 					Call clsModule.DBAdaptEncNbr
 				Else
 					Call clsModule.ShowWarning(clsModule.CgDL3b)
+				End If
+			End If
+		End If
+	End Sub
+	Sub MnuUpdateRulingsClick(sender As Object, e As EventArgs)
+		If clsModule.DBOK Then
+			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer la liste des règles spécifiques pour les cartes ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis le fichier sur le disque dur...") = System.Windows.Forms.DialogResult.Yes Then
+				Call clsModule.DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + clsModule.CgURL19), clsModule.CgUpRulings)
+			Else
+				If File.Exists(Application.StartupPath + clsModule.CgUpRulings) Then
+					Call Me.UpdateRulings
+				Else
+					Call clsModule.ShowWarning("Fichier des règles spécifiques introuvable...")
 				End If
 			End If
 		End If
@@ -2146,7 +2231,7 @@ Public Partial Class MainForm
 	Sub MnuUpdateTxtFRClick(sender As Object, e As EventArgs)
 		If clsModule.DBOK Then
 			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer les textes des cartes en français ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis le fichier sur le disque dur...") = System.Windows.Forms.DialogResult.Yes Then
-				Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL11), clsModule.CgUpTXTFR)
+				Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + clsModule.CgURL11), clsModule.CgUpTXTFR)
 			Else
 				If File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
 					Call Me.UpdateTxtFR
@@ -2617,6 +2702,13 @@ Public Partial Class MainForm
 		VmFilterCriteria.SourceChange = False
 		VmFilterCriteria.Show
 		VmFilterCriteria.Location = MousePosition
+	End Sub
+	Sub PicScanCardMouseUp(sender As Object, e As MouseEventArgs)
+		If e.Button = MouseButtons.Left Then
+			Call Me.MnuTransformClick(sender, e)
+		ElseIf Me.tvwExplore.SelectedNode IsNot Nothing AndAlso Me.tvwExplore.SelectedNode.Parent IsNot Nothing AndAlso CType(Me.tvwExplore.SelectedNode.Parent.Tag, clsTag).Key = "Card.Title" Then
+			Call Me.LoadRuling(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value)
+		End If
 	End Sub
 	#End Region
 End Class

@@ -98,6 +98,7 @@ Public Class clsSettings
 	Private VmLastUpdateAut As String = clsModule.CgLastUpdateAut
 	Private VmLastUpdateSimu As String = clsModule.CgLastUpdateSimu
 	Private VmLastUpdateTxtVF As String = clsModule.CgLastUpdateTxtVF
+	Private VmLastUpdateRulings As String = clsModule.CgLastUpdateRulings
 	Private VmLastUpdatePictPatch As String = ""
 	Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
 	Private VmShowUpdateMenus As Boolean = False
@@ -370,6 +371,15 @@ Public Class clsSettings
 		End Get
 		Set (VpLastUpdateTxtVF As String)
 			VmLastUpdateTxtVF = VpLastUpdateTxtVF
+		End Set
+	End Property
+	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des règles spécifiques des cartes")> _
+	Public Property LastUpdateRulings As String
+		Get
+			Return VmLastUpdateRulings
+		End Get
+		Set (VpLastUpdateRulings As String)
+			VmLastUpdateRulings = VpLastUpdateRulings
 		End Set
 	End Property
 	<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour du correctif des images")> _

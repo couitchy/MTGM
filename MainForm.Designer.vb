@@ -79,6 +79,7 @@ Partial Class MainForm
 		Me.mnuUpdatePrices = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuUpdatePictures = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuUpdateAutorisations = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuUpdateRulings = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuUpdateSimu = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuUpdateTxtFR = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator5 = New System.Windows.Forms.ToolStripSeparator
@@ -579,7 +580,7 @@ Partial Class MainForm
 		'
 		'mnuFile
 		'
-		Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBSelect, Me.mnuExport, Me.mnuSeparator3, Me.mnuNewEdition, Me.mnuRemEdition, Me.mnuTranslate, Me.mnuSeparator4, Me.mnuUpdatePrices, Me.mnuUpdatePictures, Me.mnuUpdateAutorisations, Me.mnuUpdateSimu, Me.mnuUpdateTxtFR, Me.mnuSeparator5, Me.mnuExit})
+		Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBSelect, Me.mnuExport, Me.mnuSeparator3, Me.mnuNewEdition, Me.mnuRemEdition, Me.mnuTranslate, Me.mnuSeparator4, Me.mnuUpdatePrices, Me.mnuUpdatePictures, Me.mnuUpdateAutorisations, Me.mnuUpdateRulings, Me.mnuUpdateSimu, Me.mnuUpdateTxtFR, Me.mnuSeparator5, Me.mnuExit})
 		Me.mnuFile.Name = "mnuFile"
 		Me.mnuFile.Size = New System.Drawing.Size(54, 20)
 		Me.mnuFile.Text = "Fichier"
@@ -676,6 +677,14 @@ Partial Class MainForm
 		Me.mnuUpdateAutorisations.Size = New System.Drawing.Size(279, 22)
 		Me.mnuUpdateAutorisations.Text = "Mettre à jour les autorisations tournois"
 		AddHandler Me.mnuUpdateAutorisations.Click, AddressOf Me.MnuUpdateAutorisationsClick
+		'
+		'mnuUpdateRulings
+		'
+		Me.mnuUpdateRulings.Image = CType(resources.GetObject("mnuUpdateRulings.Image"),System.Drawing.Image)
+		Me.mnuUpdateRulings.Name = "mnuUpdateRulings"
+		Me.mnuUpdateRulings.Size = New System.Drawing.Size(279, 22)
+		Me.mnuUpdateRulings.Text = "Mettre à jour les règles spécifiques"
+		AddHandler Me.mnuUpdateRulings.Click, AddressOf Me.MnuUpdateRulingsClick
 		'
 		'mnuUpdateSimu
 		'
@@ -1837,7 +1846,7 @@ Partial Class MainForm
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 		Me.picScanCard.TabIndex = 0
 		Me.picScanCard.TabStop = false
-		AddHandler Me.picScanCard.Click, AddressOf Me.MnuTransformClick
+		AddHandler Me.picScanCard.MouseUp, AddressOf Me.PicScanCardMouseUp
 		'
 		'dlgSave
 		'
@@ -1923,6 +1932,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuUpdateRulings As System.Windows.Forms.ToolStripMenuItem
 	Private btPlateau As System.Windows.Forms.ToolStripButton
 	Private mnuPlateau As System.Windows.Forms.ToolStripMenuItem
 	Public txtCardText As Magic_The_Gathering_Manager.ExRichTextBox

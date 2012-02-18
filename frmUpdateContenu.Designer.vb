@@ -62,10 +62,10 @@ Partial Class frmUpdateContenu
 		Me.cbarUpdate.Size = New System.Drawing.Size(514, 262)
 		Me.cbarUpdate.TabIndex = 1
 		Me.cbarUpdate.Text = "Mises à jour de contenu"
-		AddHandler Me.cbarUpdate.VisibleChanged, AddressOf Me.CbarCbarUpdateVisibleChanged
-		AddHandler Me.cbarUpdate.MouseMove, AddressOf Me.CbarCbarUpdateMouseMove
-		AddHandler Me.cbarUpdate.MouseDown, AddressOf Me.CbarCbarUpdateMouseDown
-		AddHandler Me.cbarUpdate.MouseUp, AddressOf Me.CbarCbarUpdateMouseUp
+		AddHandler Me.cbarUpdate.VisibleChanged, AddressOf Me.CbarUpdateVisibleChanged
+		AddHandler Me.cbarUpdate.MouseMove, AddressOf Me.CbarUpdateMouseMove
+		AddHandler Me.cbarUpdate.MouseDown, AddressOf Me.CbarUpdateMouseDown
+		AddHandler Me.cbarUpdate.MouseUp, AddressOf Me.CbarUpdateMouseUp
 		'
 		'pnlUpdate
 		'

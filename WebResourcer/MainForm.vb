@@ -1006,6 +1006,8 @@ Public Partial Class MainForm
 				Return "innistrad#" + VpStr
 			Case "DA"
 				Return "darkascension#" + VpStr
+			Case "S2"
+				Return "starter2000#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1108,6 +1110,10 @@ Public Partial Class MainForm
 				Return "V4"
 			Case "innistrad"
 				Return "IN"
+			Case "darkascension"
+				Return "DA"
+			Case "starter2000"
+				Return "S2"
 			Case Else
 				Return ""
 		End Select
