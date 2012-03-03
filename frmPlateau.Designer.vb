@@ -84,10 +84,6 @@ Partial Class frmPlateau
 		Me.cmnuName = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSeparator0 = New System.Windows.Forms.ToolStripSeparator
 		Me.cmnuTapUntap = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuCounters = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuCountersAdd = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuCountersSub = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuCountersRemove = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendTo = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToBibliTop = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToBibliBottom = New System.Windows.Forms.ToolStripMenuItem
@@ -96,9 +92,13 @@ Partial Class frmPlateau
 		Me.cmnuSendToField = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToGraveyard = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuSendToExil = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuTransform = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuAttachTo = New System.Windows.Forms.ToolStripMenuItem
 		Me.cmnuDetachFrom = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuTransform = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuCounters = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuCountersAdd = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuCountersSub = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuCountersRemove = New System.Windows.Forms.ToolStripMenuItem
 		Me.toolStrip.SuspendLayout
 		Me.splitV1.Panel1.SuspendLayout
 		Me.splitV1.Panel2.SuspendLayout
@@ -281,9 +281,9 @@ Partial Class frmPlateau
 		'
 		Me.panelBibli.AllowDrop = true
 		Me.panelBibli.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.panelBibli.Location = New System.Drawing.Point(24, 0)
+		Me.panelBibli.Location = New System.Drawing.Point(32, 0)
 		Me.panelBibli.Name = "panelBibli"
-		Me.panelBibli.Size = New System.Drawing.Size(215, 103)
+		Me.panelBibli.Size = New System.Drawing.Size(207, 103)
 		Me.panelBibli.TabIndex = 2
 		AddHandler Me.panelBibli.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelBibli.DragDrop, AddressOf Me.PanelBibliDragDrop
@@ -296,7 +296,7 @@ Partial Class frmPlateau
 		Me.toolStripBibli.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btBibliShuffle, Me.btBibliReveal, Me.btBibliSearch})
 		Me.toolStripBibli.Location = New System.Drawing.Point(0, 0)
 		Me.toolStripBibli.Name = "toolStripBibli"
-		Me.toolStripBibli.Size = New System.Drawing.Size(24, 103)
+		Me.toolStripBibli.Size = New System.Drawing.Size(32, 103)
 		Me.toolStripBibli.TabIndex = 1
 		'
 		'btBibliShuffle
@@ -305,7 +305,7 @@ Partial Class frmPlateau
 		Me.btBibliShuffle.Image = CType(resources.GetObject("btBibliShuffle.Image"),System.Drawing.Image)
 		Me.btBibliShuffle.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btBibliShuffle.Name = "btBibliShuffle"
-		Me.btBibliShuffle.Size = New System.Drawing.Size(21, 20)
+		Me.btBibliShuffle.Size = New System.Drawing.Size(29, 20)
 		Me.btBibliShuffle.Text = "Mélanger"
 		AddHandler Me.btBibliShuffle.Click, AddressOf Me.BtBibliShuffleClick
 		'
@@ -315,7 +315,7 @@ Partial Class frmPlateau
 		Me.btBibliReveal.Image = CType(resources.GetObject("btBibliReveal.Image"),System.Drawing.Image)
 		Me.btBibliReveal.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btBibliReveal.Name = "btBibliReveal"
-		Me.btBibliReveal.Size = New System.Drawing.Size(21, 20)
+		Me.btBibliReveal.Size = New System.Drawing.Size(29, 20)
 		Me.btBibliReveal.Text = "Révéler carte sommet"
 		AddHandler Me.btBibliReveal.Click, AddressOf Me.BtBibliRevealClick
 		'
@@ -325,7 +325,7 @@ Partial Class frmPlateau
 		Me.btBibliSearch.Image = CType(resources.GetObject("btBibliSearch.Image"),System.Drawing.Image)
 		Me.btBibliSearch.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btBibliSearch.Name = "btBibliSearch"
-		Me.btBibliSearch.Size = New System.Drawing.Size(21, 20)
+		Me.btBibliSearch.Size = New System.Drawing.Size(29, 20)
 		Me.btBibliSearch.Text = "Rechercher"
 		AddHandler Me.btBibliSearch.Click, AddressOf Me.BtBibliSearchClick
 		'
@@ -533,6 +533,7 @@ Partial Class frmPlateau
 		Me.btRegardShuffle.Name = "btRegardShuffle"
 		Me.btRegardShuffle.Size = New System.Drawing.Size(21, 20)
 		Me.btRegardShuffle.Text = "Mélanger"
+		AddHandler Me.btRegardShuffle.Click, AddressOf Me.BtRegardShuffleClick
 		'
 		'splitH2
 		'
@@ -669,7 +670,7 @@ Partial Class frmPlateau
 		'
 		Me.cmnuCardContext.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuName, Me.cmnuSeparator0, Me.cmnuTapUntap, Me.cmnuSendTo, Me.cmnuTransform, Me.cmnuAttachTo, Me.cmnuDetachFrom, Me.cmnuCounters})
 		Me.cmnuCardContext.Name = "cmnuCardContext"
-		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 186)
+		Me.cmnuCardContext.Size = New System.Drawing.Size(173, 164)
 		'
 		'cmnuName
 		'
@@ -691,38 +692,6 @@ Partial Class frmPlateau
 		Me.cmnuTapUntap.Size = New System.Drawing.Size(172, 22)
 		Me.cmnuTapUntap.Text = "Engager / Dégager"
 		AddHandler Me.cmnuTapUntap.Click, AddressOf Me.CmnuTapUntapClick
-		'
-		'cmnuCounters
-		'
-		Me.cmnuCounters.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuCountersAdd, Me.cmnuCountersSub, Me.cmnuCountersRemove})
-		Me.cmnuCounters.Image = CType(resources.GetObject("cmnuCounters.Image"),System.Drawing.Image)
-		Me.cmnuCounters.Name = "cmnuCounters"
-		Me.cmnuCounters.Size = New System.Drawing.Size(172, 22)
-		Me.cmnuCounters.Text = "Marqueurs..."
-		'
-		'cmnuCountersAdd
-		'
-		Me.cmnuCountersAdd.Image = CType(resources.GetObject("cmnuCountersAdd.Image"),System.Drawing.Image)
-		Me.cmnuCountersAdd.Name = "cmnuCountersAdd"
-		Me.cmnuCountersAdd.Size = New System.Drawing.Size(152, 22)
-		Me.cmnuCountersAdd.Text = "Ajouter"
-		AddHandler Me.cmnuCountersAdd.Click, AddressOf Me.CmnuCountersAddClick
-		'
-		'cmnuCountersSub
-		'
-		Me.cmnuCountersSub.Image = CType(resources.GetObject("cmnuCountersSub.Image"),System.Drawing.Image)
-		Me.cmnuCountersSub.Name = "cmnuCountersSub"
-		Me.cmnuCountersSub.Size = New System.Drawing.Size(152, 22)
-		Me.cmnuCountersSub.Text = "Retirer"
-		AddHandler Me.cmnuCountersSub.Click, AddressOf Me.CmnuCountersSubClick
-		'
-		'cmnuCountersRemove
-		'
-		Me.cmnuCountersRemove.Image = CType(resources.GetObject("cmnuCountersRemove.Image"),System.Drawing.Image)
-		Me.cmnuCountersRemove.Name = "cmnuCountersRemove"
-		Me.cmnuCountersRemove.Size = New System.Drawing.Size(152, 22)
-		Me.cmnuCountersRemove.Text = "Supprimer"
-		AddHandler Me.cmnuCountersRemove.Click, AddressOf Me.CmnuCountersRemoveClick
 		'
 		'cmnuSendTo
 		'
@@ -781,6 +750,15 @@ Partial Class frmPlateau
 		Me.cmnuSendToExil.Text = "Exil"
 		AddHandler Me.cmnuSendToExil.Click, AddressOf Me.CmnuSendToClick
 		'
+		'cmnuTransform
+		'
+		Me.cmnuTransform.Enabled = false
+		Me.cmnuTransform.Image = CType(resources.GetObject("cmnuTransform.Image"),System.Drawing.Image)
+		Me.cmnuTransform.Name = "cmnuTransform"
+		Me.cmnuTransform.Size = New System.Drawing.Size(172, 22)
+		Me.cmnuTransform.Text = "Transformer"
+		AddHandler Me.cmnuTransform.Click, AddressOf Me.CmnuTransformClick
+		'
 		'cmnuAttachTo
 		'
 		Me.cmnuAttachTo.Image = CType(resources.GetObject("cmnuAttachTo.Image"),System.Drawing.Image)
@@ -796,14 +774,37 @@ Partial Class frmPlateau
 		Me.cmnuDetachFrom.Text = "Détacher"
 		AddHandler Me.cmnuDetachFrom.Click, AddressOf Me.CmnuDetachFromClick
 		'
-		'cmnuTransform
+		'cmnuCounters
 		'
-		Me.cmnuTransform.Enabled = false
-		Me.cmnuTransform.Image = CType(resources.GetObject("cmnuTransform.Image"),System.Drawing.Image)
-		Me.cmnuTransform.Name = "cmnuTransform"
-		Me.cmnuTransform.Size = New System.Drawing.Size(172, 22)
-		Me.cmnuTransform.Text = "Transformer"
-		AddHandler Me.cmnuTransform.Click, AddressOf Me.CmnuTransformClick
+		Me.cmnuCounters.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuCountersAdd, Me.cmnuCountersSub, Me.cmnuCountersRemove})
+		Me.cmnuCounters.Image = CType(resources.GetObject("cmnuCounters.Image"),System.Drawing.Image)
+		Me.cmnuCounters.Name = "cmnuCounters"
+		Me.cmnuCounters.Size = New System.Drawing.Size(172, 22)
+		Me.cmnuCounters.Text = "Marqueurs..."
+		'
+		'cmnuCountersAdd
+		'
+		Me.cmnuCountersAdd.Image = CType(resources.GetObject("cmnuCountersAdd.Image"),System.Drawing.Image)
+		Me.cmnuCountersAdd.Name = "cmnuCountersAdd"
+		Me.cmnuCountersAdd.Size = New System.Drawing.Size(129, 22)
+		Me.cmnuCountersAdd.Text = "Ajouter"
+		AddHandler Me.cmnuCountersAdd.Click, AddressOf Me.CmnuCountersAddClick
+		'
+		'cmnuCountersSub
+		'
+		Me.cmnuCountersSub.Image = CType(resources.GetObject("cmnuCountersSub.Image"),System.Drawing.Image)
+		Me.cmnuCountersSub.Name = "cmnuCountersSub"
+		Me.cmnuCountersSub.Size = New System.Drawing.Size(129, 22)
+		Me.cmnuCountersSub.Text = "Retirer"
+		AddHandler Me.cmnuCountersSub.Click, AddressOf Me.CmnuCountersSubClick
+		'
+		'cmnuCountersRemove
+		'
+		Me.cmnuCountersRemove.Image = CType(resources.GetObject("cmnuCountersRemove.Image"),System.Drawing.Image)
+		Me.cmnuCountersRemove.Name = "cmnuCountersRemove"
+		Me.cmnuCountersRemove.Size = New System.Drawing.Size(129, 22)
+		Me.cmnuCountersRemove.Text = "Supprimer"
+		AddHandler Me.cmnuCountersRemove.Click, AddressOf Me.CmnuCountersRemoveClick
 		'
 		'frmPlateau
 		'

@@ -1122,7 +1122,7 @@ Public Partial Class MainForm
 		If VpRuling <> "" Then
 			VpRuling = VpRuling.Substring(1)
 			VpRuling = VpRuling.Replace("£", vbCrLf)
-			'max. 30 caractères par ligne si texte très long
+			'max. 100 caractères par ligne si texte très long
 			If VpRuling.Length > 300 Then
 				VpRuling = clsModule.StrSplice(VpRuling, 100)
 			End If

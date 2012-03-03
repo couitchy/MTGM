@@ -478,10 +478,17 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
+		If Me.btBibliReveal.Checked Then
+			Call Me.ManageReDraw(VmPlateauPartie.Bibli)
+		End If
 	End Sub
 	Sub BtMainShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Main)
 		Call Me.ManageReDraw(VmPlateauPartie.Main)
+	End Sub
+	Sub BtRegardShuffleClick(sender As Object, e As EventArgs)
+		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Regard)
+		Call Me.ManageReDraw(VmPlateauPartie.Regard)		
 	End Sub
 	Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag

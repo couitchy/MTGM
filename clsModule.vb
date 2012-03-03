@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30950
+	Public Const CgCodeLines As Integer   			= 30969
 	Public Const CgLastUpdateAut As String			= "05/10/2011"
 	Public Const CgLastUpdateSimu As String			= "15/01/2012"
 	Public Const CgLastUpdateTxtVF As String		= "06/10/2011"
@@ -1165,8 +1165,19 @@ Public Module clsModule
 	Public Function StrSplice(VpStr As String, VpN As Integer) As String
 	'----------------------------------------------
 	'Insère un retour chariot tous les n caractères
-	'----------------------------------------------
-		Return Regex.Replace(VpStr, "(.{" & VpN & "})", "$1" & Environment.NewLine)
+	'----------------------------------------------		
+	Dim VpWords() As String = VpStr.Split(" ")
+	Dim VpOut As String = vbCrLf
+	Dim VpCur As String = ""
+		'Return Regex.Replace(VpStr, "(.{" & VpN & "})", "$1" & Environment.NewLine)
+		For Each VpWord As String In VpWords
+			If VpCur.Length >= VpN Or VpWord.Contains(vbCrLf) Then
+				VpOut += VpCur + vbCrLf
+				VpCur = ""
+			End If
+			VpCur += VpWord + " "
+		Next VpWord
+		Return VpOut
 	End Function	
 	Public Function MyVal(VpStr As String) As Double
 		Return Val(VpStr.Replace(",", "."))
