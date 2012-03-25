@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30969
+	Public Const CgCodeLines As Integer   			= 30998
 	Public Const CgLastUpdateAut As String			= "05/10/2011"
 	Public Const CgLastUpdateSimu As String			= "15/01/2012"
 	Public Const CgLastUpdateTxtVF As String		= "06/10/2011"

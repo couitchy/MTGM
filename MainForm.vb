@@ -2599,8 +2599,10 @@ Public Partial Class MainForm
 	'Rétrogade la version de l'application
 	'-------------------------------------
 		If File.Exists(Application.StartupPath + clsModule.CgDownDFile) Then
-			File.Move(Application.StartupPath + clsModule.CgDownDFile, Application.StartupPath + clsModule.CgUpDFile)
-			Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
+			If clsModule.ShowQuestion("Êtes-vous sûr de vouloir restaurer la précédente version sauvegardée de l'application ?")  = System.Windows.Forms.DialogResult.Yes Then
+				File.Move(Application.StartupPath + clsModule.CgDownDFile, Application.StartupPath + clsModule.CgUpDFile)
+				Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
+			End If
 		Else
 			Call clsModule.ShowWarning("Aucune version antérieure n'a été trouvée dans le répertoire d'installation...")
 		End If

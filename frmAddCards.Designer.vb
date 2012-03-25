@@ -43,6 +43,7 @@ Partial Class frmAddCards
 		Me.cmdDestination = New System.Windows.Forms.Button
 		Me.cmdAdd = New System.Windows.Forms.Button
 		Me.grpQuantite = New System.Windows.Forms.GroupBox
+		Me.scrollStock = New System.Windows.Forms.VScrollBar
 		Me.imgAdd = New System.Windows.Forms.PictureBox
 		Me.lblNbItems = New System.Windows.Forms.Label
 		Me.txtNbItems = New System.Windows.Forms.TextBox
@@ -81,7 +82,7 @@ Partial Class frmAddCards
 		Me.cbarAjout.Location = New System.Drawing.Point(0, 0)
 		Me.cbarAjout.Movable = false
 		Me.cbarAjout.Name = "cbarAjout"
-		Me.cbarAjout.Size = New System.Drawing.Size(365, 345)
+		Me.cbarAjout.Size = New System.Drawing.Size(365, 354)
 		Me.cbarAjout.TabIndex = 1
 		Me.cbarAjout.Text = "Ajout de cartes"
 		AddHandler Me.cbarAjout.VisibleChanged, AddressOf Me.CBarAjoutVisibleChanged
@@ -100,7 +101,7 @@ Partial Class frmAddCards
 		Me.pnlAjout.Controls.Add(Me.grpId)
 		Me.pnlAjout.Location = New System.Drawing.Point(2, 27)
 		Me.pnlAjout.Name = "pnlAjout"
-		Me.pnlAjout.Size = New System.Drawing.Size(361, 316)
+		Me.pnlAjout.Size = New System.Drawing.Size(361, 325)
 		Me.pnlAjout.TabIndex = 0
 		'
 		'grpQuality
@@ -109,7 +110,7 @@ Partial Class frmAddCards
 		Me.grpQuality.Controls.Add(Me.chkFoil)
 		Me.grpQuality.Location = New System.Drawing.Point(181, 207)
 		Me.grpQuality.Name = "grpQuality"
-		Me.grpQuality.Size = New System.Drawing.Size(162, 69)
+		Me.grpQuality.Size = New System.Drawing.Size(162, 79)
 		Me.grpQuality.TabIndex = 103
 		Me.grpQuality.TabStop = false
 		Me.grpQuality.Text = "Qualité"
@@ -117,7 +118,7 @@ Partial Class frmAddCards
 		'chkFoil
 		'
 		Me.chkFoil.AutoSize = true
-		Me.chkFoil.Location = New System.Drawing.Point(26, 30)
+		Me.chkFoil.Location = New System.Drawing.Point(26, 35)
 		Me.chkFoil.Name = "chkFoil"
 		Me.chkFoil.Size = New System.Drawing.Size(91, 17)
 		Me.chkFoil.TabIndex = 5
@@ -127,7 +128,7 @@ Partial Class frmAddCards
 		'
 		'cmdClose
 		'
-		Me.cmdClose.Location = New System.Drawing.Point(187, 282)
+		Me.cmdClose.Location = New System.Drawing.Point(187, 292)
 		Me.cmdClose.Name = "cmdClose"
 		Me.cmdClose.Size = New System.Drawing.Size(75, 23)
 		Me.cmdClose.TabIndex = 8
@@ -137,7 +138,7 @@ Partial Class frmAddCards
 		'
 		'cmdDestination
 		'
-		Me.cmdDestination.Location = New System.Drawing.Point(10, 282)
+		Me.cmdDestination.Location = New System.Drawing.Point(10, 292)
 		Me.cmdDestination.Name = "cmdDestination"
 		Me.cmdDestination.Size = New System.Drawing.Size(75, 23)
 		Me.cmdDestination.TabIndex = 6
@@ -147,7 +148,7 @@ Partial Class frmAddCards
 		'
 		'cmdAdd
 		'
-		Me.cmdAdd.Location = New System.Drawing.Point(268, 282)
+		Me.cmdAdd.Location = New System.Drawing.Point(268, 292)
 		Me.cmdAdd.Name = "cmdAdd"
 		Me.cmdAdd.Size = New System.Drawing.Size(75, 23)
 		Me.cmdAdd.TabIndex = 7
@@ -158,21 +159,33 @@ Partial Class frmAddCards
 		'grpQuantite
 		'
 		Me.grpQuantite.BackColor = System.Drawing.Color.Transparent
+		Me.grpQuantite.Controls.Add(Me.scrollStock)
 		Me.grpQuantite.Controls.Add(Me.imgAdd)
 		Me.grpQuantite.Controls.Add(Me.lblNbItems)
 		Me.grpQuantite.Controls.Add(Me.txtNbItems)
 		Me.grpQuantite.Location = New System.Drawing.Point(10, 207)
 		Me.grpQuantite.Name = "grpQuantite"
-		Me.grpQuantite.Size = New System.Drawing.Size(165, 69)
+		Me.grpQuantite.Size = New System.Drawing.Size(165, 79)
 		Me.grpQuantite.TabIndex = 102
 		Me.grpQuantite.TabStop = false
 		Me.grpQuantite.Text = "Quantité"
+		'
+		'scrollStock
+		'
+		Me.scrollStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+		Me.scrollStock.LargeChange = 1
+		Me.scrollStock.Location = New System.Drawing.Point(106, 24)
+		Me.scrollStock.Maximum = 0
+		Me.scrollStock.Name = "scrollStock"
+		Me.scrollStock.Size = New System.Drawing.Size(17, 25)
+		Me.scrollStock.TabIndex = 107
+		AddHandler Me.scrollStock.Scroll, AddressOf Me.ScrollStockScroll
 		'
 		'imgAdd
 		'
 		Me.imgAdd.BackColor = System.Drawing.Color.Transparent
 		Me.imgAdd.Image = CType(resources.GetObject("imgAdd.Image"),System.Drawing.Image)
-		Me.imgAdd.Location = New System.Drawing.Point(16, 23)
+		Me.imgAdd.Location = New System.Drawing.Point(16, 28)
 		Me.imgAdd.Name = "imgAdd"
 		Me.imgAdd.Size = New System.Drawing.Size(16, 16)
 		Me.imgAdd.TabIndex = 15
@@ -181,7 +194,7 @@ Partial Class frmAddCards
 		'lblNbItems
 		'
 		Me.lblNbItems.AutoSize = true
-		Me.lblNbItems.Location = New System.Drawing.Point(38, 46)
+		Me.lblNbItems.Location = New System.Drawing.Point(38, 57)
 		Me.lblNbItems.Name = "lblNbItems"
 		Me.lblNbItems.Size = New System.Drawing.Size(111, 13)
 		Me.lblNbItems.TabIndex = 106
@@ -189,7 +202,7 @@ Partial Class frmAddCards
 		'
 		'txtNbItems
 		'
-		Me.txtNbItems.Location = New System.Drawing.Point(38, 23)
+		Me.txtNbItems.Location = New System.Drawing.Point(38, 27)
 		Me.txtNbItems.Name = "txtNbItems"
 		Me.txtNbItems.Size = New System.Drawing.Size(61, 20)
 		Me.txtNbItems.TabIndex = 3
@@ -329,7 +342,7 @@ Partial Class frmAddCards
 		Me.AcceptButton = Me.cmdAdd
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(365, 345)
+		Me.ClientSize = New System.Drawing.Size(365, 354)
 		Me.Controls.Add(Me.cbarAjout)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -356,6 +369,7 @@ Partial Class frmAddCards
 		Me.cmnuDestination.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private scrollStock As System.Windows.Forms.VScrollBar
 	Private chkFoil As System.Windows.Forms.CheckBox
 	Private grpQuality As System.Windows.Forms.GroupBox
 	Private cbarAjout As TD.SandBar.ContainerBar

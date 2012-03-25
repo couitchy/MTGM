@@ -13,7 +13,7 @@ Imports System.Runtime.InteropServices
 <assembly: AssemblyConfiguration(".NET Framework 2.0")>
 <assembly: AssemblyCompany("Couitchy Corp.")>
 <assembly: AssemblyProduct("Magic The Gathering Manager")>
-<assembly: AssemblyCopyright("Copyright (c) 2008-2011 Couitchy Corp.")>
+<assembly: AssemblyCopyright("Copyright (c) 2008-2012 Couitchy Corp.")>
 <assembly: AssemblyTrademark("MTGM")>
 <assembly: AssemblyCulture("")>
 

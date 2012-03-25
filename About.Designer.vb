@@ -101,7 +101,7 @@ Partial Class About
 		Me.label1.Name = "label1"
 		Me.label1.Size = New System.Drawing.Size(424, 22)
 		Me.label1.TabIndex = 13
-		Me.label1.Text = "Copyright 2008-2011 Couitchy Corporation. Tous droits réservés."
+		Me.label1.Text = "Copyright 2008-2012 Couitchy Corporation. Tous droits réservés."
 		Me.label1.UseCompatibleTextRendering = true
 		'
 		'button1

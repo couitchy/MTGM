@@ -113,6 +113,8 @@ Public Partial Class frmPlateau
 	'---------------------------------
 	Dim VpW As Integer
 	Dim VpH As Integer
+	Dim VpW0 As Integer
+	Dim VpH0 As Integer
 	Dim VpEffectiveCardHeight_px As Integer
 		If Not VpCard Is Nothing Then
 			If VpUntap Then
@@ -121,30 +123,32 @@ Public Partial Class frmPlateau
 			'Détermine le côté limitant pour l'affichage optimal avec respect des proportions
 			VpEffectiveCardHeight_px = CInt(CgMTGCardHeight_px * (1 + VpCard.Attachments.Count * CgChevauchFactor))	'/!\ il faut prendre en compte les cartes attachées pour avoir la hauteur totale
 			'Si c'est la hauteur qui limite
-			If VpEffectiveCardHeight_px - VpParent.Height > CgMTGCardWidth_px - VpParent.Width Then
+			If VpEffectiveCardHeight_px / VpParent.Height > CgMTGCardWidth_px / VpParent.Width Then
 				VpH = Math.Min(VpParent.Height, VpEffectiveCardHeight_px)				'ici VpH vaut la hauteur cumulée (avec les cartes attachées)
-				VpH = CInt(VpH / (1 + VpCard.Attachments.Count * CgChevauchFactor))		'on divise pour trouver la hauteur de la carte hôte seule
-				VpW = CgMTGCardWidth_px * VpH / CgMTGCardHeight_px
+				VpH0 = Math.Min(VpParent.Height, CgMTGCardHeight_px)
+				VpH = CInt(VpH / (1 + VpCard.Attachments.Count * CgChevauchFactor))		'on divise pour retrouver la hauteur que devra avoir la carte hôte seule
+				VpW = CgMTGCardWidth_px * VpH / CgMTGCardHeight_px						'en déduit la largeur convenable pour conserver le ratio d'aspect
+				VpW0 = CgMTGCardWidth_px * VpH0 / CgMTGCardHeight_px
 			'Si c'est la largeur qui limite
 			Else
 				VpW = Math.Min(VpParent.Width, CgMTGCardWidth_px)
 				VpH = CgMTGCardHeight_px * VpW / CgMTGCardWidth_px
 			End If
 			'Dessin carte hôte
-			Call Me.EffectiveDraw(VpCard, VpW, VpH, VpIndexH, VpCount, VpCard.Attachments.Count, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
+			Call Me.EffectiveDraw(VpCard, VpW, VpW0, VpH, VpIndexH, VpCount, VpCard.Attachments.Count, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
 			'Dessin cartes attachées éventuelles
 			If VpCard.Attachments.Count > 0 Then
 				For VpIndexV As Integer = VpCard.Attachments.Count - 1 To 0 Step - 1	'on parcourt la liste à l'envers pour avoir l'affichage visuel dans le bon ordre (zorder)
-					Call Me.EffectiveDraw(VpCard.Attachments.Item(VpIndexV), VpW, VpH, VpIndexH, VpCount, VpIndexV, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
+					Call Me.EffectiveDraw(VpCard.Attachments.Item(VpIndexV), VpW, VpW0, VpH, VpIndexH, VpCount, VpIndexV, VpParent, VpDoubleClickHandler, VpMouseUpHandler)
 				Next VpIndexV
 			End If
 		End If
 	End Sub
-	Private Sub EffectiveDraw(VpCard As clsPlateauCard, VpW As Integer, VpH As Integer, VpIndexH As Integer, VpCount As Integer, VpIndexV As Integer, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+	Private Sub EffectiveDraw(VpCard As clsPlateauCard, VpW As Integer, VpW0 As Integer, VpH As Integer, VpIndexH As Integer, VpCount As Integer, VpIndexV As Integer, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
 	Dim VpPicture As PictureBox
 		VpPicture = New PictureBox
 		With VpPicture
-			.Location = New System.Drawing.Point(If(VpIndexH = 0, 0, Math.Min(VpIndexH * (VpParent.Width - VpW) / (VpCount - 1), VpIndexH * VpW * CgSpacingFactor)), CgChevauchFactor * VpH * VpIndexV)
+			.Location = New System.Drawing.Point(If(VpIndexH = 0, 0, Math.Min(VpIndexH * (VpParent.Width - VpW) / (VpCount - 1), VpIndexH * VpW0 * CgSpacingFactor)), CgChevauchFactor * VpH * VpIndexV)
 			.Size = New System.Drawing.Size(VpW, VpH)
 			.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
 			.Image = Image.FromFile(VpCard.PicturePath)

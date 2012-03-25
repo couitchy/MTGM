@@ -219,33 +219,35 @@ Public Partial Class frmAddCards
 		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked)
 	End Sub
 	Sub CmdAddClick(ByVal sender As Object, ByVal e As EventArgs)
-		Try
-			If CInt(Me.lblNbItems.Tag) = 0 Then
-				VgDBCommand.CommandText = "Insert Into " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + If(Me.mnuDropToCollection.Checked = False, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + ");"
-				VgDBCommand.ExecuteNonQuery
-			ElseIf ( CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text) ) <= 0 Then
-				VgDBCommand.CommandText = "Delete * From " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
-				VgDBCommand.ExecuteNonQuery
-			Else
-				VgDBCommand.CommandText = "Update " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
-				VgDBCommand.ExecuteNonQuery
-			End If
-			Me.cboSerie.Tag = Me.cboSerie.Text
-			Me.cboTitleFR.Text = ""
-			Me.cboTitleEN.Text = ""
-			Me.cboSerie.Text = ""
-			Me.cboSerie.Items.Clear
-			Me.lblEncNbr.Text = "ID Encyclopédie"
-			Me.lblYear.Text = "Année"
-			Me.imgEdition.Image = Nothing
-			Me.lblNbItems.Text = clsModule.CgStock
-			Me.lblNbItems.Tag = 0
-			Me.txtNbItems.Text = "+1"
-			Me.chkFoil.Checked = False
-			Me.cboTitleFR.Focus
-		Catch
-			Call clsModule.ShowWarning("Impossible d'ajouter cette carte dans la base de données." + vbCrLf + "La carte n'est peut-être pas (ou incorrectement) référencée...")
-		End Try
+		If Val(Me.txtNbItems.Text) <> 0 Then
+			Try
+				If CInt(Me.lblNbItems.Tag) = 0 Then
+					VgDBCommand.CommandText = "Insert Into " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + If(Me.mnuDropToCollection.Checked = False, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + ");"
+					VgDBCommand.ExecuteNonQuery
+				ElseIf ( CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text) ) <= 0 Then
+					VgDBCommand.CommandText = "Delete * From " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+					VgDBCommand.ExecuteNonQuery
+				Else
+					VgDBCommand.CommandText = "Update " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+					VgDBCommand.ExecuteNonQuery
+				End If
+				Me.cboSerie.Tag = Me.cboSerie.Text
+				Me.cboTitleFR.Text = ""
+				Me.cboTitleEN.Text = ""
+				Me.cboSerie.Text = ""
+				Me.cboSerie.Items.Clear
+				Me.lblEncNbr.Text = "ID Encyclopédie"
+				Me.lblYear.Text = "Année"
+				Me.imgEdition.Image = Nothing
+				Me.lblNbItems.Text = clsModule.CgStock
+				Me.lblNbItems.Tag = 0
+				Me.txtNbItems.Text = "+1"
+				Me.chkFoil.Checked = False
+				Me.cboTitleFR.Focus
+			Catch
+				Call clsModule.ShowWarning("Impossible d'ajouter cette carte dans la base de données." + vbCrLf + "La carte n'est peut-être pas (ou incorrectement) référencée...")
+			End Try
+		End If
 	End Sub
 	Function GetRefText(sender As Object) As String
 		If sender.SelectionLength > 0 Then
@@ -278,6 +280,15 @@ Public Partial Class frmAddCards
 			sender.SelectionStart = sender.Text.Length
 		End If
 		VmKeyChange = False
+	End Sub
+	Sub ScrollStockScroll(sender As Object, e As ScrollEventArgs)
+		If e.Type <> ScrollEventType.EndScroll Then
+			If e.Type = ScrollEventType.SmallIncrement Then		'attention orientation inversée : flèche inférieure = incrément
+				Me.txtNbItems.Text = (Val(Me.txtNbItems.Text) - 1).ToString
+			Else
+				Me.txtNbItems.Text = (Val(Me.txtNbItems.Text) + 1).ToString
+			End If
+		End If		
 	End Sub
 	Sub CmdDestinationMouseDown(sender As Object, e As MouseEventArgs)
 		Me.cmnuDestination.Show(Me.cmdDestination, e.Location)

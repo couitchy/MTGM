@@ -1008,6 +1008,8 @@ Public Partial Class MainForm
 				Return "darkascension#" + VpStr
 			Case "S2"
 				Return "starter2000#" + VpStr
+			Case "R3"
+				Return "graveborn#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1114,6 +1116,8 @@ Public Partial Class MainForm
 				Return "DA"
 			Case "starter2000"
 				Return "S2"
+			Case "graveborn"
+				Return "R3"
 			Case Else
 				Return ""
 		End Select
