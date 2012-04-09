@@ -2101,6 +2101,9 @@ Public Partial Class MainForm
 			Me.ResumeLayout
 		Else
 			Call Me.ClearCarac
+			If Me.IsSingleSource AndAlso VmFilterCriteria.DeckMode Then
+				Call clsModule.PutInRichText(Me.txtCardText, Me.imglstCarac, clsModule.GetDeckDescription(Me.Restriction))
+			End If
 		End If
 		VmBalloonTip.RemoveAll
 	End Sub

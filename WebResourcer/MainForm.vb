@@ -256,13 +256,15 @@ Public Partial Class MainForm
 			Me.prgAvance.Value = 0
 			Me.prgAvance.Style = ProgressBarStyle.Blocks
 			For Each VpCard As String In VpCards
-				Me.txtCur.Text = VpCard
-				Application.DoEvents
-				VpPrices = Me.GetPrice(VpCard)
-				If VpPrices = "#" Then
-					Call Me.AddToLog("Impossible de récupérer les prix pour la carte : " + VpCard, eLogType.Warning)
-				Else
-					VpOut.WriteLine(VpCard + "#" + VpPrices)
+				If Not VpCard.StartsWith("_") Then
+					Me.txtCur.Text = VpCard
+					Application.DoEvents
+					VpPrices = Me.GetPrice(VpCard)
+					If VpPrices = "#" Then
+						Call Me.AddToLog("Impossible de récupérer les prix pour la carte : " + VpCard, eLogType.Warning)
+					Else
+						VpOut.WriteLine(VpCard + "#" + VpPrices)
+					End If
 				End If
 				Me.prgAvance.Increment(1)
 				Call Me.ETA

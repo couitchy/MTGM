@@ -31,12 +31,12 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30998
-	Public Const CgLastUpdateAut As String			= "05/10/2011"
-	Public Const CgLastUpdateSimu As String			= "15/01/2012"
-	Public Const CgLastUpdateTxtVF As String		= "06/10/2011"
-	Public Const CgLastUpdateRulings As String		= "N/C"
-	Public Const CgLastUpdateTradPatch As String	= "10/12/2011"
+	Public Const CgCodeLines As Integer   			= 31222
+	Public Const CgLastUpdateAut As String			= "11/02/2012"
+	Public Const CgLastUpdateSimu As String			= "31/03/2012"
+	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
+	Public Const CgLastUpdateRulings As String		= "18/02/2012"
+	Public Const CgLastUpdateTradPatch As String	= "24/03/2012"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8
@@ -137,7 +137,8 @@ Public Module clsModule
 	Public Const CgPicLogExt As String				= ".log"
 	Public Const CgImgSeries As String				= "_series_"
 	Public Const CgImgColors As String				= "_colors_"
-	Public Const CgDefaultName As String			= "MonJeu"
+	Public Const CgDefaultName As String			= "(Deck)"
+	Public Const CgDefaultFormat As String			= "Classique"
 	Public Const CgPlateau As String				= "Plateau de jeu : "
 	Public Const CgStats As String					= "Statistiques : "
 	Public Const CgSimus As String					= "Simulations : "
@@ -234,19 +235,20 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque SubTypes, CardDouble, tournois M
-		BDD_v11		'manque SubTypes, CardDouble
-		BDD_v12		'manque SubTypes
-		BDD_v13		'à jour
+		BDD_v1		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque infos MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque infos MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque infos MyGamesID, SubTypes
+		BDD_v13		'manque infos MyGamesID
+		BDD_v14		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -389,8 +391,14 @@ Public Module clsModule
 							'Si on est ici, BDD version 12
 							VpDBVersion = eDBVersion.BDD_v12
 						Else
-							'Si on est ici, BDD version 13
-							VpDBVersion = eDBVersion.BDD_v13
+							VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyGamesID", Nothing})
+							If VpSchemaTable.Rows.Count <> 6 Then
+								'Si on est ici, BDD version 13
+								VpDBVersion = eDBVersion.BDD_v13								
+							Else
+								'Si on est ici, BDD version 14
+								VpDBVersion = eDBVersion.BDD_v14
+							End If
 						End If
 					End If
 				End If
@@ -402,10 +410,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v13 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v14 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v13)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v14)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -507,6 +515,19 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update Series Set SeriesNM_FR = SeriesNM;"
 						VgDBCommand.ExecuteNonQuery
+					End If
+					'Passage version 13 à 14
+					If CInt(VpDBVersion) < 14 Then
+						VgDBCommand.CommandText = "Alter Table MyGamesID Add GameDate Date;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table MyGamesID Add GameFormat Text(63) With Compression;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table MyGamesID Add GameDescription Memo With Compression;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update MyGamesID Set GameDate = '" + Now.ToShortDateString + "';"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update MyGamesID Set GameFormat = '" + clsModule.CgDefaultFormat + "';"
+						VgDBCommand.ExecuteNonQuery						
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
@@ -1165,7 +1186,7 @@ Public Module clsModule
 	Public Function StrSplice(VpStr As String, VpN As Integer) As String
 	'----------------------------------------------
 	'Insère un retour chariot tous les n caractères
-	'----------------------------------------------		
+	'----------------------------------------------
 	Dim VpWords() As String = VpStr.Split(" ")
 	Dim VpOut As String = vbCrLf
 	Dim VpCur As String = ""
@@ -1178,7 +1199,7 @@ Public Module clsModule
 			VpCur += VpWord + " "
 		Next VpWord
 		Return VpOut
-	End Function	
+	End Function
 	Public Function MyVal(VpStr As String) As Double
 		Return Val(VpStr.Replace(",", "."))
 	End Function
@@ -1912,6 +1933,28 @@ Public Module clsModule
 	'-----------------------------------------------------
 	Dim VpO As Object
 		VgDBCommand.CommandText = "Select GameID From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
+		VpO = VgDBCommand.ExecuteScalar
+		If Not VpO Is Nothing Then
+			Return VpO.ToString
+		Else
+			Return ""
+		End If
+	End Function
+	Public Function GetDeckFormat(VpStr As String) As String
+	'--------------------------------------------------------------
+	'Retourne le format de jeu du deck de nom spécifié en paramètre
+	'--------------------------------------------------------------
+		VgDBCommand.CommandText = "Select GameFormat From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
+		Return VgDBCommand.ExecuteScalar.ToString
+	End Function
+	Public Function GetDeckDescription(VpRestriction As String) As String
+	'--------------------------------------------------------------------
+	'Retourne le commentaire associé au deck de nom spécifié en paramètre
+	'--------------------------------------------------------------------
+	Dim VpSQL As String
+	Dim VpO As Object
+		VpSQL = "Select GameDescription From MyGamesID Inner Join MyGames On MyGamesID.GameID = MyGames.GameID  Where " + VpRestriction
+		VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 		VpO = VgDBCommand.ExecuteScalar
 		If Not VpO Is Nothing Then
 			Return VpO.ToString

@@ -355,8 +355,8 @@ Public Partial Class frmPerfs
 	Dim VpJv1 As Integer
 	Dim VpJv2 As Integer		
 	Dim VpDecks() As String = clsPerformances.GetAllDecks
-	Dim VpMat(,) As Single = clsPerformances.GetRatioMatrix(VpDecks)
-	Dim VpMatT() As Single = clsPerformances.Reshape(VpMat)
+	'Dim VpMatT() As Single = clsPerformances.Reshape(clsPerformances.GetRatioMatrix(VpDecks))
+	Dim VpMatT() As Single = clsPerformances.GetSimpleRatioMatrix(VpDecks)
 	Dim VpRef As Single = clsPerformances.GetMeanPrice(VpDecks) / 50
 	Dim VpPrice As Single
 	Dim VpVersusMatV1() As Integer
@@ -380,7 +380,7 @@ Public Partial Class frmPerfs
 				.Name = "Efficience"
 				.Cells(1, 1) = "Nom du deck"
 				.Cells(1, 2) = "Prix du deck"
-				.Cells(1, 3) = "Performance (proportions de victoires)"
+				.Cells(1, 3) = "Performance (proportion de victoires)"
 				.Cells(1, 4) = "Espérance de prix compte-tenu de la performance"
 				.Cells(1, 5) = "Espérance de la performance compte-tenu du prix"
 				.Cells(1, 6) = "Facteur d'efficacité (meilleur si tend vers 0)"
@@ -483,7 +483,9 @@ Public Partial Class frmPerfs
 							VpFrequences.Clear
 							For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
 								For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
-									VpFrequences.Add(New clsMatchCounter(VpDeck1 + " / " + VpDeck2, clsPerformances.GetNPlayed(VpDeck1, VpDeck2)))
+									If clsModule.GetDeckFormat(VpDeck1) = clsModule.GetDeckFormat(VpDeck2) Then
+										VpFrequences.Add(New clsMatchCounter(VpDeck1 + " / " + VpDeck2, clsPerformances.GetNPlayed(VpDeck1, VpDeck2)))
+									End If
 								Next VpDeck2
 							Next VpDeck1
 							VpFrequences.Sort(New clsMatchCounter.clsMatchCounterComparer)
@@ -505,26 +507,26 @@ Public Partial Class frmPerfs
 			.Visible = True
 		End With
 	End Sub
-	Private Function GetEfficiency(VpDecks() As String, VpGame As String) As Single
-	'------------------------------------------------------------------------------------------------------------------------
-	'Retourne le facteur d'efficacité pour le jeu passé en paramètre calculé selon :
-	' r = ( prix jeu / %victoires ) / ( prix moyen / 0.5 )
-	' r = 1 => le jeu est à la hauteur de son prix (jeu normal)
-	' r < 1 => le jeu gagne plus de parties qu'il n'en devrait compte tenu de son prix (jeu efficient)
-	' r > 1 => le jeu gagne moins de parties qu'il n'en devrait compte tenu de son prix (jeu soit mauvais / soit "bulldozer")
-	'------------------------------------------------------------------------------------------------------------------------
-	Dim VpMat(,) As Single = clsPerformances.GetRatioMatrix(VpDecks)
-	Dim VpMatT() As Single = clsPerformances.Reshape(VpMat)
-	Dim VpRef As Single = clsPerformances.GetMeanPrice(VpDecks) / 50
-	Dim VpI As Integer = 0
-		For Each VpDeck As String In VpDecks
-			If VpDeck = VpGame Then
-				Return ( (clsPerformances.GetPrice(VpDeck) / VpMatT(VpI)) / VpRef )
-			End If
-			VpI = VpI + 1
-		Next VpDeck
-		Return -1
-	End Function
+'	Private Function GetEfficiency(VpDecks() As String, VpGame As String) As Single
+'	'------------------------------------------------------------------------------------------------------------------------
+'	'Retourne le facteur d'efficacité pour le jeu passé en paramètre calculé selon :
+'	' r = ( prix jeu / %victoires ) / ( prix moyen / 0.5 )
+'	' r = 1 => le jeu est à la hauteur de son prix (jeu normal)
+'	' r < 1 => le jeu gagne plus de parties qu'il n'en devrait compte tenu de son prix (jeu efficient)
+'	' r > 1 => le jeu gagne moins de parties qu'il n'en devrait compte tenu de son prix (jeu soit mauvais / soit "bulldozer")
+'	'------------------------------------------------------------------------------------------------------------------------
+'	'Dim VpMatT() As Single = clsPerformances.Reshape(clsPerformances.GetRatioMatrix(VpDecks))
+'	Dim VpMatT() As Single = clsPerformances.GetSimpleRatioMatrix(VpDecks)
+'	Dim VpRef As Single = clsPerformances.GetMeanPrice(VpDecks) / 50
+'	Dim VpI As Integer = 0
+'		For Each VpDeck As String In VpDecks
+'			If VpDeck = VpGame Then
+'				Return ( (clsPerformances.GetPrice(VpDeck) / VpMatT(VpI)) / VpRef )
+'			End If
+'			VpI = VpI + 1
+'		Next VpDeck
+'		Return -1
+'	End Function
 	Private Sub GetAllPlayed
 	'-----------------------------------
 	'Affiche le nombre de parties jouées
@@ -583,7 +585,7 @@ Public Partial Class frmPerfs
 		VmOwner.mnuPerfs.Tag = Nothing
 	End Sub
 	Sub DropAddGameOtherClick(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", "(Deck)")
+	Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", clsModule.CgDefaultName)
 		If VpGameName.Trim <> "" Then
 			If Not Me.cboJeuLocal.Items.Contains(VpGameName) Then
 				Me.cboJeuLocal.Items.Add(VpGameName)
@@ -826,42 +828,55 @@ Public Class clsPerformances
 			Return -1
 		End If
 	End Function
-	Public Shared Function GetRatioMatrix(VpGames As String()) As Single(,)
-	'-------------------------------------------------------------------------------------------------------------------
-	'Retourne la fraction de parties gagnées par le jeu i contre le jeu j, 1<(i,j)<N, N nombre total de jeux en présence
-	'-------------------------------------------------------------------------------------------------------------------
-	Dim VpMat(,) As Single
+	Public Shared Function GetSimpleRatioMatrix(VpGames As String()) As Single()
+	'-----------------------------------------------------------------------------------------------
+	'Retourne la fraction de parties gagnées par le jeu i, 1<i<N, N nombre total de jeux en présence
+	'-----------------------------------------------------------------------------------------------
+	Dim VpMat() As Single
 	Dim VpN As Integer
 		VpN =  VpGames.Length
-		ReDim VpMat(0 To VpN - 1, 0 To VpN - 1)
+		ReDim VpMat(0 To VpN - 1)
 		For VpI As Integer = 0 To VpN - 1
-			For VpJ As Integer = 0 To VpN - 1
-				VpMat(VpI, VpJ) = clsPerformances.GetRatio(VpGames(VpI), VpGames(VpJ))
-			Next VpJ
+			VpMat(VpI) = 100 * clsPerformances.GetRatio(VpGames(VpI))
 		Next VpI
-		Return VpMat
-	End Function
-	Public Shared Function Reshape(VpMatrix(,) As Single) As Single()
-	'--------------------------------------------------------
-	'Rapporte la fraction de victoires par couple en base 100
-	'--------------------------------------------------------
-	Dim VpN As Integer
-	Dim VpNN As Integer
-	Dim VpNewShape() As Single
-		VpN = 1 + VpMatrix.GetUpperBound(0)
-		ReDim VpNewShape(0 To VpN - 1)
-		For VpI As Integer = 0 To VpN - 1
-			VpNN = 0
-			For VpJ As Integer = 0 To VpN - 1
-				If VpMatrix(VpI, VpJ) <> - 1 Then
-					VpNewShape(VpI) = VpNewShape(VpI) + VpMatrix(VpI, VpJ)
-					VpNN = VpNN + 1
-				End If
-			Next VpJ
-			VpNewShape(VpI) = 100 * VpNewShape(VpI) / VpNN
-		Next VpI
-		Return VpNewShape
-	End Function
+		Return VpMat		
+	End Function	
+'	Public Shared Function GetRatioMatrix(VpGames As String()) As Single(,)
+'	'-------------------------------------------------------------------------------------------------------------------
+'	'Retourne la fraction de parties gagnées par le jeu i contre le jeu j, 1<(i,j)<N, N nombre total de jeux en présence
+'	'-------------------------------------------------------------------------------------------------------------------
+'	Dim VpMat(,) As Single
+'	Dim VpN As Integer
+'		VpN =  VpGames.Length
+'		ReDim VpMat(0 To VpN - 1, 0 To VpN - 1)
+'		For VpI As Integer = 0 To VpN - 1
+'			For VpJ As Integer = 0 To VpN - 1
+'				VpMat(VpI, VpJ) = clsPerformances.GetRatio(VpGames(VpI), VpGames(VpJ))
+'			Next VpJ
+'		Next VpI
+'		Return VpMat
+'	End Function
+'	Public Shared Function Reshape(VpMatrix(,) As Single) As Single()
+'	'--------------------------------------------------------
+'	'Rapporte la fraction de victoires par couple en base 100
+'	'--------------------------------------------------------
+'	Dim VpN As Integer
+'	Dim VpNN As Integer
+'	Dim VpNewShape() As Single
+'		VpN = 1 + VpMatrix.GetUpperBound(0)
+'		ReDim VpNewShape(0 To VpN - 1)
+'		For VpI As Integer = 0 To VpN - 1
+'			VpNN = 0
+'			For VpJ As Integer = 0 To VpN - 1
+'				If VpMatrix(VpI, VpJ) <> - 1 Then
+'					VpNewShape(VpI) = VpNewShape(VpI) + VpMatrix(VpI, VpJ)
+'					VpNN = VpNN + 1
+'				End If
+'			Next VpJ
+'			VpNewShape(VpI) = 100 * VpNewShape(VpI) / VpNN
+'		Next VpI
+'		Return VpNewShape
+'	End Function
 	Public Shared Function GetPrice(VpGame As String) As Single
 	'------------------------------------------
 	'Retourne le prix du jeu passé en paramètre

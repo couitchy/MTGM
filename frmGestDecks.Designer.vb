@@ -36,7 +36,14 @@ Partial Class frmGestDecks
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmGestDecks))
 		Me.cbarDecksManager = New TD.SandBar.ContainerBar
 		Me.pnlDecksManager = New TD.SandBar.ContainerBarClientPanel
+		Me.splitV = New System.Windows.Forms.SplitContainer
 		Me.lstDecks = New System.Windows.Forms.ListBox
+		Me.txtMemo = New System.Windows.Forms.TextBox
+		Me.lblMemo = New System.Windows.Forms.Label
+		Me.lblFormat = New System.Windows.Forms.Label
+		Me.cboFormat = New System.Windows.Forms.ComboBox
+		Me.pickDate = New System.Windows.Forms.DateTimePicker
+		Me.lblDate = New System.Windows.Forms.Label
 		Me.btAdd = New TD.SandBar.ButtonItem
 		Me.btRemove = New TD.SandBar.ButtonItem
 		Me.btRename = New TD.SandBar.ButtonItem
@@ -44,6 +51,9 @@ Partial Class frmGestDecks
 		Me.btDown = New TD.SandBar.ButtonItem
 		Me.cbarDecksManager.SuspendLayout
 		Me.pnlDecksManager.SuspendLayout
+		Me.splitV.Panel1.SuspendLayout
+		Me.splitV.Panel2.SuspendLayout
+		Me.splitV.SuspendLayout
 		Me.SuspendLayout
 		'
 		'cbarDecksManager
@@ -58,7 +68,7 @@ Partial Class frmGestDecks
 		Me.cbarDecksManager.Location = New System.Drawing.Point(0, 0)
 		Me.cbarDecksManager.Movable = false
 		Me.cbarDecksManager.Name = "cbarDecksManager"
-		Me.cbarDecksManager.Size = New System.Drawing.Size(358, 212)
+		Me.cbarDecksManager.Size = New System.Drawing.Size(508, 278)
 		Me.cbarDecksManager.TabIndex = 0
 		Me.cbarDecksManager.Text = "Gestion des decks"
 		AddHandler Me.cbarDecksManager.VisibleChanged, AddressOf Me.CbarDecksManagerVisibleChanged
@@ -68,11 +78,33 @@ Partial Class frmGestDecks
 		'
 		'pnlDecksManager
 		'
-		Me.pnlDecksManager.Controls.Add(Me.lstDecks)
+		Me.pnlDecksManager.Controls.Add(Me.splitV)
 		Me.pnlDecksManager.Location = New System.Drawing.Point(2, 49)
 		Me.pnlDecksManager.Name = "pnlDecksManager"
-		Me.pnlDecksManager.Size = New System.Drawing.Size(354, 161)
+		Me.pnlDecksManager.Size = New System.Drawing.Size(504, 227)
 		Me.pnlDecksManager.TabIndex = 0
+		'
+		'splitV
+		'
+		Me.splitV.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitV.Location = New System.Drawing.Point(0, 0)
+		Me.splitV.Name = "splitV"
+		'
+		'splitV.Panel1
+		'
+		Me.splitV.Panel1.Controls.Add(Me.lstDecks)
+		'
+		'splitV.Panel2
+		'
+		Me.splitV.Panel2.Controls.Add(Me.txtMemo)
+		Me.splitV.Panel2.Controls.Add(Me.lblMemo)
+		Me.splitV.Panel2.Controls.Add(Me.lblFormat)
+		Me.splitV.Panel2.Controls.Add(Me.cboFormat)
+		Me.splitV.Panel2.Controls.Add(Me.pickDate)
+		Me.splitV.Panel2.Controls.Add(Me.lblDate)
+		Me.splitV.Size = New System.Drawing.Size(504, 227)
+		Me.splitV.SplitterDistance = 200
+		Me.splitV.TabIndex = 2
 		'
 		'lstDecks
 		'
@@ -82,9 +114,64 @@ Partial Class frmGestDecks
 		Me.lstDecks.Location = New System.Drawing.Point(0, 0)
 		Me.lstDecks.Name = "lstDecks"
 		Me.lstDecks.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-		Me.lstDecks.Size = New System.Drawing.Size(354, 160)
+		Me.lstDecks.Size = New System.Drawing.Size(200, 225)
 		Me.lstDecks.TabIndex = 0
 		AddHandler Me.lstDecks.SelectedIndexChanged, AddressOf Me.LstDecksSelectedIndexChanged
+		'
+		'txtMemo
+		'
+		Me.txtMemo.Location = New System.Drawing.Point(10, 81)
+		Me.txtMemo.Multiline = true
+		Me.txtMemo.Name = "txtMemo"
+		Me.txtMemo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+		Me.txtMemo.Size = New System.Drawing.Size(280, 136)
+		Me.txtMemo.TabIndex = 5
+		AddHandler Me.txtMemo.Leave, AddressOf Me.TxtMemoLeave
+		'
+		'lblMemo
+		'
+		Me.lblMemo.AutoSize = true
+		Me.lblMemo.Location = New System.Drawing.Point(10, 65)
+		Me.lblMemo.Name = "lblMemo"
+		Me.lblMemo.Size = New System.Drawing.Size(115, 13)
+		Me.lblMemo.TabIndex = 4
+		Me.lblMemo.Text = "Description et stratégie"
+		'
+		'lblFormat
+		'
+		Me.lblFormat.AutoSize = true
+		Me.lblFormat.Location = New System.Drawing.Point(10, 39)
+		Me.lblFormat.Name = "lblFormat"
+		Me.lblFormat.Size = New System.Drawing.Size(71, 13)
+		Me.lblFormat.TabIndex = 3
+		Me.lblFormat.Text = "Format de jeu"
+		'
+		'cboFormat
+		'
+		Me.cboFormat.FormattingEnabled = true
+		Me.cboFormat.Location = New System.Drawing.Point(90, 36)
+		Me.cboFormat.Name = "cboFormat"
+		Me.cboFormat.Size = New System.Drawing.Size(200, 21)
+		Me.cboFormat.TabIndex = 2
+		Me.cboFormat.Text = "Classique"
+		AddHandler Me.cboFormat.Leave, AddressOf Me.CboFormatLeave
+		'
+		'pickDate
+		'
+		Me.pickDate.Location = New System.Drawing.Point(90, 10)
+		Me.pickDate.Name = "pickDate"
+		Me.pickDate.Size = New System.Drawing.Size(200, 20)
+		Me.pickDate.TabIndex = 1
+		AddHandler Me.pickDate.Leave, AddressOf Me.PickDateLeave
+		'
+		'lblDate
+		'
+		Me.lblDate.AutoSize = true
+		Me.lblDate.Location = New System.Drawing.Point(10, 13)
+		Me.lblDate.Name = "lblDate"
+		Me.lblDate.Size = New System.Drawing.Size(75, 13)
+		Me.lblDate.TabIndex = 0
+		Me.lblDate.Text = "Date associée"
 		'
 		'btAdd
 		'
@@ -125,7 +212,7 @@ Partial Class frmGestDecks
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(358, 212)
+		Me.ClientSize = New System.Drawing.Size(508, 278)
 		Me.Controls.Add(Me.cbarDecksManager)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -136,8 +223,19 @@ Partial Class frmGestDecks
 		AddHandler FormClosing, AddressOf Me.FrmGestDecksFormClosing
 		Me.cbarDecksManager.ResumeLayout(false)
 		Me.pnlDecksManager.ResumeLayout(false)
+		Me.splitV.Panel1.ResumeLayout(false)
+		Me.splitV.Panel2.ResumeLayout(false)
+		Me.splitV.Panel2.PerformLayout
+		Me.splitV.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private lblDate As System.Windows.Forms.Label
+	Private pickDate As System.Windows.Forms.DateTimePicker
+	Private cboFormat As System.Windows.Forms.ComboBox
+	Private lblFormat As System.Windows.Forms.Label
+	Private lblMemo As System.Windows.Forms.Label
+	Private txtMemo As System.Windows.Forms.TextBox
+	Private splitV As System.Windows.Forms.SplitContainer
 	Private btDown As TD.SandBar.ButtonItem
 	Private btUp As TD.SandBar.ButtonItem
 	Private btRename As TD.SandBar.ButtonItem

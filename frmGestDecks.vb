@@ -19,6 +19,7 @@
 '| - gestion de la suppression			   09/01/2009 |
 '| - renvoi cartes vers collection		   29/08/2010 |
 '| - gestion suppressions multiples		   09/05/2011 |
+'| - gestion d'infos personnalisées		   08/04/2012 |
 '------------------------------------------------------
 Imports System.Collections.Generic
 Public Partial Class frmGestDecks
@@ -32,20 +33,62 @@ Public Partial Class frmGestDecks
 		VmOwner = VpOwner
 	End Sub
 	Private Sub LoadDecks(Optional VpDirection As Integer = 0)
+	'--------------------------------------------
+	'Chargement de la liste des decks disponibles
+	'--------------------------------------------
 	Dim VpOldSelect As Integer = -1
-		If Me.lstDecks.SelectedIndex >=0 Then
+		If Me.lstDecks.SelectedIndex >= 0 Then
 			VpOldSelect = Me.lstDecks.SelectedIndex
 		End If
 		Me.lstDecks.Items.Clear
+		Me.cboFormat.Items.Clear
 		For VpI As Integer = 1 To clsModule.GetDeckCount
 			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpI))
 		Next VpI
+		VgDBCommand.CommandText = "Select Distinct GameFormat From MyGamesID;"
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				Me.cboFormat.Items.Add(.GetString(0))
+			End While
+			.Close
+		End With
 		Me.btDown.Enabled = False
 		Me.btUp.Enabled = False
 		Me.btRename.Enabled = False
 		Me.btRemove.Enabled = False
 		If VpOldSelect <> -1 Then
 			Me.lstDecks.SelectedIndex = VpOldSelect + VpDirection
+		End If
+	End Sub
+	Private Sub LoadDeckInfos
+	'----------------------------------------------------------------
+	'Charge les infos (date, format, description) du deck sélectionné
+	'----------------------------------------------------------------
+		If Me.lstDecks.SelectedIndices.Count > 0 Then
+			VgDBCommand.CommandText = "Select GameDate, GameFormat, GameDescription From MyGamesID Where GameName = '" + Me.lstDecks.SelectedItem.ToString.Replace("'", "''") + "';"
+			VgDBReader = VgDBCommand.ExecuteReader
+			With VgDBReader
+				If .Read Then
+					Me.pickDate.Value = .GetDateTime(0)
+					Me.cboFormat.Text = .GetString(1)
+					Try
+						Me.txtMemo.Text = .GetString(2)
+					Catch
+						Me.txtMemo.Text = ""
+					End Try
+				End If
+				.Close
+			End With
+		End If
+	End Sub
+	Private Sub SaveDeckInfos
+	'--------------------------------------------------------------------
+	'Sauvegarde les infos (date, format, description) du deck sélectionné
+	'--------------------------------------------------------------------
+		If Me.lstDecks.SelectedIndices.Count > 0 Then
+			VgDBCommand.CommandText = "Update MyGamesID Set GameDate = '" + Me.pickDate.Value.ToShortDateString + "', GameFormat = '" + Me.cboFormat.Text.Replace("'", "''") + "', GameDescription = '" + Me.txtMemo.Text.Replace("'", "''") + "' Where GameName = '" + Me.lstDecks.SelectedItem.ToString.Replace("'", "''") + "';"
+			VgDBCommand.ExecuteNonQuery
 		End If
 	End Sub
 	Private Sub SwapDeckId(VpTable As String, VpId1 As Integer, VpId2 As Integer)
@@ -135,11 +178,12 @@ Public Partial Class frmGestDecks
 			Me.btRename.Enabled = False
 			Me.btUp.Enabled = False
 			Me.btDown.Enabled = False
-		Else			
+		Else
 			Me.btRename.Enabled = ( Me.lstDecks.SelectedIndices.Count = 1 )
 			Me.btUp.Enabled = ( Me.lstDecks.SelectedIndex > 0 )
 			Me.btDown.Enabled = ( Me.lstDecks.SelectedIndex < Me.lstDecks.Items.Count - 1 )
 		End If
+		Call Me.LoadDeckInfos
 	End Sub
 	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
 		If e.CloseReason = CloseReason.UserClosing Then
@@ -153,7 +197,7 @@ Public Partial Class frmGestDecks
 	Sub BtAddActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String
 	Dim VpId As Integer
-		VpDeckName = InputBox("Entrer le nom du deck :", "Nouveau deck", "(Deck)")
+		VpDeckName = InputBox("Entrer le nom du deck :", "Nouveau deck", clsModule.CgDefaultName)
 		If VpDeckName <> "" Then
 			For Each VpD As String In Me.lstDecks.Items
 				If VpD.ToLower = VpDeckName.ToLower Then
@@ -162,7 +206,7 @@ Public Partial Class frmGestDecks
 				End If
 			Next VpD
 			VpId = clsModule.GetNewDeckId
-			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0);"
+			VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription) Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '');"
 			VgDBCommand.ExecuteNonQuery
 			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpId + 1))
 			VmMustReload = True
@@ -172,14 +216,14 @@ Public Partial Class frmGestDecks
 	Dim VpDecksToRemove As New Hashtable
 	Dim VpToRemove As New List(Of String)
 		'Informations sur les decks à supprimer (indice, nom) à mémoriser avant car en cours de suppression les indices se trouveraient décalés
-		For Each VpI As Integer In Me.lstDecks.SelectedIndices	
+		For Each VpI As Integer In Me.lstDecks.SelectedIndices
 			VpDecksToRemove.Add(VpI, clsModule.GetDeckName(VpI + 1))
 		Next VpI
 		'Suppression unitaire en base de données
 		For Each VpKey As Integer In VpDecksToRemove.Keys
 			If Me.RemoveDeck(VpDecksToRemove.Item(VpKey)) Then
 				VpToRemove.Add(Me.lstDecks.Items.Item(VpKey))		'liste temporaire car on ne peut pas toucher à la collection qu'on est en train d'énumérer
-			End If			
+			End If
 		Next VpKey
 		'Suppression dans la listbox
 		For Each VpItem As String In VpToRemove
@@ -229,6 +273,15 @@ Public Partial Class frmGestDecks
 	End Sub
 	Sub BtUpActivate(sender As Object, e As EventArgs)
 		Call Me.ManageSwap(-1)
+	End Sub	
+	Sub PickDateLeave(sender As Object, e As EventArgs)
+		Call Me.SaveDeckInfos
+	End Sub	
+	Sub CboFormatLeave(sender As Object, e As EventArgs)
+		Call Me.SaveDeckInfos
+	End Sub	
+	Sub TxtMemoLeave(sender As Object, e As EventArgs)
+		Call Me.SaveDeckInfos
 	End Sub
 End Class
 Public Class clsItemRecup

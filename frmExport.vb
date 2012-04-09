@@ -106,6 +106,8 @@ Public Partial Class frmExport
 				'Lecture du fichier d'entrée et ajout dans la base de données
 				While Not VpIn.EndOfStream
 					VpStrs = VpIn.ReadLine.Split("#")
+					VpName = VpStrs(0)
+					VpEdition = VpStrs(1)
 					'Pré-traitement 1 : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et sa série
 					If VpStrs.Length > 2 AndAlso VpStrs(2) <> "" Then
 						VpStrs(0) = clsModule.GetEncNbr(VpStrs(0), VpStrs(1))
@@ -148,6 +150,8 @@ Public Partial Class frmExport
 						End If
 						VgDBCommand.CommandText = VpSQL
 						VgDBCommand.ExecuteNonQuery
+					Else
+						Call clsModule.ShowWarning("Impossible d'importer : " + VpName + " (" + VpEdition.ToUpper + ")")
 					End If
 				End While
 				VpIn.Close
