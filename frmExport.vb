@@ -97,7 +97,7 @@ Public Partial Class frmExport
 		'S'il s'agit d'un nouveau deck, l'inscrit en BDD
 		If VpIsNew Then
 			VpId = clsModule.GetNewDeckId
-			VgDBCommand.CommandText = "Insert Into MyGamesID Values (" + VpId.ToString + ", '" + VpSource.Replace("'", "''") + "', 0);"
+			VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription) Values (" + VpId.ToString + ", '" + VpSource.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '');"
 			VgDBCommand.ExecuteNonQuery
 		End If
 		'** Gestion format MTGM **

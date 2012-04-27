@@ -53,6 +53,7 @@ Partial Class frmSearch
 		Me.lstResult = New System.Windows.Forms.ListBox
 		Me.imgSearch = New System.Windows.Forms.PictureBox
 		Me.grpSerie = New System.Windows.Forms.GroupBox
+		Me.txtCardText = New Magic_The_Gathering_Manager.ExRichTextBox
 		Me.lblStock2 = New System.Windows.Forms.Label
 		Me.lblStock3 = New System.Windows.Forms.Label
 		Me.picScanCard = New System.Windows.Forms.PictureBox
@@ -71,7 +72,6 @@ Partial Class frmSearch
 		Me.lblProp3 = New System.Windows.Forms.Label
 		Me.btSearch = New TD.SandBar.ButtonItem
 		Me.btResult = New TD.SandBar.ButtonItem
-		Me.txtCardText = New Magic_The_Gathering_Manager.ExRichTextBox
 		Me.cbarSearch.SuspendLayout
 		Me.pnlSearch.SuspendLayout
 		Me.grpSearch.SuspendLayout
@@ -267,6 +267,8 @@ Partial Class frmSearch
 		'
 		'cboSearchType
 		'
+		Me.cboSearchType.DropDownHeight = 200
+		Me.cboSearchType.IntegralHeight = false
 		Me.cboSearchType.Items.AddRange(New Object() {"Nom de la carte (VO)", "Nom de la carte (VF)", "Texte détaillé (VO)", "Texte détaillé (VF)", "Force", "Endurance", "Prix", "Edition (VO)", "Edition (VF)", "Coût converti de mana", "Type / Sous-type (VO)", "Type / Sous-type (VF)"})
 		Me.cboSearchType.Location = New System.Drawing.Point(62, 16)
 		Me.cboSearchType.Name = "cboSearchType"
@@ -332,6 +334,19 @@ Partial Class frmSearch
 		Me.grpSerie.TabIndex = 1
 		Me.grpSerie.TabStop = false
 		Me.grpSerie.Visible = false
+		'
+		'txtCardText
+		'
+		Me.txtCardText.AcceptsTab = true
+		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
+		Me.txtCardText.Location = New System.Drawing.Point(31, 233)
+		Me.txtCardText.Name = "txtCardText"
+		Me.txtCardText.ReadOnly = true
+		Me.txtCardText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
+		Me.txtCardText.Size = New System.Drawing.Size(338, 67)
+		Me.txtCardText.TabIndex = 40
+		Me.txtCardText.Text = ""
+		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
 		'
 		'lblStock2
 		'
@@ -496,19 +511,6 @@ Partial Class frmSearch
 		Me.btResult.Enabled = false
 		Me.btResult.Text = "Résultat"
 		AddHandler Me.btResult.Activate, AddressOf Me.BtResultActivate
-		'
-		'txtCardText
-		'
-		Me.txtCardText.AcceptsTab = true
-		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
-		Me.txtCardText.Location = New System.Drawing.Point(31, 233)
-		Me.txtCardText.Name = "txtCardText"
-		Me.txtCardText.ReadOnly = true
-		Me.txtCardText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(338, 67)
-		Me.txtCardText.TabIndex = 40
-		Me.txtCardText.Text = ""
-		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
 		'
 		'frmSearch
 		'

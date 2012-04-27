@@ -20,6 +20,7 @@
 '| - nouveaux critères de recherche	   	   15/08/2009 |
 '| - nouveaux critères de recherche		   20/12/2009 |
 '| - nouveau critère de recherche		   02/09/2010 |
+'| - taille dropdownlist pour vue totale   27/04/2012 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmSearch

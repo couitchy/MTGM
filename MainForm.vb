@@ -639,6 +639,7 @@ Public Partial Class MainForm
 	'Correction a posteriori d'un bug initial lors de l'ajout dans la base de nouvelles cartes d'artefacts dont la couleur n'est pas référencée
 	' + créatures / créatures avec capacité
 	' + jetons
+	' + enchantements non-auras
 	'------------------------------------------------------------------------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Update ((Select Spell.Color From Card Inner Join Spell On Card.Title = Spell.Title Where Card.Type = 'A' And Spell.Color = 'L') As MyFix) Set MyFix.Color = 'A';"
 		VgDBCommand.ExecuteNonQuery
@@ -649,6 +650,10 @@ Public Partial Class MainForm
 		VgDBCommand.CommandText = "Update Card Inner Join Spell On Card.Title = Spell.Title Set Card.Type = 'K' Where Spell.Color = 'C';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Spell Set Color = 'T' Where Color = 'C';"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Card Inner Join TextesFR On Card.Title = TextesFR.CardName Set Card.Type = 'E' Where InStr(TexteFR, 'enchanter ') > 0 And Card.Title <> 'Necromancy' And Card.Type = 'T';"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Card Inner Join TextesFR On Card.Title = TextesFR.CardName Set Card.Type = 'E' Where InStr(TexteFR, 'enchantez ') > 0 And Card.Title <> 'Necromancy' And Card.Type = 'T';"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub FixRarete
