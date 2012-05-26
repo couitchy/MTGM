@@ -1879,7 +1879,7 @@ Public Partial Class MainForm
 		'Divers
 		Call Me.LoadAutorisations("")
 		VmBalloonTip.IsBalloon = True
-		VmBalloonTip.ToolTipTitle = "Règles spécifiques"		
+		VmBalloonTip.ToolTipTitle = "Règles spécifiques"
 		VmBalloonTip.AutoPopDelay = 30000
 '		Me.VgBar = New Windows7ProgressBar(Me)
 		'Argument éventuel
@@ -2565,11 +2565,15 @@ Public Partial Class MainForm
 			If Me.dlgSave.ShowDialog <> System.Windows.Forms.DialogResult.Cancel Then
 				If Not VpSource.FullName = Me.dlgSave.FileName Then
 					Call clsModule.SecureDelete(Me.dlgSave.FileName)
-					File.Copy(VpSource.FullName, Me.dlgSave.FileName)
-					If clsModule.DBOpen(Me.dlgSave.FileName) Then
-						Me.lblDB.Text = "Base - " + VgDB.DataSource
-						Call Me.LoadMnu
-						Call Me.LoadTvw
+					If Not File.Exists(Me.dlgSave.FileName) Then
+						File.Copy(VpSource.FullName, Me.dlgSave.FileName)
+						If clsModule.DBOpen(Me.dlgSave.FileName) Then
+							Me.lblDB.Text = "Base - " + VgDB.DataSource
+							Call Me.LoadMnu
+							Call Me.LoadTvw
+						End If
+					Else
+						Call clsModule.ShowWarning("Impossible d'écraser " + Me.dlgSave.FileName + "..." + vbCrLf + "Le fichier est en cours d'utilisation.")
 					End If
 				Else
 					Call clsModule.ShowWarning("Vous avez sélectionné le fichier actuellement ouvert !")

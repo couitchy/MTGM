@@ -724,6 +724,7 @@ Public Partial Class MainForm
 				VpStr = VpStr.Replace("&#039;", "'")
 				VpStr = VpStr.Replace("&#8212;", "-")
 				VpStr = VpStr.Replace("&#8217;", "'")
+				VpStr = VpStr.Replace("&quot;", """")
 				VpStr = VpStr.Replace("<img src=""/images/magic/manas/micro/", "!")
 				VpStr = VpStr.Replace("<img src=""images/smileys/", "!")
 				VpStr = VpStr.Replace("<img src=""/images/smileys/", "!")
@@ -1012,6 +1013,10 @@ Public Partial Class MainForm
 				Return "starter2000#" + VpStr
 			Case "R3"
 				Return "graveborn#" + VpStr
+			Case "YR"
+				Return "avacynrestored#" + VpStr
+			Case "D9"
+				Return "DuelDecksVenservsKoth#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1120,6 +1125,10 @@ Public Partial Class MainForm
 				Return "S2"
 			Case "graveborn"
 				Return "R3"
+			Case "avacynrestored"
+				Return "YR"
+			Case "DuelDecksVenservsKoth"
+				Return "D9"
 			Case Else
 				Return ""
 		End Select
@@ -1668,10 +1677,15 @@ Public Partial Class MainForm
 		Me.dlgOpen.FileName = ""
 		Me.dlgOpen.ShowDialog
 		If Me.dlgOpen.FileName <> "" Then
-			VmDB = New OleDbConnection(CmStrConn + Me.dlgOpen.FileName)
-	    	VmDB.Open
-	    	VmDBCommand.Connection = VmDB
-	    	VmDBCommand.CommandType = CommandType.Text
+			Try
+				VmDB = New OleDbConnection(CmStrConn + Me.dlgOpen.FileName)
+		    	VmDB.Open
+		    	VmDBCommand.Connection = VmDB
+		    	VmDBCommand.CommandType = CommandType.Text
+		    	Call Me.AddToLog("Base de données ouverte avec succès.", eLogType.Information)
+			Catch
+				Call Me.AddToLog("Impossible d'ouvrir la base de données...", eLogType.Warning)
+			End Try
 	    End If
 	End Sub
 	Sub MainFormFormClosing(sender As Object, e As FormClosingEventArgs)

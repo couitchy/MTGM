@@ -16,6 +16,7 @@
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
+'| - intégration possible des coûts invoc. 26/05/2012 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmWord
@@ -70,9 +71,9 @@ Public Partial Class frmWord
 		VpWordApp.Visible = Me.chkWordShow.Checked
 		MainForm.VgMe.IsMainReaderBusy = True
 		'Récupération de la liste
-		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr Where "
+		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost From ((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title Where "
 		VpSQL = VpSQL + VmRestriction
-		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title")
+		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title, Spell.Cost")
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
@@ -80,7 +81,7 @@ Public Partial Class frmWord
 			While .Read
 				If Me.chklstWord.CheckedItems.Contains(.GetString(2)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
 					VpCount = If(Me.chkSingle.Checked, 1, .GetValue(1))
-					VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), VpCount))
+					VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), .GetValue(3).ToString, VpCount))
 					VpTotal = VpTotal + VpCount
 				End If
 			End While
@@ -136,7 +137,7 @@ Public Partial Class frmWord
 			VpCount = 0
 			For Each VpItem As clsWordItem In VpItems
 				For VpI As Integer = 1 To VpItem.Quant
-					VpTable.Cell(1 + (VpCount \ 6), 1 + (VpCount Mod 6)).Range.Text = VpItem.Title	'6 vignettes par ligne
+					VpTable.Cell(1 + (VpCount \ 6), 1 + (VpCount Mod 6)).Range.Text = If(Me.chkPrintCost.Checked, VpItem.Cost + vbCrLf, "") + VpItem.Title	'6 vignettes par ligne
 					VpCount = VpCount + 1
 					Me.prgAvance.Increment(1)
 					Application.DoEvents					
@@ -254,10 +255,12 @@ End Class
 Public Class clsWordItem
 	Private VmTitleVO As String
 	Private VmTitle As String
+	Private VmCost As String
 	Private VmQuant As Integer
-	Public Sub New(VpTitle As String, VpTitleVO As String, VpQuant As Integer)
+	Public Sub New(VpTitle As String, VpTitleVO As String, VpCost As String, VpQuant As Integer)
 		VmTitle = VpTitle
 		VmTitleVO = VpTitleVO
+		VmCost = VpCost
 		VmQuant = VpQuant
 	End Sub
 	Public ReadOnly Property Title As String
@@ -268,6 +271,11 @@ Public Class clsWordItem
 	Public ReadOnly Property TitleVO As String
 		Get
 			Return VmTitleVO
+		End Get
+	End Property
+	Public ReadOnly Property Cost As String
+		Get
+			Return VmCost
 		End Get
 	End Property
 	Public ReadOnly Property Quant As Integer

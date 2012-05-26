@@ -21,6 +21,7 @@
 '| - nouveaux critères de recherche		   20/12/2009 |
 '| - nouveau critère de recherche		   02/09/2010 |
 '| - taille dropdownlist pour vue totale   27/04/2012 |
+'| - [recents] par ordre décroissant	   13/05/2012 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmSearch
@@ -324,7 +325,7 @@ Public Partial Class frmSearch
 		VmCanClose = True
 		For Each VpSearch As String In VgOptions.VgSettings.PrevSearches.Split("#")
 			If VpSearch.Trim <> "" Then
-				Me.cboFind.Items.Add(VpSearch)
+				Me.cboFind.Items.Insert(0, VpSearch)
 			End If
 		Next VpSearch
 	End Sub
