@@ -43,6 +43,8 @@ Partial Class frmPlateau
 		Me.btPoisons = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator1 = New System.Windows.Forms.ToolStripSeparator
 		Me.btTurns = New System.Windows.Forms.ToolStripButton
+		Me.btAnchorDown = New System.Windows.Forms.ToolStripButton
+		Me.btAnchorUp = New System.Windows.Forms.ToolStripButton
 		Me.splitV1 = New System.Windows.Forms.SplitContainer
 		Me.splitH3 = New System.Windows.Forms.SplitContainer
 		Me.cbarBibli = New TD.SandBar.ContainerBar
@@ -138,7 +140,7 @@ Partial Class frmPlateau
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btAnchorDown, Me.btAnchorUp})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(727, 54)
@@ -216,6 +218,34 @@ Partial Class frmPlateau
 		Me.btTurns.ToolTipText = "Clic gauche pour +, droit pour -"
 		AddHandler Me.btTurns.MouseUp, AddressOf Me.BtTurnsMouseUp
 		'
+		'btAnchorDown
+		'
+		Me.btAnchorDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+		Me.btAnchorDown.AutoSize = false
+		Me.btAnchorDown.Image = CType(resources.GetObject("btAnchorDown.Image"),System.Drawing.Image)
+		Me.btAnchorDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btAnchorDown.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btAnchorDown.Name = "btAnchorDown"
+		Me.btAnchorDown.Size = New System.Drawing.Size(60, 51)
+		Me.btAnchorDown.Text = "Bas"
+		Me.btAnchorDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btAnchorDown.ToolTipText = "Ancrer en bas"
+		AddHandler Me.btAnchorDown.Click, AddressOf Me.BtAnchorDownClick
+		'
+		'btAnchorUp
+		'
+		Me.btAnchorUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+		Me.btAnchorUp.AutoSize = false
+		Me.btAnchorUp.Image = CType(resources.GetObject("btAnchorUp.Image"),System.Drawing.Image)
+		Me.btAnchorUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btAnchorUp.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btAnchorUp.Name = "btAnchorUp"
+		Me.btAnchorUp.Size = New System.Drawing.Size(60, 51)
+		Me.btAnchorUp.Text = "Haut"
+		Me.btAnchorUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btAnchorUp.ToolTipText = "Ancrer en haut"
+		AddHandler Me.btAnchorUp.Click, AddressOf Me.BtAnchorUpClick
+		'
 		'splitV1
 		'
 		Me.splitV1.Dock = System.Windows.Forms.DockStyle.Fill
@@ -281,9 +311,9 @@ Partial Class frmPlateau
 		'
 		Me.panelBibli.AllowDrop = true
 		Me.panelBibli.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.panelBibli.Location = New System.Drawing.Point(32, 0)
+		Me.panelBibli.Location = New System.Drawing.Point(24, 0)
 		Me.panelBibli.Name = "panelBibli"
-		Me.panelBibli.Size = New System.Drawing.Size(207, 103)
+		Me.panelBibli.Size = New System.Drawing.Size(215, 103)
 		Me.panelBibli.TabIndex = 2
 		AddHandler Me.panelBibli.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelBibli.DragDrop, AddressOf Me.PanelBibliDragDrop
@@ -296,7 +326,7 @@ Partial Class frmPlateau
 		Me.toolStripBibli.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btBibliShuffle, Me.btBibliReveal, Me.btBibliSearch})
 		Me.toolStripBibli.Location = New System.Drawing.Point(0, 0)
 		Me.toolStripBibli.Name = "toolStripBibli"
-		Me.toolStripBibli.Size = New System.Drawing.Size(32, 103)
+		Me.toolStripBibli.Size = New System.Drawing.Size(24, 103)
 		Me.toolStripBibli.TabIndex = 1
 		'
 		'btBibliShuffle
@@ -305,7 +335,7 @@ Partial Class frmPlateau
 		Me.btBibliShuffle.Image = CType(resources.GetObject("btBibliShuffle.Image"),System.Drawing.Image)
 		Me.btBibliShuffle.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btBibliShuffle.Name = "btBibliShuffle"
-		Me.btBibliShuffle.Size = New System.Drawing.Size(29, 20)
+		Me.btBibliShuffle.Size = New System.Drawing.Size(21, 20)
 		Me.btBibliShuffle.Text = "Mélanger"
 		AddHandler Me.btBibliShuffle.Click, AddressOf Me.BtBibliShuffleClick
 		'
@@ -315,7 +345,7 @@ Partial Class frmPlateau
 		Me.btBibliReveal.Image = CType(resources.GetObject("btBibliReveal.Image"),System.Drawing.Image)
 		Me.btBibliReveal.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btBibliReveal.Name = "btBibliReveal"
-		Me.btBibliReveal.Size = New System.Drawing.Size(29, 20)
+		Me.btBibliReveal.Size = New System.Drawing.Size(21, 20)
 		Me.btBibliReveal.Text = "Révéler carte sommet"
 		AddHandler Me.btBibliReveal.Click, AddressOf Me.BtBibliRevealClick
 		'
@@ -325,7 +355,7 @@ Partial Class frmPlateau
 		Me.btBibliSearch.Image = CType(resources.GetObject("btBibliSearch.Image"),System.Drawing.Image)
 		Me.btBibliSearch.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btBibliSearch.Name = "btBibliSearch"
-		Me.btBibliSearch.Size = New System.Drawing.Size(29, 20)
+		Me.btBibliSearch.Size = New System.Drawing.Size(21, 20)
 		Me.btBibliSearch.Text = "Rechercher"
 		AddHandler Me.btBibliSearch.Click, AddressOf Me.BtBibliSearchClick
 		'
@@ -871,6 +901,8 @@ Partial Class frmPlateau
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btAnchorDown As System.Windows.Forms.ToolStripButton
+	Private btAnchorUp As System.Windows.Forms.ToolStripButton
 	Private cmnuTransform As System.Windows.Forms.ToolStripMenuItem
 	Private btTurns As System.Windows.Forms.ToolStripButton
 	Private cmnuDetachFrom As System.Windows.Forms.ToolStripMenuItem

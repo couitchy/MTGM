@@ -19,6 +19,7 @@
 '| - levée de l'ambiguité sur les sources  03/10/2009 |
 '| - gestion des autorisations tournois	   17/04/2010 |
 '| - gestion cartes foils				   19/12/2010 |
+'| - considère nb. rééditions pour raretés 27/05/2012 |
 '------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
@@ -328,14 +329,20 @@ Public Partial Class frmStats
 		End If
 	End Sub
 	Private Function GetRarest(VpLevel As Integer) As String
-	'------------------------------------------------------------------------------------------------------
-	'Retourne la carte la plus rare (si on ne trouve pas de mythique, on passe aux rares, et ainsi de suite
-	'------------------------------------------------------------------------------------------------------
-	Dim VpRarest As String = Me.QueryInfo("Card.Title", "Where InStr(UCase(Rarity), " + clsModule.CgRarities(VpLevel) + ") > 0 And " , " Order By Val(Mid(Rarity, 2)) Desc;")
-		If VpRarest = "" Then
+	'---------------------------------------------------------------------------------------------------------
+	'Retourne la carte la plus rare (si on ne trouve pas de mythique, on passe aux rares, et ainsi de suite)
+	'en prenant en compte le nombre de rééditions des cartes (plus une carte est rééditée, moins elle est rare
+	'---------------------------------------------------------------------------------------------------------
+	Dim VpSQL As String
+	Dim VpO As Object	
+		VpSQL = "Select Rares.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join (Select Card.Title, Count(Card.Title) As Nb From Card Where InStr(UCase(Rarity), " + clsModule.CgRarities(VpLevel) + ") > 0 Group By Card.Title) As Rares On Card.Title = Rares.Title Where "
+		VpSQL = VpSQL + VmRestriction
+		VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + " Order By Rares.Nb;"
+		VpO = VgDBCommand.ExecuteScalar	
+		If VpO Is Nothing Then
 			Return Me.GetRarest(VpLevel + 1)
 		Else
-			Return VpRarest
+			Return VpO.ToString
 		End If
 	End Function
 	Private Sub LoadInfos
@@ -350,10 +357,10 @@ Public Partial Class frmStats
 	Dim VpP As Double
 	Dim VpT As Double
 	Dim VpMaxNoFoil As Double
-	Dim VpMaxFoil As Double
-		VpC = Me.QueryInfo("Sum(myCost * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")
-		'Trappe d'erreur si pas de créatures dans la sélection
+	Dim VpMaxFoil As Double		
+		'Trappe d'erreur (si pas de créatures dans la sélection ou pas de cartes invocables)
 		Try
+			VpC = Me.QueryInfo("Sum(myCost * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")
 			VpP = Me.QueryInfo("Sum(Val(Power) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
 			VpT = Me.QueryInfo("Sum(Val(Tough) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
 		Catch
@@ -367,7 +374,7 @@ Public Partial Class frmStats
 		Me.txtMinCost.Text = Me.QueryInfo("Card.Title", "Where Type <> 'L' And ", " Order By myCost Asc;") + " : " + Me.QueryInfo("Min(myCost)", "Where Type <> 'L' And ").ToString
 		'Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Price Desc;") + " : " + Format(Me.QueryInfo("Max(Price)"), "0.00") + " €"
 		VpMaxNoFoil = Me.QueryInfo("Max(Price)")
-		'Trappe d'erreur si aucune carte foil
+		'Trappe d'erreur (si aucune carte foil)
 		Try
 			VpMaxFoil = Me.QueryInfo("Max(FoilPrice)", "Where Foil = True And ")
 		Catch

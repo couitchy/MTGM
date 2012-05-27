@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 31270
+	Public Const CgCodeLines As Integer   			= 30910
 	Public Const CgLastUpdateAut As String			= "11/02/2012"
 	Public Const CgLastUpdateSimu As String			= "31/03/2012"
 	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
@@ -56,7 +56,7 @@ Public Module clsModule
 	Public Const CgMTGCardHeight_px As Integer		= 300
 	Public Const CgCounterDiametr_px As Integer 	= 20
 	Public Const CgChevauchFactor As Single			= 0.14
-	Public Const CgSpacingFactor As Single			= 1.1
+	Public Const CgSpacingFactor As Single			= 1.5
 	Public Const CgXMargin As Integer				= 5
 	Public Const CgYMargin As Integer				= 8
 	Public Const CgTemp As String					= "\mtgmgr"
@@ -1022,7 +1022,7 @@ Public Module clsModule
 			Return ""
 		End If
 	End Function
-	Public Sub PutInRichText(VpRich As ExRichTextBox, VpImg As ImageList, VpTxt As String)
+	Public Sub PutInRichText(VpRich As ExRichTextBox, VpImg As ImageList, VpTxt As String, VpSubType As String)
 	'--------------------------------------------------------------------------------------------------
 	'Inscrit en RTF (avec images) le texte passé en paramètre dans la zone de texte passée en paramètre
 	'--------------------------------------------------------------------------------------------------
@@ -1032,6 +1032,9 @@ Public Module clsModule
 	Dim VpImg18 As Image
 	Dim VpImg12 As Bitmap
 		VpRich.Clear
+		If VpSubType <> "" Then
+			VpRich.AppendTextAsRtf(VpSubType + vbCrLf + vbCrLf, New Font(VpRich.Font, FontStyle.Bold))
+		End If
 		While VpStr.IndexOf("!") <> VpStr.LastIndexOf("!")	'tant qu'il reste 2 '!', il reste un symbole à convertir
 			VpRich.AppendText(VpStr.Substring(0, VpStr.IndexOf("!")))
 			VpStr = VpStr.Substring(VpStr.IndexOf("!") + 1)
@@ -1198,7 +1201,35 @@ Public Module clsModule
 			End If
 			VpCur += VpWord + " "
 		Next VpWord
+		VpOut += VpCur
 		Return VpOut
+	End Function
+	Public Function StrDiacriticInsensitize(VpStr As String) As String
+	'-----------------------------------------------------------------------------------------------------------------------------------------------
+	'Rend la requête SQL insensible aux signes diacritiques pour le terme passé en paramètre (NB. elle l'est déjà vis-à-vis de la casse avec JetSQL)
+	'-----------------------------------------------------------------------------------------------------------------------------------------------
+	Dim VpStrSB As New StringBuilder
+	Dim VpCur As Char
+		For VpI As Integer = 0 To VpStr.Length - 1
+			VpCur = VpStr.Substring(VpI, 1)
+			Select Case VpCur
+				Case "e", "é", "è", "ê", "ë", "E", "É", "È", "Ê", "Ë"
+					VpStrSB.Append("[eéèêë]")
+				Case "a", "à", "â", "ä", "A", "À", "Â", "Ä"
+					VpStrSB.Append("[aàâä]")
+				Case "i", "ì", "ï", "î", "I", "Ì", "Ï", "Î"
+					VpStrSB.Append("[iïîì]")
+				Case "o", "ô", "ö", "ò", "O", "Ô", "Ö", "Ò"
+					VpStrSB.Append("[oôöò]")
+				Case "u", "ù", "û", "ü", "U", "Ù", "Û", "Ü"
+					VpStrSB.Append("[uûüù]")
+				Case "c", "ç", "C", "Ç"
+					VpStrSB.Append("[cç]")
+				Case Else
+					VpStrSB.Append(VpCur)
+			End Select
+		Next VpI
+		Return VpStrSB.ToString	
 	End Function
 	Public Function MyVal(VpStr As String) As Double
 		Return Val(VpStr.Replace(",", "."))
@@ -1491,15 +1522,16 @@ Public Module clsModule
 	Dim VpOpened As Boolean = False
 	Dim VpSQL As String
 	Dim VpMustBeInSource As Boolean = ( VpSource <> "" And ( (VpGestDownFace And Not VpTransformed) Or Not VpGestDownFace ) )
+	Dim VpSubType As String = ""
 		If MainForm.VgMe.IsMainReaderBusy Then
 			Call ShowWarning(CgErr3)
 		Else
 			'Le type de la carte est inconnu à priori, on suppose par défaut que c'est une créature
 			If VpMustBeInSource Then
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, " + VpSource + ".Items, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join " + VpSource + " On Card.EncNbr = " + VpSource + ".EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where Card.Title = '" + VpCard.Replace("'", "''") + If(VpGestFoil, "' And Foil = " + VpFoil.ToString + " ", "' ") + CaracEdition(VpEdition)
 				VpSQL = VpSQL + VpMainForm.Restriction
 			Else
-				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + CaracEdition(VpEdition)
+				VpSQL = "Select Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Card.FoilPrice, Card.FoilDate From (((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + CaracEdition(VpEdition)
 			End If
 			VgDBCommand.CommandText = TrimQuery(VpSQL)
 			VgDBReader = VgDBCommand.ExecuteReader
@@ -1533,6 +1565,7 @@ Public Module clsModule
 				VpForm.lblAD.Text = VgDBReader.GetValue(VgDBReader.GetOrdinal("Power")).ToString + "  /  " + VgDBReader.GetValue(VgDBReader.GetOrdinal("Tough")).ToString
 				VpForm.lblProp6.Enabled = True
 				Call BuildCost(VpMainForm, VpForm, VgDBReader.GetValue(VgDBReader.GetOrdinal("Cost")).ToString)
+				VpSubType = VgDBReader.GetValue(VgDBReader.GetOrdinal(If(VpMainForm.mnuCardsFR.Checked, "SubTypeVF", "SubType"))).ToString
 			End If
 			'Points communs quel que soit le type de carte
 			With VgDBReader
@@ -1541,36 +1574,36 @@ Public Module clsModule
 				End If
 				If VpEdition = "" Then
 					VpForm.cboEdition.Items.Clear
-					VpForm.cboEdition.Text = .GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString
+					VpForm.cboEdition.Text = .GetValue(.GetOrdinal("SeriesNM")).ToString
 					VpForm.cboEdition.Items.Add(VpForm.cboEdition.Text)
 				End If
 				Try
-					VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
+					VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(.GetOrdinal("Series")).ToString + CgIconsExt))
 				Catch
 					VpForm.picEdition.Image = Nothing
 				End Try
 				If VpMustBeInSource Then
 '					Try
-'						VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(VgDBReader.GetOrdinal("Series")).ToString + CgIconsExt))
+'						VpForm.picEdition.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetValue(.GetOrdinal("Series")).ToString + CgIconsExt))
 '					Catch
 '						VpForm.picEdition.Image = Nothing
 '					End Try
-					VpForm.lblStock.Text = .GetValue(VgDBReader.GetOrdinal("Items")).ToString
+					VpForm.lblStock.Text = .GetValue(.GetOrdinal("Items")).ToString
 				Else
 					VpForm.lblStock.Text = ""
 					VpForm.lblStock3.Text = ""
 				End If
-				If .GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) Is DBNull.Value OrElse .GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) = 0 Then
+				If .GetValue(.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) Is DBNull.Value OrElse .GetValue(.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))) = 0 Then
 					VpForm.lblPrix.Text = "N/C"
 				Else
-					'VpForm.lblProp5.Text = "Prix (" + .GetDateTime(VgDBReader.GetOrdinal("PriceDate")).ToShortDateString + ") :"
-					VpForm.lblPrix.Text = Format(.GetValue(VgDBReader.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))), "0.00") + " €"
+					'VpForm.lblProp5.Text = "Prix (" + .GetDateTime(.GetOrdinal("PriceDate")).ToShortDateString + ") :"
+					VpForm.lblPrix.Text = Format(.GetValue(.GetOrdinal(If(VpFoil, "FoilPrice", "Price"))), "0.00") + " €"
 				End If
-				VpForm.lblRarete.Text = FormatTitle("Card.Rarity", .GetValue(VgDBReader.GetOrdinal("Rarity")).ToString)
+				VpForm.lblRarete.Text = FormatTitle("Card.Rarity", .GetValue(.GetOrdinal("Rarity")).ToString)
 				If VpMainForm.mnuCardsFR.Checked Then
-					Call PutInRichText(VpForm.txtCardText, VpMainForm.imglstCarac, MyTxt(VpCard, True, VpGestDownFace, VpDownFace))
+					Call PutInRichText(VpForm.txtCardText, VpMainForm.imglstCarac, MyTxt(VpCard, True, VpGestDownFace, VpDownFace), VpSubType)
 				Else
-					Call PutInRichText(VpForm.txtCardText, VpMainForm.imglstCarac, .GetValue(VgDBReader.GetOrdinal("CardText")).ToString)
+					Call PutInRichText(VpForm.txtCardText, VpMainForm.imglstCarac, .GetValue(.GetOrdinal("CardText")).ToString, VpSubType)
 				End If
 				If VpEdition = "" Or Not VpGestFoil Then
 					'Il peut y avoir trois cas si jamais la requête a rapporté plus d'un enregistrement :
@@ -1583,17 +1616,17 @@ Public Module clsModule
 					End If
 					While .Read
 						'Gestion cas 2, 4
-						If VpForm.cboEdition.Items.Contains(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString) Then
+						If VpForm.cboEdition.Items.Contains(.GetValue(.GetOrdinal("SeriesNM")).ToString) Then
 							'Gestion cas 3
 							If VpMustBeInSource Then
-								VpForm.lblStock.Text = (CInt(VpForm.lblStock.Text) + .GetValue(VgDBReader.GetOrdinal("Items"))).ToString
+								VpForm.lblStock.Text = (CInt(VpForm.lblStock.Text) + .GetValue(.GetOrdinal("Items"))).ToString
 							End If
 						'Gestion cas 1
 						Else
-							VpForm.cboEdition.Items.Add(.GetValue(VgDBReader.GetOrdinal("SeriesNM")).ToString)
+							VpForm.cboEdition.Items.Add(.GetValue(.GetOrdinal("SeriesNM")).ToString)
 						End If
 						If VpMustBeInSource And VpEdition = "" Then
-							VpForm.lblStock3.Text = (CInt(VpForm.lblStock3.Text) + .GetValue(VgDBReader.GetOrdinal("Items"))).ToString
+							VpForm.lblStock3.Text = (CInt(VpForm.lblStock3.Text) + .GetValue(.GetOrdinal("Items"))).ToString
 						End If
 					End While
 				End If

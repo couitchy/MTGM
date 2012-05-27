@@ -281,6 +281,13 @@ Public Partial Class frmPlateau
 			Call Me.ManageReDraw
 		End If
 	End Sub
+	Private Function HalfSize As Rectangle
+	Dim VpScreen As Rectangle
+		VpScreen = Screen.GetBounds(Me.Location)
+		Me.WindowState = FormWindowState.Normal
+		Me.Size = New Size(VpScreen.Width, VpScreen.Height / 2)		
+		Return VpScreen
+	End Function	
 	Private Function CalcNewPosition(VpMouseLocation As Point, VpDestinationPanel As Panel, VpDestination As List(Of clsPlateauCard)) As Integer
 	Dim VpPos As Integer
 		If VpDestination.Count > 0 And ( VpDestination Is VmPlateauPartie.Regard Or VpDestination Is VmPlateauPartie.Main Or VpDestination Is VmPlateauPartie.Field ) Then
@@ -349,13 +356,13 @@ Public Partial Class frmPlateau
 		Me.Text = clsModule.CgPlateau + VmRestrictionTXT
 		VmPlateau.DragMode = False
 	End Sub
-	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)
-		Call Me.ManageResize
+	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)		
+		Call Me.ManageResize		
 	End Sub
 	Sub FrmPlateauResize(sender As Object, e As EventArgs)
 		If Control.MouseButtons = MouseButtons.None Then
 			Call Me.ManageResize
-		End If
+		End If		
 	End Sub
 	Sub BtNewPartieClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
@@ -633,7 +640,15 @@ Public Partial Class frmPlateau
 	Sub PanelExilDragDrop(sender As Object, e As DragEventArgs)
 		Call Me.ManageDrop(e, Me.panelExil, VmPlateauPartie.Exil)
 	End Sub
-	#End Region
+	Sub BtAnchorUpClick(sender As Object, e As EventArgs)
+	Dim VpScreen As Rectangle = Me.HalfSize
+		Me.Location = New Point(VpScreen.Location.X, VpScreen.Location.Y)		
+	End Sub
+	Sub BtAnchorDownClick(sender As Object, e As EventArgs)
+	Dim VpScreen As Rectangle = Me.HalfSize
+		Me.Location = New Point(VpScreen.Location.X, VpScreen.Location.Y + VpScreen.Height / 2)
+	End Sub	
+	#End Region	
 End Class
 Public Class clsPlateauPartie
 	Private VmDeck As New List(Of clsPlateauCard)

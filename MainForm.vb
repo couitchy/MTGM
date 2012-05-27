@@ -1167,14 +1167,14 @@ Public Partial Class MainForm
 				'Notes
 				VgDBCommand.CommandText = "Select Notes From Series Where SeriesCD = '" + VpCritere + "';"
 				VpO = VgDBCommand.ExecuteScalar
+				Me.txtCardText.Clear
 				If Not VpO Is Nothing Then
 					Me.txtCardText.Text = VpO.ToString
-				Else
-					Me.txtCardText.Clear
 				End If
 			Case Else
 				Me.lblProp8.Visible = False
 				Me.lblSerieDate.Visible = False
+				Me.txtCardText.Clear
 				Me.txtCardText.Text = (New ResourceManager(clsModule.CgProject, Assembly.GetExecutingAssembly)).GetString(VpCritere)
 		End Select
 	End Sub
@@ -2007,7 +2007,7 @@ Public Partial Class MainForm
 		Me.mnuCardsFR.Checked = Not Me.mnuCardsFR.Checked
 		Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
-			Call clsModule.PutInRichText(Me.txtCardText, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked, True, Me.IsDownFace(Me.tvwExplore.SelectedNode)))	'change de suite la traduction de la carte courante
+			Call clsModule.PutInRichText(Me.txtCardText, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked, True, Me.IsDownFace(Me.tvwExplore.SelectedNode)), "")	'change de suite la traduction de la carte courante
 		End If
 		Me.tvwExplore.BeginUpdate
 		Call Me.RecurChangeLanguage(False)
@@ -2107,7 +2107,7 @@ Public Partial Class MainForm
 		Else
 			Call Me.ClearCarac
 			If Me.IsSingleSource AndAlso VmFilterCriteria.DeckMode Then
-				Call clsModule.PutInRichText(Me.txtCardText, Me.imglstCarac, clsModule.GetDeckDescription(Me.Restriction))
+				Call clsModule.PutInRichText(Me.txtCardText, Me.imglstCarac, clsModule.GetDeckDescription(Me.Restriction), "")
 			End If
 		End If
 		VmBalloonTip.RemoveAll

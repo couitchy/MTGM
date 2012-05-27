@@ -22,6 +22,7 @@
 '| - nouveau critère de recherche		   02/09/2010 |
 '| - taille dropdownlist pour vue totale   27/04/2012 |
 '| - [recents] par ordre décroissant	   13/05/2012 |
+'| - insensibilité aux signes diacritiques 26/05/2012 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmSearch
@@ -78,7 +79,8 @@ Public Partial Class frmSearch
 	Private Sub ConcatSearch(VpField As String, ByRef VpQuery As String, VpValues As Object)
 		For Each VpStr As String In VpValues
 			If VpStr.Trim <> "" Then
-				VpQuery = "InStr(" + VpField + ", '" + VpStr + "') > 0 And " + VpQuery
+				'VpQuery = "InStr(" + VpField + ", '" + VpStr + "') > 0 And " + VpQuery
+				VpQuery = VpField + " Like '%" + clsModule.StrDiacriticInsensitize(VpStr) + "%' And " + VpQuery
 			End If
 		Next VpStr
 	End Sub
@@ -110,7 +112,8 @@ Public Partial Class frmSearch
 				VpCriteria = "Val(" + VpField + ")" + Me.FindNumOperator + VpValue
 			Case clsModule.eSearchType.Alpha
 				If Not VpValue.Contains(" ") And Not VpValue.Contains("""") Then
-					VpCriteria = "InStr(" + VpField + ", '" + VpValue + "') > 0"	'cas simple
+					'VpCriteria = "InStr(" + VpField + ", '" + VpValue + "') > 0"	'cas simple
+					VpCriteria = VpField + " Like '%" + clsModule.StrDiacriticInsensitize(VpValue) + "%'"
 				Else
 					VpCriteria = Me.BuildSplitSearch(VpField, VpValue)				'cas composé
 				End If
@@ -207,7 +210,7 @@ Public Partial Class frmSearch
 		End If
 		'Mémorisation requête
 		If Not Me.cboFind.Items.Contains(Me.cboFind.Text) AndAlso Me.cboFind.Text.Trim <> "" Then
-			Me.cboFind.Items.Add(Me.cboFind.Text)
+			Me.cboFind.Items.Insert(0, Me.cboFind.Text)
 		End If
 		Select Case VpType
 			'Recherche type string simple
@@ -314,7 +317,7 @@ Public Partial Class frmSearch
 	Dim VpSearches As String = ""
 		If Me.cboFind.Items.Count > 0 Then
 			For Each VpSearch As String In Me.cboFind.Items
-				VpSearches = VpSearches + VpSearch + "#"
+				VpSearches = VpSearch + "#" + VpSearches
 			Next VpSearch
 			VpSearches = VpSearches.Substring(0, VpSearches.Length - 1)
 		End If
