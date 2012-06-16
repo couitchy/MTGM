@@ -261,6 +261,7 @@ Partial Class frmAddCards
 		Me.cboSerie.Size = New System.Drawing.Size(277, 21)
 		Me.cboSerie.TabIndex = 2
 		AddHandler Me.cboSerie.SelectedIndexChanged, AddressOf Me.CboSerieSelectedIndexChanged
+		AddHandler Me.cboSerie.Leave, AddressOf Me.CboSerieLeave
 		'
 		'grpId
 		'

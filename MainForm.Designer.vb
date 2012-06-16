@@ -204,6 +204,7 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
+		Me.mnuRulings = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -409,9 +410,9 @@ Partial Class MainForm
 		'
 		'cmnuTvw
 		'
-		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
+		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuRulings, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 258)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 302)
 		'
 		'mnuCardsFR
 		'
@@ -1878,6 +1879,15 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
 		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
 		'
+		'mnuRulings
+		'
+		Me.mnuRulings.Enabled = false
+		Me.mnuRulings.Image = CType(resources.GetObject("mnuRulings.Image"),System.Drawing.Image)
+		Me.mnuRulings.Name = "mnuRulings"
+		Me.mnuRulings.Size = New System.Drawing.Size(233, 22)
+		Me.mnuRulings.Text = "Afficher les règles spécifiques"
+		AddHandler Me.mnuRulings.Click, AddressOf Me.MnuRulingsClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1932,6 +1942,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuRulings As System.Windows.Forms.ToolStripMenuItem
 	Private mnuUpdateRulings As System.Windows.Forms.ToolStripMenuItem
 	Private btPlateau As System.Windows.Forms.ToolStripButton
 	Private mnuPlateau As System.Windows.Forms.ToolStripMenuItem

@@ -320,5 +320,8 @@ Public Partial Class frmAddCards
 	Sub CboTitleENEnter(sender As Object, e As EventArgs)
 		VmFR = False
 	End Sub
+	Sub CboSerieLeave(sender As Object, e As EventArgs)
+		Me.chkFoil.Enabled = ( Me.cboSerie.Items.Contains(Me.cboSerie.Text) )	
+	End Sub
 	#End Region
 End Class

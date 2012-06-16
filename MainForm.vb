@@ -1131,7 +1131,7 @@ Public Partial Class MainForm
 			If VpRuling.Length > 300 Then
 				VpRuling = clsModule.StrSplice(VpRuling, 100)
 			End If
-			VmBalloonTip.Show(VpRuling, Me.picScanCard)
+			VmBalloonTip.Show(VpRuling, Me.picScanCard, New Point(Me.picScanCard.Left + Me.picScanCard.Width / 2, Me.picScanCard.Top + Me.picScanCard.Height / 2))
 		End If
 	End Sub
 	Private Sub LoadCaracOther(VpCritere As String, VpModeCarac As clsModule.eModeCarac, VpElderCriteria As String)
@@ -2027,6 +2027,8 @@ Public Partial Class MainForm
 				VpEn = ( VpNode.Parent.Tag.Key = "Card.Title" )
 				VpDouble = VpNode.Tag.Value3
 			End If
+			'Rulings
+			Me.mnuRulings.Enabled = VpEn
 			'Modification d'édition
 			Me.mnuSwapSerie.Enabled = VpEn And VpSingle And Not Me.IsInAdvSearch
 			'Transformation (si carte double)
@@ -2724,5 +2726,8 @@ Public Partial Class MainForm
 			Call Me.LoadRuling(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value)
 		End If
 	End Sub
+	Sub MnuRulingsClick(sender As Object, e As EventArgs)
+		Call Me.LoadRuling(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value)
+	End Sub	
 	#End Region
 End Class
