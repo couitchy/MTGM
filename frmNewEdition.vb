@@ -586,6 +586,10 @@ Public Class clsMyCard
 			Return "N"
 		ElseIf VmType.Contains("Planeswalker") Then
 			Return "P"
+		ElseIf VmType.Contains("Plane") Then
+			Return "Q"
+		ElseIf VmType.Contains("Phenomenon") Then
+			Return "H"
 		Else
 			Return ""
 		End If
@@ -621,8 +625,15 @@ Public Class clsMyCard
 		End If
 	End Function
 	Public Function MyColor As String
+	Dim VpMyType As String
 		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact ou d'un terrain (ou d'un jeton ou d'un arpenteur incolore ?!)
-			Return Me.MyType
+			VpMyType = Me.MyType
+			Select Case VpMyType
+				Case "H", "Q"
+					Return "A"
+				Case Else
+					Return VpMyType
+			End Select
 		Else
 			Select Case VmColor
 				Case "Colorless (Artifact)", "Colorless", "Artifact", "A"

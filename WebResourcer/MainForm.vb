@@ -24,24 +24,26 @@ Imports System.IO
 Imports System.Text
 Public Partial Class MainForm
 	Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
-	Private Const CmStrConn As String	= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Private Const CmURL As String  		= "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
-	Private Const CmURL2 As String  	= "http://www.magiccorporation.com/gathering-cartes-view"
-	Private Const CmURL3 As String  	= "http://www.magiccorporation.com/scan/"
-	Private Const CmId As String  		= "#cardname#"
-	Private Const CmKey As String  		= "gathering-cartes-view"
-	Private Const CmKey2 As String  	= "NM/MT"
-	Private Const CmKey2B As String  	= "Premium"
-	Private Const CmKey2C As String  	= ">VO<"
-	Private Const CmKey3 As String  	= "src=""/scan/"
-	Private Const CmKey4 As String  	= "src=""http://www.wizards.com/global/images/magic"
-	Private Const CmKey5 As String  	= "Texte Français"
-	Private Const CmFrench  As Integer 	= 2
-	Private Const CmMe As String		= "Moi"
-	Private Const CmStamp As String		= "ContenuStamp r13.txt"
-	Private Const CmCategory As String	= "Properties"
-	Private CmFields() As String 		= {"LastUpdateAut", "LastUpdateSimu", "LastUpdateTxtVF", "LastUpdateTradPatch"}
-	Private CmIndexes() As Integer 		= {2, 3, 4, 6}
+	Private Const CmStrConn As String		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
+	Private Const CmURL As String  			= "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
+	Private Const CmURL2 As String  		= "http://www.magiccorporation.com/gathering-cartes-view"
+	Private Const CmURL3 As String  		= "http://www.magiccorporation.com/scan/"
+	Private Const CmId As String  			= "#cardname#"
+	Private Const CmKey As String  			= "gathering-cartes-view"
+	Private Const CmKey2 As String  		= "NM/MT"
+	Private Const CmKey2A As String  		= "Nm</td><td>VF"
+	Private Const CmKey2B As String  		= "Premium"
+	Private Const CmKey2C As String  		= ">VO<"
+	Private Const CmKey3 As String  		= "src=""/scan/"
+	Private Const CmKey4 As String  		= "src=""http://www.wizards.com/global/images/magic"
+	Private Const CmKey5 As String  		= "Texte Français"
+	Private Const CmFrench  As Integer 		= 2
+	Private Const CmMe As String			= "Moi"
+	Private Const CmStamp As String			= "ContenuStamp r13.txt"
+	Private Const CmCategory As String		= "Properties"
+	Private CmFields() As String 			= {"LastUpdateAut", "LastUpdateSimu", "LastUpdateTxtVF", "LastUpdateTradPatch"}
+	Private CmIndexes() As Integer 			= {2, 3, 4, 6}
+	Private CmIgnoredEditions() As String	= {"Premium Deck Seri...", "Archenemy Decks", "Duels of the Plan...", "Battle Royale", "Anthologies", "Promotional Card", "Friday Night Magic", "Prerelease Cards", "Magic Player Rewards"}
 	Private VmDB As OleDbConnection
 	Private VmDBCommand As New OleDbCommand
 	Private VmDBReader As OleDbDataReader
@@ -94,6 +96,7 @@ Public Partial Class MainForm
 	Dim VpAnswer As Stream
 	Dim VpStr As String = ""
 	Dim VpStrFoil As String
+	Dim VpStrPlane As String
 	Dim VpStrs() As String
 	Dim VpCurByte As Integer
 	Dim VpPrices As String = ""
@@ -129,10 +132,25 @@ Public Partial Class MainForm
 				VpCurByte = VpAnswer.ReadByte
 			End While
 			VpStrFoil = VpStr
+			VpStrPlane = VpStr
 			VpStrs = VpStr.Split(New String() {CmKey2}, StringSplitOptions.None)
 			VpStr = VpStrs(0).Substring(VpStrs(0).LastIndexOf("""") + 2)
 			VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
 			VpPrices = VpStr
+			For VpI As Integer = 1 To VpStrs.Length - 1
+				VpStr = VpStrs(VpI).Substring(0, VpStrs(VpI).IndexOf("€") + 1)
+				VpStr = VpStr.Substring(VpStr.LastIndexOf(">") + 1)
+				VpPrices = VpPrices + "^" + VpStr
+				VpStr = VpStrs(VpI).Substring(VpStrs(VpI).LastIndexOf("""") + 2)
+				VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
+				VpPrices = VpPrices + "#" + VpStr
+			Next VpI
+			VpStrs = VpStrPlane.Split(New String() {CmKey2A}, StringSplitOptions.None)
+			VpStr = VpStrs(0).Substring(VpStrs(0).LastIndexOf("""") + 2)
+			VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
+			If VpStrs.Length > 1 Then
+				VpPrices = VpPrices + VpStr
+			End If
 			For VpI As Integer = 1 To VpStrs.Length - 1
 				VpStr = VpStrs(VpI).Substring(0, VpStrs(VpI).IndexOf("€") + 1)
 				VpStr = VpStr.Substring(VpStr.LastIndexOf(">") + 1)
@@ -161,6 +179,7 @@ Public Partial Class MainForm
 			Next VpI
 		Catch
 		End Try
+		VpPrices = VpPrices.Replace("Planechase 2012 D...^", "Planechase 2012^")		'très crade mais c'est de la faute du site magiccorporation
 		VpPrices = VpPrices.Trim
 		If VpPrices.EndsWith("#") Then
 			Return VpPrices
@@ -351,6 +370,10 @@ Public Partial Class MainForm
 									VmDBCommand.ExecuteNonQuery
 									Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
 								End If
+							End If
+						Else
+							If Array.IndexOf(CmIgnoredEditions, VpEdition) < 0 Then
+								Call Me.AddToLog("Pas de correspondance de prix trouvée pour la carte " + VpCardName + " - " + VpEdition, eLogType.Warning)
 							End If
 						End If
 					Else
@@ -868,12 +891,37 @@ Public Partial Class MainForm
 	Dim VpOut As StreamWriter
 	Dim VpCards As List(Of String)
 	Dim VpAut As String
+	Dim VpAppend As Boolean
+	Dim VpAlready() As String
+	Dim VpLast As String = ""
 		Me.dlgSave.FileName = ""
 		Me.dlgSave.ShowDialog
-		If Me.dlgSave.FileName <> "" Then
-			VpOut = New StreamWriter(Me.dlgSave.FileName)
-			Call Me.AddToLog("La récupération des autorisations de tournois a commencé...", eLogType.Information, True)
-			VpCards = Me.BuildListeFromDB
+		If Me.dlgSave.FileName <> "" Then			
+			VpAppend = File.Exists(Me.dlgSave.FileName)
+			If VpAppend Then
+				'Si le fichier existe déjà, regarde la dernière carte qui a été traitée
+				VpAlready = File.ReadAllLines(Me.dlgSave.FileName)
+				If VpAlready.Length > 2 Then
+					If VpAlready(VpAlready.Length - 1).Contains("#") Then
+						VpLast = VpAlready(VpAlready.Length - 1)
+					Else
+						VpLast = VpAlready(VpAlready.Length - 2)
+					End If
+					VpLast = VpLast.Substring(0, VpLast.IndexOf("#"))
+				Else
+					VpAppend = False
+				End If
+			End If
+			VpOut = New StreamWriter(Me.dlgSave.FileName, VpAppend)
+			If VpAppend Then
+				Call Me.AddToLog("La récupération des autorisations de tournois se poursuit...", eLogType.Information, True)
+			Else
+				Call Me.AddToLog("La récupération des autorisations de tournois a commencé...", eLogType.Information, True)
+				'Inscription de la date
+				VpOut.WriteLine(Now.ToShortDateString)
+			End If
+			'Récupère la liste des cartes
+			VpCards = Me.BuildListeFromDB(VpLast)
 			Me.prgAvance.Maximum = VpCards.Count
 			Me.prgAvance.Value = 0
 			Me.prgAvance.Style = ProgressBarStyle.Blocks
@@ -1161,9 +1209,10 @@ Public Partial Class MainForm
 			End With
 			VpTxt.WriteLine("3rdBB#3B#Third Edition (Black Border)#Revised###1#1#B#02/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition a été éditée en bords noirs en Italien, Français et Allemand, cette édition est aussi appelée ""Beta"" puisque c'est la première édition de base à sortir dans ces pays. Cette édition est datée de 1994 et cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord noir)")
 			VpTxt.WriteLine("3rdWB#3W#Third Edition (White Border)#Revised###1#1#W#03/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition est sortie en 1994 en français, et en 1995 en italien et en allemand (la 3ème édition anglaise étant Revised). Cette édition est donc datée de 1994, cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord blanc)")
-			VpTxt.WriteLine("coldsnapthemedecks#CT#Coldsnap Theme Decks#Coldsnap Theme De...###1#1#B#22/07/2006 00:00:00##62#52#0#0#0#0#0#############Cette édition, sortie à l'occasion de Coldsnap en Juillet 2006, est une réédition de certaines cartes du bloc Ère glaciaire. À noter qu'il s'agit seulement de decks préconstruits, vous n'aurez donc aucune carte rare dans cette édition spéciale de 62 cartes. On retrouve toutefois des cartes assez mythiques comme Brainstorm, Disanchant, Swords to Plowshare, Dark Ritual, Tinder Wall, Incinerate...#Coldsnap Theme Decks")
+			VpTxt.WriteLine("coldsnapthemedecks#CT#Coldsnap Theme Decks#Coldsnap Theme Decks###1#1#B#22/07/2006 00:00:00##62#52#0#0#0#0#0#############Cette édition, sortie à l'occasion de Coldsnap en Juillet 2006, est une réédition de certaines cartes du bloc Ère glaciaire. À noter qu'il s'agit seulement de decks préconstruits, vous n'aurez donc aucune carte rare dans cette édition spéciale de 62 cartes. On retrouve toutefois des cartes assez mythiques comme Brainstorm, Disanchant, Swords to Plowshare, Dark Ritual, Tinder Wall, Incinerate...#Coldsnap Theme Decks")
 			VpTxt.WriteLine("deckmasters#DM#Deckmasters#Deckmasters###1#1#W#01/12/2001 00:00:00##124#44#0#0#0#0#0#############Deckmasters: Garfield vs. Finkel, usually known as simply Deckmasters, was a set created in 2001 to showcase the epic match between Richard Garfield, the creator of the card game, and Jon Finkel, a Magic World Champion. Two decks were included in the set, a red/green deck that Richard Garfield used, and a red/black deck that was played by Finkel. This set was created to let players relive this famous match. It is the fifth compilation set.#Deckmasters")
 			VpTxt.WriteLine("planechase#PH#Planechase#Planechase###1#1#B#04/09/2004 00:00:00##240#169#0#0#0#0#0#############Planechase is a new variant of Magic: The Gathering with an emphasis on multiplayer games. The set utilizes new oversized Plane cards, cards that are based on various locations (Planes) within the Magic multiverse, to modify the rules of gameplay. Four game packs were released on September 4, 2009: Elemental Thunder, Metallic Dreams, Strike Force, and Zombie Empire. Each game pack comes with a 60-card preconstructed deck, 10 Plane cards, a six-sided Planar die, and multiplayer rules. The cards within each preconstructed deck have all been reprinted from various Magic sets. All of the cards are black bordered and tournament legal in their original formats. Outside of the initial release, there have been five promotional cards released.#Planechase")
+			VpTxt.WriteLine("planechase2012#PI#Planechase 2012#Planechase 2012###1#1#B#01/06/2012 00:00:00##177#177#0#0#0#0#0#############The new Planechase cards introduce many new planes as well as an entirely new oversized card type: phenomena. Phenomena capture the events which transpire as you jump between planes, as immediate events during the change. These phenomena and plane cards add to the exciting and unpredictable events which will unfold during your Planechase games.  Play Commander with Planechase! These two casual variants go hand in hand, as they allow you to enjoy an unpredictable and high-powered casual format that never stops bringing you new and exciting games.  Cards and decks from Planechase's 2012 Edition are able to be played with decks from the original Planechase release without any changes! These decks and their components come with everything you need to use and enjoy a planar Magic game.#Planechase 2012")
 			VpTxt.WriteLine("pegase#PG#Pégase#Pégase###1#1#W#02/03/2006 00:00:00##600#236#0#0#0#0#0#############Pégase est une édition particulière de Magic, car éditée en collaboration entre Wizard of The Coast et Hachette. Les collectionneurs sont ainsi invités à construire 10 decks (Rats, Elves, Spirits, Slivers, Ninjas, Zombies, Angels, Wizards, Berserk et Thallids) au fur et à mesure de leurs passages chez leur marchand de journaux. Les publications s'étendent du 2 mars 2006 au 3 juillet 2007. Pégase n'est disponible qu'en français et en italien.#Pégase")
 			VpTxt.Flush
 			VpTxt.Close

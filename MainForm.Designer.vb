@@ -53,6 +53,7 @@ Partial Class MainForm
 		Me.mnuFindNext = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnucAddCards = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator1 = New System.Windows.Forms.ToolStripSeparator
+		Me.mnuRulings = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuTransform = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMoveACard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMoveToCollection = New System.Windows.Forms.ToolStripMenuItem
@@ -204,7 +205,6 @@ Partial Class MainForm
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.mnuRulings = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -346,6 +346,8 @@ Partial Class MainForm
 		Me.imglstTvw.Images.SetKeyName(46, "_stinstant.png")
 		Me.imglstTvw.Images.SetKeyName(47, "_stland.png")
 		Me.imglstTvw.Images.SetKeyName(48, "_stsorcery.png")
+		Me.imglstTvw.Images.SetKeyName(49, "_stphenomenon.png")
+		Me.imglstTvw.Images.SetKeyName(50, "_stplane.png")
 		'
 		'imglstCarac
 		'
@@ -412,7 +414,7 @@ Partial Class MainForm
 		'
 		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuRulings, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 302)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 280)
 		'
 		'mnuCardsFR
 		'
@@ -478,6 +480,15 @@ Partial Class MainForm
 		'
 		Me.mnuSeparator1.Name = "mnuSeparator1"
 		Me.mnuSeparator1.Size = New System.Drawing.Size(230, 6)
+		'
+		'mnuRulings
+		'
+		Me.mnuRulings.Enabled = false
+		Me.mnuRulings.Image = CType(resources.GetObject("mnuRulings.Image"),System.Drawing.Image)
+		Me.mnuRulings.Name = "mnuRulings"
+		Me.mnuRulings.Size = New System.Drawing.Size(233, 22)
+		Me.mnuRulings.Text = "Afficher les règles spécifiques"
+		AddHandler Me.mnuRulings.Click, AddressOf Me.MnuRulingsClick
 		'
 		'mnuTransform
 		'
@@ -1878,15 +1889,6 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(16, "_aM.gif")
 		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
 		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
-		'
-		'mnuRulings
-		'
-		Me.mnuRulings.Enabled = false
-		Me.mnuRulings.Image = CType(resources.GetObject("mnuRulings.Image"),System.Drawing.Image)
-		Me.mnuRulings.Name = "mnuRulings"
-		Me.mnuRulings.Size = New System.Drawing.Size(233, 22)
-		Me.mnuRulings.Text = "Afficher les règles spécifiques"
-		AddHandler Me.mnuRulings.Click, AddressOf Me.MnuRulingsClick
 		'
 		'MainForm
 		'

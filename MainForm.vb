@@ -33,6 +33,7 @@
 '| - gestion des cartes transformables	   29/10/2011 |
 '| - icônes des symboles dans le texte	   12/11/2011 |
 '| - gestion des règles spécifiques		   18/02/2012 |
+'| - gestion des "Planes" et "Phenomenons" 22/06/2012 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -1469,6 +1470,10 @@ Public Partial Class MainForm
 				Return 47
 			Case "S"
 				Return 48
+			Case "H"
+				Return 49
+			Case "Q"
+				Return 50
 			Case Else
 				Return 0
 		End Select
@@ -2728,6 +2733,6 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuRulingsClick(sender As Object, e As EventArgs)
 		Call Me.LoadRuling(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value)
-	End Sub	
+	End Sub
 	#End Region
 End Class

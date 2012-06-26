@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30910
+	Public Const CgCodeLines As Integer   			= 31001
 	Public Const CgLastUpdateAut As String			= "11/02/2012"
 	Public Const CgLastUpdateSimu As String			= "31/03/2012"
 	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
@@ -102,7 +102,7 @@ Public Module clsModule
 	Public Const CgURL9 As String         			= "/Updates/LastPrices.txt"
 	Public Const CgURL10 As String					= "/Images%20des%20cartes/"
 	Public Const CgURL11 As String         			= "/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         			= "/Updates/Series r13.txt"
+	Public Const CgURL12 As String         			= "/Updates/Series r14.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
 	Public Const CgURL15 As String         			= "/Updates/Tournois r11.txt"
@@ -394,7 +394,7 @@ Public Module clsModule
 							VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyGamesID", Nothing})
 							If VpSchemaTable.Rows.Count <> 6 Then
 								'Si on est ici, BDD version 13
-								VpDBVersion = eDBVersion.BDD_v13								
+								VpDBVersion = eDBVersion.BDD_v13
 							Else
 								'Si on est ici, BDD version 14
 								VpDBVersion = eDBVersion.BDD_v14
@@ -527,7 +527,7 @@ Public Module clsModule
 						VgDBCommand.CommandText = "Update MyGamesID Set GameDate = '" + Now.ToShortDateString + "';"
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update MyGamesID Set GameFormat = '" + clsModule.CgDefaultFormat + "';"
-						VgDBCommand.ExecuteNonQuery						
+						VgDBCommand.ExecuteNonQuery
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
@@ -840,6 +840,10 @@ Public Module clsModule
 						Return "Créatures avec capacité"
 					Case "P"
 						Return "Arpenteurs"
+					Case "Q"
+						Return "Plans"
+					Case "H"
+						Return "Phénomènes"
 					Case "K"
 						Return "Jetons"
 					Case Else
@@ -1229,7 +1233,7 @@ Public Module clsModule
 					VpStrSB.Append(VpCur)
 			End Select
 		Next VpI
-		Return VpStrSB.ToString	
+		Return VpStrSB.ToString
 	End Function
 	Public Function MyVal(VpStr As String) As Double
 		Return Val(VpStr.Replace(",", "."))
