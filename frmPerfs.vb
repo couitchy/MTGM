@@ -581,9 +581,6 @@ Public Partial Class frmPerfs
 		End If
 		Call Me.GetAllPlayed
 	End Sub
-	Sub FrmPerfsFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
-		VmOwner.mnuPerfs.Tag = Nothing
-	End Sub
 	Sub DropAddGameOtherClick(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", clsModule.CgDefaultName)
 		If VpGameName.Trim <> "" Then

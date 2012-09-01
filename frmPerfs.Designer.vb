@@ -236,7 +236,6 @@ Partial Class frmPerfs
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Victoires & Défaites"
 		AddHandler Load, AddressOf Me.FrmPerfsLoad
-		AddHandler FormClosing, AddressOf Me.FrmPerfsFormClosing
 		Me.pnlGraph.ResumeLayout(false)
 		Me.cmnuChart.ResumeLayout(false)
 		Me.cbarGraph.ResumeLayout(false)

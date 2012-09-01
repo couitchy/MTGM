@@ -325,21 +325,22 @@ Public Partial Class frmBuyMV
 		Call Me.LoadGrid(eBasketMode.Local)
 	End Sub
 	Private Sub CellValidated(sender As Object, e As CellEventArgs)
-	Static VsClearing As Boolean = False	'Crade mais évite une boucle infinie due au fait que la suppression d'un row déclenche l'évènement de validation de manière indiscernable par rapport à une fin d'édition de cellule
 	Dim VpQ As Short
-		If Not VsClearing Then
-			VsClearing = True
-			VmToBuy.Clear
-			'Mise à jour de la quantité dans la grille et dans l'List(Of )
-			For VpI As Integer = 1 To Me.grdBasket.RowsCount - 1
-				VpQ = Me.grdBasket(VpI, 1).Value
-				If VpQ > 0 Then
-					VmToBuy.Add(New clsLocalCard(Me.grdBasket(VpI, 0).Value, VpQ))
-				End If
-			Next VpI
-			Call Me.LoadGrid(clsModule.eBasketMode.Local)
-			VsClearing = False
-		End If
+		With clsModule.VgSessionSettings
+			If Not .GridClearing Then
+				 .GridClearing = True
+				VmToBuy.Clear
+				'Mise à jour de la quantité dans la grille et dans l'List(Of )
+				For VpI As Integer = 1 To Me.grdBasket.RowsCount - 1
+					VpQ = Me.grdBasket(VpI, 1).Value
+					If VpQ > 0 Then
+						VmToBuy.Add(New clsLocalCard(Me.grdBasket(VpI, 0).Value, VpQ))
+					End If
+				Next VpI
+				Call Me.LoadGrid(clsModule.eBasketMode.Local)
+				 .GridClearing = False
+			End If
+		End With
 	End Sub
 	Sub BtLocalBasketActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.LoadGrid(eBasketMode.Local)

@@ -118,7 +118,7 @@ Partial Class frmSearch
 		Me.picScanCard.Location = New System.Drawing.Point(390, 16)
 		Me.picScanCard.Name = "picScanCard"
 		Me.picScanCard.Size = New System.Drawing.Size(207, 295)
-		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
 		Me.picScanCard.TabIndex = 38
 		Me.picScanCard.TabStop = false
 		'

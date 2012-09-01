@@ -172,10 +172,10 @@ Partial Class MainForm
 		Me.pnlCard3 = New System.Windows.Forms.Panel
 		Me.lblPowerTough = New System.Windows.Forms.Label
 		Me.picPowerTough = New System.Windows.Forms.PictureBox
-		Me.txtRichText = New Magic_The_Gathering_Manager.ExRichTextBox
+		Me.txtRichCard = New Magic_The_Gathering_Manager.ExRichTextBox
 		Me.pnlAlternate = New System.Windows.Forms.Panel
 		Me.propAlternate = New System.Windows.Forms.PropertyGrid
-		Me.txtSimpleText = New System.Windows.Forms.TextBox
+		Me.txtRichOther = New Magic_The_Gathering_Manager.ExRichTextBox
 		Me.grpAutorisations = New System.Windows.Forms.GroupBox
 		Me.picAutT1 = New System.Windows.Forms.PictureBox
 		Me.picAutT15 = New System.Windows.Forms.PictureBox
@@ -1414,9 +1414,10 @@ Partial Class MainForm
 		'
 		'splitH.Panel2
 		'
-		Me.splitH.Panel2.Controls.Add(Me.txtSimpleText)
+		Me.splitH.Panel2.Controls.Add(Me.txtRichOther)
 		Me.splitH.Size = New System.Drawing.Size(469, 376)
 		Me.splitH.SplitterDistance = 290
+		Me.splitH.SplitterWidth = 10
 		Me.splitH.TabIndex = 19
 		'
 		'pnlCard
@@ -1495,7 +1496,7 @@ Partial Class MainForm
 		'
 		'splitH3.Panel2
 		'
-		Me.splitH3.Panel2.Controls.Add(Me.txtRichText)
+		Me.splitH3.Panel2.Controls.Add(Me.txtRichCard)
 		Me.splitH3.Size = New System.Drawing.Size(469, 136)
 		Me.splitH3.SplitterDistance = 42
 		Me.splitH3.TabIndex = 0
@@ -1566,21 +1567,21 @@ Partial Class MainForm
 		Me.picPowerTough.TabIndex = 9
 		Me.picPowerTough.TabStop = false
 		'
-		'txtRichText
+		'txtRichCard
 		'
-		Me.txtRichText.AcceptsTab = true
-		Me.txtRichText.BackColor = System.Drawing.Color.White
-		Me.txtRichText.BorderStyle = System.Windows.Forms.BorderStyle.None
-		Me.txtRichText.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.txtRichText.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
-		Me.txtRichText.Location = New System.Drawing.Point(0, 0)
-		Me.txtRichText.Name = "txtRichText"
-		Me.txtRichText.ReadOnly = true
-		Me.txtRichText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical
-		Me.txtRichText.Size = New System.Drawing.Size(469, 90)
-		Me.txtRichText.TabIndex = 17
-		Me.txtRichText.Text = ""
-		Me.txtRichText.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
+		Me.txtRichCard.AcceptsTab = true
+		Me.txtRichCard.BackColor = System.Drawing.Color.White
+		Me.txtRichCard.BorderStyle = System.Windows.Forms.BorderStyle.None
+		Me.txtRichCard.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.txtRichCard.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
+		Me.txtRichCard.Location = New System.Drawing.Point(0, 0)
+		Me.txtRichCard.Name = "txtRichCard"
+		Me.txtRichCard.ReadOnly = true
+		Me.txtRichCard.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
+		Me.txtRichCard.Size = New System.Drawing.Size(469, 90)
+		Me.txtRichCard.TabIndex = 17
+		Me.txtRichCard.Text = ""
+		Me.txtRichCard.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
 		'
 		'pnlAlternate
 		'
@@ -1601,15 +1602,21 @@ Partial Class MainForm
 		Me.propAlternate.TabIndex = 0
 		Me.propAlternate.ToolbarVisible = false
 		'
-		'txtSimpleText
+		'txtRichOther
 		'
-		Me.txtSimpleText.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.txtSimpleText.Location = New System.Drawing.Point(0, 0)
-		Me.txtSimpleText.Multiline = true
-		Me.txtSimpleText.Name = "txtSimpleText"
-		Me.txtSimpleText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-		Me.txtSimpleText.Size = New System.Drawing.Size(469, 82)
-		Me.txtSimpleText.TabIndex = 2
+		Me.txtRichOther.AcceptsTab = true
+		Me.txtRichOther.BackColor = System.Drawing.Color.White
+		Me.txtRichOther.BorderStyle = System.Windows.Forms.BorderStyle.None
+		Me.txtRichOther.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.txtRichOther.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
+		Me.txtRichOther.Location = New System.Drawing.Point(0, 0)
+		Me.txtRichOther.Name = "txtRichOther"
+		Me.txtRichOther.ReadOnly = true
+		Me.txtRichOther.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
+		Me.txtRichOther.Size = New System.Drawing.Size(469, 76)
+		Me.txtRichOther.TabIndex = 18
+		Me.txtRichOther.Text = ""
+		Me.txtRichOther.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
 		'
 		'grpAutorisations
 		'
@@ -1737,7 +1744,7 @@ Partial Class MainForm
 		Me.picScanCard.Location = New System.Drawing.Point(0, 0)
 		Me.picScanCard.Name = "picScanCard"
 		Me.picScanCard.Size = New System.Drawing.Size(207, 295)
-		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
 		Me.picScanCard.TabIndex = 2
 		Me.picScanCard.TabStop = false
 		'
@@ -1836,7 +1843,6 @@ Partial Class MainForm
 		Me.pnlProperties.ResumeLayout(false)
 		Me.splitH.Panel1.ResumeLayout(false)
 		Me.splitH.Panel2.ResumeLayout(false)
-		Me.splitH.Panel2.PerformLayout
 		Me.splitH.ResumeLayout(false)
 		Me.pnlCard.ResumeLayout(false)
 		Me.splitH2.Panel1.ResumeLayout(false)
@@ -1871,6 +1877,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private txtRichCard As Magic_The_Gathering_Manager.ExRichTextBox
+	Private txtRichOther As Magic_The_Gathering_Manager.ExRichTextBox
 	Private pnlCard3 As System.Windows.Forms.Panel
 	Private lblPowerTough As System.Windows.Forms.Label
 	Private picPowerTough As System.Windows.Forms.PictureBox
@@ -1878,9 +1886,7 @@ Partial Class MainForm
 	Private btHistPrices As TD.SandBar.ButtonItem
 	Private btShowAll As TD.SandBar.ButtonItem
 	Private propAlternate As System.Windows.Forms.PropertyGrid
-	Private txtSimpleText As System.Windows.Forms.TextBox
 	Private pnlAlternate As System.Windows.Forms.Panel
-	Private txtRichText As Magic_The_Gathering_Manager.ExRichTextBox
 	Private pnlCard1 As System.Windows.Forms.Panel
 	Private picCost As System.Windows.Forms.PictureBox
 	Private pnlCard2 As System.Windows.Forms.Panel
@@ -1981,7 +1987,7 @@ Partial Class MainForm
 	Private mnuDeleteACard As System.Windows.Forms.ToolStripMenuItem
 	Private mnuMoveACard As System.Windows.Forms.ToolStripMenuItem
 	Private mnuRemScores As System.Windows.Forms.ToolStripMenuItem
-	Public mnuPerfs As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPerfs As System.Windows.Forms.ToolStripMenuItem
 	Private mnucAddCards As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCheckForUpdates As System.Windows.Forms.ToolStripMenuItem
 	Public prgAvance As System.Windows.Forms.ToolStripProgressBar

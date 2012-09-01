@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 31001
+	Public Const CgCodeLines As Integer   			= 30941
 	Public Const CgLastUpdateAut As String			= "11/02/2012"
 	Public Const CgLastUpdateSimu As String			= "31/03/2012"
 	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
@@ -181,6 +181,7 @@ Public Module clsModule
 	Public VgImgSeries As New ImageList
 	Public VgRemoteDate As Date
 	Public VgOptions As New Options
+	Public VgSessionSettings As New clsSessionSettings
 	Public VgRandom As New Random(Now.Millisecond)
 	Public WithEvents VgTray As NotifyIcon
 	Public WithEvents VgTimer As Timer
@@ -1739,15 +1740,16 @@ Public Module clsModule
 	'--------------------------------------------------
 	'Retourne un nom de fichier temporaire image valide
 	'--------------------------------------------------
-	Static VsI As Integer = -1
-		If VsI = -1 Then
-			Do
-				VsI = VsI + 1
-			Loop While File.Exists(Path.GetTempPath + "\mtgm~" + VsI.ToString + ".jpg")
-		Else
-			VsI = VsI + 1
-		End If
-		Return Path.GetTempPath + "\mtgm~" + VsI.ToString + ".jpg"
+		With VgSessionSettings
+			If .FreeTempFileIndex = -1 Then
+				Do
+					.FreeTempFileIndex += 1
+				Loop While File.Exists(Path.GetTempPath + "\mtgm~" + .FreeTempFileIndex.ToString + ".jpg")
+			Else
+				.FreeTempFileIndex += 1
+			End If
+			Return Path.GetTempPath + "\mtgm~" + .FreeTempFileIndex.ToString + ".jpg"
+		End With
 	End Function
 	Public Sub DeleteTempFiles(Optional VpSilent As Boolean = False)
 	'------------------------------------
