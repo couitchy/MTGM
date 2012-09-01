@@ -21,6 +21,8 @@
 '| - déploiement - effets spéciaux		   08/11/2009 |
 '| - suggestions de cartes adaptées		   25/02/2010 |
 '| - cartes suivantes après tirage mains   09/05/2011 |
+'| - support type, sous-type... pour proba.18/08/2012 |
+'| - tirage main obsolète (cf. plateau)	   19/08/2012 |
 '------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
@@ -58,35 +60,85 @@ Public Partial Class frmSimu
 			.Close
 		End With
 	End Sub
-	Private Sub LoadForCombos
-	'--------------------------------------------------------
-	'Charge la liste des cartes disponibles pour l'estimation
-	'--------------------------------------------------------
-	Dim VpSQL As String
-		Me.lstCombosDispos.Items.Clear
-		'VpSQL = "Select Card.Title, CardFR.TitleFR, " + VmSource + ".Items From ((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where "
-		VpSQL = "Select Card.Title, " + VmSource + ".Items From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where "
-		VpSQL = VpSQL + VmRestrictionSQL
-		VpSQL = clsModule.TrimQuery(VpSQL)
-		VgDBCommand.CommandText = VpSQL
-		VgDBReader = VgDBCommand.ExecuteReader
-		With VgDBReader
-			While .Read
-				'Ajoute les doublons pour permettre de créer des séquences avec des cartes en plusieurs exemplaires
-				For VpI As Integer = 1 To .GetInt32(1)
-					Me.lstCombosDispos.Items.Add(.GetString(0))
-				Next VpI
-			End While
-			.Close
+	Private Sub AddToSequence(VpSequence As clsComboSequence, VpGrid As Grid, VpElementType As clsElement.eElementType)
+		For VpI As Integer = 1 To VpGrid.RowsCount - 1
+			For VpJ As Integer = 1 To CInt(VpGrid(VpI, 2).Value)
+				VpSequence.Add(New clsElement(VpElementType, VpGrid(VpI, 0).Tag))
+			Next VpJ
+		Next VpI
+	End Sub
+	Private Sub IncrementRow(VpGrid As Grid, VpItem As String)
+		For VpI As Integer = 1 To VpGrid.RowsCount - 1
+			If VpGrid(VpI, 0).Tag = VpItem Then
+				VpGrid(VpI, 2).Value += 1
+			End If
+		Next VpI
+	End Sub
+	Private Sub InsertRow(VpGrid As Grid, VpS As String, VpSTag As String, VpN As Integer, VpCellModel As DataModels.IDataModel, VpCellBehavior As BehaviorModels.CustomEvents)
+	'----------------------------------------------------------------------------
+	'Insère la ligne spécifiée en paramètre dans la grille spécifiée en paramètre
+	'----------------------------------------------------------------------------
+		If VpSTag <> "" Then
+			With VpGrid
+				.Rows.Insert(.RowsCount)
+				VpGrid(.RowsCount - 1, 0) = New Cells.Cell(VpS)
+				VpGrid(.RowsCount - 1, 0).Tag = VpSTag
+				VpGrid(.RowsCount - 1, 0).Behaviors.Add(VpCellBehavior)
+				VpGrid(.RowsCount - 1, 1) = New Cells.Cell(VpN)
+				VpGrid(.RowsCount - 1, 2) = New Cells.Cell(0)
+				VpGrid(.RowsCount - 1, 2).DataModel = VpCellModel
+			End With
+		End If
+	End Sub
+	Private Sub LoadForGrid(VpGrid As Grid, VpRequete As String, VpCategorie As String, VpGroupBy As String)
+	'----------------------------------------------------------
+	'Charge la liste des éléments disponibles pour l'estimation
+	'----------------------------------------------------------
+	Dim VpSQL As String = VpRequete
+	Dim VpCellModel As DataModels.IDataModel = Utility.CreateDataModel(Type.GetType("System.Int32"))
+	Dim VpCellBehavior As New BehaviorModels.CustomEvents
+		VpCellModel.EditableMode = EditableMode.AnyKey Or EditableMode.DoubleClick
+		AddHandler VpCellModel.Validated, AddressOf CellValidated
+		AddHandler VpCellBehavior.Click, AddressOf CellMouseClick
+		AddHandler VpCellBehavior.KeyUp, AddressOf CellMouseClick
+		'Préparation de la grille
+		With VpGrid
+			'Nettoyage
+			If .Rows.Count > 0 Then
+				.Rows.RemoveRange(0, .Rows.Count)
+			End If
+			'Nombre de colonnes et d'en-têtes
+			.ColumnsCount = 3
+			.FixedRows = 1
+			.Rows.Insert(0)
+			VpGrid(0, 0) = New Cells.ColumnHeader("Elément")
+			VpGrid(0, 1) = New Cells.ColumnHeader("Disponibles")
+			VpGrid(0, 2) = New Cells.ColumnHeader("Demandé(s)")
+			VpSQL = VpSQL + VmRestrictionSQL
+			VpSQL = clsModule.TrimQuery(VpSQL, , VpGroupBy)
+			VgDBCommand.CommandText = VpSQL
+			VgDBReader = VgDBCommand.ExecuteReader
+			With VgDBReader
+				While .Read
+					Call Me.InsertRow(VpGrid, clsModule.FormatTitle(VpCategorie, .GetValue(0).ToString, , False), .GetValue(0).ToString, CInt(.GetValue(1)), VpCellModel, VpCellBehavior)
+				End While
+				.Close
+			End With
+			.AutoSize
 		End With
-		Me.lstCombosDispos.Sorted = True
-		Me.lstCombosDispos.Tag = New List(Of Integer)
+	End Sub
+	Private Sub LoadForGrids
+		Call Me.LoadForGrid(Me.grdCardsDispos, "Select Card.Title, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where ", "Card.Title", " Group By Card.Title")
+		Call Me.LoadForGrid(Me.grdTypesDispos, "Select Card.Type, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where ", "Card.Type", " Group By Card.Type")
+		Call Me.LoadForGrid(Me.grdSubTypesDispos, "Select Card.SubType, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where ", "Card.SubType", " Group By Card.SubType")
+		Call Me.LoadForGrid(Me.grdCostsDispos, "Select Spell.myCost, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where Card.Type <> 'L' And ", "Spell.myCost", " Group By Spell.myCost")
+		Call Me.LoadForGrid(Me.grdColorsDispos, "Select Spell.Color, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", "Spell.Color", " Group By Spell.Color")
 	End Sub
 	Private Sub CombosSimu
 	'----------------------------------------------------------------------------------------------
 	'Estime les probabilités simple et combinée d'apparition des cartes sélectionnées au nième tour
 	'----------------------------------------------------------------------------------------------
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL)
+	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL, True)
 	Dim VpEspCumul As New clsEsperance(Me.txtN.Text)
 		Me.prgSimu.Maximum = CInt(Me.txtN.Text)
 		Me.prgSimu.Value = 0
@@ -109,7 +161,7 @@ Public Partial Class frmSimu
 					If VpPartie.IsSequencePresent(VpSequence) Then
 						VpEspCumul.AddForRound(VpJ)
 						Exit For
-					End If					
+					End If
 				Next VpSequence
 			Next VpJ
 			Me.prgSimu.Value = VpI
@@ -122,54 +174,6 @@ Public Partial Class frmSimu
 		Me.cboTourCumul.Tag = VpEspCumul.GetEsp
 		'Sélection par défaut
 		If Me.cboTourCumul.Items.Count > 0 Then Me.cboTourCumul.SelectedIndex = 0
-	End Sub
-	Private Sub ShowMain
-	'------------------------
-	'Affiche la main courante
-	'------------------------
-	Dim VpPartie As clsPartie
-	Dim VpCell As Cells.Cell
-	Dim VpCellBehavior As BehaviorModels.CustomEvents
-		VpCellBehavior = New BehaviorModels.CustomEvents
-		AddHandler VpCellBehavior.Click, AddressOf CellMouseClick
-		AddHandler VpCellBehavior.DoubleClick, AddressOf CellMouseDoubleClick
-		AddHandler VpCellBehavior.KeyUp, AddressOf CellKeyUp	
-		With Me.grdMainsTirage
-			VpPartie = .Tag
-			'Nettoyage
-			If .Rows.Count > 0 Then
-				.Rows.RemoveRange(0, .Rows.Count)
-			End If
-			.ColumnsCount = 1
-			.FixedRows = 0
-			For Each VpCard As clsCard In VpPartie.CardsDrawn
-				.Rows.Insert(.RowsCount)
-				VpCell = New Cells.Cell(VpCard.CardNameFR + " (" + VpCard.CardName + ")")
-				VpCell.Behaviors.Add(VpCellBehavior)
-				VpCell.Tag = VpCard
-				Me.grdMainsTirage(.RowsCount - 1, 0) = VpCell
-			Next VpCard
-			.Columns(0).Width = .Width
-		End With	
-	End Sub
-	Private Sub MainsSimu
-	'---------------------------------------
-	'Tire aléatoirement une main de 7 cartes
-	'---------------------------------------
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL)	
-		If VpPartie.CardsCount < clsModule.CgNMain Then
-			Call clsModule.ShowWarning("Il faut avoir au moins " + clsModule.CgNMain.ToString + " cartes saisies pour tirer une main...")
-		Else
-			'Mélange le jeu
-			Call VpPartie.DeckShuffle
-			'Tire les 7 cartes
-			Call VpPartie.Draw(clsModule.CgNMain)
-			'Les inscrit dans la grille
-			Me.grdMainsTirage.Tag = VpPartie
-			Call Me.ShowMain
-			'Force l'affichage de la première carte
-			Call Me.CellMouseClick(Nothing, New PositionEventArgs(New Position(0, 0), Me.grdMainsTirage(0, 0)))
-		End If
 	End Sub
 	Private Sub DeploySimu
 	'---------------------------------------------------------------
@@ -446,17 +450,15 @@ Public Partial Class frmSimu
 		MainForm.VgMe.Suggestions = VpSuggest
 		Call MainForm.VgMe.LoadTvw("(" + VpSQL + ") As " + clsModule.CgSFromSearch)
 	End Sub
-	Private Sub GestVisible(Optional VpMains As Boolean = False, Optional VpCombos As Boolean = False, Optional VpDeploy As Boolean = False, Optional VpSuggest As Boolean = False)
+	Private Sub GestVisible(Optional VpCombos As Boolean = False, Optional VpDeploy As Boolean = False, Optional VpSuggest As Boolean = False)
 	'------------------
 	'Gestion des panels
 	'------------------
 		'Groupe visible
-		Me.grpMains.Visible = VpMains
 		Me.grpCombos.Visible = VpCombos
 		Me.grpDeploy.Visible = VpDeploy
 		Me.grpSuggest.Visible = VpSuggest
 		'Bouton coché
-		Me.btMains.Checked = VpMains
 		Me.btCombos.Checked = VpCombos
 		Me.btDeploy.Checked = VpDeploy
 		Me.btSuggest.Checked = VpSuggest
@@ -471,85 +473,57 @@ Public Partial Class frmSimu
 		Me.lstUserCombos.Items(VpItem + VpSens) = Me.lstUserCombos.Items(VpItem)
 		Me.lstUserCombos.Items(VpItem) = VpTmp
 	End Sub
+	Private Sub Clear1(VpGrid As Grid)
+		For VpI As Integer = 1 To VpGrid.RowsCount - 1
+			VpGrid(VpI, 2).Value = 0
+		Next VpI
+	End Sub
 	Private Sub Clear(Optional VpAll As Boolean = False)
-		Me.lstCombosDispos.ClearSelected
-		CType(Me.lstCombosDispos.Tag, List(Of Integer)).Clear	
+		Call Me.Clear1(Me.grdCardsDispos)
+		Call Me.Clear1(Me.grdTypesDispos)
+		Call Me.Clear1(Me.grdSubTypesDispos)
+		Call Me.Clear1(Me.grdCostsDispos)
+		Call Me.Clear1(Me.grdColorsDispos)
 		If VpAll Then
 			Me.chklstSequencesDispos.Items.Clear
 		End If
 	End Sub
 	#End Region
 	#Region "Evènements"
+	Sub CellValidated(sender As Object, e As CellEventArgs)
+	Dim VpCell As Cells.Cell = e.Cell
+	Dim VpGrid As Grid = VpCell.Grid
+	Dim VpMax As Integer = CInt(VpGrid(VpCell.Row, VpCell.Column - 1).Value)
+		If CInt(VpCell.Value) < 0 Then
+			VpCell.Value = 0
+		ElseIf CInt(VpCell.Value) > VpMax Then
+			VpCell.Value = VpMax
+		End If
+	End Sub
+	Sub CellMouseClick(sender As Object, e As PositionEventArgs)
+		Call clsModule.LoadScanCard(e.Cell.GetValue(e.Position), Me.picScanCard2)
+	End Sub
 	Sub ChklstSequencesDisposSelectedIndexChanged(sender As Object, e As EventArgs)
-	'----------------------------------------------------------------------------------------------------
-	'Resélectionne dans le listbox les éléments composant la séquence sélectionnée dans le checkedlistbox
-	'----------------------------------------------------------------------------------------------------
-		If Me.chklstSequencesDispos.SelectedItems.Count > 0 Then
+	Dim VpSequence As clsComboSequence
+		If Me.chklstSequencesDispos.SelectedIndex >= 0 Then
+			VpSequence = Me.chklstSequencesDispos.SelectedItem
 			Call Me.Clear
-			For Each VpCard As String In CType(Me.chklstSequencesDispos.SelectedItem, clsComboSequence).CardsNames
-				For VpI As Integer = 0 To Me.lstCombosDispos.Items.Count - 1
-					If VpCard = Me.lstCombosDispos.Items.Item(VpI) And Not Me.lstCombosDispos.SelectedIndices.Contains(VpI) Then
-						Me.lstCombosDispos.SelectedIndices.Add(VpI)
-						Exit For
-					End If
-				Next VpI
-			Next VpCard
+			For Each VpElement As clsElement In VpSequence.Elements
+				Select Case VpElement.ElementType
+					Case clsElement.eElementType.Card
+						Call Me.IncrementRow(Me.grdCardsDispos, VpElement.ElementValue)
+					Case clsElement.eElementType.Color
+						Call Me.IncrementRow(Me.grdColorsDispos, VpElement.ElementValue)
+					Case clsElement.eElementType.Cost
+						Call Me.IncrementRow(Me.grdCostsDispos, VpElement.ElementValue)
+					Case clsElement.eElementType.SubType
+						Call Me.IncrementRow(Me.grdSubTypesDispos, VpElement.ElementValue)
+					Case clsElement.eElementType.Type
+						Call Me.IncrementRow(Me.grdTypesDispos, VpElement.ElementValue)
+					Case Else
+				End Select
+			Next VpElement
 		End If
-	End Sub
-	Sub BtSaveClick(sender As Object, e As EventArgs)
-	'----------------------------------------------
-	'Sauvegarde les séquences dans un fichier texte
-	'----------------------------------------------
-	Dim VpSeqFile As StreamWriter
-		Me.dlgSave.FileName = ""
-		Me.dlgSave.ShowDialog
-		If Me.dlgSave.FileName <> "" Then
-			VpSeqFile = New StreamWriter(Me.dlgSave.FileName)
-			For VpI As Integer = 0 To Me.chklstSequencesDispos.Items.Count - 1
-				VpSeqFile.WriteLine(CType(Me.chklstSequencesDispos.Items.Item(VpI), clsComboSequence).ToString + "#" + Me.chklstSequencesDispos.GetItemChecked(VpI).ToString)
-			Next VpI
-			VpSeqFile.Close
-		End If		
-	End Sub
-	Sub BtOpenClick(sender As Object, e As EventArgs)
-	'----------------------------------------------
-	'Recharge les séquences depuis un fichier texte
-	'----------------------------------------------
-	Dim VpSeqFile As StreamReader
-	Dim VpCur(0 To 1) As String
-		Me.dlgOpen.FileName = ""
-		Me.dlgOpen.ShowDialog
-		If Me.dlgOpen.FileName <> "" Then
-			VpSeqFile = New StreamReader(Me.dlgOpen.FileName)
-			Call Me.Clear(True)
-			While Not VpSeqFile.EndOfStream
-				VpCur = VpSeqFile.ReadLine.Split("#")
-				Me.chklstSequencesDispos.Items.Add(clsComboSequence.FromString(VpCur(0)), clsModule.Matching(VpCur(1)))			
-			End While
-			VpSeqFile.Close
-		End If
-	End Sub
-	Sub LstCombosDisposSelectedIndexChanged(sender As Object, e As EventArgs)
-	Dim VpPrev As List(Of Integer) = Me.lstCombosDispos.Tag
-		'Elément nouvellement sélectionné ?
-		For Each VpItem As Integer In Me.lstCombosDispos.SelectedIndices
-			If Not VpPrev.Contains(VpItem) Then
-				VpPrev.Add(VpItem)
-				Call clsModule.LoadScanCard(Me.lstCombosDispos.Items.Item(VpItem), Me.picScanCard2)
-				Exit For
-			End If
-		Next VpItem
-		'Elément déselectionné ?
-		For Each VpItem As Integer In VpPrev
-			If Not Me.lstCombosDispos.SelectedIndices.Contains(VpItem) Then
-				Call clsModule.LoadScanCard(Me.lstCombosDispos.Items.Item(VpItem), Me.picScanCard2)
-				VpPrev.Remove(VpItem)
-				Exit For
-			End If
-		Next VpItem		
-	End Sub
-	Sub BtClearClick(sender As Object, e As EventArgs)
-		Call Me.Clear
 	End Sub
 	Sub BtClearAllClick(sender As Object, e As EventArgs)
 		Call Me.Clear(True)
@@ -562,29 +536,28 @@ Public Partial Class frmSimu
 	End Sub
 	Sub BtAddSequenceClick(sender As Object, e As EventArgs)
 	Dim VpSequence As New clsComboSequence
-		If Me.lstCombosDispos.SelectedItems.Count > 0 Then
-			For Each VpItem As String In Me.lstCombosDispos.SelectedItems
-				VpSequence.Add(VpItem)
-			Next VpItem
+		Call Me.AddToSequence(VpSequence, Me.grdCardsDispos, clsElement.eElementType.Card)
+		Call Me.AddToSequence(VpSequence, Me.grdTypesDispos, clsElement.eElementType.Type)
+		Call Me.AddToSequence(VpSequence, Me.grdSubTypesDispos, clsElement.eElementType.SubType)
+		Call Me.AddToSequence(VpSequence, Me.grdCostsDispos, clsElement.eElementType.Cost)
+		Call Me.AddToSequence(VpSequence, Me.grdColorsDispos, clsElement.eElementType.Color)
+		If VpSequence.Elements.Count > 0 Then
 			Me.chklstSequencesDispos.Items.Add(VpSequence, True)
 			Call Me.Clear
 		Else
 			Call clsModule.ShowWarning("Une séquence doit contenir au moins une carte.")
-		End If						
-	End Sub	
-	Sub BtMainsActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.GestVisible(True)
+		End If
 	End Sub
 	Sub BtCombosActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.GestVisible(, True)
-		Call Me.LoadForCombos
+		Call Me.GestVisible(True)
+		Call Me.LoadForGrids
 	End Sub
 	Sub BtDeployActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.GestVisible(, , True)
+		Call Me.GestVisible(, True)
 		Call Me.LoadSpecialUses
 	End Sub
 	Sub BtSuggestActivate(sender As Object, e As EventArgs)
-		Call Me.GestVisible(, , , True)
+		Call Me.GestVisible(, , True)
 	End Sub
 	Sub BtSimusClick(sender As Object, e As EventArgs)
 		Me.cboTourCumul.Text = ""
@@ -593,28 +566,11 @@ Public Partial Class frmSimu
 			Call Me.CombosSimu
 		Else
 			Call clsModule.ShowWarning("Créer au moins une séquence avant de lancer le calcul.")
-		End If		
-	End Sub	
+		End If
+	End Sub
 	Sub CboTourCumulSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpEspCumul As SortedList = Me.cboTourCumul.Tag
 		Me.txtEspCumul.Text = Format(VpEspCumul.Item(CInt(Me.cboTourCumul.Text) - 1), "0.00")
-	End Sub
-	Sub CmdMainClick(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.MainsSimu
-	End Sub
-	Sub CellMouseClick(sender As Object, e As SourceGrid2.PositionEventArgs)
-		Call clsModule.LoadScanCard(clsModule.ExtractENName(e.Cell.GetValue(e.Position)), Me.picScanCard)
-	End Sub
-	Sub CellMouseDoubleClick(sender As Object, e As SourceGrid2.PositionEventArgs)
-	Dim VpPartie As clsPartie = Me.grdMainsTirage.Tag
-	Dim VpCell As Cells.Cell = e.Cell
-	Dim VpCard As clsCard = VpCell.Tag
-		Call VpPartie.AddToInPlay(VpCard)
-		Call VpPartie.Draw
-		Call Me.ShowMain
-	End Sub
-	Sub CellKeyUp(sender As Object, e As SourceGrid2.PositionKeyEventArgs)
-		Call clsModule.LoadScanCard(clsModule.ExtractENName(e.Cell.GetValue(e.Position)), Me.picScanCard)
 	End Sub
 	Sub CmdSimu2Click(ByVal sender As Object, ByVal e As EventArgs)
 		If Me.chkVerbosity.Checked Then
@@ -641,7 +597,7 @@ Public Partial Class frmSimu
 		VmGraphCount = VmGraphCount + 1
 		VmGrapher.AddNewPlot(VpEspCumul, "(" + VmGraphCount.ToString + ") " + clsModule.CgSimus3 + VmRestrictionTXT)
 		VmGrapher.Show
-		VmGrapher.BringToFront		
+		VmGrapher.BringToFront
 	End Sub
 	Sub CmdAddPlot2Click(sender As Object, e As EventArgs)
 	Dim VpEspDeploy As SortedList = Me.cboTourDeploy.Tag
@@ -654,7 +610,7 @@ Public Partial Class frmSimu
 		VmGrapher.BringToFront
 	End Sub
 	Sub FrmSimuLoad(sender As Object, e As EventArgs)
-		Call Me.MainsSimu
+		Call Me.LoadForGrids
 	End Sub
 	Sub LstUserCombosMouseUp(sender As Object, e As MouseEventArgs)
 	Dim VpItem As Integer = Me.lstUserCombos.IndexFromPoint(e.Location)
@@ -746,7 +702,7 @@ Public Class clsPartie
 		If Not VpGestDeploy Then
 			VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		Else
-			VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items, CardFR.TitleFR From ((Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
+			VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items, CardFR.TitleFR, Card.SubType, Spell.Color, Spell.myCost From ((Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		End If
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
@@ -757,7 +713,7 @@ Public Class clsPartie
 				If Not VpGestDeploy Then
 					Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1))
 				Else
-					Me.AddCard(.GetString(0), .GetString(5), .GetInt32(4), .GetValue(1).ToString.Replace(vbCrLf, " "), .GetValue(3).ToString, .GetValue(2).ToString, True)
+					Me.AddCard(.GetString(0), .GetString(5), .GetInt32(4), .GetValue(1).ToString.Replace(vbCrLf, " "), .GetValue(3).ToString, .GetValue(8).ToString, .GetString(7), .GetValue(2).ToString, .GetValue(6).ToString, True)
 				End If
 			End While
 			.Close
@@ -765,12 +721,12 @@ Public Class clsPartie
 		VmVerbose = VpVerbose
 		VmSimuOut = VpSimuOut
 	End Sub
-	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
+	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpMyCost As String = "", Optional VpColor As String = "", Optional VpType As String = "", Optional VpSubType As String = "", Optional VpGestDeploy As Boolean = False)
 	'--------------------
 	'Construction du deck
 	'--------------------
 		For VpI As Integer = 1 To VpCount
-			VmDeckCopy.Add(New clsCard(VpName, VpNameFR, VpCardText, VpCost, VpType, VpGestDeploy))
+			VmDeckCopy.Add(New clsCard(VpName, VpNameFR, VpCardText, VpCost, VpMyCost, VpColor, VpType, VpSubType, VpGestDeploy))
 		Next VpI
 	End Sub
 	Public Sub DeckShuffle
@@ -827,7 +783,7 @@ Public Class clsPartie
 	'-------------------------------------------------------------
 	'Renvoie vrai si toutes les cartes spécifiées ont été piochées
 	'-------------------------------------------------------------
-		For Each VpItem As String In VpSequence.CardsNames
+		For Each VpItem As clsElement In VpSequence.Elements
 			If Not Me.IsDrawn(VpItem) Then
 				Return False
 			End If
@@ -1237,12 +1193,27 @@ Public Class clsPartie
 		Next VpCard
 		Return VpPot
 	End Function
-	Private Function IsDrawn(VpName As String) As Boolean
-	'-------------------------------------------------
-	'Renvoie vrai si la cartes spécifiée a été piochée
-	'-------------------------------------------------
+	Private Function IsDrawnMatching(VpCard As clsCard, VpElement As clsElement) As Boolean
+		Select Case VpElement.ElementType
+			Case clsElement.eElementType.Card
+				Return VpCard.CardName = VpElement.ElementValue
+			Case clsElement.eElementType.Type
+				Return VpCard.CardType = VpElement.ElementValue
+			Case clsElement.eElementType.SubType
+				Return VpCard.CardSubType = VpElement.ElementValue
+			Case clsElement.eElementType.Cost
+				Return VpCard.CardMyCost = VpElement.ElementValue
+			Case clsElement.eElementType.Color
+				Return VpCard.CardColor = VpElement.ElementValue
+			Case Else
+		End Select
+	End Function
+	Private Function IsDrawn(VpElement As clsElement) As Boolean
+	'-----------------------------------------------
+	'Renvoie vrai si l'élément spécifié a été pioché
+	'-----------------------------------------------
 		For Each VpCard As clsCard In VmDrawn
-			If VpCard.CardName = VpName And Not VpCard.Tagged Then
+			If Me.IsDrawnMatching(VpCard, VpElement) And Not VpCard.Tagged Then
 				VpCard.Tagged = True
 				Return True
 			End If
@@ -1343,11 +1314,17 @@ Public Class clsCard
 	Private VmTagged As Boolean = False				'Carte marquée ? (utilisation interne)
 	Private VmSpeciality As clsSpeciality = Nothing	'Carte destinée à une utilisation spéciale (pour la simulation de déploiement uniquement) ?
 	Private VmCardText As String
-	Public Sub New(VpCardName As String, VpNameFR As String, Optional VpCardText As String = "", Optional VpCost As String = "", Optional VpType As String = "", Optional VpGestDeploy As Boolean = False)
+	Private VmSubType As String
+	Private VmMyCost As String
+	Private VmColor As String
+	Public Sub New(VpCardName As String, VpNameFR As String, VpCardText As String, VpCost As String, VpMyCost As String, VpColor As String, VpType As String, VpSubType As String, VpGestDeploy As Boolean)
 	Dim VpGCost As String
 		VmCardName = VpCardName
 		VmCardNameFR = VpNameFR
 		VmCardText = VpCardText
+		VmSubType = VpSubType
+		VmMyCost = VpMyCost
+		VmColor = VpColor
 		If VpGestDeploy Then
 			VmCardType = VpType
 			VmManasInvoc = New clsManas(VpCost)
@@ -1392,6 +1369,21 @@ Public Class clsCard
 	Public ReadOnly Property CardType As String
 		Get
 			Return VmCardType
+		End Get
+	End Property
+	Public ReadOnly Property CardSubType As String
+		Get
+			Return VmSubType
+		End Get
+	End Property
+	Public ReadOnly Property CardMyCost As String
+		Get
+			Return VmMyCost
+		End Get
+	End Property
+	Public ReadOnly Property CardColor As String
+		Get
+			Return VmColor
 		End Get
 	End Property
 	Public ReadOnly Property ManaAble As Boolean
@@ -1571,38 +1563,68 @@ Public Class clsCorrelationComparer
 	End Function
 End Class
 Public Class clsComboSequence
-	Private VmCardsNames As List(Of String)
-	'Private VmCardsNamesFR As List(Of String)
+	Private VmElements As List(Of clsElement)
 	Public Sub New
-		VmCardsNames = New List(Of String)
-	'	VmCardsNamesFR = New List(Of String)
+		VmElements = New List(Of clsElement)
 	End Sub
-	Public Sub Add(VpItem As String)
-	'Dim VpVO As String
-	'Dim VpVF As String
-		VmCardsNames.Add(VpItem)
-	'	VmCardsNamesFR.Add(VpVF)
+	Public Sub Add(VpItem As clsElement)
+		VmElements.Add(VpItem)
 	End Sub
-	Public Shared Function FromString(VpStr As String) As clsComboSequence
-	Dim VpSequence As New clsComboSequence
-		VpStr = VpStr.Substring(VpStr.IndexOf("(") + 1)
-		VpStr = VpStr.Substring(0, VpStr.Length - 1)
-		For Each VpItem As String In VpStr.Split(New String() {" et "}, StringSplitOptions.None)
-			VpSequence.Add(VpItem)
-		Next VpItem
-		Return VpSequence
-	End Function
 	Public Overrides Function ToString As String
+	Dim VpPaires As New Hashtable
 	Dim VpStr As String = "ou ("
-		'For Each VpCard As String In If(VpVF, VmCardsNamesFR, VmCardsNames)
-		For Each VpCard As String In VmCardsNames
-			VpStr = VpStr + VpCard + " et "
-		Next VpCard
+		For Each VpElement As clsElement In VmElements
+			If Not VpPaires.Contains(VpElement.ToString) Then
+				VpPaires.Add(VpElement.ToString, 1)
+			Else
+				VpPaires.Item(VpElement.ToString) += 1
+			End If
+		Next VpElement
+		For Each VpItem As String In VpPaires.Keys
+			VpStr = VpStr + VpPaires.Item(VpItem).ToString + " " + VpItem + " et "
+		Next VpItem
 		Return VpStr.Substring(0, VpStr.Length - 4) + ")"
 	End Function
-	Public ReadOnly Property CardsNames As List(Of String)
+	Public ReadOnly Property Elements As List(Of clsElement)
 		Get
-			Return VmCardsNames
+			Return VmElements
+		End Get
+	End Property
+End Class
+Public Class clsElement
+	Public Enum eElementType
+		Card
+		Type
+		SubType
+		Cost
+		Color
+	End Enum
+	Private VmElementType As eElementType
+	Private VmElementValue As String
+	Public Sub New(VpElementType As eElementType, VpElementValue As String)
+		VmElementType = VpElementType
+		VmElementValue = VpElementValue
+	End Sub
+	Public Overrides Function ToString As String
+		Select Case VmElementType
+			Case eElementType.Card, eElementType.SubType, eElementType.Cost
+				Return VmElementValue
+			Case eElementType.Type
+				Return clsModule.FormatTitle("Card.Type", VmElementValue)
+			Case eElementType.Color
+				Return clsModule.FormatTitle("Spell.Color", VmElementValue)
+			Case Else
+				Return ""
+		End Select
+	End Function
+	Public ReadOnly Property ElementType As eElementType
+		Get
+			Return VmElementType
+		End Get
+	End Property
+	Public ReadOnly Property ElementValue As String
+		Get
+			Return VmElementValue
 		End Get
 	End Property
 End Class

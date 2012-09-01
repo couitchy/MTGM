@@ -40,15 +40,21 @@ Partial Class frmSimu
 		Me.grpCombos = New System.Windows.Forms.GroupBox
 		Me.splitCombosV = New System.Windows.Forms.SplitContainer
 		Me.splitCombosH1 = New System.Windows.Forms.SplitContainer
-		Me.lstCombosDispos = New System.Windows.Forms.ListBox
-		Me.toolStripCombos1 = New System.Windows.Forms.ToolStrip
-		Me.btClear = New System.Windows.Forms.ToolStripButton
+		Me.tabControl = New System.Windows.Forms.TabControl
+		Me.tabCarte = New System.Windows.Forms.TabPage
+		Me.grdCardsDispos = New SourceGrid2.Grid
+		Me.tabType = New System.Windows.Forms.TabPage
+		Me.grdTypesDispos = New SourceGrid2.Grid
+		Me.tabSubType = New System.Windows.Forms.TabPage
+		Me.grdSubTypesDispos = New SourceGrid2.Grid
+		Me.tabCost = New System.Windows.Forms.TabPage
+		Me.grdCostsDispos = New SourceGrid2.Grid
+		Me.tabColor = New System.Windows.Forms.TabPage
+		Me.grdColorsDispos = New SourceGrid2.Grid
+		Me.toolStripCombos = New System.Windows.Forms.ToolStrip
 		Me.btAddSequence = New System.Windows.Forms.ToolStripButton
 		Me.btRemove = New System.Windows.Forms.ToolStripButton
 		Me.btClearAll = New System.Windows.Forms.ToolStripButton
-		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
-		Me.btSave = New System.Windows.Forms.ToolStripButton
-		Me.btOpen = New System.Windows.Forms.ToolStripButton
 		Me.chklstSequencesDispos = New System.Windows.Forms.CheckedListBox
 		Me.splitCombosH2 = New System.Windows.Forms.SplitContainer
 		Me.picScanCard2 = New System.Windows.Forms.PictureBox
@@ -81,11 +87,6 @@ Partial Class frmSimu
 		Me.lbl15 = New System.Windows.Forms.Label
 		Me.cmdDetect = New System.Windows.Forms.Button
 		Me.prgSuggest = New System.Windows.Forms.ProgressBar
-		Me.grpMains = New System.Windows.Forms.GroupBox
-		Me.splitMainsV = New System.Windows.Forms.SplitContainer
-		Me.grdMainsTirage = New SourceGrid2.Grid
-		Me.cmdMain = New System.Windows.Forms.Button
-		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.grpDeploy = New System.Windows.Forms.GroupBox
 		Me.splitDeployH = New System.Windows.Forms.SplitContainer
 		Me.splitDeployV = New System.Windows.Forms.SplitContainer
@@ -106,7 +107,6 @@ Partial Class frmSimu
 		Me.lbl9 = New System.Windows.Forms.Label
 		Me.txtN2 = New System.Windows.Forms.TextBox
 		Me.lbl10 = New System.Windows.Forms.Label
-		Me.btMains = New TD.SandBar.ButtonItem
 		Me.btCombos = New TD.SandBar.ButtonItem
 		Me.btDeploy = New TD.SandBar.ButtonItem
 		Me.btSuggest = New TD.SandBar.ButtonItem
@@ -128,7 +128,18 @@ Partial Class frmSimu
 		Me.splitCombosH1.Panel1.SuspendLayout
 		Me.splitCombosH1.Panel2.SuspendLayout
 		Me.splitCombosH1.SuspendLayout
-		Me.toolStripCombos1.SuspendLayout
+		Me.tabControl.SuspendLayout
+		Me.tabCarte.SuspendLayout
+		Me.grdCardsDispos.SuspendLayout
+		Me.tabType.SuspendLayout
+		Me.grdTypesDispos.SuspendLayout
+		Me.tabSubType.SuspendLayout
+		Me.grdSubTypesDispos.SuspendLayout
+		Me.tabCost.SuspendLayout
+		Me.grdCostsDispos.SuspendLayout
+		Me.tabColor.SuspendLayout
+		Me.grdColorsDispos.SuspendLayout
+		Me.toolStripCombos.SuspendLayout
 		Me.splitCombosH2.Panel1.SuspendLayout
 		Me.splitCombosH2.Panel2.SuspendLayout
 		Me.splitCombosH2.SuspendLayout
@@ -136,11 +147,6 @@ Partial Class frmSimu
 		Me.toolStripCombos2.SuspendLayout
 		Me.grpSuggest.SuspendLayout
 		CType(Me.sldPertin,System.ComponentModel.ISupportInitialize).BeginInit
-		Me.grpMains.SuspendLayout
-		Me.splitMainsV.Panel1.SuspendLayout
-		Me.splitMainsV.Panel2.SuspendLayout
-		Me.splitMainsV.SuspendLayout
-		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.grpDeploy.SuspendLayout
 		Me.splitDeployH.Panel1.SuspendLayout
 		Me.splitDeployH.Panel2.SuspendLayout
@@ -160,11 +166,11 @@ Partial Class frmSimu
 		Me.cbarSimus.DrawActionsButton = false
 		Me.cbarSimus.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarSimus.Guid = New System.Guid("b15afb33-5835-4d55-9f3e-42d79c5c6722")
-		Me.cbarSimus.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btMains, Me.btCombos, Me.btDeploy, Me.btSuggest})
+		Me.cbarSimus.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btCombos, Me.btDeploy, Me.btSuggest})
 		Me.cbarSimus.Location = New System.Drawing.Point(0, 0)
 		Me.cbarSimus.Movable = false
 		Me.cbarSimus.Name = "cbarSimus"
-		Me.cbarSimus.Size = New System.Drawing.Size(408, 272)
+		Me.cbarSimus.Size = New System.Drawing.Size(627, 424)
 		Me.cbarSimus.TabIndex = 0
 		Me.cbarSimus.Text = "Modes de simulation"
 		'
@@ -172,11 +178,10 @@ Partial Class frmSimu
 		'
 		Me.pnlSimus.Controls.Add(Me.grpCombos)
 		Me.pnlSimus.Controls.Add(Me.grpSuggest)
-		Me.pnlSimus.Controls.Add(Me.grpMains)
 		Me.pnlSimus.Controls.Add(Me.grpDeploy)
 		Me.pnlSimus.Location = New System.Drawing.Point(2, 49)
 		Me.pnlSimus.Name = "pnlSimus"
-		Me.pnlSimus.Size = New System.Drawing.Size(404, 221)
+		Me.pnlSimus.Size = New System.Drawing.Size(623, 373)
 		Me.pnlSimus.TabIndex = 0
 		'
 		'grpCombos
@@ -187,10 +192,9 @@ Partial Class frmSimu
 		Me.grpCombos.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpCombos.Location = New System.Drawing.Point(0, 0)
 		Me.grpCombos.Name = "grpCombos"
-		Me.grpCombos.Size = New System.Drawing.Size(404, 221)
+		Me.grpCombos.Size = New System.Drawing.Size(623, 373)
 		Me.grpCombos.TabIndex = 1
 		Me.grpCombos.TabStop = false
-		Me.grpCombos.Visible = false
 		'
 		'splitCombosV
 		'
@@ -206,8 +210,8 @@ Partial Class frmSimu
 		'splitCombosV.Panel2
 		'
 		Me.splitCombosV.Panel2.Controls.Add(Me.splitCombosH2)
-		Me.splitCombosV.Size = New System.Drawing.Size(398, 185)
-		Me.splitCombosV.SplitterDistance = 224
+		Me.splitCombosV.Size = New System.Drawing.Size(617, 337)
+		Me.splitCombosV.SplitterDistance = 346
 		Me.splitCombosV.TabIndex = 3
 		'
 		'splitCombosH1
@@ -220,46 +224,224 @@ Partial Class frmSimu
 		'
 		'splitCombosH1.Panel1
 		'
-		Me.splitCombosH1.Panel1.Controls.Add(Me.lstCombosDispos)
-		Me.splitCombosH1.Panel1.Controls.Add(Me.toolStripCombos1)
+		Me.splitCombosH1.Panel1.Controls.Add(Me.tabControl)
+		Me.splitCombosH1.Panel1.Controls.Add(Me.toolStripCombos)
 		'
 		'splitCombosH1.Panel2
 		'
 		Me.splitCombosH1.Panel2.Controls.Add(Me.chklstSequencesDispos)
-		Me.splitCombosH1.Size = New System.Drawing.Size(224, 185)
-		Me.splitCombosH1.SplitterDistance = 100
+		Me.splitCombosH1.Size = New System.Drawing.Size(346, 337)
+		Me.splitCombosH1.SplitterDistance = 200
 		Me.splitCombosH1.TabIndex = 0
 		'
-		'lstCombosDispos
+		'tabControl
 		'
-		Me.lstCombosDispos.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.lstCombosDispos.FormattingEnabled = true
-		Me.lstCombosDispos.Location = New System.Drawing.Point(0, 25)
-		Me.lstCombosDispos.Name = "lstCombosDispos"
-		Me.lstCombosDispos.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
-		Me.lstCombosDispos.Size = New System.Drawing.Size(224, 69)
-		Me.lstCombosDispos.TabIndex = 8
-		AddHandler Me.lstCombosDispos.SelectedIndexChanged, AddressOf Me.LstCombosDisposSelectedIndexChanged
+		Me.tabControl.Controls.Add(Me.tabCarte)
+		Me.tabControl.Controls.Add(Me.tabType)
+		Me.tabControl.Controls.Add(Me.tabSubType)
+		Me.tabControl.Controls.Add(Me.tabCost)
+		Me.tabControl.Controls.Add(Me.tabColor)
+		Me.tabControl.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.tabControl.Location = New System.Drawing.Point(0, 25)
+		Me.tabControl.Name = "tabControl"
+		Me.tabControl.SelectedIndex = 0
+		Me.tabControl.Size = New System.Drawing.Size(346, 175)
+		Me.tabControl.TabIndex = 8
 		'
-		'toolStripCombos1
+		'tabCarte
 		'
-		Me.toolStripCombos1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-		Me.toolStripCombos1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btClear, Me.btAddSequence, Me.btRemove, Me.btClearAll, Me.btSeparator2, Me.btSave, Me.btOpen})
-		Me.toolStripCombos1.Location = New System.Drawing.Point(0, 0)
-		Me.toolStripCombos1.Name = "toolStripCombos1"
-		Me.toolStripCombos1.Size = New System.Drawing.Size(224, 25)
-		Me.toolStripCombos1.TabIndex = 7
-		Me.toolStripCombos1.Text = "toolStrip1"
+		Me.tabCarte.Controls.Add(Me.grdCardsDispos)
+		Me.tabCarte.Location = New System.Drawing.Point(4, 22)
+		Me.tabCarte.Name = "tabCarte"
+		Me.tabCarte.Padding = New System.Windows.Forms.Padding(3)
+		Me.tabCarte.Size = New System.Drawing.Size(338, 149)
+		Me.tabCarte.TabIndex = 0
+		Me.tabCarte.Text = "Carte"
+		Me.tabCarte.UseVisualStyleBackColor = true
 		'
-		'btClear
+		'grdCardsDispos
 		'
-		Me.btClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-		Me.btClear.Image = CType(resources.GetObject("btClear.Image"),System.Drawing.Image)
-		Me.btClear.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btClear.Name = "btClear"
-		Me.btClear.Size = New System.Drawing.Size(23, 22)
-		Me.btClear.Text = "Nouvelle séquence"
-		AddHandler Me.btClear.Click, AddressOf Me.BtClearClick
+		Me.grdCardsDispos.AutoSizeMinHeight = 10
+		Me.grdCardsDispos.AutoSizeMinWidth = 10
+		Me.grdCardsDispos.AutoStretchColumnsToFitWidth = false
+		Me.grdCardsDispos.AutoStretchRowsToFitHeight = false
+		Me.grdCardsDispos.BackColor = System.Drawing.Color.Transparent
+		Me.grdCardsDispos.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdCardsDispos.CustomSort = false
+		Me.grdCardsDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdCardsDispos.GridToolTipActive = true
+		Me.grdCardsDispos.Location = New System.Drawing.Point(3, 3)
+		Me.grdCardsDispos.Name = "grdCardsDispos"
+		Me.grdCardsDispos.Size = New System.Drawing.Size(332, 143)
+		Me.grdCardsDispos.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdCardsDispos.TabIndex = 1
+		'
+		'tabType
+		'
+		Me.tabType.Controls.Add(Me.grdTypesDispos)
+		Me.tabType.Location = New System.Drawing.Point(4, 22)
+		Me.tabType.Name = "tabType"
+		Me.tabType.Padding = New System.Windows.Forms.Padding(3)
+		Me.tabType.Size = New System.Drawing.Size(421, 149)
+		Me.tabType.TabIndex = 1
+		Me.tabType.Text = "Type"
+		Me.tabType.UseVisualStyleBackColor = true
+		'
+		'grdTypesDispos
+		'
+		Me.grdTypesDispos.AutoSizeMinHeight = 10
+		Me.grdTypesDispos.AutoSizeMinWidth = 10
+		Me.grdTypesDispos.AutoStretchColumnsToFitWidth = false
+		Me.grdTypesDispos.AutoStretchRowsToFitHeight = false
+		Me.grdTypesDispos.BackColor = System.Drawing.Color.Transparent
+		Me.grdTypesDispos.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdTypesDispos.CustomSort = false
+		Me.grdTypesDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdTypesDispos.GridToolTipActive = true
+		Me.grdTypesDispos.Location = New System.Drawing.Point(3, 3)
+		Me.grdTypesDispos.Name = "grdTypesDispos"
+		Me.grdTypesDispos.Size = New System.Drawing.Size(415, 143)
+		Me.grdTypesDispos.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdTypesDispos.TabIndex = 1
+		'
+		'tabSubType
+		'
+		Me.tabSubType.Controls.Add(Me.grdSubTypesDispos)
+		Me.tabSubType.Location = New System.Drawing.Point(4, 22)
+		Me.tabSubType.Name = "tabSubType"
+		Me.tabSubType.Padding = New System.Windows.Forms.Padding(3)
+		Me.tabSubType.Size = New System.Drawing.Size(421, 149)
+		Me.tabSubType.TabIndex = 2
+		Me.tabSubType.Text = "Sous-type"
+		Me.tabSubType.UseVisualStyleBackColor = true
+		'
+		'grdSubTypesDispos
+		'
+		Me.grdSubTypesDispos.AutoSizeMinHeight = 10
+		Me.grdSubTypesDispos.AutoSizeMinWidth = 10
+		Me.grdSubTypesDispos.AutoStretchColumnsToFitWidth = false
+		Me.grdSubTypesDispos.AutoStretchRowsToFitHeight = false
+		Me.grdSubTypesDispos.BackColor = System.Drawing.Color.Transparent
+		Me.grdSubTypesDispos.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdSubTypesDispos.CustomSort = false
+		Me.grdSubTypesDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdSubTypesDispos.GridToolTipActive = true
+		Me.grdSubTypesDispos.Location = New System.Drawing.Point(3, 3)
+		Me.grdSubTypesDispos.Name = "grdSubTypesDispos"
+		Me.grdSubTypesDispos.Size = New System.Drawing.Size(415, 143)
+		Me.grdSubTypesDispos.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdSubTypesDispos.TabIndex = 1
+		'
+		'tabCost
+		'
+		Me.tabCost.Controls.Add(Me.grdCostsDispos)
+		Me.tabCost.Location = New System.Drawing.Point(4, 22)
+		Me.tabCost.Name = "tabCost"
+		Me.tabCost.Padding = New System.Windows.Forms.Padding(3)
+		Me.tabCost.Size = New System.Drawing.Size(421, 149)
+		Me.tabCost.TabIndex = 3
+		Me.tabCost.Text = "Invocation"
+		Me.tabCost.UseVisualStyleBackColor = true
+		'
+		'grdCostsDispos
+		'
+		Me.grdCostsDispos.AutoSizeMinHeight = 10
+		Me.grdCostsDispos.AutoSizeMinWidth = 10
+		Me.grdCostsDispos.AutoStretchColumnsToFitWidth = false
+		Me.grdCostsDispos.AutoStretchRowsToFitHeight = false
+		Me.grdCostsDispos.BackColor = System.Drawing.Color.Transparent
+		Me.grdCostsDispos.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdCostsDispos.CustomSort = false
+		Me.grdCostsDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdCostsDispos.GridToolTipActive = true
+		Me.grdCostsDispos.Location = New System.Drawing.Point(3, 3)
+		Me.grdCostsDispos.Name = "grdCostsDispos"
+		Me.grdCostsDispos.Size = New System.Drawing.Size(415, 143)
+		Me.grdCostsDispos.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdCostsDispos.TabIndex = 1
+		'
+		'tabColor
+		'
+		Me.tabColor.Controls.Add(Me.grdColorsDispos)
+		Me.tabColor.Location = New System.Drawing.Point(4, 22)
+		Me.tabColor.Name = "tabColor"
+		Me.tabColor.Padding = New System.Windows.Forms.Padding(3)
+		Me.tabColor.Size = New System.Drawing.Size(421, 149)
+		Me.tabColor.TabIndex = 4
+		Me.tabColor.Text = "Couleur"
+		Me.tabColor.UseVisualStyleBackColor = true
+		'
+		'grdColorsDispos
+		'
+		Me.grdColorsDispos.AutoSizeMinHeight = 10
+		Me.grdColorsDispos.AutoSizeMinWidth = 10
+		Me.grdColorsDispos.AutoStretchColumnsToFitWidth = false
+		Me.grdColorsDispos.AutoStretchRowsToFitHeight = false
+		Me.grdColorsDispos.BackColor = System.Drawing.Color.Transparent
+		Me.grdColorsDispos.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdColorsDispos.CustomSort = false
+		Me.grdColorsDispos.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdColorsDispos.GridToolTipActive = true
+		Me.grdColorsDispos.Location = New System.Drawing.Point(3, 3)
+		Me.grdColorsDispos.Name = "grdColorsDispos"
+		Me.grdColorsDispos.Size = New System.Drawing.Size(415, 143)
+		Me.grdColorsDispos.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdColorsDispos.TabIndex = 1
+		'
+		'toolStripCombos
+		'
+		Me.toolStripCombos.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+		Me.toolStripCombos.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btAddSequence, Me.btRemove, Me.btClearAll})
+		Me.toolStripCombos.Location = New System.Drawing.Point(0, 0)
+		Me.toolStripCombos.Name = "toolStripCombos"
+		Me.toolStripCombos.Size = New System.Drawing.Size(346, 25)
+		Me.toolStripCombos.TabIndex = 7
+		Me.toolStripCombos.Text = "toolStrip1"
 		'
 		'btAddSequence
 		'
@@ -291,44 +473,20 @@ Partial Class frmSimu
 		Me.btClearAll.Text = "Supprimer toutes les séquences"
 		AddHandler Me.btClearAll.Click, AddressOf Me.BtClearAllClick
 		'
-		'btSeparator2
-		'
-		Me.btSeparator2.Name = "btSeparator2"
-		Me.btSeparator2.Size = New System.Drawing.Size(6, 25)
-		'
-		'btSave
-		'
-		Me.btSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-		Me.btSave.Image = CType(resources.GetObject("btSave.Image"),System.Drawing.Image)
-		Me.btSave.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btSave.Name = "btSave"
-		Me.btSave.Size = New System.Drawing.Size(23, 22)
-		Me.btSave.Text = "Sauvegarder les séquences"
-		AddHandler Me.btSave.Click, AddressOf Me.BtSaveClick
-		'
-		'btOpen
-		'
-		Me.btOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-		Me.btOpen.Image = CType(resources.GetObject("btOpen.Image"),System.Drawing.Image)
-		Me.btOpen.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btOpen.Name = "btOpen"
-		Me.btOpen.Size = New System.Drawing.Size(23, 22)
-		Me.btOpen.Text = "Charger les séquences..."
-		AddHandler Me.btOpen.Click, AddressOf Me.BtOpenClick
-		'
 		'chklstSequencesDispos
 		'
 		Me.chklstSequencesDispos.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.chklstSequencesDispos.FormattingEnabled = true
 		Me.chklstSequencesDispos.Location = New System.Drawing.Point(0, 0)
 		Me.chklstSequencesDispos.Name = "chklstSequencesDispos"
-		Me.chklstSequencesDispos.Size = New System.Drawing.Size(224, 79)
+		Me.chklstSequencesDispos.Size = New System.Drawing.Size(346, 124)
 		Me.chklstSequencesDispos.TabIndex = 0
 		AddHandler Me.chklstSequencesDispos.SelectedIndexChanged, AddressOf Me.ChklstSequencesDisposSelectedIndexChanged
 		'
 		'splitCombosH2
 		'
 		Me.splitCombosH2.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitCombosH2.IsSplitterFixed = true
 		Me.splitCombosH2.Location = New System.Drawing.Point(0, 0)
 		Me.splitCombosH2.Name = "splitCombosH2"
 		Me.splitCombosH2.Orientation = System.Windows.Forms.Orientation.Horizontal
@@ -345,8 +503,8 @@ Partial Class frmSimu
 		Me.splitCombosH2.Panel2.Controls.Add(Me.txtEspCumul)
 		Me.splitCombosH2.Panel2.Controls.Add(Me.cboTourCumul)
 		Me.splitCombosH2.Panel2.Controls.Add(Me.lbl4)
-		Me.splitCombosH2.Size = New System.Drawing.Size(170, 185)
-		Me.splitCombosH2.SplitterDistance = 92
+		Me.splitCombosH2.Size = New System.Drawing.Size(267, 337)
+		Me.splitCombosH2.SplitterDistance = 200
 		Me.splitCombosH2.TabIndex = 41
 		'
 		'picScanCard2
@@ -354,7 +512,7 @@ Partial Class frmSimu
 		Me.picScanCard2.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.picScanCard2.Location = New System.Drawing.Point(0, 0)
 		Me.picScanCard2.Name = "picScanCard2"
-		Me.picScanCard2.Size = New System.Drawing.Size(170, 92)
+		Me.picScanCard2.Size = New System.Drawing.Size(267, 200)
 		Me.picScanCard2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
 		Me.picScanCard2.TabIndex = 41
 		Me.picScanCard2.TabStop = false
@@ -364,7 +522,7 @@ Partial Class frmSimu
 		Me.prgSimu.Dock = System.Windows.Forms.DockStyle.Top
 		Me.prgSimu.Location = New System.Drawing.Point(0, 25)
 		Me.prgSimu.Name = "prgSimu"
-		Me.prgSimu.Size = New System.Drawing.Size(170, 14)
+		Me.prgSimu.Size = New System.Drawing.Size(267, 14)
 		Me.prgSimu.TabIndex = 16
 		'
 		'toolStripCombos2
@@ -373,7 +531,7 @@ Partial Class frmSimu
 		Me.toolStripCombos2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.txtN, Me.lbl3, Me.btSeparator, Me.btSimu, Me.btAddPlot})
 		Me.toolStripCombos2.Location = New System.Drawing.Point(0, 0)
 		Me.toolStripCombos2.Name = "toolStripCombos2"
-		Me.toolStripCombos2.Size = New System.Drawing.Size(170, 25)
+		Me.toolStripCombos2.Size = New System.Drawing.Size(267, 25)
 		Me.toolStripCombos2.TabIndex = 15
 		Me.toolStripCombos2.Text = "toolStrip1"
 		'
@@ -387,7 +545,7 @@ Partial Class frmSimu
 		'lbl3
 		'
 		Me.lbl3.Name = "lbl3"
-		Me.lbl3.Size = New System.Drawing.Size(42, 22)
+		Me.lbl3.Size = New System.Drawing.Size(40, 22)
 		Me.lbl3.Text = "parties"
 		'
 		'btSeparator
@@ -456,9 +614,9 @@ Partial Class frmSimu
 		Me.lbl1.Dock = System.Windows.Forms.DockStyle.Top
 		Me.lbl1.Location = New System.Drawing.Point(3, 16)
 		Me.lbl1.Name = "lbl1"
-		Me.lbl1.Size = New System.Drawing.Size(398, 17)
+		Me.lbl1.Size = New System.Drawing.Size(617, 17)
 		Me.lbl1.TabIndex = 2
-		Me.lbl1.Text = "Sélectionner des cartes pour en estimer la probabilité d'apparition :"
+		Me.lbl1.Text = "Sélectionner des éléments pour en estimer la probabilité d'apparition :"
 		'
 		'grpSuggest
 		'
@@ -482,7 +640,7 @@ Partial Class frmSimu
 		Me.grpSuggest.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpSuggest.Location = New System.Drawing.Point(0, 0)
 		Me.grpSuggest.Name = "grpSuggest"
-		Me.grpSuggest.Size = New System.Drawing.Size(404, 221)
+		Me.grpSuggest.Size = New System.Drawing.Size(623, 373)
 		Me.grpSuggest.TabIndex = 3
 		Me.grpSuggest.TabStop = false
 		Me.grpSuggest.Visible = false
@@ -490,7 +648,7 @@ Partial Class frmSimu
 		'cmdCorrExpr
 		'
 		Me.cmdCorrExpr.Enabled = false
-		Me.cmdCorrExpr.Location = New System.Drawing.Point(208, 60)
+		Me.cmdCorrExpr.Location = New System.Drawing.Point(129, 89)
 		Me.cmdCorrExpr.Name = "cmdCorrExpr"
 		Me.cmdCorrExpr.Size = New System.Drawing.Size(193, 23)
 		Me.cmdCorrExpr.TabIndex = 38
@@ -500,11 +658,12 @@ Partial Class frmSimu
 		'
 		'sldPertin
 		'
+		Me.sldPertin.BackColor = System.Drawing.Color.FromArgb(CType(CType(175,Byte),Integer), CType(CType(175,Byte),Integer), CType(CType(192,Byte),Integer))
 		Me.sldPertin.Enabled = false
-		Me.sldPertin.Location = New System.Drawing.Point(268, 129)
+		Me.sldPertin.Location = New System.Drawing.Point(129, 297)
 		Me.sldPertin.Minimum = 1
 		Me.sldPertin.Name = "sldPertin"
-		Me.sldPertin.Size = New System.Drawing.Size(133, 45)
+		Me.sldPertin.Size = New System.Drawing.Size(193, 45)
 		Me.sldPertin.TabIndex = 37
 		Me.sldPertin.Value = 4
 		'
@@ -512,16 +671,16 @@ Partial Class frmSimu
 		'
 		Me.lbl17.AutoSize = true
 		Me.lbl17.Enabled = false
-		Me.lbl17.Location = New System.Drawing.Point(268, 113)
+		Me.lbl17.Location = New System.Drawing.Point(3, 272)
 		Me.lbl17.Name = "lbl17"
-		Me.lbl17.Size = New System.Drawing.Size(110, 13)
+		Me.lbl17.Size = New System.Drawing.Size(141, 13)
 		Me.lbl17.TabIndex = 36
-		Me.lbl17.Text = "Degré de pertinence :"
+		Me.lbl17.Text = "Degré de pertinence désiré :"
 		'
 		'txtPrix
 		'
 		Me.txtPrix.Enabled = false
-		Me.txtPrix.Location = New System.Drawing.Point(129, 179)
+		Me.txtPrix.Location = New System.Drawing.Point(189, 232)
 		Me.txtPrix.Name = "txtPrix"
 		Me.txtPrix.ReadOnly = true
 		Me.txtPrix.Size = New System.Drawing.Size(133, 20)
@@ -531,7 +690,7 @@ Partial Class frmSimu
 		'txtEditions
 		'
 		Me.txtEditions.Enabled = false
-		Me.txtEditions.Location = New System.Drawing.Point(129, 155)
+		Me.txtEditions.Location = New System.Drawing.Point(189, 208)
 		Me.txtEditions.Name = "txtEditions"
 		Me.txtEditions.ReadOnly = true
 		Me.txtEditions.Size = New System.Drawing.Size(133, 20)
@@ -541,7 +700,7 @@ Partial Class frmSimu
 		'txtInvoc
 		'
 		Me.txtInvoc.Enabled = false
-		Me.txtInvoc.Location = New System.Drawing.Point(129, 132)
+		Me.txtInvoc.Location = New System.Drawing.Point(189, 185)
 		Me.txtInvoc.Name = "txtInvoc"
 		Me.txtInvoc.ReadOnly = true
 		Me.txtInvoc.Size = New System.Drawing.Size(133, 20)
@@ -551,9 +710,9 @@ Partial Class frmSimu
 		'cmdSuggest
 		'
 		Me.cmdSuggest.Enabled = false
-		Me.cmdSuggest.Location = New System.Drawing.Point(268, 177)
+		Me.cmdSuggest.Location = New System.Drawing.Point(391, 300)
 		Me.cmdSuggest.Name = "cmdSuggest"
-		Me.cmdSuggest.Size = New System.Drawing.Size(133, 23)
+		Me.cmdSuggest.Size = New System.Drawing.Size(193, 23)
 		Me.cmdSuggest.TabIndex = 32
 		Me.cmdSuggest.Text = "Suggérer des cartes !"
 		Me.cmdSuggest.UseVisualStyleBackColor = true
@@ -562,7 +721,7 @@ Partial Class frmSimu
 		'txtColors
 		'
 		Me.txtColors.Enabled = false
-		Me.txtColors.Location = New System.Drawing.Point(129, 110)
+		Me.txtColors.Location = New System.Drawing.Point(189, 163)
 		Me.txtColors.Name = "txtColors"
 		Me.txtColors.ReadOnly = true
 		Me.txtColors.Size = New System.Drawing.Size(133, 20)
@@ -575,7 +734,7 @@ Partial Class frmSimu
 		Me.chkPrix.Checked = true
 		Me.chkPrix.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkPrix.Enabled = false
-		Me.chkPrix.Location = New System.Drawing.Point(10, 181)
+		Me.chkPrix.Location = New System.Drawing.Point(70, 234)
 		Me.chkPrix.Name = "chkPrix"
 		Me.chkPrix.Size = New System.Drawing.Size(96, 17)
 		Me.chkPrix.TabIndex = 30
@@ -588,7 +747,7 @@ Partial Class frmSimu
 		Me.chkEditions.Checked = true
 		Me.chkEditions.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkEditions.Enabled = false
-		Me.chkEditions.Location = New System.Drawing.Point(10, 158)
+		Me.chkEditions.Location = New System.Drawing.Point(70, 211)
 		Me.chkEditions.Name = "chkEditions"
 		Me.chkEditions.Size = New System.Drawing.Size(63, 17)
 		Me.chkEditions.TabIndex = 29
@@ -601,7 +760,7 @@ Partial Class frmSimu
 		Me.chkInvoc.Checked = true
 		Me.chkInvoc.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkInvoc.Enabled = false
-		Me.chkInvoc.Location = New System.Drawing.Point(10, 135)
+		Me.chkInvoc.Location = New System.Drawing.Point(70, 188)
 		Me.chkInvoc.Name = "chkInvoc"
 		Me.chkInvoc.Size = New System.Drawing.Size(113, 17)
 		Me.chkInvoc.TabIndex = 28
@@ -614,7 +773,7 @@ Partial Class frmSimu
 		Me.chkColors.Checked = true
 		Me.chkColors.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkColors.Enabled = false
-		Me.chkColors.Location = New System.Drawing.Point(10, 112)
+		Me.chkColors.Location = New System.Drawing.Point(70, 165)
 		Me.chkColors.Name = "chkColors"
 		Me.chkColors.Size = New System.Drawing.Size(67, 17)
 		Me.chkColors.TabIndex = 27
@@ -625,7 +784,7 @@ Partial Class frmSimu
 		'
 		Me.lbl16.AutoSize = true
 		Me.lbl16.Enabled = false
-		Me.lbl16.Location = New System.Drawing.Point(3, 88)
+		Me.lbl16.Location = New System.Drawing.Point(3, 137)
 		Me.lbl16.Name = "lbl16"
 		Me.lbl16.Size = New System.Drawing.Size(353, 13)
 		Me.lbl16.TabIndex = 26
@@ -636,14 +795,14 @@ Partial Class frmSimu
 		Me.lbl15.Dock = System.Windows.Forms.DockStyle.Top
 		Me.lbl15.Location = New System.Drawing.Point(3, 16)
 		Me.lbl15.Name = "lbl15"
-		Me.lbl15.Size = New System.Drawing.Size(398, 43)
+		Me.lbl15.Size = New System.Drawing.Size(617, 43)
 		Me.lbl15.TabIndex = 24
 		Me.lbl15.Text = "Pour commencer, cliquer ci-dessous pour estimer les informations de corrélation ("& _ 
 		"cela peut prendre un certain temps s'il y a beaucoup de cartes dans le deck) :"
 		'
 		'cmdDetect
 		'
-		Me.cmdDetect.Location = New System.Drawing.Point(3, 60)
+		Me.cmdDetect.Location = New System.Drawing.Point(129, 60)
 		Me.cmdDetect.Name = "cmdDetect"
 		Me.cmdDetect.Size = New System.Drawing.Size(193, 23)
 		Me.cmdDetect.TabIndex = 23
@@ -654,86 +813,10 @@ Partial Class frmSimu
 		'prgSuggest
 		'
 		Me.prgSuggest.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.prgSuggest.Location = New System.Drawing.Point(3, 204)
+		Me.prgSuggest.Location = New System.Drawing.Point(3, 356)
 		Me.prgSuggest.Name = "prgSuggest"
-		Me.prgSuggest.Size = New System.Drawing.Size(398, 14)
+		Me.prgSuggest.Size = New System.Drawing.Size(617, 14)
 		Me.prgSuggest.TabIndex = 22
-		'
-		'grpMains
-		'
-		Me.grpMains.BackColor = System.Drawing.Color.Transparent
-		Me.grpMains.Controls.Add(Me.splitMainsV)
-		Me.grpMains.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpMains.Location = New System.Drawing.Point(0, 0)
-		Me.grpMains.Name = "grpMains"
-		Me.grpMains.Size = New System.Drawing.Size(404, 221)
-		Me.grpMains.TabIndex = 0
-		Me.grpMains.TabStop = false
-		'
-		'splitMainsV
-		'
-		Me.splitMainsV.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.splitMainsV.IsSplitterFixed = true
-		Me.splitMainsV.Location = New System.Drawing.Point(3, 16)
-		Me.splitMainsV.Name = "splitMainsV"
-		'
-		'splitMainsV.Panel1
-		'
-		Me.splitMainsV.Panel1.Controls.Add(Me.grdMainsTirage)
-		Me.splitMainsV.Panel1.Controls.Add(Me.cmdMain)
-		'
-		'splitMainsV.Panel2
-		'
-		Me.splitMainsV.Panel2.Controls.Add(Me.picScanCard)
-		Me.splitMainsV.Size = New System.Drawing.Size(398, 202)
-		Me.splitMainsV.SplitterDistance = 256
-		Me.splitMainsV.TabIndex = 0
-		'
-		'grdMainsTirage
-		'
-		Me.grdMainsTirage.AutoSizeMinHeight = 10
-		Me.grdMainsTirage.AutoSizeMinWidth = 10
-		Me.grdMainsTirage.AutoStretchColumnsToFitWidth = false
-		Me.grdMainsTirage.AutoStretchRowsToFitHeight = false
-		Me.grdMainsTirage.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
-		Me.grdMainsTirage.CustomSort = false
-		Me.grdMainsTirage.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grdMainsTirage.GridToolTipActive = true
-		Me.grdMainsTirage.Location = New System.Drawing.Point(0, 23)
-		Me.grdMainsTirage.Name = "grdMainsTirage"
-		Me.grdMainsTirage.Size = New System.Drawing.Size(256, 179)
-		Me.grdMainsTirage.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
-						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
-						Or SourceGrid2.GridSpecialKeys.Delete)  _
-						Or SourceGrid2.GridSpecialKeys.Arrows)  _
-						Or SourceGrid2.GridSpecialKeys.Tab)  _
-						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
-						Or SourceGrid2.GridSpecialKeys.Enter)  _
-						Or SourceGrid2.GridSpecialKeys.Escape)  _
-						Or SourceGrid2.GridSpecialKeys.Control)  _
-						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
-		Me.grdMainsTirage.TabIndex = 3
-		'
-		'cmdMain
-		'
-		Me.cmdMain.Dock = System.Windows.Forms.DockStyle.Top
-		Me.cmdMain.Location = New System.Drawing.Point(0, 0)
-		Me.cmdMain.Name = "cmdMain"
-		Me.cmdMain.Size = New System.Drawing.Size(256, 23)
-		Me.cmdMain.TabIndex = 2
-		Me.cmdMain.Text = "Tirer une main"
-		Me.cmdMain.UseVisualStyleBackColor = true
-		AddHandler Me.cmdMain.Click, AddressOf Me.CmdMainClick
-		'
-		'picScanCard
-		'
-		Me.picScanCard.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.picScanCard.Location = New System.Drawing.Point(0, 0)
-		Me.picScanCard.Name = "picScanCard"
-		Me.picScanCard.Size = New System.Drawing.Size(138, 202)
-		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-		Me.picScanCard.TabIndex = 39
-		Me.picScanCard.TabStop = false
 		'
 		'grpDeploy
 		'
@@ -742,7 +825,7 @@ Partial Class frmSimu
 		Me.grpDeploy.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpDeploy.Location = New System.Drawing.Point(0, 0)
 		Me.grpDeploy.Name = "grpDeploy"
-		Me.grpDeploy.Size = New System.Drawing.Size(404, 221)
+		Me.grpDeploy.Size = New System.Drawing.Size(623, 373)
 		Me.grpDeploy.TabIndex = 2
 		Me.grpDeploy.TabStop = false
 		Me.grpDeploy.Visible = false
@@ -772,8 +855,8 @@ Partial Class frmSimu
 		Me.splitDeployH.Panel2.Controls.Add(Me.lbl9)
 		Me.splitDeployH.Panel2.Controls.Add(Me.txtN2)
 		Me.splitDeployH.Panel2.Controls.Add(Me.lbl10)
-		Me.splitDeployH.Size = New System.Drawing.Size(398, 202)
-		Me.splitDeployH.SplitterDistance = 100
+		Me.splitDeployH.Size = New System.Drawing.Size(617, 354)
+		Me.splitDeployH.SplitterDistance = 175
 		Me.splitDeployH.TabIndex = 0
 		'
 		'splitDeployV
@@ -794,8 +877,8 @@ Partial Class frmSimu
 		Me.splitDeployV.Panel2.Controls.Add(Me.lbl13)
 		Me.splitDeployV.Panel2.Controls.Add(Me.txtEspManas)
 		Me.splitDeployV.Panel2.Controls.Add(Me.cboTourDeploy)
-		Me.splitDeployV.Size = New System.Drawing.Size(398, 100)
-		Me.splitDeployV.SplitterDistance = 209
+		Me.splitDeployV.Size = New System.Drawing.Size(617, 175)
+		Me.splitDeployV.SplitterDistance = 323
 		Me.splitDeployV.TabIndex = 24
 		'
 		'lstUserCombos
@@ -805,7 +888,7 @@ Partial Class frmSimu
 		Me.lstUserCombos.FormattingEnabled = true
 		Me.lstUserCombos.Location = New System.Drawing.Point(0, 28)
 		Me.lstUserCombos.Name = "lstUserCombos"
-		Me.lstUserCombos.Size = New System.Drawing.Size(209, 64)
+		Me.lstUserCombos.Size = New System.Drawing.Size(323, 139)
 		Me.lstUserCombos.TabIndex = 25
 		AddHandler Me.lstUserCombos.MouseUp, AddressOf Me.LstUserCombosMouseUp
 		'
@@ -814,7 +897,7 @@ Partial Class frmSimu
 		Me.lbl12.Dock = System.Windows.Forms.DockStyle.Top
 		Me.lbl12.Location = New System.Drawing.Point(0, 0)
 		Me.lbl12.Name = "lbl12"
-		Me.lbl12.Size = New System.Drawing.Size(209, 28)
+		Me.lbl12.Size = New System.Drawing.Size(323, 28)
 		Me.lbl12.TabIndex = 24
 		Me.lbl12.Text = "Cartes décrites manuellement (clic droit pour éditer, décocher pour les ignorer) "& _ 
 		":"
@@ -857,7 +940,7 @@ Partial Class frmSimu
 		'
 		Me.chkDefaut.Checked = true
 		Me.chkDefaut.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.chkDefaut.Location = New System.Drawing.Point(20, 48)
+		Me.chkDefaut.Location = New System.Drawing.Point(30, 78)
 		Me.chkDefaut.Name = "chkDefaut"
 		Me.chkDefaut.Size = New System.Drawing.Size(114, 30)
 		Me.chkDefaut.TabIndex = 24
@@ -867,7 +950,7 @@ Partial Class frmSimu
 		'txtEspDefaut
 		'
 		Me.txtEspDefaut.Enabled = false
-		Me.txtEspDefaut.Location = New System.Drawing.Point(316, 58)
+		Me.txtEspDefaut.Location = New System.Drawing.Point(431, 83)
 		Me.txtEspDefaut.Name = "txtEspDefaut"
 		Me.txtEspDefaut.Size = New System.Drawing.Size(61, 20)
 		Me.txtEspDefaut.TabIndex = 15
@@ -875,7 +958,7 @@ Partial Class frmSimu
 		'chkVerbosity
 		'
 		Me.chkVerbosity.AutoSize = true
-		Me.chkVerbosity.Location = New System.Drawing.Point(20, 30)
+		Me.chkVerbosity.Location = New System.Drawing.Point(30, 60)
 		Me.chkVerbosity.Name = "chkVerbosity"
 		Me.chkVerbosity.Size = New System.Drawing.Size(70, 17)
 		Me.chkVerbosity.TabIndex = 23
@@ -886,9 +969,9 @@ Partial Class frmSimu
 		'cmdAddPlot2
 		'
 		Me.cmdAddPlot2.Enabled = false
-		Me.cmdAddPlot2.Location = New System.Drawing.Point(137, 56)
+		Me.cmdAddPlot2.Location = New System.Drawing.Point(393, 124)
 		Me.cmdAddPlot2.Name = "cmdAddPlot2"
-		Me.cmdAddPlot2.Size = New System.Drawing.Size(56, 23)
+		Me.cmdAddPlot2.Size = New System.Drawing.Size(100, 23)
 		Me.cmdAddPlot2.TabIndex = 22
 		Me.cmdAddPlot2.Text = "Graphe"
 		Me.cmdAddPlot2.UseVisualStyleBackColor = true
@@ -897,7 +980,7 @@ Partial Class frmSimu
 		'cboTourDeploy2
 		'
 		Me.cboTourDeploy2.FormattingEnabled = true
-		Me.cboTourDeploy2.Location = New System.Drawing.Point(317, 34)
+		Me.cboTourDeploy2.Location = New System.Drawing.Point(432, 59)
 		Me.cboTourDeploy2.Name = "cboTourDeploy2"
 		Me.cboTourDeploy2.Size = New System.Drawing.Size(61, 21)
 		Me.cboTourDeploy2.TabIndex = 13
@@ -906,15 +989,15 @@ Partial Class frmSimu
 		'prgSimu2
 		'
 		Me.prgSimu2.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.prgSimu2.Location = New System.Drawing.Point(0, 84)
+		Me.prgSimu2.Location = New System.Drawing.Point(0, 161)
 		Me.prgSimu2.Name = "prgSimu2"
-		Me.prgSimu2.Size = New System.Drawing.Size(398, 14)
+		Me.prgSimu2.Size = New System.Drawing.Size(617, 14)
 		Me.prgSimu2.TabIndex = 21
 		'
 		'lbl11
 		'
 		Me.lbl11.AutoSize = true
-		Me.lbl11.Location = New System.Drawing.Point(218, 37)
+		Me.lbl11.Location = New System.Drawing.Point(333, 62)
 		Me.lbl11.Name = "lbl11"
 		Me.lbl11.Size = New System.Drawing.Size(29, 13)
 		Me.lbl11.TabIndex = 10
@@ -922,9 +1005,9 @@ Partial Class frmSimu
 		'
 		'cmdSimu2
 		'
-		Me.cmdSimu2.Location = New System.Drawing.Point(137, 30)
+		Me.cmdSimu2.Location = New System.Drawing.Point(30, 124)
 		Me.cmdSimu2.Name = "cmdSimu2"
-		Me.cmdSimu2.Size = New System.Drawing.Size(56, 23)
+		Me.cmdSimu2.Size = New System.Drawing.Size(100, 23)
 		Me.cmdSimu2.TabIndex = 20
 		Me.cmdSimu2.Text = "Simuler"
 		Me.cmdSimu2.UseVisualStyleBackColor = true
@@ -933,7 +1016,7 @@ Partial Class frmSimu
 		'lbl9
 		'
 		Me.lbl9.AutoSize = true
-		Me.lbl9.Location = New System.Drawing.Point(20, 8)
+		Me.lbl9.Location = New System.Drawing.Point(30, 38)
 		Me.lbl9.Name = "lbl9"
 		Me.lbl9.Size = New System.Drawing.Size(99, 13)
 		Me.lbl9.TabIndex = 19
@@ -941,9 +1024,9 @@ Partial Class frmSimu
 		'
 		'txtN2
 		'
-		Me.txtN2.Location = New System.Drawing.Point(137, 6)
+		Me.txtN2.Location = New System.Drawing.Point(147, 36)
 		Me.txtN2.Name = "txtN2"
-		Me.txtN2.Size = New System.Drawing.Size(38, 20)
+		Me.txtN2.Size = New System.Drawing.Size(56, 20)
 		Me.txtN2.TabIndex = 18
 		Me.txtN2.Text = "1000"
 		Me.txtN2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -951,22 +1034,15 @@ Partial Class frmSimu
 		'
 		'lbl10
 		'
-		Me.lbl10.Location = New System.Drawing.Point(217, 8)
+		Me.lbl10.Location = New System.Drawing.Point(332, 33)
 		Me.lbl10.Name = "lbl10"
 		Me.lbl10.Size = New System.Drawing.Size(160, 32)
 		Me.lbl10.TabIndex = 8
 		Me.lbl10.Text = "Défaut de manas au tour n :"
 		'
-		'btMains
-		'
-		Me.btMains.Icon = CType(resources.GetObject("btMains.Icon"),System.Drawing.Icon)
-		Me.btMains.Text = "Mains"
-		Me.btMains.ToolTipText = "Tirage de mains aléatoires"
-		Me.btMains.Checked = true
-		AddHandler Me.btMains.Activate, AddressOf Me.BtMainsActivate
-		'
 		'btCombos
 		'
+		Me.btCombos.Checked = true
 		Me.btCombos.Icon = CType(resources.GetObject("btCombos.Icon"),System.Drawing.Icon)
 		Me.btCombos.Text = "Probabilités"
 		Me.btCombos.ToolTipText = "Probabilités d'apparition de combos"
@@ -990,13 +1066,13 @@ Partial Class frmSimu
 		'
 		Me.cmnuUserCombos.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuAddNew, Me.cmnuDelete, Me.mnuSeparator, Me.cmnuUp, Me.cmnuDown})
 		Me.cmnuUserCombos.Name = "cmnuUserCombos"
-		Me.cmnuUserCombos.Size = New System.Drawing.Size(233, 98)
+		Me.cmnuUserCombos.Size = New System.Drawing.Size(226, 98)
 		'
 		'cmnuAddNew
 		'
 		Me.cmnuAddNew.Image = CType(resources.GetObject("cmnuAddNew.Image"),System.Drawing.Image)
 		Me.cmnuAddNew.Name = "cmnuAddNew"
-		Me.cmnuAddNew.Size = New System.Drawing.Size(232, 22)
+		Me.cmnuAddNew.Size = New System.Drawing.Size(225, 22)
 		Me.cmnuAddNew.Text = "Ajouter / Modifier un élément"
 		AddHandler Me.cmnuAddNew.Click, AddressOf Me.CmnuAddNewClick
 		'
@@ -1005,21 +1081,21 @@ Partial Class frmSimu
 		Me.cmnuDelete.Enabled = false
 		Me.cmnuDelete.Image = CType(resources.GetObject("cmnuDelete.Image"),System.Drawing.Image)
 		Me.cmnuDelete.Name = "cmnuDelete"
-		Me.cmnuDelete.Size = New System.Drawing.Size(232, 22)
+		Me.cmnuDelete.Size = New System.Drawing.Size(225, 22)
 		Me.cmnuDelete.Text = "Supprimer cet élément"
 		AddHandler Me.cmnuDelete.Click, AddressOf Me.CmnuDeleteClick
 		'
 		'mnuSeparator
 		'
 		Me.mnuSeparator.Name = "mnuSeparator"
-		Me.mnuSeparator.Size = New System.Drawing.Size(229, 6)
+		Me.mnuSeparator.Size = New System.Drawing.Size(222, 6)
 		'
 		'cmnuUp
 		'
 		Me.cmnuUp.Image = CType(resources.GetObject("cmnuUp.Image"),System.Drawing.Image)
 		Me.cmnuUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
 		Me.cmnuUp.Name = "cmnuUp"
-		Me.cmnuUp.Size = New System.Drawing.Size(232, 22)
+		Me.cmnuUp.Size = New System.Drawing.Size(225, 22)
 		Me.cmnuUp.Text = "Augmenter la priorité"
 		AddHandler Me.cmnuUp.Click, AddressOf Me.CmnuUpMouseClick
 		'
@@ -1028,7 +1104,7 @@ Partial Class frmSimu
 		Me.cmnuDown.Image = CType(resources.GetObject("cmnuDown.Image"),System.Drawing.Image)
 		Me.cmnuDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
 		Me.cmnuDown.Name = "cmnuDown"
-		Me.cmnuDown.Size = New System.Drawing.Size(232, 22)
+		Me.cmnuDown.Size = New System.Drawing.Size(225, 22)
 		Me.cmnuDown.Text = "Diminuer la priorité"
 		AddHandler Me.cmnuDown.Click, AddressOf Me.CmnuDownMouseClick
 		'
@@ -1054,7 +1130,7 @@ Partial Class frmSimu
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(408, 272)
+		Me.ClientSize = New System.Drawing.Size(627, 424)
 		Me.Controls.Add(Me.cbarSimus)
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmSimu"
@@ -1070,8 +1146,19 @@ Partial Class frmSimu
 		Me.splitCombosH1.Panel1.PerformLayout
 		Me.splitCombosH1.Panel2.ResumeLayout(false)
 		Me.splitCombosH1.ResumeLayout(false)
-		Me.toolStripCombos1.ResumeLayout(false)
-		Me.toolStripCombos1.PerformLayout
+		Me.tabControl.ResumeLayout(false)
+		Me.tabCarte.ResumeLayout(false)
+		Me.grdCardsDispos.ResumeLayout(false)
+		Me.tabType.ResumeLayout(false)
+		Me.grdTypesDispos.ResumeLayout(false)
+		Me.tabSubType.ResumeLayout(false)
+		Me.grdSubTypesDispos.ResumeLayout(false)
+		Me.tabCost.ResumeLayout(false)
+		Me.grdCostsDispos.ResumeLayout(false)
+		Me.tabColor.ResumeLayout(false)
+		Me.grdColorsDispos.ResumeLayout(false)
+		Me.toolStripCombos.ResumeLayout(false)
+		Me.toolStripCombos.PerformLayout
 		Me.splitCombosH2.Panel1.ResumeLayout(false)
 		Me.splitCombosH2.Panel2.ResumeLayout(false)
 		Me.splitCombosH2.Panel2.PerformLayout
@@ -1082,11 +1169,6 @@ Partial Class frmSimu
 		Me.grpSuggest.ResumeLayout(false)
 		Me.grpSuggest.PerformLayout
 		CType(Me.sldPertin,System.ComponentModel.ISupportInitialize).EndInit
-		Me.grpMains.ResumeLayout(false)
-		Me.splitMainsV.Panel1.ResumeLayout(false)
-		Me.splitMainsV.Panel2.ResumeLayout(false)
-		Me.splitMainsV.ResumeLayout(false)
-		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).EndInit
 		Me.grpDeploy.ResumeLayout(false)
 		Me.splitDeployH.Panel1.ResumeLayout(false)
 		Me.splitDeployH.Panel2.ResumeLayout(false)
@@ -1099,19 +1181,25 @@ Partial Class frmSimu
 		Me.cmnuUserCombos.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private grdColorsDispos As SourceGrid2.Grid
+	Private grdCostsDispos As SourceGrid2.Grid
+	Private grdSubTypesDispos As SourceGrid2.Grid
+	Private grdTypesDispos As SourceGrid2.Grid
+	Private grdCardsDispos As SourceGrid2.Grid
+	Private tabColor As System.Windows.Forms.TabPage
+	Private tabCost As System.Windows.Forms.TabPage
+	Private tabSubType As System.Windows.Forms.TabPage
+	Private tabType As System.Windows.Forms.TabPage
+	Private tabCarte As System.Windows.Forms.TabPage
+	Private tabControl As System.Windows.Forms.TabControl
 	Private btRemove As System.Windows.Forms.ToolStripButton
 	Private dlgOpen As System.Windows.Forms.OpenFileDialog
 	Private dlgSave As System.Windows.Forms.SaveFileDialog
-	Private btOpen As System.Windows.Forms.ToolStripButton
-	Private btSave As System.Windows.Forms.ToolStripButton
-	Private btSeparator2 As System.Windows.Forms.ToolStripSeparator
 	Private lbl3 As System.Windows.Forms.ToolStripLabel
 	Private picScanCard2 As System.Windows.Forms.PictureBox
 	Private btClearAll As System.Windows.Forms.ToolStripButton
 	Private btAddSequence As System.Windows.Forms.ToolStripButton
-	Private btClear As System.Windows.Forms.ToolStripButton
-	Private toolStripCombos1 As System.Windows.Forms.ToolStrip
-	Private lstCombosDispos As System.Windows.Forms.ListBox
+	Private toolStripCombos As System.Windows.Forms.ToolStrip
 	Private toolStripCombos2 As System.Windows.Forms.ToolStrip
 	Private chklstSequencesDispos As System.Windows.Forms.CheckedListBox
 	Private btAddPlot As System.Windows.Forms.ToolStripButton
@@ -1163,7 +1251,6 @@ Partial Class frmSimu
 	Private cmdSimu2 As System.Windows.Forms.Button
 	Private prgSimu2 As System.Windows.Forms.ProgressBar
 	Private splitDeployH As System.Windows.Forms.SplitContainer
-	Private cmdMain As System.Windows.Forms.Button
 	Private prgSimu As System.Windows.Forms.ProgressBar
 	Private lbl4 As System.Windows.Forms.Label
 	Private cboTourCumul As System.Windows.Forms.ComboBox
@@ -1172,15 +1259,10 @@ Partial Class frmSimu
 	Private txtN As System.Windows.Forms.ToolStripTextBox
 	Private lbl1 As System.Windows.Forms.Label
 	Private splitCombosV As System.Windows.Forms.SplitContainer
-	Private splitMainsV As System.Windows.Forms.SplitContainer
-	Private grdMainsTirage As SourceGrid2.Grid
-	Private picScanCard As System.Windows.Forms.PictureBox
-	Private grpMains As System.Windows.Forms.GroupBox
 	Private grpCombos As System.Windows.Forms.GroupBox
 	Private grpDeploy As System.Windows.Forms.GroupBox
 	Private btDeploy As TD.SandBar.ButtonItem
 	Private btCombos As TD.SandBar.ButtonItem
-	Private btMains As TD.SandBar.ButtonItem
 	Private pnlSimus As TD.SandBar.ContainerBarClientPanel
 	Private cbarSimus As TD.SandBar.ContainerBar
 End Class

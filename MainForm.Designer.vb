@@ -47,13 +47,11 @@ Partial Class MainForm
 		Me.cmnuTvw = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.mnuCardsFR = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSort = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDegroupFoils = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSearchCard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSearchText = New System.Windows.Forms.ToolStripTextBox
 		Me.mnuFindNext = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnucAddCards = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator1 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuRulings = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuTransform = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMoveACard = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuMoveToCollection = New System.Windows.Forms.ToolStripMenuItem
@@ -159,12 +157,25 @@ Partial Class MainForm
 		Me.btSeparator = New System.Windows.Forms.ToolStripSeparator
 		Me.btCardsFR = New System.Windows.Forms.ToolStripButton
 		Me.btSort = New System.Windows.Forms.ToolStripButton
-		Me.btDegroupFoils = New System.Windows.Forms.ToolStripButton
 		Me.splitV2 = New System.Windows.Forms.SplitContainer
-		Me.CBarProperties = New TD.SandBar.ContainerBar
+		Me.cbarProperties = New TD.SandBar.ContainerBar
 		Me.pnlProperties = New TD.SandBar.ContainerBarClientPanel
-		Me.grpCarac = New System.Windows.Forms.GroupBox
-		Me.txtCardText = New Magic_The_Gathering_Manager.ExRichTextBox
+		Me.splitH = New System.Windows.Forms.SplitContainer
+		Me.pnlCard = New System.Windows.Forms.Panel
+		Me.splitH2 = New System.Windows.Forms.SplitContainer
+		Me.pnlCard1 = New System.Windows.Forms.Panel
+		Me.grdPropCard = New SourceGrid2.Grid
+		Me.splitH3 = New System.Windows.Forms.SplitContainer
+		Me.splitV3 = New System.Windows.Forms.SplitContainer
+		Me.pnlCard2 = New System.Windows.Forms.Panel
+		Me.picCost = New System.Windows.Forms.PictureBox
+		Me.pnlCard3 = New System.Windows.Forms.Panel
+		Me.lblPowerTough = New System.Windows.Forms.Label
+		Me.picPowerTough = New System.Windows.Forms.PictureBox
+		Me.txtRichText = New Magic_The_Gathering_Manager.ExRichTextBox
+		Me.pnlAlternate = New System.Windows.Forms.Panel
+		Me.propAlternate = New System.Windows.Forms.PropertyGrid
+		Me.txtSimpleText = New System.Windows.Forms.TextBox
 		Me.grpAutorisations = New System.Windows.Forms.GroupBox
 		Me.picAutT1 = New System.Windows.Forms.PictureBox
 		Me.picAutT15 = New System.Windows.Forms.PictureBox
@@ -172,37 +183,13 @@ Partial Class MainForm
 		Me.picAutT1x = New System.Windows.Forms.PictureBox
 		Me.picAutT2 = New System.Windows.Forms.PictureBox
 		Me.picAutBloc = New System.Windows.Forms.PictureBox
-		Me.grpSerie = New System.Windows.Forms.GroupBox
-		Me.lblStock2 = New System.Windows.Forms.Label
-		Me.lblStock3 = New System.Windows.Forms.Label
-		Me.cmdHistPrices = New System.Windows.Forms.Button
-		Me.scrollStock = New System.Windows.Forms.VScrollBar
-		Me.cboEdition = New System.Windows.Forms.ComboBox
-		Me.picEdition = New System.Windows.Forms.PictureBox
-		Me.lblAD = New System.Windows.Forms.Label
-		Me.lblPrix = New System.Windows.Forms.Label
-		Me.lblRarete = New System.Windows.Forms.Label
-		Me.lblProp6 = New System.Windows.Forms.Label
-		Me.lblProp1 = New System.Windows.Forms.Label
-		Me.lblProp2 = New System.Windows.Forms.Label
-		Me.lblProp5 = New System.Windows.Forms.Label
-		Me.lblProp4 = New System.Windows.Forms.Label
-		Me.lblProp3 = New System.Windows.Forms.Label
-		Me.lblStock = New System.Windows.Forms.Label
-		Me.grpSerie2 = New System.Windows.Forms.GroupBox
-		Me.lblSerieDate = New System.Windows.Forms.Label
-		Me.lblSerieCote = New System.Windows.Forms.Label
-		Me.lblSerieMyTotDist = New System.Windows.Forms.Label
-		Me.lblSerieMyTot = New System.Windows.Forms.Label
-		Me.lblSerieTot = New System.Windows.Forms.Label
-		Me.lblProp12 = New System.Windows.Forms.Label
-		Me.lblProp11 = New System.Windows.Forms.Label
-		Me.lblProp10 = New System.Windows.Forms.Label
-		Me.lblProp9 = New System.Windows.Forms.Label
-		Me.lblProp8 = New System.Windows.Forms.Label
-		Me.CBarImage = New TD.SandBar.ContainerBar
+		Me.btShowAll = New TD.SandBar.ButtonItem
+		Me.btHistPrices = New TD.SandBar.ButtonItem
+		Me.cbarImage = New TD.SandBar.ContainerBar
 		Me.pnlImage = New TD.SandBar.ContainerBarClientPanel
+		Me.splitH4 = New System.Windows.Forms.SplitContainer
 		Me.picScanCard = New System.Windows.Forms.PictureBox
+		Me.grdPropPicture = New SourceGrid2.Grid
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
 		Me.statusStrip.SuspendLayout
@@ -218,9 +205,27 @@ Partial Class MainForm
 		Me.splitV2.Panel1.SuspendLayout
 		Me.splitV2.Panel2.SuspendLayout
 		Me.splitV2.SuspendLayout
-		Me.CBarProperties.SuspendLayout
+		Me.cbarProperties.SuspendLayout
 		Me.pnlProperties.SuspendLayout
-		Me.grpCarac.SuspendLayout
+		Me.splitH.Panel1.SuspendLayout
+		Me.splitH.Panel2.SuspendLayout
+		Me.splitH.SuspendLayout
+		Me.pnlCard.SuspendLayout
+		Me.splitH2.Panel1.SuspendLayout
+		Me.splitH2.Panel2.SuspendLayout
+		Me.splitH2.SuspendLayout
+		Me.pnlCard1.SuspendLayout
+		Me.splitH3.Panel1.SuspendLayout
+		Me.splitH3.Panel2.SuspendLayout
+		Me.splitH3.SuspendLayout
+		Me.splitV3.Panel1.SuspendLayout
+		Me.splitV3.Panel2.SuspendLayout
+		Me.splitV3.SuspendLayout
+		Me.pnlCard2.SuspendLayout
+		CType(Me.picCost,System.ComponentModel.ISupportInitialize).BeginInit
+		Me.pnlCard3.SuspendLayout
+		CType(Me.picPowerTough,System.ComponentModel.ISupportInitialize).BeginInit
+		Me.pnlAlternate.SuspendLayout
 		Me.grpAutorisations.SuspendLayout
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
@@ -228,20 +233,20 @@ Partial Class MainForm
 		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).BeginInit
-		Me.grpSerie.SuspendLayout
-		CType(Me.picEdition,System.ComponentModel.ISupportInitialize).BeginInit
-		Me.grpSerie2.SuspendLayout
-		Me.CBarImage.SuspendLayout
+		Me.cbarImage.SuspendLayout
 		Me.pnlImage.SuspendLayout
+		Me.splitH4.Panel1.SuspendLayout
+		Me.splitH4.Panel2.SuspendLayout
+		Me.splitH4.SuspendLayout
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
 		'
 		'statusStrip
 		'
 		Me.statusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblDB, Me.lblNCards, Me.prgAvance, Me.btDownload})
-		Me.statusStrip.Location = New System.Drawing.Point(0, 402)
+		Me.statusStrip.Location = New System.Drawing.Point(0, 544)
 		Me.statusStrip.Name = "statusStrip"
-		Me.statusStrip.Size = New System.Drawing.Size(774, 22)
+		Me.statusStrip.Size = New System.Drawing.Size(992, 22)
 		Me.statusStrip.TabIndex = 2
 		Me.statusStrip.Text = "statusStrip1"
 		'
@@ -412,9 +417,9 @@ Partial Class MainForm
 		'
 		'cmnuTvw
 		'
-		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuDegroupFoils, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuRulings, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
+		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
-		Me.cmnuTvw.Size = New System.Drawing.Size(234, 280)
+		Me.cmnuTvw.Size = New System.Drawing.Size(234, 236)
 		'
 		'mnuCardsFR
 		'
@@ -432,16 +437,6 @@ Partial Class MainForm
 		Me.mnuSort.Size = New System.Drawing.Size(233, 22)
 		Me.mnuSort.Text = "Trier par ordre alphabétique"
 		AddHandler Me.mnuSort.Click, AddressOf Me.MnuSortClick
-		'
-		'mnuDegroupFoils
-		'
-		Me.mnuDegroupFoils.Checked = true
-		Me.mnuDegroupFoils.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.mnuDegroupFoils.Image = CType(resources.GetObject("mnuDegroupFoils.Image"),System.Drawing.Image)
-		Me.mnuDegroupFoils.Name = "mnuDegroupFoils"
-		Me.mnuDegroupFoils.Size = New System.Drawing.Size(233, 22)
-		Me.mnuDegroupFoils.Text = "Dissocier les cartes foils"
-		AddHandler Me.mnuDegroupFoils.Click, AddressOf Me.MnuDegroupFoilsClick
 		'
 		'mnuSearchCard
 		'
@@ -480,15 +475,6 @@ Partial Class MainForm
 		'
 		Me.mnuSeparator1.Name = "mnuSeparator1"
 		Me.mnuSeparator1.Size = New System.Drawing.Size(230, 6)
-		'
-		'mnuRulings
-		'
-		Me.mnuRulings.Enabled = false
-		Me.mnuRulings.Image = CType(resources.GetObject("mnuRulings.Image"),System.Drawing.Image)
-		Me.mnuRulings.Name = "mnuRulings"
-		Me.mnuRulings.Size = New System.Drawing.Size(233, 22)
-		Me.mnuRulings.Text = "Afficher les règles spécifiques"
-		AddHandler Me.mnuRulings.Click, AddressOf Me.MnuRulingsClick
 		'
 		'mnuTransform
 		'
@@ -586,7 +572,7 @@ Partial Class MainForm
 		Me.mnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFile, Me.mnuDisp, Me.mnuTools, Me.mnuBigSearch, Me.mnuPlugins, Me.mnuInfo})
 		Me.mnu.Location = New System.Drawing.Point(0, 0)
 		Me.mnu.Name = "mnu"
-		Me.mnu.Size = New System.Drawing.Size(774, 24)
+		Me.mnu.Size = New System.Drawing.Size(992, 24)
 		Me.mnu.TabIndex = 4
 		Me.mnu.Text = "menuStrip1"
 		'
@@ -1132,7 +1118,7 @@ Partial Class MainForm
 		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btPlateau, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
-		Me.toolStrip.Size = New System.Drawing.Size(774, 54)
+		Me.toolStrip.Size = New System.Drawing.Size(992, 54)
 		Me.toolStrip.TabIndex = 7
 		'
 		'btExport
@@ -1274,7 +1260,7 @@ Partial Class MainForm
 		'splitV.Panel2
 		'
 		Me.splitV.Panel2.Controls.Add(Me.splitV2)
-		Me.splitV.Size = New System.Drawing.Size(774, 324)
+		Me.splitV.Size = New System.Drawing.Size(992, 466)
 		Me.splitV.SplitterDistance = 300
 		Me.splitV.TabIndex = 8
 		Me.splitV.TabStop = false
@@ -1290,7 +1276,7 @@ Partial Class MainForm
 		Me.cbarTvw.Location = New System.Drawing.Point(0, 0)
 		Me.cbarTvw.Movable = false
 		Me.cbarTvw.Name = "cbarTvw"
-		Me.cbarTvw.Size = New System.Drawing.Size(300, 324)
+		Me.cbarTvw.Size = New System.Drawing.Size(300, 466)
 		Me.cbarTvw.TabIndex = 0
 		Me.cbarTvw.Text = "Explorateur"
 		'
@@ -1300,7 +1286,7 @@ Partial Class MainForm
 		Me.pnlTvw.Controls.Add(Me.toolSubStrip)
 		Me.pnlTvw.Location = New System.Drawing.Point(2, 27)
 		Me.pnlTvw.Name = "pnlTvw"
-		Me.pnlTvw.Size = New System.Drawing.Size(296, 295)
+		Me.pnlTvw.Size = New System.Drawing.Size(296, 437)
 		Me.pnlTvw.TabIndex = 0
 		'
 		'tvwExplore
@@ -1315,7 +1301,7 @@ Partial Class MainForm
 		Me.tvwExplore.Name = "tvwExplore"
 		Me.tvwExplore.SelectedImageIndex = 0
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
-		Me.tvwExplore.Size = New System.Drawing.Size(272, 295)
+		Me.tvwExplore.Size = New System.Drawing.Size(272, 437)
 		Me.tvwExplore.TabIndex = 6
 		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
@@ -1327,10 +1313,10 @@ Partial Class MainForm
 		'
 		Me.toolSubStrip.Dock = System.Windows.Forms.DockStyle.Left
 		Me.toolSubStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btSeparator, Me.btCardsFR, Me.btSort, Me.btDegroupFoils})
+		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btSeparator, Me.btCardsFR, Me.btSort})
 		Me.toolSubStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolSubStrip.Name = "toolSubStrip"
-		Me.toolSubStrip.Size = New System.Drawing.Size(24, 295)
+		Me.toolSubStrip.Size = New System.Drawing.Size(24, 437)
 		Me.toolSubStrip.TabIndex = 0
 		'
 		'btCriteria
@@ -1368,18 +1354,6 @@ Partial Class MainForm
 		Me.btSort.Text = "Trier par ordre alphabétique"
 		AddHandler Me.btSort.Click, AddressOf Me.MnuSortClick
 		'
-		'btDegroupFoils
-		'
-		Me.btDegroupFoils.Checked = true
-		Me.btDegroupFoils.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.btDegroupFoils.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-		Me.btDegroupFoils.Image = CType(resources.GetObject("btDegroupFoils.Image"),System.Drawing.Image)
-		Me.btDegroupFoils.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btDegroupFoils.Name = "btDegroupFoils"
-		Me.btDegroupFoils.Size = New System.Drawing.Size(21, 20)
-		Me.btDegroupFoils.Text = "Dissocier les cartes foils"
-		AddHandler Me.btDegroupFoils.Click, AddressOf Me.MnuDegroupFoilsClick
-		'
 		'splitV2
 		'
 		Me.splitV2.Dock = System.Windows.Forms.DockStyle.Fill
@@ -1390,69 +1364,256 @@ Partial Class MainForm
 		'
 		'splitV2.Panel1
 		'
-		Me.splitV2.Panel1.Controls.Add(Me.CBarProperties)
+		Me.splitV2.Panel1.Controls.Add(Me.cbarProperties)
 		'
 		'splitV2.Panel2
 		'
-		Me.splitV2.Panel2.Controls.Add(Me.CBarImage)
-		Me.splitV2.Size = New System.Drawing.Size(470, 324)
-		Me.splitV2.SplitterDistance = 255
+		Me.splitV2.Panel2.Controls.Add(Me.cbarImage)
+		Me.splitV2.Size = New System.Drawing.Size(688, 466)
+		Me.splitV2.SplitterDistance = 473
 		Me.splitV2.TabIndex = 0
 		Me.splitV2.TabStop = false
 		'
-		'CBarProperties
+		'cbarProperties
 		'
-		Me.CBarProperties.Closable = false
-		Me.CBarProperties.Controls.Add(Me.pnlProperties)
-		Me.CBarProperties.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.CBarProperties.DrawActionsButton = false
-		Me.CBarProperties.Flow = TD.SandBar.ToolBarLayout.Horizontal
-		Me.CBarProperties.Guid = New System.Guid("ea1edb50-d1b7-4eab-b136-020bcdc24f2d")
-		Me.CBarProperties.Location = New System.Drawing.Point(0, 0)
-		Me.CBarProperties.Movable = false
-		Me.CBarProperties.Name = "CBarProperties"
-		Me.CBarProperties.Size = New System.Drawing.Size(255, 324)
-		Me.CBarProperties.TabIndex = 0
-		Me.CBarProperties.Text = "Propriétés"
+		Me.cbarProperties.Closable = false
+		Me.cbarProperties.Controls.Add(Me.pnlProperties)
+		Me.cbarProperties.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.cbarProperties.DrawActionsButton = false
+		Me.cbarProperties.Flow = TD.SandBar.ToolBarLayout.Horizontal
+		Me.cbarProperties.Guid = New System.Guid("ea1edb50-d1b7-4eab-b136-020bcdc24f2d")
+		Me.cbarProperties.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btShowAll, Me.btHistPrices})
+		Me.cbarProperties.Location = New System.Drawing.Point(0, 0)
+		Me.cbarProperties.Movable = false
+		Me.cbarProperties.Name = "cbarProperties"
+		Me.cbarProperties.Size = New System.Drawing.Size(473, 466)
+		Me.cbarProperties.TabIndex = 0
+		Me.cbarProperties.Text = "Propriétés"
 		'
 		'pnlProperties
 		'
-		Me.pnlProperties.Controls.Add(Me.grpCarac)
-		Me.pnlProperties.Controls.Add(Me.grpSerie)
-		Me.pnlProperties.Controls.Add(Me.grpSerie2)
-		Me.pnlProperties.Location = New System.Drawing.Point(2, 27)
+		Me.pnlProperties.Controls.Add(Me.splitH)
+		Me.pnlProperties.Controls.Add(Me.grpAutorisations)
+		Me.pnlProperties.Location = New System.Drawing.Point(2, 49)
 		Me.pnlProperties.Name = "pnlProperties"
-		Me.pnlProperties.Size = New System.Drawing.Size(251, 295)
+		Me.pnlProperties.Size = New System.Drawing.Size(469, 415)
 		Me.pnlProperties.TabIndex = 0
 		'
-		'grpCarac
+		'splitH
 		'
-		Me.grpCarac.BackColor = System.Drawing.Color.Transparent
-		Me.grpCarac.Controls.Add(Me.txtCardText)
-		Me.grpCarac.Controls.Add(Me.grpAutorisations)
-		Me.grpCarac.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpCarac.Location = New System.Drawing.Point(0, 138)
-		Me.grpCarac.Name = "grpCarac"
-		Me.grpCarac.Size = New System.Drawing.Size(251, 157)
-		Me.grpCarac.TabIndex = 16
-		Me.grpCarac.TabStop = false
+		Me.splitH.BackColor = System.Drawing.Color.Transparent
+		Me.splitH.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitH.Location = New System.Drawing.Point(0, 0)
+		Me.splitH.Name = "splitH"
+		Me.splitH.Orientation = System.Windows.Forms.Orientation.Horizontal
 		'
-		'txtCardText
+		'splitH.Panel1
 		'
-		Me.txtCardText.AcceptsTab = true
-		Me.txtCardText.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.txtCardText.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
-		Me.txtCardText.Location = New System.Drawing.Point(3, 16)
-		Me.txtCardText.Name = "txtCardText"
-		Me.txtCardText.ReadOnly = true
-		Me.txtCardText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical
-		Me.txtCardText.Size = New System.Drawing.Size(245, 99)
-		Me.txtCardText.TabIndex = 13
-		Me.txtCardText.Text = ""
-		Me.txtCardText.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
+		Me.splitH.Panel1.Controls.Add(Me.pnlCard)
+		Me.splitH.Panel1.Controls.Add(Me.pnlAlternate)
+		'
+		'splitH.Panel2
+		'
+		Me.splitH.Panel2.Controls.Add(Me.txtSimpleText)
+		Me.splitH.Size = New System.Drawing.Size(469, 376)
+		Me.splitH.SplitterDistance = 290
+		Me.splitH.TabIndex = 19
+		'
+		'pnlCard
+		'
+		Me.pnlCard.Controls.Add(Me.splitH2)
+		Me.pnlCard.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.pnlCard.Location = New System.Drawing.Point(0, 0)
+		Me.pnlCard.Name = "pnlCard"
+		Me.pnlCard.Size = New System.Drawing.Size(469, 290)
+		Me.pnlCard.TabIndex = 1
+		'
+		'splitH2
+		'
+		Me.splitH2.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitH2.Location = New System.Drawing.Point(0, 0)
+		Me.splitH2.Name = "splitH2"
+		Me.splitH2.Orientation = System.Windows.Forms.Orientation.Horizontal
+		'
+		'splitH2.Panel1
+		'
+		Me.splitH2.Panel1.Controls.Add(Me.pnlCard1)
+		'
+		'splitH2.Panel2
+		'
+		Me.splitH2.Panel2.Controls.Add(Me.splitH3)
+		Me.splitH2.Size = New System.Drawing.Size(469, 290)
+		Me.splitH2.SplitterDistance = 150
+		Me.splitH2.TabIndex = 0
+		'
+		'pnlCard1
+		'
+		Me.pnlCard1.Controls.Add(Me.grdPropCard)
+		Me.pnlCard1.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.pnlCard1.Location = New System.Drawing.Point(0, 0)
+		Me.pnlCard1.Name = "pnlCard1"
+		Me.pnlCard1.Size = New System.Drawing.Size(469, 150)
+		Me.pnlCard1.TabIndex = 3
+		'
+		'grdPropCard
+		'
+		Me.grdPropCard.AutoSizeMinHeight = 10
+		Me.grdPropCard.AutoSizeMinWidth = 10
+		Me.grdPropCard.AutoStretchColumnsToFitWidth = false
+		Me.grdPropCard.AutoStretchRowsToFitHeight = false
+		Me.grdPropCard.BackColor = System.Drawing.Color.Transparent
+		Me.grdPropCard.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdPropCard.CustomSort = false
+		Me.grdPropCard.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdPropCard.GridToolTipActive = true
+		Me.grdPropCard.Location = New System.Drawing.Point(0, 0)
+		Me.grdPropCard.Name = "grdPropCard"
+		Me.grdPropCard.Size = New System.Drawing.Size(469, 150)
+		Me.grdPropCard.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdPropCard.TabIndex = 2
+		'
+		'splitH3
+		'
+		Me.splitH3.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitH3.IsSplitterFixed = true
+		Me.splitH3.Location = New System.Drawing.Point(0, 0)
+		Me.splitH3.Name = "splitH3"
+		Me.splitH3.Orientation = System.Windows.Forms.Orientation.Horizontal
+		'
+		'splitH3.Panel1
+		'
+		Me.splitH3.Panel1.Controls.Add(Me.splitV3)
+		'
+		'splitH3.Panel2
+		'
+		Me.splitH3.Panel2.Controls.Add(Me.txtRichText)
+		Me.splitH3.Size = New System.Drawing.Size(469, 136)
+		Me.splitH3.SplitterDistance = 42
+		Me.splitH3.TabIndex = 0
+		'
+		'splitV3
+		'
+		Me.splitV3.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitV3.Location = New System.Drawing.Point(0, 0)
+		Me.splitV3.Name = "splitV3"
+		'
+		'splitV3.Panel1
+		'
+		Me.splitV3.Panel1.Controls.Add(Me.pnlCard2)
+		'
+		'splitV3.Panel2
+		'
+		Me.splitV3.Panel2.Controls.Add(Me.pnlCard3)
+		Me.splitV3.Size = New System.Drawing.Size(469, 42)
+		Me.splitV3.SplitterDistance = 234
+		Me.splitV3.TabIndex = 3
+		'
+		'pnlCard2
+		'
+		Me.pnlCard2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+		Me.pnlCard2.Controls.Add(Me.picCost)
+		Me.pnlCard2.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.pnlCard2.Location = New System.Drawing.Point(0, 0)
+		Me.pnlCard2.Name = "pnlCard2"
+		Me.pnlCard2.Size = New System.Drawing.Size(234, 42)
+		Me.pnlCard2.TabIndex = 3
+		'
+		'picCost
+		'
+		Me.picCost.Image = CType(resources.GetObject("picCost.Image"),System.Drawing.Image)
+		Me.picCost.Location = New System.Drawing.Point(3, 3)
+		Me.picCost.Name = "picCost"
+		Me.picCost.Size = New System.Drawing.Size(32, 32)
+		Me.picCost.TabIndex = 1
+		Me.picCost.TabStop = false
+		'
+		'pnlCard3
+		'
+		Me.pnlCard3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+		Me.pnlCard3.Controls.Add(Me.lblPowerTough)
+		Me.pnlCard3.Controls.Add(Me.picPowerTough)
+		Me.pnlCard3.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.pnlCard3.Location = New System.Drawing.Point(0, 0)
+		Me.pnlCard3.Name = "pnlCard3"
+		Me.pnlCard3.Size = New System.Drawing.Size(231, 42)
+		Me.pnlCard3.TabIndex = 4
+		'
+		'lblPowerTough
+		'
+		Me.lblPowerTough.AutoSize = true
+		Me.lblPowerTough.Font = New System.Drawing.Font("Arial", 15!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic),System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0,Byte))
+		Me.lblPowerTough.Location = New System.Drawing.Point(55, 8)
+		Me.lblPowerTough.Name = "lblPowerTough"
+		Me.lblPowerTough.Size = New System.Drawing.Size(50, 24)
+		Me.lblPowerTough.TabIndex = 10
+		Me.lblPowerTough.Text = "0 / 0"
+		'
+		'picPowerTough
+		'
+		Me.picPowerTough.Image = CType(resources.GetObject("picPowerTough.Image"),System.Drawing.Image)
+		Me.picPowerTough.Location = New System.Drawing.Point(3, 3)
+		Me.picPowerTough.Name = "picPowerTough"
+		Me.picPowerTough.Size = New System.Drawing.Size(32, 32)
+		Me.picPowerTough.TabIndex = 9
+		Me.picPowerTough.TabStop = false
+		'
+		'txtRichText
+		'
+		Me.txtRichText.AcceptsTab = true
+		Me.txtRichText.BackColor = System.Drawing.Color.White
+		Me.txtRichText.BorderStyle = System.Windows.Forms.BorderStyle.None
+		Me.txtRichText.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.txtRichText.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
+		Me.txtRichText.Location = New System.Drawing.Point(0, 0)
+		Me.txtRichText.Name = "txtRichText"
+		Me.txtRichText.ReadOnly = true
+		Me.txtRichText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical
+		Me.txtRichText.Size = New System.Drawing.Size(469, 90)
+		Me.txtRichText.TabIndex = 17
+		Me.txtRichText.Text = ""
+		Me.txtRichText.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
+		'
+		'pnlAlternate
+		'
+		Me.pnlAlternate.Controls.Add(Me.propAlternate)
+		Me.pnlAlternate.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.pnlAlternate.Location = New System.Drawing.Point(0, 0)
+		Me.pnlAlternate.Name = "pnlAlternate"
+		Me.pnlAlternate.Size = New System.Drawing.Size(469, 290)
+		Me.pnlAlternate.TabIndex = 0
+		'
+		'propAlternate
+		'
+		Me.propAlternate.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.propAlternate.Location = New System.Drawing.Point(0, 0)
+		Me.propAlternate.Name = "propAlternate"
+		Me.propAlternate.PropertySort = System.Windows.Forms.PropertySort.NoSort
+		Me.propAlternate.Size = New System.Drawing.Size(469, 290)
+		Me.propAlternate.TabIndex = 0
+		Me.propAlternate.ToolbarVisible = false
+		'
+		'txtSimpleText
+		'
+		Me.txtSimpleText.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.txtSimpleText.Location = New System.Drawing.Point(0, 0)
+		Me.txtSimpleText.Multiline = true
+		Me.txtSimpleText.Name = "txtSimpleText"
+		Me.txtSimpleText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+		Me.txtSimpleText.Size = New System.Drawing.Size(469, 82)
+		Me.txtSimpleText.TabIndex = 2
 		'
 		'grpAutorisations
 		'
+		Me.grpAutorisations.BackColor = System.Drawing.Color.Transparent
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
 		Me.grpAutorisations.Controls.Add(Me.picAutT15)
 		Me.grpAutorisations.Controls.Add(Me.picAutM)
@@ -1460,15 +1621,15 @@ Partial Class MainForm
 		Me.grpAutorisations.Controls.Add(Me.picAutT2)
 		Me.grpAutorisations.Controls.Add(Me.picAutBloc)
 		Me.grpAutorisations.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.grpAutorisations.Location = New System.Drawing.Point(3, 115)
+		Me.grpAutorisations.Location = New System.Drawing.Point(0, 376)
 		Me.grpAutorisations.Name = "grpAutorisations"
-		Me.grpAutorisations.Size = New System.Drawing.Size(245, 39)
-		Me.grpAutorisations.TabIndex = 12
+		Me.grpAutorisations.Size = New System.Drawing.Size(469, 39)
+		Me.grpAutorisations.TabIndex = 18
 		Me.grpAutorisations.TabStop = false
 		'
 		'picAutT1
 		'
-		Me.picAutT1.Location = New System.Drawing.Point(1, 10)
+		Me.picAutT1.Location = New System.Drawing.Point(3, 10)
 		Me.picAutT1.Name = "picAutT1"
 		Me.picAutT1.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT1.TabIndex = 4
@@ -1476,7 +1637,7 @@ Partial Class MainForm
 		'
 		'picAutT15
 		'
-		Me.picAutT15.Location = New System.Drawing.Point(42, 10)
+		Me.picAutT15.Location = New System.Drawing.Point(44, 10)
 		Me.picAutT15.Name = "picAutT15"
 		Me.picAutT15.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT15.TabIndex = 3
@@ -1484,7 +1645,7 @@ Partial Class MainForm
 		'
 		'picAutM
 		'
-		Me.picAutM.Location = New System.Drawing.Point(83, 10)
+		Me.picAutM.Location = New System.Drawing.Point(85, 10)
 		Me.picAutM.Name = "picAutM"
 		Me.picAutM.Size = New System.Drawing.Size(35, 25)
 		Me.picAutM.TabIndex = 3
@@ -1492,7 +1653,7 @@ Partial Class MainForm
 		'
 		'picAutT1x
 		'
-		Me.picAutT1x.Location = New System.Drawing.Point(124, 10)
+		Me.picAutT1x.Location = New System.Drawing.Point(126, 10)
 		Me.picAutT1x.Name = "picAutT1x"
 		Me.picAutT1x.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT1x.TabIndex = 2
@@ -1500,7 +1661,7 @@ Partial Class MainForm
 		'
 		'picAutT2
 		'
-		Me.picAutT2.Location = New System.Drawing.Point(165, 10)
+		Me.picAutT2.Location = New System.Drawing.Point(167, 10)
 		Me.picAutT2.Name = "picAutT2"
 		Me.picAutT2.Size = New System.Drawing.Size(35, 25)
 		Me.picAutT2.TabIndex = 1
@@ -1508,346 +1669,67 @@ Partial Class MainForm
 		'
 		'picAutBloc
 		'
-		Me.picAutBloc.Location = New System.Drawing.Point(206, 10)
+		Me.picAutBloc.Location = New System.Drawing.Point(208, 10)
 		Me.picAutBloc.Name = "picAutBloc"
 		Me.picAutBloc.Size = New System.Drawing.Size(35, 25)
 		Me.picAutBloc.TabIndex = 0
 		Me.picAutBloc.TabStop = false
 		'
-		'grpSerie
+		'btShowAll
 		'
-		Me.grpSerie.BackColor = System.Drawing.Color.Transparent
-		Me.grpSerie.Controls.Add(Me.lblStock2)
-		Me.grpSerie.Controls.Add(Me.lblStock3)
-		Me.grpSerie.Controls.Add(Me.cmdHistPrices)
-		Me.grpSerie.Controls.Add(Me.scrollStock)
-		Me.grpSerie.Controls.Add(Me.cboEdition)
-		Me.grpSerie.Controls.Add(Me.picEdition)
-		Me.grpSerie.Controls.Add(Me.lblAD)
-		Me.grpSerie.Controls.Add(Me.lblPrix)
-		Me.grpSerie.Controls.Add(Me.lblRarete)
-		Me.grpSerie.Controls.Add(Me.lblProp6)
-		Me.grpSerie.Controls.Add(Me.lblProp1)
-		Me.grpSerie.Controls.Add(Me.lblProp2)
-		Me.grpSerie.Controls.Add(Me.lblProp5)
-		Me.grpSerie.Controls.Add(Me.lblProp4)
-		Me.grpSerie.Controls.Add(Me.lblProp3)
-		Me.grpSerie.Controls.Add(Me.lblStock)
-		Me.grpSerie.Dock = System.Windows.Forms.DockStyle.Top
-		Me.grpSerie.Location = New System.Drawing.Point(0, 0)
-		Me.grpSerie.Name = "grpSerie"
-		Me.grpSerie.Size = New System.Drawing.Size(251, 138)
-		Me.grpSerie.TabIndex = 8
-		Me.grpSerie.TabStop = false
+		Me.btShowAll.Checked = true
+		Me.btShowAll.Icon = CType(resources.GetObject("btShowAll.Icon"),System.Drawing.Icon)
+		Me.btShowAll.Text = "Tout afficher"
+		AddHandler Me.btShowAll.Activate, AddressOf Me.BtShowAllActivate
 		'
-		'lblStock2
+		'btHistPrices
 		'
-		Me.lblStock2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblStock2.AutoSize = true
-		Me.lblStock2.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock2.Location = New System.Drawing.Point(208, 75)
-		Me.lblStock2.Name = "lblStock2"
-		Me.lblStock2.Size = New System.Drawing.Size(12, 13)
-		Me.lblStock2.TabIndex = 24
-		Me.lblStock2.Text = "/"
-		Me.lblStock2.TextAlign = System.Drawing.ContentAlignment.TopRight
+		Me.btHistPrices.Enabled = false
+		Me.btHistPrices.Icon = CType(resources.GetObject("btHistPrices.Icon"),System.Drawing.Icon)
+		Me.btHistPrices.Text = "Historique prix"
+		AddHandler Me.btHistPrices.Activate, AddressOf Me.BtHistPricesActivate
 		'
-		'lblStock3
+		'cbarImage
 		'
-		Me.lblStock3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblStock3.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock3.Location = New System.Drawing.Point(210, 75)
-		Me.lblStock3.Name = "lblStock3"
-		Me.lblStock3.Size = New System.Drawing.Size(19, 20)
-		Me.lblStock3.TabIndex = 23
-		Me.lblStock3.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'cmdHistPrices
-		'
-		Me.cmdHistPrices.BackgroundImage = CType(resources.GetObject("cmdHistPrices.BackgroundImage"),System.Drawing.Image)
-		Me.cmdHistPrices.Enabled = false
-		Me.cmdHistPrices.Location = New System.Drawing.Point(59, 49)
-		Me.cmdHistPrices.Name = "cmdHistPrices"
-		Me.cmdHistPrices.Size = New System.Drawing.Size(25, 25)
-		Me.cmdHistPrices.TabIndex = 22
-		Me.cmdHistPrices.UseVisualStyleBackColor = true
-		AddHandler Me.cmdHistPrices.Click, AddressOf Me.CmdHistPricesClick
-		'
-		'scrollStock
-		'
-		Me.scrollStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.scrollStock.LargeChange = 1
-		Me.scrollStock.Location = New System.Drawing.Point(167, 70)
-		Me.scrollStock.Maximum = 0
-		Me.scrollStock.Name = "scrollStock"
-		Me.scrollStock.Size = New System.Drawing.Size(17, 25)
-		Me.scrollStock.TabIndex = 20
-		Me.scrollStock.Visible = false
-		AddHandler Me.scrollStock.Scroll, AddressOf Me.ScrollStockScroll
-		'
-		'cboEdition
-		'
-		Me.cboEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.cboEdition.FormattingEnabled = true
-		Me.cboEdition.Location = New System.Drawing.Point(125, 12)
-		Me.cboEdition.Name = "cboEdition"
-		Me.cboEdition.RightToLeft = System.Windows.Forms.RightToLeft.Yes
-		Me.cboEdition.Size = New System.Drawing.Size(104, 21)
-		Me.cboEdition.TabIndex = 19
-		AddHandler Me.cboEdition.SelectedValueChanged, AddressOf Me.CboEditionSelectedValueChanged
-		'
-		'picEdition
-		'
-		Me.picEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.picEdition.Location = New System.Drawing.Point(101, 13)
-		Me.picEdition.Name = "picEdition"
-		Me.picEdition.Size = New System.Drawing.Size(18, 18)
-		Me.picEdition.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-		Me.picEdition.TabIndex = 18
-		Me.picEdition.TabStop = false
-		'
-		'lblAD
-		'
-		Me.lblAD.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblAD.BackColor = System.Drawing.Color.Transparent
-		Me.lblAD.Location = New System.Drawing.Point(184, 95)
-		Me.lblAD.Name = "lblAD"
-		Me.lblAD.Size = New System.Drawing.Size(45, 13)
-		Me.lblAD.TabIndex = 15
-		Me.lblAD.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblPrix
-		'
-		Me.lblPrix.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblPrix.BackColor = System.Drawing.Color.Transparent
-		Me.lblPrix.Location = New System.Drawing.Point(184, 55)
-		Me.lblPrix.Name = "lblPrix"
-		Me.lblPrix.Size = New System.Drawing.Size(45, 13)
-		Me.lblPrix.TabIndex = 13
-		Me.lblPrix.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblRarete
-		'
-		Me.lblRarete.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblRarete.BackColor = System.Drawing.Color.Transparent
-		Me.lblRarete.Location = New System.Drawing.Point(130, 35)
-		Me.lblRarete.Name = "lblRarete"
-		Me.lblRarete.Size = New System.Drawing.Size(99, 13)
-		Me.lblRarete.TabIndex = 12
-		Me.lblRarete.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblProp6
-		'
-		Me.lblProp6.AutoSize = true
-		Me.lblProp6.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp6.Location = New System.Drawing.Point(5, 95)
-		Me.lblProp6.Name = "lblProp6"
-		Me.lblProp6.Size = New System.Drawing.Size(101, 13)
-		Me.lblProp6.TabIndex = 10
-		Me.lblProp6.Text = "Attaque / Défense :"
-		'
-		'lblProp1
-		'
-		Me.lblProp1.AutoSize = true
-		Me.lblProp1.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp1.Location = New System.Drawing.Point(5, 115)
-		Me.lblProp1.Name = "lblProp1"
-		Me.lblProp1.Size = New System.Drawing.Size(63, 13)
-		Me.lblProp1.TabIndex = 9
-		Me.lblProp1.Text = "Invocation :"
-		'
-		'lblProp2
-		'
-		Me.lblProp2.AutoSize = true
-		Me.lblProp2.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp2.Location = New System.Drawing.Point(5, 75)
-		Me.lblProp2.Name = "lblProp2"
-		Me.lblProp2.Size = New System.Drawing.Size(41, 13)
-		Me.lblProp2.TabIndex = 8
-		Me.lblProp2.Text = "Stock :"
-		'
-		'lblProp5
-		'
-		Me.lblProp5.AutoSize = true
-		Me.lblProp5.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp5.Location = New System.Drawing.Point(5, 55)
-		Me.lblProp5.Name = "lblProp5"
-		Me.lblProp5.Size = New System.Drawing.Size(30, 13)
-		Me.lblProp5.TabIndex = 7
-		Me.lblProp5.Text = "Prix :"
-		'
-		'lblProp4
-		'
-		Me.lblProp4.AutoSize = true
-		Me.lblProp4.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp4.Location = New System.Drawing.Point(5, 35)
-		Me.lblProp4.Name = "lblProp4"
-		Me.lblProp4.Size = New System.Drawing.Size(45, 13)
-		Me.lblProp4.TabIndex = 6
-		Me.lblProp4.Text = "Rareté :"
-		'
-		'lblProp3
-		'
-		Me.lblProp3.AutoSize = true
-		Me.lblProp3.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp3.Location = New System.Drawing.Point(5, 15)
-		Me.lblProp3.Name = "lblProp3"
-		Me.lblProp3.Size = New System.Drawing.Size(45, 13)
-		Me.lblProp3.TabIndex = 5
-		Me.lblProp3.Text = "Edition :"
-		'
-		'lblStock
-		'
-		Me.lblStock.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblStock.BackColor = System.Drawing.Color.Transparent
-		Me.lblStock.Location = New System.Drawing.Point(161, 75)
-		Me.lblStock.Name = "lblStock"
-		Me.lblStock.Size = New System.Drawing.Size(45, 13)
-		Me.lblStock.TabIndex = 14
-		Me.lblStock.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'grpSerie2
-		'
-		Me.grpSerie2.BackColor = System.Drawing.Color.Transparent
-		Me.grpSerie2.Controls.Add(Me.lblSerieDate)
-		Me.grpSerie2.Controls.Add(Me.lblSerieCote)
-		Me.grpSerie2.Controls.Add(Me.lblSerieMyTotDist)
-		Me.grpSerie2.Controls.Add(Me.lblSerieMyTot)
-		Me.grpSerie2.Controls.Add(Me.lblSerieTot)
-		Me.grpSerie2.Controls.Add(Me.lblProp12)
-		Me.grpSerie2.Controls.Add(Me.lblProp11)
-		Me.grpSerie2.Controls.Add(Me.lblProp10)
-		Me.grpSerie2.Controls.Add(Me.lblProp9)
-		Me.grpSerie2.Controls.Add(Me.lblProp8)
-		Me.grpSerie2.Location = New System.Drawing.Point(0, 0)
-		Me.grpSerie2.Name = "grpSerie2"
-		Me.grpSerie2.Size = New System.Drawing.Size(241, 138)
-		Me.grpSerie2.TabIndex = 13
-		Me.grpSerie2.TabStop = false
-		Me.grpSerie2.Visible = false
-		'
-		'lblSerieDate
-		'
-		Me.lblSerieDate.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblSerieDate.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieDate.Location = New System.Drawing.Point(149, 15)
-		Me.lblSerieDate.Name = "lblSerieDate"
-		Me.lblSerieDate.Size = New System.Drawing.Size(70, 13)
-		Me.lblSerieDate.TabIndex = 16
-		Me.lblSerieDate.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblSerieCote
-		'
-		Me.lblSerieCote.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblSerieCote.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieCote.Location = New System.Drawing.Point(149, 55)
-		Me.lblSerieCote.Name = "lblSerieCote"
-		Me.lblSerieCote.Size = New System.Drawing.Size(70, 13)
-		Me.lblSerieCote.TabIndex = 15
-		Me.lblSerieCote.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblSerieMyTotDist
-		'
-		Me.lblSerieMyTotDist.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblSerieMyTotDist.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieMyTotDist.Location = New System.Drawing.Point(154, 95)
-		Me.lblSerieMyTotDist.Name = "lblSerieMyTotDist"
-		Me.lblSerieMyTotDist.Size = New System.Drawing.Size(65, 13)
-		Me.lblSerieMyTotDist.TabIndex = 14
-		Me.lblSerieMyTotDist.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblSerieMyTot
-		'
-		Me.lblSerieMyTot.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblSerieMyTot.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieMyTot.Location = New System.Drawing.Point(174, 75)
-		Me.lblSerieMyTot.Name = "lblSerieMyTot"
-		Me.lblSerieMyTot.Size = New System.Drawing.Size(45, 13)
-		Me.lblSerieMyTot.TabIndex = 13
-		Me.lblSerieMyTot.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblSerieTot
-		'
-		Me.lblSerieTot.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-		Me.lblSerieTot.BackColor = System.Drawing.Color.Transparent
-		Me.lblSerieTot.Location = New System.Drawing.Point(174, 35)
-		Me.lblSerieTot.Name = "lblSerieTot"
-		Me.lblSerieTot.Size = New System.Drawing.Size(45, 13)
-		Me.lblSerieTot.TabIndex = 12
-		Me.lblSerieTot.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'lblProp12
-		'
-		Me.lblProp12.AutoSize = true
-		Me.lblProp12.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp12.Location = New System.Drawing.Point(5, 55)
-		Me.lblProp12.Name = "lblProp12"
-		Me.lblProp12.Size = New System.Drawing.Size(64, 13)
-		Me.lblProp12.TabIndex = 10
-		Me.lblProp12.Text = "Cote totale :"
-		'
-		'lblProp11
-		'
-		Me.lblProp11.AutoSize = true
-		Me.lblProp11.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp11.Location = New System.Drawing.Point(5, 95)
-		Me.lblProp11.Name = "lblProp11"
-		Me.lblProp11.Size = New System.Drawing.Size(144, 13)
-		Me.lblProp11.TabIndex = 8
-		Me.lblProp11.Text = "Total possédées (distinctes) :"
-		'
-		'lblProp10
-		'
-		Me.lblProp10.AutoSize = true
-		Me.lblProp10.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp10.Location = New System.Drawing.Point(5, 75)
-		Me.lblProp10.Name = "lblProp10"
-		Me.lblProp10.Size = New System.Drawing.Size(91, 13)
-		Me.lblProp10.TabIndex = 7
-		Me.lblProp10.Text = "Total possédées :"
-		'
-		'lblProp9
-		'
-		Me.lblProp9.AutoSize = true
-		Me.lblProp9.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp9.Location = New System.Drawing.Point(5, 35)
-		Me.lblProp9.Name = "lblProp9"
-		Me.lblProp9.Size = New System.Drawing.Size(69, 13)
-		Me.lblProp9.TabIndex = 6
-		Me.lblProp9.Text = "Total cartes :"
-		'
-		'lblProp8
-		'
-		Me.lblProp8.AutoSize = true
-		Me.lblProp8.BackColor = System.Drawing.Color.Transparent
-		Me.lblProp8.Location = New System.Drawing.Point(5, 15)
-		Me.lblProp8.Name = "lblProp8"
-		Me.lblProp8.Size = New System.Drawing.Size(79, 13)
-		Me.lblProp8.TabIndex = 5
-		Me.lblProp8.Text = "Date de sortie :"
-		'
-		'CBarImage
-		'
-		Me.CBarImage.Closable = false
-		Me.CBarImage.Controls.Add(Me.pnlImage)
-		Me.CBarImage.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.CBarImage.DrawActionsButton = false
-		Me.CBarImage.Flow = TD.SandBar.ToolBarLayout.Horizontal
-		Me.CBarImage.Guid = New System.Guid("ea1edb50-d1b7-4eab-b136-020bcdc24f2d")
-		Me.CBarImage.Location = New System.Drawing.Point(0, 0)
-		Me.CBarImage.Movable = false
-		Me.CBarImage.Name = "CBarImage"
-		Me.CBarImage.Size = New System.Drawing.Size(211, 324)
-		Me.CBarImage.TabIndex = 1
-		Me.CBarImage.Text = "Image"
+		Me.cbarImage.Closable = false
+		Me.cbarImage.Controls.Add(Me.pnlImage)
+		Me.cbarImage.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.cbarImage.DrawActionsButton = false
+		Me.cbarImage.Flow = TD.SandBar.ToolBarLayout.Horizontal
+		Me.cbarImage.Guid = New System.Guid("ea1edb50-d1b7-4eab-b136-020bcdc24f2d")
+		Me.cbarImage.Location = New System.Drawing.Point(0, 0)
+		Me.cbarImage.Movable = false
+		Me.cbarImage.Name = "cbarImage"
+		Me.cbarImage.Size = New System.Drawing.Size(211, 466)
+		Me.cbarImage.TabIndex = 1
+		Me.cbarImage.Text = "Image"
 		'
 		'pnlImage
 		'
-		Me.pnlImage.Controls.Add(Me.picScanCard)
+		Me.pnlImage.Controls.Add(Me.splitH4)
 		Me.pnlImage.Location = New System.Drawing.Point(2, 27)
 		Me.pnlImage.Name = "pnlImage"
-		Me.pnlImage.Size = New System.Drawing.Size(207, 295)
+		Me.pnlImage.Size = New System.Drawing.Size(207, 437)
 		Me.pnlImage.TabIndex = 0
+		'
+		'splitH4
+		'
+		Me.splitH4.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitH4.IsSplitterFixed = true
+		Me.splitH4.Location = New System.Drawing.Point(0, 0)
+		Me.splitH4.Name = "splitH4"
+		Me.splitH4.Orientation = System.Windows.Forms.Orientation.Horizontal
+		'
+		'splitH4.Panel1
+		'
+		Me.splitH4.Panel1.Controls.Add(Me.picScanCard)
+		'
+		'splitH4.Panel2
+		'
+		Me.splitH4.Panel2.Controls.Add(Me.grdPropPicture)
+		Me.splitH4.Size = New System.Drawing.Size(207, 437)
+		Me.splitH4.SplitterDistance = 295
+		Me.splitH4.TabIndex = 1
 		'
 		'picScanCard
 		'
@@ -1856,9 +1738,34 @@ Partial Class MainForm
 		Me.picScanCard.Name = "picScanCard"
 		Me.picScanCard.Size = New System.Drawing.Size(207, 295)
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-		Me.picScanCard.TabIndex = 0
+		Me.picScanCard.TabIndex = 2
 		Me.picScanCard.TabStop = false
-		AddHandler Me.picScanCard.MouseUp, AddressOf Me.PicScanCardMouseUp
+		'
+		'grdPropPicture
+		'
+		Me.grdPropPicture.AutoSizeMinHeight = 10
+		Me.grdPropPicture.AutoSizeMinWidth = 10
+		Me.grdPropPicture.AutoStretchColumnsToFitWidth = false
+		Me.grdPropPicture.AutoStretchRowsToFitHeight = false
+		Me.grdPropPicture.BackColor = System.Drawing.Color.Transparent
+		Me.grdPropPicture.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
+		Me.grdPropPicture.CustomSort = false
+		Me.grdPropPicture.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grdPropPicture.GridToolTipActive = true
+		Me.grdPropPicture.Location = New System.Drawing.Point(0, 0)
+		Me.grdPropPicture.Name = "grdPropPicture"
+		Me.grdPropPicture.Size = New System.Drawing.Size(207, 138)
+		Me.grdPropPicture.SpecialKeys = CType(((((((((((SourceGrid2.GridSpecialKeys.Ctrl_C Or SourceGrid2.GridSpecialKeys.Ctrl_V)  _
+						Or SourceGrid2.GridSpecialKeys.Ctrl_X)  _
+						Or SourceGrid2.GridSpecialKeys.Delete)  _
+						Or SourceGrid2.GridSpecialKeys.Arrows)  _
+						Or SourceGrid2.GridSpecialKeys.Tab)  _
+						Or SourceGrid2.GridSpecialKeys.PageDownUp)  _
+						Or SourceGrid2.GridSpecialKeys.Enter)  _
+						Or SourceGrid2.GridSpecialKeys.Escape)  _
+						Or SourceGrid2.GridSpecialKeys.Control)  _
+						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
+		Me.grdPropPicture.TabIndex = 4
 		'
 		'dlgSave
 		'
@@ -1894,7 +1801,7 @@ Partial Class MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(774, 424)
+		Me.ClientSize = New System.Drawing.Size(992, 566)
 		Me.Controls.Add(Me.splitV)
 		Me.Controls.Add(Me.toolStrip)
 		Me.Controls.Add(Me.statusStrip)
@@ -1905,6 +1812,8 @@ Partial Class MainForm
 		Me.Text = "agic The Gathering Manager"
 		AddHandler Load, AddressOf Me.MainFormLoad
 		AddHandler FormClosing, AddressOf Me.MainFormFormClosing
+		AddHandler Resize, AddressOf Me.MainFormResize
+		AddHandler ResizeEnd, AddressOf Me.MainFormResizeEnd
 		Me.statusStrip.ResumeLayout(false)
 		Me.statusStrip.PerformLayout
 		Me.cmnuTvw.ResumeLayout(false)
@@ -1923,9 +1832,29 @@ Partial Class MainForm
 		Me.splitV2.Panel1.ResumeLayout(false)
 		Me.splitV2.Panel2.ResumeLayout(false)
 		Me.splitV2.ResumeLayout(false)
-		Me.CBarProperties.ResumeLayout(false)
+		Me.cbarProperties.ResumeLayout(false)
 		Me.pnlProperties.ResumeLayout(false)
-		Me.grpCarac.ResumeLayout(false)
+		Me.splitH.Panel1.ResumeLayout(false)
+		Me.splitH.Panel2.ResumeLayout(false)
+		Me.splitH.Panel2.PerformLayout
+		Me.splitH.ResumeLayout(false)
+		Me.pnlCard.ResumeLayout(false)
+		Me.splitH2.Panel1.ResumeLayout(false)
+		Me.splitH2.Panel2.ResumeLayout(false)
+		Me.splitH2.ResumeLayout(false)
+		Me.pnlCard1.ResumeLayout(false)
+		Me.splitH3.Panel1.ResumeLayout(false)
+		Me.splitH3.Panel2.ResumeLayout(false)
+		Me.splitH3.ResumeLayout(false)
+		Me.splitV3.Panel1.ResumeLayout(false)
+		Me.splitV3.Panel2.ResumeLayout(false)
+		Me.splitV3.ResumeLayout(false)
+		Me.pnlCard2.ResumeLayout(false)
+		CType(Me.picCost,System.ComponentModel.ISupportInitialize).EndInit
+		Me.pnlCard3.ResumeLayout(false)
+		Me.pnlCard3.PerformLayout
+		CType(Me.picPowerTough,System.ComponentModel.ISupportInitialize).EndInit
+		Me.pnlAlternate.ResumeLayout(false)
 		Me.grpAutorisations.ResumeLayout(false)
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
@@ -1933,24 +1862,39 @@ Partial Class MainForm
 		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).EndInit
-		Me.grpSerie.ResumeLayout(false)
-		Me.grpSerie.PerformLayout
-		CType(Me.picEdition,System.ComponentModel.ISupportInitialize).EndInit
-		Me.grpSerie2.ResumeLayout(false)
-		Me.grpSerie2.PerformLayout
-		Me.CBarImage.ResumeLayout(false)
+		Me.cbarImage.ResumeLayout(false)
 		Me.pnlImage.ResumeLayout(false)
+		Me.splitH4.Panel1.ResumeLayout(false)
+		Me.splitH4.Panel2.ResumeLayout(false)
+		Me.splitH4.ResumeLayout(false)
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
-	Private mnuRulings As System.Windows.Forms.ToolStripMenuItem
+	Private pnlCard3 As System.Windows.Forms.Panel
+	Private lblPowerTough As System.Windows.Forms.Label
+	Private picPowerTough As System.Windows.Forms.PictureBox
+	Private splitV3 As System.Windows.Forms.SplitContainer
+	Private btHistPrices As TD.SandBar.ButtonItem
+	Private btShowAll As TD.SandBar.ButtonItem
+	Private propAlternate As System.Windows.Forms.PropertyGrid
+	Private txtSimpleText As System.Windows.Forms.TextBox
+	Private pnlAlternate As System.Windows.Forms.Panel
+	Private txtRichText As Magic_The_Gathering_Manager.ExRichTextBox
+	Private pnlCard1 As System.Windows.Forms.Panel
+	Private picCost As System.Windows.Forms.PictureBox
+	Private pnlCard2 As System.Windows.Forms.Panel
+	Private splitH4 As System.Windows.Forms.SplitContainer
+	Private grdPropPicture As SourceGrid2.Grid
+	Private splitH3 As System.Windows.Forms.SplitContainer
+	Private splitH2 As System.Windows.Forms.SplitContainer
+	Private grdPropCard As SourceGrid2.Grid
+	Private pnlCard As System.Windows.Forms.Panel
+	Private splitH As System.Windows.Forms.SplitContainer
 	Private mnuUpdateRulings As System.Windows.Forms.ToolStripMenuItem
 	Private btPlateau As System.Windows.Forms.ToolStripButton
 	Private mnuPlateau As System.Windows.Forms.ToolStripMenuItem
-	Public txtCardText As Magic_The_Gathering_Manager.ExRichTextBox
 	Private mnuTransform As System.Windows.Forms.ToolStripMenuItem
-	Private btDegroupFoils As System.Windows.Forms.ToolStripButton
 	Private btSort As System.Windows.Forms.ToolStripButton
 	Private btSeparator As System.Windows.Forms.ToolStripSeparator
 	Private toolSubStrip As System.Windows.Forms.ToolStrip
@@ -1958,8 +1902,6 @@ Partial Class MainForm
 	Private btCriteria As System.Windows.Forms.ToolStripButton
 	Private btCardsFR As System.Windows.Forms.ToolStripButton
 	Private mnuCollapseRarete As System.Windows.Forms.ToolStripMenuItem
-	Public lblStock3 As System.Windows.Forms.Label
-	Private lblStock2 As System.Windows.Forms.Label
 	Private mnuSwapSerie As System.Windows.Forms.ToolStripMenuItem
 	Private btWordGen As System.Windows.Forms.ToolStripButton
 	Private mnuWordGen As System.Windows.Forms.ToolStripMenuItem
@@ -1967,15 +1909,12 @@ Partial Class MainForm
 	Private mnuCopyACard As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPlugResourcer As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPlugins As System.Windows.Forms.ToolStripMenuItem
-	Private mnuDegroupFoils As System.Windows.Forms.ToolStripMenuItem
 	Private mnuGestAdv As System.Windows.Forms.ToolStripMenuItem
 	Private btWebsite As System.Windows.Forms.ToolStripButton
 	Private mnuWebsite As System.Windows.Forms.ToolStripMenuItem
 	Private mnuMV As System.Windows.Forms.ToolStripMenuItem
-	Private cmdHistPrices As System.Windows.Forms.Button
 	Private mnuContenuUpdate As System.Windows.Forms.ToolStripMenuItem
 	Private mnuApplicationUpdate As System.Windows.Forms.ToolStripMenuItem
-	Private scrollStock As System.Windows.Forms.VScrollBar
 	Private mnuUpdateAutorisations As System.Windows.Forms.ToolStripMenuItem
 	Private imglstAutorisations As System.Windows.Forms.ImageList
 	Private picAutBloc As System.Windows.Forms.PictureBox
@@ -1989,17 +1928,6 @@ Partial Class MainForm
 	Private mnuFixFR2 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFixPic As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFixDivers As System.Windows.Forms.ToolStripMenuItem
-	Public lblSerieCote As System.Windows.Forms.Label
-	Public lblSerieMyTotDist As System.Windows.Forms.Label
-	Public lblSerieMyTot As System.Windows.Forms.Label
-	Public lblSerieTot As System.Windows.Forms.Label
-	Public lblProp12 As System.Windows.Forms.Label
-	Private lblProp11 As System.Windows.Forms.Label
-	Public lblProp10 As System.Windows.Forms.Label
-	Private lblProp9 As System.Windows.Forms.Label
-	Private lblProp8 As System.Windows.Forms.Label
-	Public lblSerieDate As System.Windows.Forms.Label
-	Public grpSerie2 As System.Windows.Forms.GroupBox
 	Private mnuRestorePrev As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeparator10 As System.Windows.Forms.ToolStripSeparator
 	Private mnuFixAssoc As System.Windows.Forms.ToolStripMenuItem
@@ -2039,7 +1967,7 @@ Partial Class MainForm
 	Private mnuCheckForBetas As System.Windows.Forms.ToolStripMenuItem
 	Private mnuShowImage As System.Windows.Forms.ToolStripMenuItem
 	Private pnlImage As TD.SandBar.ContainerBarClientPanel
-	Private CBarImage As TD.SandBar.ContainerBar
+	Private cbarImage As TD.SandBar.ContainerBar
 	Private mnuMoveToCollection As System.Windows.Forms.ToolStripMenuItem
 	Private picScanCard As System.Windows.Forms.PictureBox
 	Private splitV2 As System.Windows.Forms.SplitContainer
@@ -2076,22 +2004,8 @@ Partial Class MainForm
 	Private mnuFindNext As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSearchText As System.Windows.Forms.ToolStripTextBox
 	Private mnuSearchCard As System.Windows.Forms.ToolStripMenuItem
-	Public cboEdition As System.Windows.Forms.ComboBox
 	Private lblNCards As System.Windows.Forms.ToolStripStatusLabel
-	Public picEdition As System.Windows.Forms.PictureBox
 	Public imglstCarac As System.Windows.Forms.ImageList
-	Public lblRarete As System.Windows.Forms.Label
-	Public lblPrix As System.Windows.Forms.Label
-	Public lblStock As System.Windows.Forms.Label
-	Public lblAD As System.Windows.Forms.Label
-	Public grpSerie As System.Windows.Forms.GroupBox
-	Private grpCarac As System.Windows.Forms.GroupBox
-	Public lblProp1 As System.Windows.Forms.Label
-	Private lblProp2 As System.Windows.Forms.Label
-	Private lblProp3 As System.Windows.Forms.Label
-	Private lblProp4 As System.Windows.Forms.Label
-	Public lblProp5 As System.Windows.Forms.Label
-	Public lblProp6 As System.Windows.Forms.Label
 	Public mnuCardsFR As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuTvw As System.Windows.Forms.ContextMenuStrip
 	Private mnuRefresh As System.Windows.Forms.ToolStripMenuItem
@@ -2099,7 +2013,7 @@ Partial Class MainForm
 	Public mnuDisp As System.Windows.Forms.ToolStripMenuItem
 	Public tvwExplore As TreeViewMS.TreeViewMS
 	Private pnlProperties As TD.SandBar.ContainerBarClientPanel
-	Private CBarProperties As TD.SandBar.ContainerBar
+	Private cbarProperties As TD.SandBar.ContainerBar
 	Private pnlTvw As TD.SandBar.ContainerBarClientPanel
 	Private splitV As System.Windows.Forms.SplitContainer
 	Private mnuRemGames As System.Windows.Forms.ToolStripMenuItem

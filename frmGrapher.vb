@@ -46,7 +46,7 @@ Public Partial Class frmGrapher
 		VpPlot.DataSource = VpY
 		VpPlot.AbscissaData = VpX
 		VpPlot.Color = Color.FromName(VmColors(CmColorBase + VmPlots.Count))
-		VmPlots.Add(New clsGrapherSettings(Me, VpLabel, VpPlot.Color, Drawing2D.DashStyle.Solid, 1, True, VpPlot))
+		VmPlots.Add(New clsGrapherSettings(Me, VpLabel, VpPlot.Color, Drawing2D.DashStyle.Solid, 2, True, VpPlot))
 		Call Me.RefreshAllPlots
 	End Sub
 	Public Sub RefreshAllPlots(Optional VpList As Boolean = True)

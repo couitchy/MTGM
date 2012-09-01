@@ -1065,6 +1065,8 @@ Public Partial Class MainForm
 				Return "avacynrestored#" + VpStr
 			Case "D9"
 				Return "DuelDecksVenservsKoth#" + VpStr
+			Case "M4"
+				Return "magic2013#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1177,6 +1179,8 @@ Public Partial Class MainForm
 				Return "YR"
 			Case "DuelDecksVenservsKoth"
 				Return "D9"
+			Case "magic2013"
+				Return "M4"
 			Case Else
 				Return ""
 		End Select

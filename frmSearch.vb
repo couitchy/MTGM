@@ -204,6 +204,7 @@ Public Partial Class frmSearch
 	Dim VpReq As String = Me.cboFind.Text.Replace("'", "''")
 	Dim VpType As Integer = Me.cboSearchType.SelectedIndex
 		Me.lstResult.Items.Clear
+		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		If Me.chkRestriction.Checked And Not VmOwner.IsSourcePresent Then
 			Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
 			Exit Sub
@@ -242,26 +243,17 @@ Public Partial Class frmSearch
 	'------------------------------------------------------------------------------------------------------------------------------------
 	'Affiche le détail de la carte sélectionnée après la recherche, soit dans l'arborescence principale, soit dans l'onglet des résultats
 	'------------------------------------------------------------------------------------------------------------------------------------
-	Dim VpTitle As String
-		If Me.lstResult.SelectedItem Is Nothing Then Exit Sub
-		VpTitle = clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString)
-		If Me.chkShowExternal.Checked Then
-			Call Me.FindCardNode(VpTitle, VmOwner.LastRoot)
-			Me.btResult.Enabled = False
-			'VmOwner.tvwExplore.Focus
-		Else
-			Me.SuspendLayout
-			Call clsModule.LoadCarac(VmOwner, Me, VpTitle, False, False)
-			Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
-			Me.btResult.Enabled = True
-			Call Me.BtResultActivate(sender, e)
-			Me.ResumeLayout
+		If Me.lstResult.SelectedItem IsNot Nothing Then
+			If Me.chkShowExternal.Checked Then
+				Call Me.FindCardNode(clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), VmOwner.LastRoot)
+				'VmOwner.tvwExplore.Focus
+			End If
 		End If
 	End Sub
-	Sub CboEditionSelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs)
-		Me.SuspendLayout
-		Call clsModule.LoadCarac(VmOwner, Me, clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), False, False, , clsModule.GetSerieCodeFromName(Me.cboEdition.Text))
-		Me.ResumeLayout
+	Sub LstResultSelectedIndexChanged(sender As Object, e As EventArgs)
+		If Me.lstResult.SelectedItem IsNot Nothing AndAlso Me.picScanCard.Visible Then
+			Call clsModule.LoadScanCard(clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), Me.picScanCard)
+		End If
 	End Sub
 	Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
@@ -280,35 +272,32 @@ Public Partial Class frmSearch
 			Me.Close
 		End If
 	End Sub
-	Sub BtSearchActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Me.grpSearch.Visible = True
-		'Me.btResult.Checked = False
-		Me.grpSerie.Visible = False
-		'Me.btSearch.Checked = True
-		Me.cboFind.Focus
-	End Sub
-	Sub BtResultActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Me.grpSerie.Visible = True
-		'Me.btSearch.Checked = False
-		Me.grpSearch.Visible = False
-		'Me.btResult.Checked = True
-	End Sub
 	Sub ChkRestrictionCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear
+		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		If Me.chkRestriction.Checked Then
 			Me.chkRestrictionInv.Checked = False
 		End If
 	End Sub
 	Sub ChkRestrictionInvCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear
+		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		If Me.chkRestrictionInv.Checked Then
 			Me.chkRestriction.Checked = False
 		End If
 	End Sub
 	Sub ChkShowExternalCheckedChanged(sender As Object, e As EventArgs)
 		Me.lstResult.Items.Clear
+		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		Me.chkClearPrev.Enabled = ( Me.chkShowExternal.Checked )
 		Me.chkMerge.Enabled = ( Me.chkShowExternal.Checked )
+		If Me.chkShowExternal.Checked Then
+			Me.picScanCard.Visible = False
+			Me.Width = 390
+		Else
+			Me.picScanCard.Visible = True
+			Me.Width = 618
+		End If
 	End Sub
 	Sub CmdClearSearchesClick(sender As Object, e As EventArgs)
 		Me.cboFind.Items.Clear
@@ -331,6 +320,7 @@ Public Partial Class frmSearch
 				Me.cboFind.Items.Insert(0, VpSearch)
 			End If
 		Next VpSearch
+		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 	End Sub
 	Function GetRefText(sender As Object) As String
 		If sender.SelectionLength > 0 Then

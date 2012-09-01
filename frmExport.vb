@@ -180,10 +180,10 @@ Public Partial Class frmExport
 							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where InStr('" + VpName.ToLower.Replace("'", "''") + "', LCase(Card.Title)) > 0 And (InStr('" + VpEdition.ToLower.Replace("'", "''") + "', LCase(Series.SeriesNM)) > 0 Or InStr('" + VpEdition.ToLower.Replace("'", "''") + "', LCase(Series.SeriesNM_MtG)) > 0);"
 							VpO = VgDBCommand.ExecuteScalar
 							If Not VpO Is Nothing Then
-								VpLog.WriteLine("Partial math for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
 								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
 							Else
-								VpLog.WriteLine("No math for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
 							End If
 						End If
 					End If

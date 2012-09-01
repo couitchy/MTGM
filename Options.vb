@@ -108,6 +108,7 @@ Public Class clsSettings
 	Private VmCopyRange As Integer = 1
 	Private VmShowLines As Boolean = False
 	Private VmDownloadServer As String = clsModule.CgDefaultServer
+	Private VmShowAllSeries As Boolean = False
 	<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 	Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 		Get
@@ -299,6 +300,15 @@ Public Class clsSettings
 		End Get
 		Set (VpCopyRange As Integer)
 			VmCopyRange = Math.Max(VpCopyRange, 1)
+		End Set
+	End Property
+	<DisplayName("Afficher toutes les éditions"), Category("Explorateur"), DefaultValue(False), Description("Afficher par défaut toutes les éditions disponibles pour la carte sélectionnée dans l'arborescence")> _
+	Public Property ShowAllSeries As Boolean
+		Get
+			Return VmShowAllSeries
+		End Get
+		Set (VpShowAllSeries As Boolean)
+			VmShowAllSeries = VpShowAllSeries
 		End Set
 	End Property
 	<DisplayName("Base des images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
