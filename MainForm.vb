@@ -171,6 +171,7 @@ Public Partial Class MainForm
 	#Region "Déclarations"
 	Private VmMyChildren As New clsChildren
 	Private VmFilterCriteria As New frmExploSettings(Me)
+	Private VmDeckMode As Boolean = False
 	Private VmSearch As New clsSearch
 	Private VmAdvSearch As String = ""
 	Private VmAdvSearchLabel As String = ""
@@ -180,7 +181,6 @@ Public Partial Class MainForm
 	Private VmImgDL As Boolean = False
 	Private VmMainReaderBusy As Boolean = False
 	Private VmStartup As String = ""
-	Private VmBalloonTip As New ToolTip
 '	Public  VgBar As Windows7ProgressBar
 	Public Shared VgMe As MainForm
 	#End Region
@@ -608,7 +608,13 @@ Public Partial Class MainForm
 	'-----------------------------------------
 	'Remplace tous les prix non indiqués par 0
 	'-----------------------------------------
+		VgDBCommand.CommandText = "Update Card Set Price = 0, myPrice = 1 Where Card.EncNbr In (Select CardDouble.EncNbrDownFace From CardDouble);"
+		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.CommandText = "Update Card Set FoilPrice = 0 Where Card.EncNbr In (Select CardDouble.EncNbrDownFace From CardDouble);"
+		VgDBCommand.ExecuteNonQuery	
 		VgDBCommand.CommandText = "Update Card Set Price = 0, myPrice = 1 Where Card.Price In (0, Null);"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Card Set FoilPrice = 0 Where Card.FoilPrice Is Null;"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub FixFR
@@ -962,7 +968,7 @@ Public Partial Class MainForm
 			.Close
 		End With
 		Me.mnuDispCollection.Checked = True
-		VmFilterCriteria.DeckMode = False
+		VmDeckMode = False
 	End Sub
 	Private Sub SortTvw
 	'-----------------------------------------
@@ -980,6 +986,7 @@ Public Partial Class MainForm
 	'Chargement du treeview avec les sélections spécifiées dans le menu Affichage ou bien les résultats de la recherche de l'utilisateur
 	'-----------------------------------------------------------------------------------------------------------------------------------
 	Dim VpNode As TreeNode
+	Dim VpSource As String = Me.MySource
 		If Not clsModule.DBOK Then Exit Sub
 		VmAdvSearch = VpLoadFromSearch
 		VmAdvSearchLabel = VpSearchName
@@ -992,7 +999,7 @@ Public Partial Class MainForm
 		Me.mnuSearchText.Text = clsModule.CgCard
 		Me.lblDB.Text = "Base - " + VgDB.DataSource
 		Call Me.ClearCarac
-		If Not Me.IsSourcePresent And VpLoadFromSearch = "" Then
+		If Not Me.IsSourcePresent And Not Me.IsInAdvSearch Then
 			Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
 		Else
 			VpNode = New TreeNode
@@ -1000,7 +1007,7 @@ Public Partial Class MainForm
 			VpNode.ImageIndex = 1
 			VpNode.SelectedImageIndex = 1
 			'Cas 1 : chargement des résultats d'une recherche de l'utilisateur
-			If VpLoadFromSearch <> "" Then
+			If Me.IsInAdvSearch Then
 				Call Me.MnuDispCollectionActivate(Me.mnuDispCollection, Nothing) 'Un peu crade mais il faut absolument déselectionner les decks avant de vouloir charger la recherche (car sinon le me.restriction va altérer l'expression de la requête)
 				VpNode.Text = VpSearchName
 				Try
@@ -1011,26 +1018,16 @@ Public Partial Class MainForm
 				Call Me.RecurLoadTvw(VpLoadFromSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction)
 				Me.lblNCards.Text = ""
 				VmSuggestions = Nothing
-			'Cas 2 : chargement des cartes de deck(s)
-			ElseIf VmFilterCriteria.DeckMode Then
-				VpNode.Text = clsModule.CgDecks
-				Try
-					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(1))
-				Catch
-					Call clsModule.ShowWarning(clsModule.CgErr7)
-				End Try
-				Call Me.RecurLoadTvw(clsModule.CgSDecks, clsModule.CgSDecks, VpNode, 2, Me.Restriction)
-				Call Me.ShowNCards(clsModule.CgSDecks)
-			'Cas 3 : chargement de la collection
+			'Cas 2 : chargement des cartes de la collection ou d'un deck
 			Else
-				VpNode.Text = clsModule.CgCollection
+				VpNode.Text = Me.GetSelectedSource
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(clsModule.CgSCollection, clsModule.CgSCollection, VpNode, 1, Me.Restriction)
-				Call Me.ShowNCards(clsModule.CgSCollection)
+				Call Me.RecurLoadTvw(VpSource, VpSource, VpNode, 1, Me.Restriction)
+				Call Me.ShowNCards(clsModule.CgSDecks)
 			End If
 			Me.tvwExplore.Nodes.Add(VpNode)
 			VpNode.Expand
@@ -1197,23 +1194,6 @@ Public Partial Class MainForm
 			Return "0"
 		End If
 	End Function
-	Private Sub LoadRuling(VpCard As String)
-	'----------------------------------------------------------------------------------------
-	'Affiche une info-bulle contenant les points de règle spécifiques à la carte sélectionnée
-	'----------------------------------------------------------------------------------------
-	Dim VpRuling As String
-		VgDBCommand.CommandText = "Select Rulings From Spell Where Title = '" + VpCard.Replace("'", "''") + "';"
-		VpRuling = VgDBCommand.ExecuteScalar.ToString.Trim
-		If VpRuling <> "" Then
-			VpRuling = VpRuling.Substring(1)
-			VpRuling = VpRuling.Replace("£", vbCrLf)
-			'max. 100 caractères par ligne si texte très long
-			If VpRuling.Length > 300 Then
-				VpRuling = clsModule.StrSplice(VpRuling, 100)
-			End If
-			VmBalloonTip.Show(VpRuling, Me.picScanCard, New Point(Me.picScanCard.Left + Me.picScanCard.Width / 2, Me.picScanCard.Top + Me.picScanCard.Height / 2))
-		End If
-	End Sub
 	Private Sub LoadCaracOther(VpCritere As String, VpModeCarac As clsModule.eModeCarac, VpElderCriteria As String)
 	'------------------------------------------------------------------------------------
 	'Charge des informations sur {édition, couleur, type} sélectionné(e) dans le treeview
@@ -1221,7 +1201,7 @@ Public Partial Class MainForm
 	Dim VpCaracOther As New clsCaracOther
 	Dim VpCaracSerie As clsCaracSerie
 	Dim VpO As Object
-	Dim VpSource As String = If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = Me.MySource
 		With VpCaracOther
 			'Nombre de cartes total répondant aux critères
 			VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria, False) + ");"
@@ -1310,9 +1290,7 @@ Public Partial Class MainForm
 	Dim VpSQLForAll As String				'Requête complète générée pour demander des infos dans toutes les tables sauf celle spécifique aux créatures
 	Dim VpSQLGeneralCreatures As String		'Sous-table d'infos générales, y compris celle spécifique aux créatures
 	Dim VpSQLGeneralAll As String			'Sous-table d'infos générales sauf celle spécifique aux créatures
-	'Dim VpSQLStockInfosDecks As String		'Sous-table d'infos liées au stock dans les decks, en ignorant les cartes foils (groupées avec les cartes normales)
 	Dim VpSQLStockInfosDecksFoil As String	'Sous-table d'infos liées au stock dans les decks, en dissociant les cartes foils
-	'Dim VpSQLStockInfosCollec As String		'Sous-table d'infos liées au stock dans la collection, en ignorant les cartes foils (groupées avec les cartes normales)
 	Dim VpSQLStockInfosCollecFoil As String	'Sous-table d'infos liées au stock dans la collection, en dissociant les cartes foils
 	Dim VpSQLColumnsRequired As String		'Colonnes communes demandées dans le résultat final
 	Dim VpSQLTitleCriteria As String		'Clause sur le nom de la carte
@@ -1330,26 +1308,23 @@ Public Partial Class MainForm
 			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)) As T1"
 			VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)) As T1"
 			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Group By GameID, EncNbr) As T2"
-			'VpSQLStockInfosDecks = "(Select GameID, EncNbr, Sum(Items) As MyItems From MyGames Group By GameID, EncNbr) As T2"
 			VpSQLStockInfosCollecFoil = "(Select EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyCollection Group By EncNbr) As T2"
-			'VpSQLStockInfosCollec = "(Select EncNbr, Sum(Items) As MyItems From MyCollection Group By EncNbr) As T2"
 			VpSQLColumnsRequired = "Select T1.Series, T1.Price, T1.PriceDate, T1.Rarity, T1.CardText, T1.Cost, T1.SeriesNM, T1.SeriesNM_FR, T1.FoilPrice, T1.FoilDate, T1.Rulings, T1.Release, T1.Artist"
 			VpSQLTitleCriteria = " Where T1.Title = '" + VpCard.Replace("'", "''") + "'"
-			VpJointure = If(Me.btShowAll.Checked, " Left", " Inner")
-			'Finalisation de la construction des requêtes ; 24 possibilités selon que :
+			VpJointure = If(Me.btShowAll.Checked Or VpTransformed, " Left", " Inner")
+			'Finalisation de la construction des requêtes ; 12 possibilités selon que :
 			'- type de source :
 			'	* recherche
 			'	* decks
 			'	* collection
-			'- dissociation ou non du flag foil
 			'- affichage ou non de toutes les éditions disponibles pour une carte, y compris celles hors stock
 			'- carte créature ou non
 			If Me.IsInAdvSearch Then
 				VpSQLForCreatures = VpSQLColumnsRequired + ", T1.SubType, T1.SubTypeVF, T1.Tough, T1.Power From " + VpSQLGeneralCreatures + VpSQLTitleCriteria
 				VpSQLForAll = VpSQLColumnsRequired + " From " + VpSQLGeneralAll + VpSQLTitleCriteria
 			Else
-				VpSQLForCreatures = VpSQLColumnsRequired + ", T1.SubType, T1.SubTypeVF, T1.Tough, T1.Power, T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralCreatures + VpJointure + " Join " + If(VmFilterCriteria.DeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr" + VpSQLTitleCriteria + " And "
-				VpSQLForAll = VpSQLColumnsRequired + ", T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralAll + VpJointure + " Join " + If(VmFilterCriteria.DeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr Where T1.Title = '" + VpCard.Replace("'", "''") + "' And "
+				VpSQLForCreatures = VpSQLColumnsRequired + ", T1.SubType, T1.SubTypeVF, T1.Tough, T1.Power, T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralCreatures + VpJointure + " Join " + If(VmDeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr" + VpSQLTitleCriteria + " And "
+				VpSQLForAll = VpSQLColumnsRequired + ", T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralAll + VpJointure + " Join " + If(VmDeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr Where T1.Title = '" + VpCard.Replace("'", "''") + "' And "
 			End If
 			VpSQLForCreatures = VpSQLForCreatures + Me.Restriction(, True)
 			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQLForCreatures, , " Order By T1.Release")
@@ -1408,17 +1383,15 @@ Public Partial Class MainForm
 					If VpPrice <> 0 Then
 						Me.grdPropCard(VpRow, 3) = New Cells.Cell(VpPrice)
 					End If
-					'Colonnes stock et stock foil, qu'on ne gère que si on est pas en mode recherche avancée, et dont la modification n'est autorisée que si une seule source est active
+					'Colonnes stock et stock foil, qu'on ne gère que si on est pas en mode recherche avancée
 					If Not Me.IsInAdvSearch Then
 						Me.grdPropCard(VpRow, 4) = New Cells.Cell(CInt(clsModule.SafeGetNonZeroVal("MyItems")))
 						Me.grdPropCard(VpRow, 5) = New Cells.Cell(CInt(clsModule.SafeGetNonZeroVal("MyItemsFoil")))
-						If Me.IsSingleSource Then
-							VpCellModel = Utility.CreateDataModel(Type.GetType("System.Int32"))
-							VpCellModel.EditableMode = EditableMode.AnyKey Or EditableMode.SingleClick
-							AddHandler VpCellModel.Validated, AddressOf CellValidated
-							Me.grdPropCard(VpRow, 4).DataModel = VpCellModel
-							Me.grdPropCard(VpRow, 5).DataModel = VpCellModel
-						End If
+						VpCellModel = Utility.CreateDataModel(Type.GetType("System.Int32"))
+						VpCellModel.EditableMode = EditableMode.AnyKey Or EditableMode.SingleClick
+						AddHandler VpCellModel.Validated, AddressOf CellValidated
+						Me.grdPropCard(VpRow, 4).DataModel = VpCellModel
+						Me.grdPropCard(VpRow, 5).DataModel = VpCellModel
 					End If
 					'Partie commune quelle que soit l'édition (à n'exécuter qu'une fois donc...)
 					If VpRow = 1 Then
@@ -1760,9 +1733,9 @@ Public Partial Class MainForm
 		Return VpNames
 	End Function
 	Public Function GetSelectedSource As String
-	'--------------------------------------------------
-	'Retourne le nom de la première source sélectionnée
-	'--------------------------------------------------
+	'--------------------------------------
+	'Retourne le nom de source sélectionnée
+	'--------------------------------------
 		For Each VpItem As Object In Me.mnuDisp.DropDownItems
 			If clsModule.SafeGetChecked(VpItem) Then
 				Return VpItem.Text
@@ -1905,7 +1878,7 @@ Public Partial Class MainForm
 		If Me.IsInAdvSearch Then
 			VpSource = clsModule.CgSFromSearch
 			VpSource2 = VmAdvSearch
-		ElseIf VmFilterCriteria.DeckMode Then
+		ElseIf VmDeckMode Then
 			VpSource = clsModule.CgSDecks
 			VpSource2 = clsModule.CgSDecks
 		Else
@@ -1983,7 +1956,7 @@ Public Partial Class MainForm
 	Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
 	Dim VpTag As clsTag = VpNode.Tag
 	Dim VpSQL As String = VpTag.Descendance
-	Dim VpSource As String = If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = Me.MySource
 	Dim VpTransfertResult As clsTransfertResult
 	Dim	VpDBCommand As New OleDbCommand
 	Dim VpDBReader As OleDbDataReader
@@ -2048,7 +2021,7 @@ Public Partial Class MainForm
 	'Chargement du formulaire des achats sur Magic-Ville
 	'---------------------------------------------------
 	Dim VpBuy As frmBuyMV
-	Dim VpSource As String = If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = Me.MySource
 	Dim VpSQL As String
 		If VmMyChildren.DoesntExist(VmMyChildren.MVBuyer) Then
 			VpBuy = New frmBuyMV
@@ -2116,6 +2089,14 @@ Public Partial Class MainForm
 			Return ( VmAdvSearch <> "" )
 		End Get
 	End Property
+	Public ReadOnly Property MySource As String
+	'----------------------------------------------------------------------------------------
+	'Retourne le nom de la table appropriée suivant que l'on affiche la collection ou un deck
+	'----------------------------------------------------------------------------------------
+		Get
+			Return If(VmDeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+		End Get
+	End Property		
 	Public ReadOnly Property IsSourcePresent As Boolean
 	'--------------------------------------------------------------
 	'Vérifie qu'il y a bien au moins une source de cartes à traiter
@@ -2127,20 +2108,6 @@ Public Partial Class MainForm
 				End If
 			Next VpItem
 			Return False
-		End Get
-	End Property
-	Public ReadOnly Property IsSingleSource As Boolean
-	'----------------------------------------------------
-	'Retourne si une seule source unique est sélectionnée
-	'----------------------------------------------------
-		Get
-		Dim VpNSources As Integer = 0
-			For Each VpItem As Object In Me.mnuDisp.DropDownItems
-				If clsModule.SafeGetChecked(VpItem) Then
-					VpNSources = VpNSources + 1
-				End If
-			Next VpItem
-			Return ( VpNSources = 1 )
 		End Get
 	End Property
 	Public Property MyChildren As clsChildren
@@ -2237,70 +2204,77 @@ Public Partial Class MainForm
 	Dim VpOpen As String = ""
 		'Chargement des options
 		Call VgOptions.LoadSettings
-		'Taille par défaut
-		If VgOptions.VgSettings.RestoreSize Then
-			Try
-				Me.Size = New Size(VgOptions.VgSettings.RestoredWidth, VgOptions.VgSettings.RestoredHeight)
-				Me.WindowState = VgOptions.VgSettings.RestoredState
-			Catch
-			End Try
-		End If
-		'Anciens menus de mises à jour
-		If Not VgOptions.VgSettings.ShowUpdateMenus Then
-			Me.mnuUpdateAutorisations.Visible = False
-			Me.mnuUpdateRulings.Visible = False
-			Me.mnuUpdatePrices.Visible = False
-			Me.mnuUpdateSimu.Visible = False
-			Me.mnuUpdateTxtFR.Visible = False
-			Me.mnuFixFR2.Visible = False
-			Me.mnuFixPic.Visible = False
-			Me.mnuTranslate.Visible = False
-		End If
-		'Panneau des images
-		Me.picScanCard.SizeMode = VgOptions.VgSettings.ImageMode
-		If VgOptions.VgSettings.AutoHideImage Then
-			Call Me.MnuShowImageActivate(sender, e)
-		End If
-		'Image par défaut
-		If (Not File.Exists(VgOptions.VgSettings.MagicBack)) OrElse VgOptions.VgSettings.MagicBack.StartsWith(".") Then
-			VgOptions.VgSettings.MagicBack = Application.StartupPath + clsModule.CgMagicBack
-		End If
-		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
-		'Restriction d'affichage des éditions
-		Me.btShowAll.Checked = VgOptions.VgSettings.ShowAllSeries
-		'Groupe des logos des autorisations
-		Me.grpAutorisations.Visible = Not VgOptions.VgSettings.AutoHideAutorisations
-		'Critères de classement
-		Call clsModule.InitCriteres(Me)	'comme l'ordre des critères est amené à changer et qu'il serait fastidieux de conserver les bons indices, mieux vaut passer par une table de hachage
-		If VgOptions.VgSettings.RestoreCriteria Then
-			VmFilterCriteria.MyList.Items.Clear
-			VmFilterCriteria.MyList.Items.AddRange(VgOptions.VgSettings.DefaultCriteriaOrder.Split("#"))
-		End If
-		'Langue par défaut
-		Me.mnuCardsFR.Checked = VgOptions.VgSettings.VFDefault
-		Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
-		'Chargement de la base par défaut
-		If clsModule.LoadIcons(Me.imglstTvw) Then
-			Call VmFilterCriteria.ValidateCriteria
-			VpOpen = If(VmStartup.EndsWith(clsModule.CgFExtD), VmStartup, VgOptions.VgSettings.DefaultBase)
-			If VpOpen <> "" Then
-				If clsModule.DBOpen(VpOpen) Then
-					Call Me.LoadMnu
-					Call Me.LoadTvw
-				End If
+		With VgOptions.VgSettings
+			'Taille par défaut
+			If .RestoreSize Then
+				Try
+					Me.Size = New Size(.RestoredWidth, .RestoredHeight)
+					Me.WindowState = .RestoredState
+				Catch
+				End Try
 			End If
-		Else
-			Application.Exit
-		End If
-		'MAJ auto
-		If VgOptions.VgSettings.CheckForUpdate Then
-			clsModule.VgTimer.Start
-		End If
+			'Anciens menus de mises à jour
+			If Not .ShowUpdateMenus Then
+				Me.mnuUpdateAutorisations.Visible = False
+				Me.mnuUpdateRulings.Visible = False
+				Me.mnuUpdatePrices.Visible = False
+				Me.mnuUpdateSimu.Visible = False
+				Me.mnuUpdateTxtFR.Visible = False
+				Me.mnuFixFR2.Visible = False
+				Me.mnuFixPic.Visible = False
+				Me.mnuTranslate.Visible = False
+			End If
+			'Panneau des images
+			Me.picScanCard.SizeMode = .ImageMode
+			If .AutoHideImage Then
+				Call Me.MnuShowImageActivate(sender, e)
+			End If
+			'Image par défaut
+			If (Not File.Exists(.MagicBack)) OrElse .MagicBack.StartsWith(".") Then
+				.MagicBack = Application.StartupPath + clsModule.CgMagicBack
+			End If
+			Me.picScanCard.Image = Image.FromFile(.MagicBack)
+			'Restriction d'affichage des éditions
+			Me.btShowAll.Checked = .ShowAllSeries
+			'Groupe des logos des autorisations
+			Me.grpAutorisations.Visible = Not .AutoHideAutorisations
+			'Critères de classement
+			Call clsModule.InitCriteres(Me)	'comme l'ordre des critères est amené à changer et qu'il serait fastidieux de conserver les bons indices, mieux vaut passer par une table de hachage
+			If .RestoreCriteria Then
+				'-------------------------
+				'/!\ Rétro-compatitibilité
+				'-------------------------
+				If .DefaultCriteriaOrder.Contains("Decks") Then
+					.DefaultActivatedCriteria = "1#6"
+					.DefaultCriteriaOrder = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"				
+				End If
+				'-------------------------
+				VmFilterCriteria.MyList.Items.Clear
+				VmFilterCriteria.MyList.Items.AddRange(.DefaultCriteriaOrder.Split("#"))
+			End If
+			'Langue par défaut
+			Me.mnuCardsFR.Checked = .VFDefault
+			Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
+			'Chargement de la base par défaut
+			If clsModule.LoadIcons(Me.imglstTvw) Then
+				Call VmFilterCriteria.ValidateCriteria
+				VpOpen = If(VmStartup.EndsWith(clsModule.CgFExtD), VmStartup, .DefaultBase)
+				If VpOpen <> "" Then
+					If clsModule.DBOpen(VpOpen) Then
+						Call Me.LoadMnu
+						Call Me.LoadTvw
+					End If
+				End If
+			Else
+				Application.Exit
+			End If
+			'MAJ auto
+			If .CheckForUpdate Then
+				clsModule.VgTimer.Start
+			End If
+		End With
 		'Divers
 		Call Me.LoadAutorisations("")
-		VmBalloonTip.IsBalloon = True
-		VmBalloonTip.ToolTipTitle = "Règles spécifiques"
-		VmBalloonTip.AutoPopDelay = 30000
 '		Me.VgBar = New Windows7ProgressBar(Me)
 		'Argument éventuel
 		If VmStartup.EndsWith(clsModule.CgFExtN) Or VmStartup.EndsWith(clsModule.CgFExtO) Then
@@ -2388,33 +2362,20 @@ Public Partial Class MainForm
 					VpItem.Checked = False
 				End If
 			Next VpItem
-			VmFilterCriteria.DeckMode = False
+			VmDeckMode = False
 		'Si l'utilisateur a cliqué sur un deck
 		Else
-			'Si l'option source unique est activée
-			If VgOptions.VgSettings.ForceSingleSource Then
-				'On désélectionne tout sauf l'envoyeur
-				For Each VpItem As Object In Me.mnuDisp.DropDownItems
-					VpStr = clsModule.SafeGetText(VpItem)
-					If VpStr = sender.Text Then
-						VpItem.Checked = True
-					ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
-					Else
-						VpItem.Checked = False
-					End If
-				Next VpItem
-			'Sinon
-			Else
-				'On inverse son état de sélection
-				sender.Checked = Not sender.Checked
-				'et on déselectionne la collection
-				For Each VpItem As Object In Me.mnuDisp.DropDownItems
-					If clsModule.SafeGetText(VpItem) = clsModule.CgCollection Then
-						VpItem.Checked = False
-					End If
-				Next VpItem
-			End If
-			VmFilterCriteria.DeckMode = True
+			'On désélectionne tout sauf l'envoyeur
+			For Each VpItem As Object In Me.mnuDisp.DropDownItems
+				VpStr = clsModule.SafeGetText(VpItem)
+				If VpStr = sender.Text Then
+					VpItem.Checked = True
+				ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
+				Else
+					VpItem.Checked = False
+				End If
+			Next VpItem
+			VmDeckMode = True
 		End If
 		If Not e Is Nothing Then
 			Call Me.LoadTvw
@@ -2441,7 +2402,6 @@ Public Partial Class MainForm
 	Dim VpNode As TreeNode = Me.tvwExplore.GetNodeAt(e.Location)
 	Dim VpEn As Boolean = False
 	Dim VpDouble As Boolean = False
-	Dim VpSingle As Boolean = Me.IsSingleSource
 		'Seulement sur clic droit
 		If e.Button = System.Windows.Forms.MouseButtons.Right Then
 			If Not VpNode Is Nothing AndAlso Not VpNode.Parent Is Nothing Then
@@ -2449,7 +2409,7 @@ Public Partial Class MainForm
 				VpDouble = VpNode.Tag.Value3
 			End If
 			'Modification d'édition
-			Me.mnuSwapSerie.Enabled = VpEn And VpSingle And Not Me.IsInAdvSearch
+			Me.mnuSwapSerie.Enabled = VpEn And Not Me.IsInAdvSearch
 			'Transformation (si carte double)
 			If VpEn And VpDouble Then
 				Me.mnuTransform.Enabled = True
@@ -2518,12 +2478,11 @@ Public Partial Class MainForm
 			End If
 		Else
 			Call Me.ClearCarac
-			If Me.IsSingleSource AndAlso VmFilterCriteria.DeckMode Then
+			If VmDeckMode Then
 				Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIndex(Me.GetSelectedSource)), "")
 			End If
 			Call Me.ManageMode(False)
 		End If
-		VmBalloonTip.RemoveAll
 	End Sub
 	Sub MnuSearchCardClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.mnuSearchText.Focus
@@ -2657,7 +2616,7 @@ Public Partial Class MainForm
 	Sub MnuStatsActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpStats As frmStats
 		If clsModule.DBOK Then
-			If Me.GetNCards(If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection), True) > 1 Then
+			If Me.GetNCards(Me.MySource, True) > 1 Then
 				VpStats = New frmStats(Me)
 				VpStats.Show
 			Else
@@ -2871,7 +2830,7 @@ Public Partial Class MainForm
 	Dim VpPlateau As frmPlateau
 	Dim VpN As Integer
 		If clsModule.DBOK Then
-			VpN = Me.GetNCards(If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection))
+			VpN = Me.GetNCards(Me.MySource)
 			If VpN <= clsModule.CgMaxVignettes Then
 				If VpN >= clsModule.CgNMain Then
 					VpPlateau = New frmPlateau(Me)
@@ -3027,7 +2986,7 @@ Public Partial Class MainForm
 	'-----------------------------------------------------------
 	Dim VpCell As Cells.Cell = e.Cell
 	Dim VpGrid As Grid = VpCell.Grid
-	Dim VpSource As String = If(VmFilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+	Dim VpSource As String = Me.MySource
 	Dim VpEncNbr As Long
 	Dim VpFoil As Boolean
 	Dim VpItems As Integer
@@ -3041,18 +3000,18 @@ Public Partial Class MainForm
 		'Cas 1 : si la valeur est nulle, il s'agit d'une suppression
 		With VgDBCommand
 			If VpCell.Value = 0 Then
-				.CommandText = "Delete * From " + VpSource + " Where Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmFilterCriteria.DeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+				.CommandText = "Delete * From " + VpSource + " Where Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 				.ExecuteNonQuery
 			Else
-				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmFilterCriteria.DeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 				VpItems = .ExecuteScalar
 				'Cas 2 : il s'agit d'une mise à jour du stock				
 				If VpItems > 0 Then
-					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmFilterCriteria.DeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 					.ExecuteNonQuery
 				'Cas 3 : il s'agit d'une insertion
 				Else
-					.CommandText = "Insert Into " + VpSource + " Values (" + If(VmFilterCriteria.DeckMode, clsModule.GetDeckIndex(Me.GetSelectedSource).ToString + ", ", "") + VpEncNbr.ToString + ", " + VpCell.Value.ToString + ", " + VpFoil.ToString + ");"
+					.CommandText = "Insert Into " + VpSource + " Values (" + If(VmDeckMode, clsModule.GetDeckIndex(Me.GetSelectedSource).ToString + ", ", "") + VpEncNbr.ToString + ", " + VpCell.Value.ToString + ", " + VpFoil.ToString + ");"
 					.ExecuteNonQuery
 				End If
 			End If
@@ -3076,9 +3035,9 @@ Public Partial Class MainForm
 				VpHist = clsModule.GetPriceHistory(VpCardName, VpFoil)
 				For Each VpEdition As String In VpHist.Keys
 					VpPricesHistory.AddNewPlot(VpHist.Item(VpEdition), clsModule.GetSerieNameFromCode(VpEdition))
-					VpPricesHistory.Show
-					VpPricesHistory.BringToFront
 				Next VpEdition
+				VpPricesHistory.Show
+				VpPricesHistory.BringToFront
 			Else
 				Call clsModule.ShowWarning(clsModule.CgErr2)
 			End If
@@ -3122,15 +3081,12 @@ Public Partial Class MainForm
 		Call clsModule.ShowInformation("Terminé !")
 	End Sub
 	Sub BtCriteriaClick(sender As Object, e As EventArgs)
-		VmFilterCriteria.SourceChange = False
 		VmFilterCriteria.Show
 		VmFilterCriteria.Location = MousePosition
 	End Sub
 	Sub PicScanCardMouseUp(sender As Object, e As MouseEventArgs)
 		If e.Button = MouseButtons.Left Then
 			Call Me.MnuTransformClick(sender, e)
-		ElseIf Me.tvwExplore.SelectedNode IsNot Nothing AndAlso Me.tvwExplore.SelectedNode.Parent IsNot Nothing AndAlso CType(Me.tvwExplore.SelectedNode.Parent.Tag, clsTag).Key = "Card.Title" Then
-			Call Me.LoadRuling(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value)
 		End If
 	End Sub
 	Sub MainFormResizeEnd(sender As Object, e As EventArgs)

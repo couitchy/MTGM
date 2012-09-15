@@ -121,6 +121,7 @@ Partial Class frmSearch
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
 		Me.picScanCard.TabIndex = 38
 		Me.picScanCard.TabStop = false
+		Me.picScanCard.Visible = false
 		'
 		'chkSup
 		'
@@ -206,7 +207,6 @@ Partial Class frmSearch
 		'
 		Me.chkMerge.AutoSize = true
 		Me.chkMerge.BackColor = System.Drawing.Color.Transparent
-		Me.chkMerge.Enabled = false
 		Me.chkMerge.Location = New System.Drawing.Point(48, 284)
 		Me.chkMerge.Name = "chkMerge"
 		Me.chkMerge.Size = New System.Drawing.Size(218, 17)
@@ -220,7 +220,6 @@ Partial Class frmSearch
 		Me.chkClearPrev.BackColor = System.Drawing.Color.Transparent
 		Me.chkClearPrev.Checked = true
 		Me.chkClearPrev.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.chkClearPrev.Enabled = false
 		Me.chkClearPrev.Location = New System.Drawing.Point(48, 261)
 		Me.chkClearPrev.Name = "chkClearPrev"
 		Me.chkClearPrev.Size = New System.Drawing.Size(164, 17)
@@ -232,6 +231,8 @@ Partial Class frmSearch
 		'
 		Me.chkShowExternal.AutoSize = true
 		Me.chkShowExternal.BackColor = System.Drawing.Color.Transparent
+		Me.chkShowExternal.Checked = true
+		Me.chkShowExternal.CheckState = System.Windows.Forms.CheckState.Checked
 		Me.chkShowExternal.Location = New System.Drawing.Point(31, 238)
 		Me.chkShowExternal.Name = "chkShowExternal"
 		Me.chkShowExternal.Size = New System.Drawing.Size(206, 17)

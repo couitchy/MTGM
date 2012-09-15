@@ -31,7 +31,7 @@ Public Partial Class frmStats
 	Private VmOwnerChildren As clsChildren
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = VpOwner.MySource
 		VmRestriction = VpOwner.Restriction
 		VmOwnerChildren = VpOwner.MyChildren
 		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)

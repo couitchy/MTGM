@@ -192,6 +192,7 @@ Partial Class MainForm
 		Me.grdPropPicture = New SourceGrid2.Grid
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
+		Me.btSimu = New System.Windows.Forms.ToolStripButton
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -1115,7 +1116,7 @@ Partial Class MainForm
 		'toolStrip
 		'
 		Me.toolStrip.ImageScalingSize = New System.Drawing.Size(32, 32)
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btPlateau, Me.btStats, Me.btCheckForUpdates, Me.btWebsite})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btExport, Me.btSeparator1, Me.btGestDecks, Me.btAddCards, Me.btAdvancedSearch, Me.btSeparator2, Me.btExcelGen, Me.btWordGen, Me.btPlateau, Me.btStats, Me.btSimu, Me.btCheckForUpdates, Me.btWebsite})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(992, 54)
@@ -1747,6 +1748,7 @@ Partial Class MainForm
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
 		Me.picScanCard.TabIndex = 2
 		Me.picScanCard.TabStop = false
+		AddHandler Me.picScanCard.MouseUp, AddressOf Me.PicScanCardMouseUp
 		'
 		'grdPropPicture
 		'
@@ -1803,6 +1805,17 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(16, "_aM.gif")
 		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
 		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
+		'
+		'btSimu
+		'
+		Me.btSimu.Image = CType(resources.GetObject("btSimu.Image"),System.Drawing.Image)
+		Me.btSimu.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btSimu.Name = "btSimu"
+		Me.btSimu.Size = New System.Drawing.Size(73, 51)
+		Me.btSimu.Text = "Simulations"
+		Me.btSimu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btSimu.ToolTipText = "Obtenir des estimations ou des optimisations sur ma sélection"
+		AddHandler Me.btSimu.Click, AddressOf Me.MnuSimuActivate
 		'
 		'MainForm
 		'
@@ -1877,6 +1890,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btSimu As System.Windows.Forms.ToolStripButton
 	Private txtRichCard As Magic_The_Gathering_Manager.ExRichTextBox
 	Private txtRichOther As Magic_The_Gathering_Manager.ExRichTextBox
 	Private pnlCard3 As System.Windows.Forms.Panel

@@ -30,7 +30,7 @@ Public Partial Class frmWord
 	Public Sub New(VpOwner As MainForm)
 	Dim VpPath As String = Path.GetTempPath + clsModule.CgTemp
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = VpOwner.MySource
 		VmRestriction = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		If VmRestrictionTXT.Length > 31 Then

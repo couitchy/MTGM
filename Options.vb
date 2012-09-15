@@ -79,8 +79,8 @@ Public Partial Class Options
 		Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
 		Private VmPlugins As String = Application.StartupPath
 		Private VmPreferredSellers As String = ""
-		Private VmDefaultActivatedCriteria As String = "2#7"
-		Private VmDefaultCriteriaOrder As String = "Decks#Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
+		Private VmDefaultActivatedCriteria As String = "1#6"
+		Private VmDefaultCriteriaOrder As String = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
 		Private VmRestoreCriteria As Boolean = True
 		Private VmDefaultSearchCriterion As clsModule.eSearchCriterion = clsModule.eSearchCriterion.NomVF
 		Private VmCheckForUpdate As Boolean = True
@@ -92,7 +92,6 @@ Public Partial Class Options
 		Private VmRestoredWidth As Integer = 1008
 		Private VmRestoredHeight As Integer = 604
 		Private VmFormWindowState As FormWindowState = FormWindowState.Normal
-		Private VmForceSingleSource As Boolean = True
 		Private VmLastUpdateAut As String = clsModule.CgLastUpdateAut
 		Private VmLastUpdateSimu As String = clsModule.CgLastUpdateSimu
 		Private VmLastUpdateTxtVF As String = clsModule.CgLastUpdateTxtVF
@@ -230,7 +229,7 @@ Public Partial Class Options
 				If VmRestoreCriteria Then
 					Return VmDefaultActivatedCriteria
 				Else
-					Return "2#7"
+					Return "1#6"
 				End If
 			End Get
 			Set (VpDefaultActivatedCriteria As String)
@@ -334,15 +333,6 @@ Public Partial Class Options
 			End Get
 			Set (VpImageMode As PictureBoxSizeMode)
 				VmImageMode = VpImageMode
-			End Set
-		End Property
-		<DisplayName("Forcer source unique"), Category("Explorateur"), DefaultValue(True), Description("Limitation à une source unique sélectionnée dans le menu affichage (un seul deck ou collection)")> _
-		Public Property ForceSingleSource As Boolean
-			Get
-				Return VmForceSingleSource
-			End Get
-			Set (VpForceSingleSource As Boolean)
-				VmForceSingleSource = VpForceSingleSource
 			End Set
 		End Property
 		<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des autorisations de tournoi")> _

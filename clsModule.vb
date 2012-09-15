@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30941
+	Public Const CgCodeLines As Integer   			= 30850
 	Public Const CgLastUpdateAut As String			= "11/02/2012"
 	Public Const CgLastUpdateSimu As String			= "31/03/2012"
 	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
@@ -150,7 +150,6 @@ Public Module clsModule
 	Public Const CgStock As String					= "Nombre déjà en stock"
 	Public Const CgCollection As String	  			= "Collection"
 	Public Const CgSCollection As String  			= "MyCollection"
-	Public Const CgDecks As String		  			= "Decks"
 	Public Const CgSDecks As String		  			= "MyGames"
 	Public Const CgFromSearch As String				= "Recherche"
 	Public Const CgSFromSearch As String			= "MySearch"
@@ -167,7 +166,7 @@ Public Module clsModule
 	Public Const CgFoil2 As String					= " (Foil)"
 	Public CgBalises() As String 					= {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}
 	Public CgManaParsing() As String 				= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
-	Public CgCriterionsFields() As String 			= {"", "Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
+	Public CgCriterionsFields() As String 			= {"Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
 	Public CgNumbers() As String 					= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgRarities() As String					= {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
 	Public CgSearchFields() As String 				= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Card.Series", "Spell.myCost", "Card.SubType", "SubTypes.SubTypeVF"}
@@ -1071,24 +1070,6 @@ Public Module clsModule
 			VpStr = VpStr + VpChar
 		Next VpI
 		Return VpStr
-	End Function
-	Public Function StrSplice(VpStr As String, VpN As Integer) As String
-	'----------------------------------------------
-	'Insère un retour chariot tous les n caractères
-	'----------------------------------------------
-	Dim VpWords() As String = VpStr.Split(" ")
-	Dim VpOut As String = vbCrLf
-	Dim VpCur As String = ""
-		'Return Regex.Replace(VpStr, "(.{" & VpN & "})", "$1" & Environment.NewLine)
-		For Each VpWord As String In VpWords
-			If VpCur.Length >= VpN Or VpWord.Contains(vbCrLf) Then
-				VpOut += VpCur + vbCrLf
-				VpCur = ""
-			End If
-			VpCur += VpWord + " "
-		Next VpWord
-		VpOut += VpCur
-		Return VpOut
 	End Function
 	Public Function StrDiacriticInsensitize(VpStr As String) As String
 	'-----------------------------------------------------------------------------------------------------------------------------------------------

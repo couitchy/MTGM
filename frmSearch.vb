@@ -320,7 +320,7 @@ Public Partial Class frmSearch
 				Me.cboFind.Items.Insert(0, VpSearch)
 			End If
 		Next VpSearch
-		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
+		Me.Width = 390
 	End Sub
 	Function GetRefText(sender As Object) As String
 		If sender.SelectionLength > 0 Then

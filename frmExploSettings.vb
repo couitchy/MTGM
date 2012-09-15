@@ -19,7 +19,6 @@
 '---------------------------------------------------------------
 Public Partial Class frmExploSettings
 	Private VmOwner As MainForm
-	Private VmSourceChange As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmOwner = VpOwner
@@ -45,28 +44,10 @@ Public Partial Class frmExploSettings
 		Me.chklstClassement.SelectedIndex = VpIndex - Vpx
 	End Sub
 	Sub ChklstClassementSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
-		Me.btUp.Enabled = (Me.chklstClassement.SelectedIndex > 1 And Me.chklstClassement.SelectedIndex <> Me.chklstClassement.Items.Count - 1)
-		Me.btDown.Enabled = (Me.chklstClassement.SelectedIndex > 0 And Me.chklstClassement.SelectedIndex < Me.chklstClassement.Items.Count - 2)
+		Me.btUp.Enabled = ( Me.chklstClassement.SelectedIndex <> 0 And Me.chklstClassement.SelectedIndex <> Me.chklstClassement.Items.Count - 1 )
+		Me.btDown.Enabled = ( Me.chklstClassement.SelectedIndex < Me.chklstClassement.Items.Count - 2 )
 	End Sub
-	Sub ChklstClassementItemCheck(sender As Object, e As ItemCheckEventArgs)
-		If Me.chklstClassement.SelectedIndex = 0 Then
-			VmSourceChange = True
-		End If		
-	End Sub	
 	Sub BtRefreshClick(sender As Object, e As EventArgs)
-	Dim VpStr As String
-		If VmSourceChange Then
-			For Each VpItem As Object In VmOwner.mnuDisp.DropDownItems
-				VpStr = clsModule.SafeGetText(VpItem)
-				If VpStr <> clsModule.CgRefresh And VpStr <> clsModule.CgPanel And VpStr <> "" Then
-					If Not Me.DeckMode Then
-						VpItem.Checked = ( VpStr = clsModule.CgCollection )
-					Else
-						VpItem.Checked = Not ( VpStr = clsModule.CgCollection )
-					End If
-				End If
-			Next VpItem
-		End If
 		Me.Hide
 		Call VmOwner.MyRefresh
 	End Sub
@@ -101,18 +82,5 @@ Public Partial Class frmExploSettings
 		Get
 			Return Me.chklstClassement.CheckedItems.Count
 		End Get
-	End Property
-	Public Property DeckMode As Boolean
-		Get
-			Return Me.chklstClassement.GetItemChecked(0)
-		End Get
-		Set (VpDeckMode As Boolean)
-			Me.chklstClassement.SetItemChecked(0, VpDeckMode)
-		End Set
-	End Property	
-	Public WriteOnly Property SourceChange As Boolean
-		Set (VpSourceChange As Boolean)
-			VmSourceChange = VpSourceChange
-		End Set
 	End Property
 End Class

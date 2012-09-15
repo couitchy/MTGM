@@ -38,7 +38,7 @@ Public Partial Class frmSimu
 	#Region "Méthodes"
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
-		VmSource = If(VpOwner.FilterCriteria.DeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+		VmSource = VpOwner.MySource
 		VmRestrictionSQL = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		Me.Text = clsModule.CgSimus + VmRestrictionTXT
