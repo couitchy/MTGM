@@ -79,7 +79,7 @@ Public Partial Class frmTransfert
 			.Close
 		End With
 	End Sub
-	Public Shared Function NeedsPrecision(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertType As clsTransfertResult.EgTransfertType) As Boolean
+	Public Shared Function NeedsPrecision(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertType As clsTransfertResult.EgTransfertType, ByRef VpFoil As Boolean) As Boolean
 	'----------------------------------------------------------------------------------
 	'Vérifie si l'opération demandée nécessité des précisions (édition, foil, quantité)
 	'----------------------------------------------------------------------------------
@@ -95,6 +95,13 @@ Public Partial Class frmTransfert
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
 		VpRet = ( VgDBCommand.ExecuteScalar > 1 )
+		If Not VpRet Then	's'il n'y a pas d'ambiguité, on veut quand même savoir si la carte qu'on veut transférer est foil ou non
+			VpSQL = "Select Foil From (" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
+			VpSQL = VpSQL + VpOwner.Restriction
+			VpSQL = clsModule.TrimQuery(VpSQL)
+			VgDBCommand.CommandText = VpSQL
+			VpFoil = VgDBCommand.ExecuteScalar
+		End If
 		'Si c'est une copie que l'on fait, on n'a pas besoin de savoir combien d'items il y a (ie. pas besoin d'évaluer le cas 2 ci-dessous), cela dépend si l'utilisateur a choisi dans les options de pouvoir régler manuellement le nombre de cartes à copier
 		If VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
 			Return If(VgOptions.VgSettings.CopyRange > 1, True, VpRet)

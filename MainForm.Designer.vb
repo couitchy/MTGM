@@ -146,6 +146,7 @@ Partial Class MainForm
 		Me.btWordGen = New System.Windows.Forms.ToolStripButton
 		Me.btPlateau = New System.Windows.Forms.ToolStripButton
 		Me.btStats = New System.Windows.Forms.ToolStripButton
+		Me.btSimu = New System.Windows.Forms.ToolStripButton
 		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton
 		Me.btWebsite = New System.Windows.Forms.ToolStripButton
 		Me.splitV = New System.Windows.Forms.SplitContainer
@@ -192,7 +193,9 @@ Partial Class MainForm
 		Me.grdPropPicture = New SourceGrid2.Grid
 		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
-		Me.btSimu = New System.Windows.Forms.ToolStripButton
+		Me.cmnuCbar = New System.Windows.Forms.ContextMenuStrip(Me.components)
+		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem
+		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -240,6 +243,7 @@ Partial Class MainForm
 		Me.splitH4.Panel2.SuspendLayout
 		Me.splitH4.SuspendLayout
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).BeginInit
+		Me.cmnuCbar.SuspendLayout
 		Me.SuspendLayout
 		'
 		'statusStrip
@@ -1224,6 +1228,17 @@ Partial Class MainForm
 		Me.btStats.ToolTipText = "Calculer les statistiques sur ma sélection"
 		AddHandler Me.btStats.Click, AddressOf Me.MnuStatsActivate
 		'
+		'btSimu
+		'
+		Me.btSimu.Image = CType(resources.GetObject("btSimu.Image"),System.Drawing.Image)
+		Me.btSimu.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btSimu.Name = "btSimu"
+		Me.btSimu.Size = New System.Drawing.Size(73, 51)
+		Me.btSimu.Text = "Simulations"
+		Me.btSimu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btSimu.ToolTipText = "Obtenir des estimations ou des optimisations sur ma sélection"
+		AddHandler Me.btSimu.Click, AddressOf Me.MnuSimuActivate
+		'
 		'btCheckForUpdates
 		'
 		Me.btCheckForUpdates.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
@@ -1694,7 +1709,7 @@ Partial Class MainForm
 		'
 		Me.btHistPrices.Enabled = false
 		Me.btHistPrices.Icon = CType(resources.GetObject("btHistPrices.Icon"),System.Drawing.Icon)
-		Me.btHistPrices.Text = "Historique prix"
+		Me.btHistPrices.Text = "Historique"
 		AddHandler Me.btHistPrices.Activate, AddressOf Me.BtHistPricesActivate
 		'
 		'cbarImage
@@ -1806,16 +1821,25 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
 		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
 		'
-		'btSimu
+		'cmnuCbar
 		'
-		Me.btSimu.Image = CType(resources.GetObject("btSimu.Image"),System.Drawing.Image)
-		Me.btSimu.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btSimu.Name = "btSimu"
-		Me.btSimu.Size = New System.Drawing.Size(73, 51)
-		Me.btSimu.Text = "Simulations"
-		Me.btSimu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-		Me.btSimu.ToolTipText = "Obtenir des estimations ou des optimisations sur ma sélection"
-		AddHandler Me.btSimu.Click, AddressOf Me.MnuSimuActivate
+		Me.cmnuCbar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btHistPricesSimple, Me.btHistPricesFoil})
+		Me.cmnuCbar.Name = "cmnuCbar"
+		Me.cmnuCbar.Size = New System.Drawing.Size(114, 48)
+		'
+		'btHistPricesSimple
+		'
+		Me.btHistPricesSimple.Name = "btHistPricesSimple"
+		Me.btHistPricesSimple.Size = New System.Drawing.Size(113, 22)
+		Me.btHistPricesSimple.Text = "Prix"
+		AddHandler Me.btHistPricesSimple.Click, AddressOf Me.BtHistPricesSimpleClick
+		'
+		'btHistPricesFoil
+		'
+		Me.btHistPricesFoil.Name = "btHistPricesFoil"
+		Me.btHistPricesFoil.Size = New System.Drawing.Size(113, 22)
+		Me.btHistPricesFoil.Text = "Prix foil"
+		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
 		'MainForm
 		'
@@ -1887,9 +1911,13 @@ Partial Class MainForm
 		Me.splitH4.Panel2.ResumeLayout(false)
 		Me.splitH4.ResumeLayout(false)
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).EndInit
+		Me.cmnuCbar.ResumeLayout(false)
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btHistPricesSimple As System.Windows.Forms.ToolStripMenuItem
+	Private btHistPricesFoil As System.Windows.Forms.ToolStripMenuItem
+	Private cmnuCbar As System.Windows.Forms.ContextMenuStrip
 	Private btSimu As System.Windows.Forms.ToolStripButton
 	Private txtRichCard As Magic_The_Gathering_Manager.ExRichTextBox
 	Private txtRichOther As Magic_The_Gathering_Manager.ExRichTextBox

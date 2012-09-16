@@ -609,9 +609,9 @@ Public Partial Class MainForm
 	'Remplace tous les prix non indiqués par 0
 	'-----------------------------------------
 		VgDBCommand.CommandText = "Update Card Set Price = 0, myPrice = 1 Where Card.EncNbr In (Select CardDouble.EncNbrDownFace From CardDouble);"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set FoilPrice = 0 Where Card.EncNbr In (Select CardDouble.EncNbrDownFace From CardDouble);"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set Price = 0, myPrice = 1 Where Card.Price In (0, Null);"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set FoilPrice = 0 Where Card.FoilPrice Is Null;"
@@ -1027,7 +1027,7 @@ Public Partial Class MainForm
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
 				Call Me.RecurLoadTvw(VpSource, VpSource, VpNode, 1, Me.Restriction)
-				Call Me.ShowNCards(clsModule.CgSDecks)
+				Call Me.ShowNCards(VpSource)
 			End If
 			Me.tvwExplore.Nodes.Add(VpNode)
 			VpNode.Expand
@@ -1441,7 +1441,7 @@ Public Partial Class MainForm
 					Call Me.LoadCarac(VpTitle, Me.IsDownFace(VpNode) Xor VpTransformed, VpTransformed)
 				End If
 			End If
-		End If		
+		End If
 	End Sub
 	Private Sub BuildCost(VpCost As String)
 	'--------------------------------------------------------------------
@@ -1678,16 +1678,31 @@ Public Partial Class MainForm
 			End With
 		End If
 	End Sub
-	Private Function IsFoil(VpCard As TreeNode) As Boolean
-	'--------------------------------------------
-	'Renvoie si la carte a la mention foil ou non
-	'--------------------------------------------
-		If VpCard.NodeFont Is Nothing Then
-			Return False
-		Else
-			Return VpCard.NodeFont.Bold		'pas forcément super classe mais la carte est foil si et seulement si sa police est en gras
-		End If
-	End Function
+	Private Sub LoadPricesHistory(VpFoil As Boolean)
+	Dim VpPricesHistory As frmGrapher
+	Dim VpCardName As String = Me.tvwExplore.SelectedNode.Tag.Value
+	Dim VpHist As Hashtable
+		Me.btHistPrices.Checked = False
+		Application.DoEvents
+		If clsModule.DBOK Then
+			If clsModule.HasPriceHistory Then
+				If VmMyChildren.DoesntExist(VmMyChildren.PricesHistory) Then
+					VpPricesHistory = New frmGrapher
+					VmMyChildren.PricesHistory = VpPricesHistory
+				Else
+					VpPricesHistory = VmMyChildren.PricesHistory
+				End If
+				VpHist = clsModule.GetPriceHistory(VpCardName, VpFoil)
+				For Each VpEdition As String In VpHist.Keys
+					VpPricesHistory.AddNewPlot(VpHist.Item(VpEdition), clsModule.GetSerieNameFromCode(VpEdition))
+				Next VpEdition
+				VpPricesHistory.Show
+				VpPricesHistory.BringToFront
+			Else
+				Call clsModule.ShowWarning(clsModule.CgErr2)
+			End If
+		End If		
+	End Sub
 	Private Function IsTransformed(VpNode As TreeNode) As Boolean
 	'-----------------------------------
 	'Renvoie si la carte est transformée
@@ -1871,9 +1886,9 @@ Public Partial Class MainForm
 	Dim VpPreciseTransfert As frmTransfert
 	Dim VpTransfertResult As New clsTransfertResult
 	Dim VpCardName As String = VpNode.Tag.Value
-	Dim VpFoil As Boolean = Me.IsFoil(VpNode)
 	Dim VpSource As String
 	Dim VpSource2 As String
+	Dim VpFoil As Boolean
 		'Source
 		If Me.IsInAdvSearch Then
 			VpSource = clsModule.CgSFromSearch
@@ -1889,7 +1904,7 @@ Public Partial Class MainForm
 			'Type d'opération
 			.TransfertType = VpTransfertType
 			'Gestion des cas multiples / foils
-			If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType) Then
+			If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType, VpFoil) Then
 				VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
 				VpPreciseTransfert.ShowDialog
 			Else
@@ -2081,6 +2096,17 @@ Public Partial Class MainForm
 			VmMainReaderBusy = VpMainReaderBusy
 		End Set
 	End Property
+	Public ReadOnly Property IsGridBusy As Boolean
+		Get
+			With Me.grdPropCard
+				If .Selection.Count = 0 OrElse .Selection.GetCells(0).DataModel Is Nothing Then
+					Return False
+				Else
+					Return .Selection.GetCells(0).DataModel.IsEditing
+				End If
+			End With
+		End Get
+	End Property
 	Public ReadOnly Property IsInAdvSearch As Boolean
 	'--------------------------------------------------------------------------------
 	'Retourne si l'on est actuellement en affichage de résultats de recherche avancée
@@ -2096,7 +2122,7 @@ Public Partial Class MainForm
 		Get
 			Return If(VmDeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		End Get
-	End Property		
+	End Property
 	Public ReadOnly Property IsSourcePresent As Boolean
 	'--------------------------------------------------------------
 	'Vérifie qu'il y a bien au moins une source de cartes à traiter
@@ -2246,7 +2272,7 @@ Public Partial Class MainForm
 				'-------------------------
 				If .DefaultCriteriaOrder.Contains("Decks") Then
 					.DefaultActivatedCriteria = "1#6"
-					.DefaultCriteriaOrder = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"				
+					.DefaultCriteriaOrder = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
 				End If
 				'-------------------------
 				VmFilterCriteria.MyList.Items.Clear
@@ -2349,6 +2375,10 @@ Public Partial Class MainForm
 	'Changement de la sélection active d'affichage
 	'---------------------------------------------
 	Dim VpStr As String
+		If Me.IsGridBusy Then
+			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
+			Application.DoEvents
+		End If
 		'Si l'utilisateur a cliqué sur "Collection"
 		If sender.Text = clsModule.CgCollection Then
 			For Each VpItem As Object In Me.mnuDisp.DropDownItems
@@ -3005,7 +3035,7 @@ Public Partial Class MainForm
 			Else
 				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 				VpItems = .ExecuteScalar
-				'Cas 2 : il s'agit d'une mise à jour du stock				
+				'Cas 2 : il s'agit d'une mise à jour du stock
 				If VpItems > 0 Then
 					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 					.ExecuteNonQuery
@@ -3019,30 +3049,20 @@ Public Partial Class MainForm
 		'Mise à jour total cartes attachées
 		Call Me.ShowNCards(VpSource)
 	End Sub
-	Sub BtHistPricesActivate(sender As Object, e As EventArgs)
-	Dim VpPricesHistory As frmGrapher
-	Dim VpCardName As String = Me.tvwExplore.SelectedNode.Tag.Value
-	Dim VpFoil As Boolean = Me.IsFoil(Me.tvwExplore.SelectedNode)
-	Dim VpHist As Hashtable
-		If clsModule.DBOK Then
-			If clsModule.HasPriceHistory Then
-				If VmMyChildren.DoesntExist(VmMyChildren.PricesHistory) Then
-					VpPricesHistory = New frmGrapher
-					VmMyChildren.PricesHistory = VpPricesHistory
-				Else
-					VpPricesHistory = VmMyChildren.PricesHistory
-				End If
-				VpHist = clsModule.GetPriceHistory(VpCardName, VpFoil)
-				For Each VpEdition As String In VpHist.Keys
-					VpPricesHistory.AddNewPlot(VpHist.Item(VpEdition), clsModule.GetSerieNameFromCode(VpEdition))
-				Next VpEdition
-				VpPricesHistory.Show
-				VpPricesHistory.BringToFront
-			Else
-				Call clsModule.ShowWarning(clsModule.CgErr2)
-			End If
-		End If
+	Sub BtHistPricesFoilClick(sender As Object, e As EventArgs)
+		Call Me.LoadPricesHistory(True)
 	End Sub
+	Sub BtHistPricesSimpleClick(sender As Object, e As EventArgs)
+		Call Me.LoadPricesHistory(False)
+	End Sub
+	Sub BtHistPricesActivate(sender As Object, e As EventArgs)
+		Me.btHistPrices.Checked = True
+		Application.DoEvents
+		With Me.btHistPrices.ButtonBounds
+			'un peu crade mais le dropdownmenu ne fonctionne plus sous Windows 7 et oblige à passer par un menu contextuel
+			Me.cmnuCbar.Show(Me.cbarProperties, New Point(.Left, .Bottom))
+		End With
+	End Sub	
 	Sub BtShowAllActivate(sender As Object, e As EventArgs)
 		Me.btShowAll.Checked = Not Me.btShowAll.Checked
 		Call Me.ReloadCarac

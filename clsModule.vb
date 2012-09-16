@@ -31,7 +31,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30850
+	Public Const CgCodeLines As Integer   			= 30933
 	Public Const CgLastUpdateAut As String			= "11/02/2012"
 	Public Const CgLastUpdateSimu As String			= "31/03/2012"
 	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
@@ -45,6 +45,7 @@ Public Module clsModule
 	Public Const CgNLives As Integer				= 20
 	Public Const CgMaxPot As Integer				= 100
 	Public Const CgPertinCoeff As Integer			= 4
+	Public Const CgGraphsExtraMargin As Single		= 0.2
 	Public Const CgMaxGraphs As Integer				= 128
 	Public Const CgMaxVignettes As Integer			= 120
 	Public Const CgMissingTable As Long				= -2147217865
@@ -1392,10 +1393,16 @@ Public Module clsModule
 		End If
 	End Sub
 	Public Function GetEncNbr(VpCardName As String, VpIDSerie As String) As Long
+	'-------------------------------------------------------------------------------------------
+	'Retourne le numéro unique caractéristique d'une carte à partir de son nom et de son édition
+	'-------------------------------------------------------------------------------------------
 		VgDBCommand.CommandText = "Select Card.EncNbr From Card Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And Card.Series = '" + VpIDSerie + "';"
 		Return CLng(VgDBCommand.ExecuteScalar)
 	End Function
 	Public Function GetSerieCodeFromName(VpName As String, Optional VpApprox As Boolean = False, Optional VpFR As Boolean = False) As String
+	'-----------------------------------------------------------------------------------------
+	'Retourne le code id d'une série à partir de son nom VO ou VF, éventuellement approximatif
+	'-----------------------------------------------------------------------------------------
 	Dim VpO As Object
 		If VpName.Length = 2 Then
 			Return VpName
@@ -1420,6 +1427,9 @@ Public Module clsModule
 		End If
 	End Function
 	Public Function GetSerieNameFromCode(VpSerie As String) As String
+	'--------------------------------------------------------
+	'Retourne le nom VO d'une édition à partir de son code id
+	'--------------------------------------------------------
 	Dim VpO As Object
 	Dim VpFoil As Boolean = VpSerie.EndsWith(CgFoil2)
 		VgDBCommand.CommandText = "Select SeriesNM From Series Where SeriesCD = '" + VpSerie.Replace(CgFoil2, "") + "';"
@@ -1431,6 +1441,9 @@ Public Module clsModule
 		End If
 	End Function
 	Public Function GetTransformedName(VpCard As String) As String
+	'--------------------------------------------------------------------
+	'Pour les cartes double faces, obtient le nom de la carte transformée
+	'--------------------------------------------------------------------
 	Dim VpDBCommand As OleDbCommand
 		Try
 			VpDBCommand = New OleDbCommand

@@ -55,29 +55,44 @@ Public Partial Class frmGrapher
 	'---------------------------------------------------------------------------
 	Dim VpSel As Integer = Me.chklstCurves.SelectedIndex
 		VmBusy = True
-		Me.plotMain.Clear
-		If VpList Then
-			Me.chklstCurves.Items.Clear
-		End If
-		For Each VpPlot As clsGrapherSettings In VmPlots
-			If VpPlot.myVisible Then
-				Me.plotMain.Add(VpPlot.RefPlot)
-			End If
+		With Me.plotMain
+			.Clear
 			If VpList Then
-				Me.chklstCurves.Items.Add(VpPlot.Legende, VpPlot.myVisible)
+				Me.chklstCurves.Items.Clear
 			End If
-		Next VpPlot
-		If VmPlots.Count > 0 Then
-			Me.plotMain.AddInteraction(New Windows.PlotSurface2D.Interactions.RubberBandSelection)
-			Me.plotMain.Legend = New Legend
-			Me.plotMain.Legend.AttachTo(PlotSurface2D.XAxisPosition.Top, PlotSurface2D.YAxisPosition.Left)
-			Me.plotMain.Legend.VerticalEdgePlacement = Legend.Placement.Inside
-			Me.plotMain.Legend.HorizontalEdgePlacement = Legend.Placement.Inside
-			Me.chklstCurves.SelectedIndex = Math.Max(0, VpSel)
-		End If
-		Me.plotMain.Refresh
+			For Each VpPlot As clsGrapherSettings In VmPlots
+				If VpPlot.myVisible Then
+					.Add(VpPlot.RefPlot)
+				End If
+				If VpList Then
+					Me.chklstCurves.Items.Add(VpPlot.Legende, VpPlot.myVisible)
+				End If
+			Next VpPlot
+			If VmPlots.Count > 0 Then
+				.AddInteraction(New Windows.PlotSurface2D.Interactions.RubberBandSelection)
+				.Legend = New Legend
+				.Legend.AttachTo(PlotSurface2D.XAxisPosition.Top, PlotSurface2D.YAxisPosition.Left)
+				.Legend.VerticalEdgePlacement = Legend.Placement.Inside
+				.Legend.HorizontalEdgePlacement = Legend.Placement.Inside
+				.YAxis1.WorldMin = CDbl(CInt(Me.GetExtremum(False) * (1 - clsModule.CgGraphsExtraMargin)))
+				.YAxis1.WorldMax = CDbl(CInt(Me.GetExtremum(True)  * (1 + clsModule.CgGraphsExtraMargin)))
+				Me.chklstCurves.SelectedIndex = Math.Max(0, VpSel)
+			End If
+			.Refresh
+		End With
 		VmBusy = False
 	End Sub
+	Private Function GetExtremum(VpMaximum As Boolean) As Single
+	Dim VpExtremum As Single = If(VpMaximum, Single.MinValue, Single.MaxValue)
+		For Each VpPlot As clsGrapherSettings In VmPlots
+			For Each VpY As Single In VpPlot.RefPlot.DataSource
+				If (VpY > VpExtremum And VpMaximum) Or (VpY < VpExtremum And Not VpMaximum) Then
+					VpExtremum = VpY
+				End If
+			Next VpY
+		Next VpPlot		
+		Return VpExtremum
+	End Function
 	Private Function SaveBMP As Bitmap
 	'---------------
 	'Capture d'écran
