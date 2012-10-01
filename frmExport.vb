@@ -13,6 +13,7 @@
 '| Release 9      |                        05/02/2011 |
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
+'| Release 12     |                        01/10/2012 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -160,34 +161,38 @@ Public Partial Class frmExport
 				VpReader = New XmlTextReader(VpIn)
 				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtM, clsModule.CgPicLogExt))
 				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtM, clsModule.CgFExtO))
-				While VpReader.Read
-					If VpReader.Name = "NOM" Then
-						VpName = VpReader.ReadElementContentAsString
-						VpReader.ReadToFollowing("EDITION")
-						VpEdition = VpReader.ReadElementContentAsString
-						VpReader.ReadToFollowing("QTE")
-						VpQte =  VpReader.ReadElementContentAsInt
-						VpReader.ReadToFollowing("FOIL")
-						VpFoil = VpReader.ReadElementContentAsBoolean
-						'Exact match
-						VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where LCase(Card.Title) = '" + VpName.ToLower.Replace("'", "''") + "' And (LCase(Series.SeriesNM) = '" + VpEdition.ToLower.Replace("'", "''") + "' Or LCase(Series.SeriesNM_MtG) = '" + VpEdition.ToLower.Replace("'", "''") + "');"
-						VpO = VgDBCommand.ExecuteScalar
-						If Not VpO Is Nothing Then
-							VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
-						Else
-							VpNeedLog = True
-							'Partial match
-							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where InStr('" + VpName.ToLower.Replace("'", "''") + "', LCase(Card.Title)) > 0 And (InStr('" + VpEdition.ToLower.Replace("'", "''") + "', LCase(Series.SeriesNM)) > 0 Or InStr('" + VpEdition.ToLower.Replace("'", "''") + "', LCase(Series.SeriesNM_MtG)) > 0);"
+				Try
+					While VpReader.Read
+						If VpReader.Name = "NOM" Then
+							VpName = VpReader.ReadElementContentAsString
+							VpReader.ReadToFollowing("EDITION")
+							VpEdition = VpReader.ReadElementContentAsString
+							VpReader.ReadToFollowing("QTE")
+							VpQte =  VpReader.ReadElementContentAsInt
+							VpReader.ReadToFollowing("FOIL")
+							VpFoil = VpReader.ReadElementContentAsBoolean
+							'Exact match
+							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpName.Replace("'", "''") + "' And (Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "' Or Series.SeriesNM_MtG = '" + VpEdition.Replace("'", "''") + "');"
 							VpO = VgDBCommand.ExecuteScalar
 							If Not VpO Is Nothing Then
-								VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
 								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
 							Else
-								VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								VpNeedLog = True
+								'Partial match
+								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Card.Title + '%' Or Card.Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And (InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM) > 0 Or InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM_MtG) > 0);"
+								VpO = VgDBCommand.ExecuteScalar
+								If Not VpO Is Nothing Then
+									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+									VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+								Else
+									VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								End If
 							End If
 						End If
-					End If
-				End While
+					End While
+				Catch
+					Call clsModule.ShowWarning("L'importation s'est arrêtée prématurément car le fichier XML source présentait une erreur..." + vbCrLf + "Assurez-vous qu'il ne contienne pas les caractères suivants : &, < et >")
+				End Try
 				VpConverted.Close
 				VpLog.Close
 				VpReader.Close
@@ -208,7 +213,7 @@ Public Partial Class frmExport
 		Me.grpExport.Visible = False
 		Me.txtFileImp.Text = VpFile
 		Me.txtSourceImp.Text = Me.txtFileImp.Text.Substring(Me.txtFileImp.Text.LastIndexOf("\") + 1)
-		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "").Replace(clsModule.CgFExtO, "")
+		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "").Replace(clsModule.CgFExtO, "").Replace(clsModule.CgFExtM, "")
 	End Sub
 	Sub CmdExportClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.dlgBrowser.ShowDialog

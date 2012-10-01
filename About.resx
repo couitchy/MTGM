@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lbl2.Text" xml:space="preserve">
-    <value>Ce logiciel est protégé par la loi relative au droit d'auteur et par les conventions internationales. Toute modification, altération, partielle ou  totale du logiciel, par quelque moyen que ce soit, est strictement interdite. Toute personne ne respectant pas ces dispositions se rendra coupable  du délit de contrefaçon et sera passible des sanctions pénales prévues par la loi. 
+    <value>Ce logiciel est protégé par la loi relative au droit d'auteur et par les conventions internationales. Toute décompilation, modification, altération, partielle ou totale du logiciel, par quelque moyen que ce soit, est strictement interdite. Toute personne ne respectant pas ces dispositions se rendra coupable du délit de contrefaçon et sera passible des sanctions pénales prévues par la loi. 
 
-Vous êtes en revanche libre d'utiliser ce logiciel gratuitement, de le recommander et/ou de le diffuser à vos proches si vous en êtes satisfait.
+Vous êtes en revanche libre d'utiliser ce logiciel gratuitement, de le recommander et/ou de le diffuser à vos proches si vous en êtes satisfait. Pour une diffusion hors d'un cadre restreint (site Web par exemple), il conviendra de contacter l'auteur.
 
 Développement réalisé par Couitchy et compilé sous Microsoft .NET Framework 2.0</value>
   </data>

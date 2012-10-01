@@ -13,6 +13,7 @@
 '| Release 9      |                        05/02/2011 |
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
+'| Release 12     |                        01/10/2012 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -96,11 +97,15 @@ Public Partial Class frmTransfert
 		VgDBCommand.CommandText = VpSQL
 		VpRet = ( VgDBCommand.ExecuteScalar > 1 )
 		If Not VpRet Then	's'il n'y a pas d'ambiguité, on veut quand même savoir si la carte qu'on veut transférer est foil ou non
-			VpSQL = "Select Foil From (" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
-			VpSQL = VpSQL + VpOwner.Restriction
-			VpSQL = clsModule.TrimQuery(VpSQL)
-			VgDBCommand.CommandText = VpSQL
-			VpFoil = VgDBCommand.ExecuteScalar
+			If VpOwner.IsInAdvSearch Then
+				VpFoil = False
+			Else
+				VpSQL = "Select Foil From (" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
+				VpSQL = VpSQL + VpOwner.Restriction
+				VpSQL = clsModule.TrimQuery(VpSQL)
+				VgDBCommand.CommandText = VpSQL
+				VpFoil = VgDBCommand.ExecuteScalar
+			End If
 		End If
 		'Si c'est une copie que l'on fait, on n'a pas besoin de savoir combien d'items il y a (ie. pas besoin d'évaluer le cas 2 ci-dessous), cela dépend si l'utilisateur a choisi dans les options de pouvoir régler manuellement le nombre de cartes à copier
 		If VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then

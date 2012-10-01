@@ -13,6 +13,7 @@
 '| Release 9      |                        05/02/2011 |
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
+'| Release 12     |                        01/10/2012 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -31,7 +32,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30933
+	Public Const CgCodeLines As Integer   			= 30972
 	Public Const CgLastUpdateAut As String			= "11/02/2012"
 	Public Const CgLastUpdateSimu As String			= "31/03/2012"
 	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"

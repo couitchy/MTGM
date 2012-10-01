@@ -1,5 +1,4 @@
 ﻿Imports Microsoft.VisualBasic.ApplicationServices
-
 Namespace My
 	' This file controls the behaviour of the application.
 	Partial Class MyApplication
@@ -10,7 +9,6 @@ Namespace My
 			Me.SaveMySettingsOnExit = False ' MySettings are not supported in SharpDevelop.
 			Me.ShutDownStyle = ShutdownMode.AfterMainFormCloses
 		End Sub
-		
 		Protected Overrides Sub OnCreateMainForm()
 			Me.MainForm = My.Forms.MainForm
 		End Sub

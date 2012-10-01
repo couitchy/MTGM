@@ -4911,4 +4911,59 @@
         /AAAAP4AAAD/AIAB/wDAI/+A4P//wf////////////////////8=
 </value>
   </data>
+  <data name="_colors_Blanches" xml:space="preserve">
+    <value>Le blanc est la couleur de la structure, de l'ordre et de la loi. Le mana blanc vient des grandes étendues des plaines, des savanes éclairées par le soleil et les praires caressées par les vents. Justice, honneur, communauté, telles sont les valeurs auxquelles le blanc aspire. Quand les mages utilisent le mana blanc, des légions de chevaliers chargent sur le champ de bataille, l'étendard au vent. Des escadrilles d'anges de combat fondent sur leurs adversaires. Des explosions de lumière aveuglante purifient toute trace de corruption.</value>
+  </data>
+  <data name="_colors_Bleues" xml:space="preserve">
+    <value>Les îles produisent le mana bleu, la magie des profondeurs de l'océan et des cieux illimités. La magie bleue se concentre sur l'esprit. Pour un mage bleu, la connaissances et les arcanes sont primordiales. Il veut tout savoir. Quand un mage bleu combat, les vagues se fracassent contre les rochers des falaises, le vent se déchaîne dans un ciel de tempête et les sorts de l'ennemi échouent, ses créatures s'évanouissant dans les airs.</value>
+  </data>
+  <data name="_colors_Noires" xml:space="preserve">
+    <value>Les landes foudroyées, les catacombes hantées et les marais fétides sont les sources principales du mana noir. Le noir est la couleur de la mort, de la peur et de l'égoïsme, les valeurs corrompues des ténèbres. La magie noire est puissante, mais elle a un prix élevé. Les mages noirs contrôlent les forces de la nuit : les démons, les horreurs et les morts-vivants. Ils sont prêts à tout pour acquérir la puissance, quel qu'en soit le prix.</value>
+  </data>
+  <data name="_colors_Rouges" xml:space="preserve">
+    <value>Le mana rouge coule des chaînes montagneuses escarpées, des cordillières rocheuses et du coeur incandescent des volcans. La magie rouge n'est que furie et passion. Quand un mage rouge combat, des étincelles éclairent le ciel rouge sans, la lave jaillit de la terre et le feu consume la contrée. Les magiciens rouges ne s'intéressent ni à la discussion, ni à la subtilité. Ils agissent sans attendre et en toute imprudence. Avec le mana rouge, un mage contrôle la puissance du feu et de la terre.</value>
+  </data>
+  <data name="_colors_Vertes" xml:space="preserve">
+    <value>Les forêts luxuriantes bouillonnent de mana vert, le rythme de la nature. Le mana vert est la magie de la vie, de la croissance et de la force brute. Quand un mage vert combat, d'énormes créatures jaillissent des forêts, des animaux prennent des tailles gigantesques et les blessures se referment avant que le sang ne coule. Les magiciens verts comprennent que le monde obéit à la loi de la jungle : tout y est proie ou prédateur.</value>
+  </data>
+  <data name="_colors_Incolores" xml:space="preserve">
+    <value>Colorless cards belong to no color, and most often appear in the form of Lands and Artifacts. Unlike the five colors, Colorless cards do not have a specific personality or style of play. Sometimes, colorless cards will imitate the mechanics of a particular color, though in a less-efficient manner than a similar colored card. Often colorless cards are linked to one or more colors via their abilities, through story references, or through flavor text on the cards themselves. With the Rise of the Eldrazi expansion, however, colorless cards that are neither artifacts nor lands have been introduced for the first time in larger quantities. These are mainly Eldrazi cards, massive creatures and spells to help cast the costly Eldrazi.</value>
+  </data>
+  <data name="_colors_Terrains" xml:space="preserve">
+    <value>Colorless cards belong to no color, and most often appear in the form of Lands and Artifacts. Unlike the five colors, Colorless cards do not have a specific personality or style of play. Sometimes, colorless cards will imitate the mechanics of a particular color, though in a less-efficient manner than a similar colored card. Often colorless cards are linked to one or more colors via their abilities, through story references, or through flavor text on the cards themselves. With the Rise of the Eldrazi expansion, however, colorless cards that are neither artifacts nor lands have been introduced for the first time in larger quantities. These are mainly Eldrazi cards, massive creatures and spells to help cast the costly Eldrazi.</value>
+  </data>
+  <data name="_colors_Multicolores" xml:space="preserve">
+    <value>Multi-color cards were introduced in the Legends set and typically use a gold frame to distinguish them from mono-color cards. These cards require mana from two or more different colors to be played and count as each of the colors used to play them. Multi-color cards tend to combine the philosophy and mechanics of all the colors used in the spell's cost. Multi-color cards tend to be proportionally more powerful compared to single-color or hybrid cards, as requiring multiple colors of mana makes them harder to cast. More recently, two-color "hybrid" cards were introduced in the Ravnica set, and appeared extensively throughout the Shadowmoor and Eventide sets. Hybrid cards are distinguished by a gradient frame with those two colors, and can be paid with either of the card's colors (as opposed to requiring both); for instance, a card with two hybrid-red/white icons can be cast using two red mana, two white mana, or one of each.</value>
+  </data>
+  <data name="Créatures" xml:space="preserve">
+    <value>Une créature est un permanent qui permet d'attaquer l'adversaire ou ses planeswalkers et de défendre ses points de vie. Ces permanents possèdent une case indiquant leur « force » et leur « endurance ». La force représente les dégâts que les créatures peuvent infliger et l'endurance les dégâts qu'elles peuvent encaisser par tour avant d'être détruites. Une créature 4/3, par exemple, peut infliger 4 blessures, et doit subir 3 blessures ou plus pour être détruite. Les créatures peuvent attaquer l'adversaire pendant la phase de combat. Elles peuvent être bloquées par les créatures de l'adversaire. Si elles ne le sont pas, la créature attaquante inflige autant de blessures à l'entité qu'elle attaque (joueur ou planeswalker) que sa force. Dans les anciennes éditions de Magic, les créatures qui n'étaient pas des créatures artefact s'appelaient des sorts d'invocation.</value>
+  </data>
+  <data name="Ephémères" xml:space="preserve">
+    <value>Un éphémère est un sort non-permanent joué généralement depuis la main à n'importe quel moment du jeu et qui provoque des effets divers.</value>
+  </data>
+  <data name="Artefacts" xml:space="preserve">
+    <value>Un artefact est un permanent, le plus souvent incolore. Les artefacts représentent souvent des machines ou des objets qui pourraient avoir été manufacturés. Dans les premières extensions, certains artefacts étaient des mono artefacts, des poly artefacts ou des continuous artifacts. Ces cartes ont reçu un errata et sont dorénavant simplement des artefacts.</value>
+  </data>
+  <data name="Enchantements" xml:space="preserve">
+    <value>C'est un permanent qui possède des effets divers et variés.</value>
+  </data>
+  <data name="Terrains" xml:space="preserve">
+    <value>Un terrain est un permanent qui n'est pas un sort. La plupart du temps, il produit du mana en s'engageant. Il n'est possible de jouer qu'un seul terrain par tour et uniquement durant son propre tour. Les terrains les plus connus sont ceux dits « de base », dont le nombre est illimité dans un deck.</value>
+  </data>
+  <data name="Interruptions" xml:space="preserve">
+    <value>Un éphémère est un sort non-permanent joué généralement depuis la main à n'importe quel moment du jeu et qui provoque des effets divers.</value>
+  </data>
+  <data name="Rituels" xml:space="preserve">
+    <value>Un rituel est identique à un éphémère, mais n'est jouable que pendant son tour lors d'une phase principale et alors que la pile est vide.</value>
+  </data>
+  <data name="Arpenteurs" xml:space="preserve">
+    <value>Ce type de carte est apparu avec le bloc Lorwyn en 2007. Un planeswalker arrive sur le champ de bataille avec un nombre de marqueurs loyauté particulier. Il a généralement trois ou quatre capacités nécessitant un coût d'activation payé en retirant ou ajoutant des marqueurs loyauté. Ces capacités se jouent à tout moment où vous pourriez jouer un rituel et une seule peut être activée par tour par planeswalker. Comme les joueurs, les planeswalkers peuvent être attaqués par les créatures, si bien qu'à la déclaration des attaquants, il convient de préciser quelles créatures attaque l'adversaire et quelles créatures attaquent un ou plusieurs planeswalkers qu'il contrôle. Les blessures qui ne sont pas des blessures de combat peuvent être redirigées sur les planeswalkers. Les blessures lui retirent des marqueurs loyauté, de plus, si un planeswalker n'a plus de loyauté sur lui, il est mis au cimetière, c'est un effet basé sur un état. Les interactions offertes par l'arrivée de ce nouveau type de carte ouvrent une nouvelle perspective sur le jeu.</value>
+  </data>
+  <data name="Créatures avec capacité" xml:space="preserve">
+    <value>Une créature est un permanent qui permet d'attaquer l'adversaire ou ses planeswalkers et de défendre ses points de vie. Ces permanents possèdent une case indiquant leur « force » et leur « endurance ». La force représente les dégâts que les créatures peuvent infliger et l'endurance les dégâts qu'elles peuvent encaisser par tour avant d'être détruites. Une créature 4/3, par exemple, peut infliger 4 blessures, et doit subir 3 blessures ou plus pour être détruite. Les créatures peuvent attaquer l'adversaire pendant la phase de combat. Elles peuvent être bloquées par les créatures de l'adversaire. Si elles ne le sont pas, la créature attaquante inflige autant de blessures à l'entité qu'elle attaque (joueur ou planeswalker) que sa force. Dans les anciennes éditions de Magic, les créatures qui n'étaient pas des créatures artefact s'appelaient des sorts d'invocation.</value>
+  </data>
+  <data name="Enchanter-permanents" xml:space="preserve">
+    <value>C'est un permanent qui possède des effets divers et variés.</value>
+  </data>
+
 </root>
