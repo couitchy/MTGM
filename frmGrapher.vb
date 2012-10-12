@@ -55,6 +55,7 @@ Public Partial Class frmGrapher
 	'Rafraîchit l'affichage de l'ensemble des graphiques de la collection locale
 	'---------------------------------------------------------------------------
 	Dim VpSel As Integer = Me.chklstCurves.SelectedIndex
+	Dim VpOneAtLeast As Boolean = False
 		VmBusy = True
 		With Me.plotMain
 			.Clear
@@ -64,19 +65,20 @@ Public Partial Class frmGrapher
 			For Each VpPlot As clsGrapherSettings In VmPlots
 				If VpPlot.myVisible Then
 					.Add(VpPlot.RefPlot)
+					VpOneAtLeast = True
 				End If
 				If VpList Then
 					Me.chklstCurves.Items.Add(VpPlot.Legende, VpPlot.myVisible)
 				End If
 			Next VpPlot
-			If VmPlots.Count > 0 Then
+			If VpOneAtLeast Then
 				.AddInteraction(New Windows.PlotSurface2D.Interactions.RubberBandSelection)
 				.Legend = New Legend
 				.Legend.AttachTo(PlotSurface2D.XAxisPosition.Top, PlotSurface2D.YAxisPosition.Left)
 				.Legend.VerticalEdgePlacement = Legend.Placement.Inside
 				.Legend.HorizontalEdgePlacement = Legend.Placement.Inside
-				.YAxis1.WorldMin = CDbl(CInt(Me.GetExtremum(False) * (1 - clsModule.CgGraphsExtraMargin)))
-				.YAxis1.WorldMax = CDbl(CInt(Me.GetExtremum(True)  * (1 + clsModule.CgGraphsExtraMargin)))
+				.YAxis1.WorldMin = CDbl(CInt(Me.GetExtremum(False) * (1 - clsModule.CgGraphsExtraMargin) - 0.5))
+				.YAxis1.WorldMax = CDbl(CInt(Me.GetExtremum(True)  * (1 + clsModule.CgGraphsExtraMargin) + 0.5))
 				Me.chklstCurves.SelectedIndex = Math.Max(0, VpSel)
 			End If
 			.Refresh

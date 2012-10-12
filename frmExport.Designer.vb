@@ -47,15 +47,13 @@ Partial Class frmExport
 		Me.lblImp = New System.Windows.Forms.Label
 		Me.cmdImport = New System.Windows.Forms.Button
 		Me.grpExport = New System.Windows.Forms.GroupBox
-		Me.optNormal = New System.Windows.Forms.RadioButton
 		Me.lblFormat = New System.Windows.Forms.Label
-		Me.optOld = New System.Windows.Forms.RadioButton
-		Me.optApprentice = New System.Windows.Forms.RadioButton
 		Me.cmdExport = New System.Windows.Forms.Button
 		Me.lstchkSources = New System.Windows.Forms.CheckedListBox
-		Me.btExport = New TD.SandBar.ButtonItem
 		Me.btImport = New TD.SandBar.ButtonItem
+		Me.btExport = New TD.SandBar.ButtonItem
 		Me.dlgFileBrowser = New System.Windows.Forms.OpenFileDialog
+		Me.cboFormat = New System.Windows.Forms.ComboBox
 		Me.cbarImpExp.SuspendLayout
 		Me.pnlImpExp.SuspendLayout
 		Me.grpImport.SuspendLayout
@@ -73,7 +71,7 @@ Partial Class frmExport
 		Me.cbarImpExp.Location = New System.Drawing.Point(0, 0)
 		Me.cbarImpExp.Movable = false
 		Me.cbarImpExp.Name = "cbarImpExp"
-		Me.cbarImpExp.Size = New System.Drawing.Size(328, 224)
+		Me.cbarImpExp.Size = New System.Drawing.Size(328, 237)
 		Me.cbarImpExp.TabIndex = 0
 		Me.cbarImpExp.Text = "Module d'importation / exportation"
 		AddHandler Me.cbarImpExp.VisibleChanged, AddressOf Me.CbarImpExpVisibleChanged
@@ -83,11 +81,11 @@ Partial Class frmExport
 		'
 		'pnlImpExp
 		'
-		Me.pnlImpExp.Controls.Add(Me.grpImport)
 		Me.pnlImpExp.Controls.Add(Me.grpExport)
+		Me.pnlImpExp.Controls.Add(Me.grpImport)
 		Me.pnlImpExp.Location = New System.Drawing.Point(2, 49)
 		Me.pnlImpExp.Name = "pnlImpExp"
-		Me.pnlImpExp.Size = New System.Drawing.Size(324, 173)
+		Me.pnlImpExp.Size = New System.Drawing.Size(324, 186)
 		Me.pnlImpExp.TabIndex = 0
 		'
 		'grpImport
@@ -104,10 +102,9 @@ Partial Class frmExport
 		Me.grpImport.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpImport.Location = New System.Drawing.Point(0, 0)
 		Me.grpImport.Name = "grpImport"
-		Me.grpImport.Size = New System.Drawing.Size(324, 173)
+		Me.grpImport.Size = New System.Drawing.Size(324, 186)
 		Me.grpImport.TabIndex = 1
 		Me.grpImport.TabStop = false
-		Me.grpImport.Visible = true
 		'
 		'lstImp
 		'
@@ -116,7 +113,7 @@ Partial Class frmExport
 		Me.lstImp.Location = New System.Drawing.Point(90, 82)
 		Me.lstImp.Name = "lstImp"
 		Me.lstImp.ScrollAlwaysVisible = true
-		Me.lstImp.Size = New System.Drawing.Size(204, 56)
+		Me.lstImp.Size = New System.Drawing.Size(204, 69)
 		Me.lstImp.TabIndex = 14
 		'
 		'optImpAdd
@@ -179,7 +176,7 @@ Partial Class frmExport
 		'cmdImport
 		'
 		Me.cmdImport.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdImport.Location = New System.Drawing.Point(3, 147)
+		Me.cmdImport.Location = New System.Drawing.Point(3, 160)
 		Me.cmdImport.Name = "cmdImport"
 		Me.cmdImport.Size = New System.Drawing.Size(318, 23)
 		Me.cmdImport.TabIndex = 7
@@ -190,69 +187,32 @@ Partial Class frmExport
 		'grpExport
 		'
 		Me.grpExport.BackColor = System.Drawing.Color.Transparent
-		Me.grpExport.Controls.Add(Me.optNormal)
+		Me.grpExport.Controls.Add(Me.cboFormat)
 		Me.grpExport.Controls.Add(Me.lblFormat)
-		Me.grpExport.Controls.Add(Me.optOld)
-		Me.grpExport.Controls.Add(Me.optApprentice)
 		Me.grpExport.Controls.Add(Me.cmdExport)
 		Me.grpExport.Controls.Add(Me.lstchkSources)
 		Me.grpExport.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpExport.Location = New System.Drawing.Point(0, 0)
 		Me.grpExport.Name = "grpExport"
-		Me.grpExport.Size = New System.Drawing.Size(324, 173)
+		Me.grpExport.Size = New System.Drawing.Size(324, 186)
 		Me.grpExport.TabIndex = 0
-		Me.grpExport.TabStop = False
+		Me.grpExport.TabStop = false
 		Me.grpExport.Visible = false
-		'
-		'optNormal
-		'
-		Me.optNormal.AutoSize = true
-		Me.optNormal.Checked = true
-		Me.optNormal.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optNormal.Location = New System.Drawing.Point(114, 125)
-		Me.optNormal.Name = "optNormal"
-		Me.optNormal.Size = New System.Drawing.Size(73, 22)
-		Me.optNormal.TabIndex = 11
-		Me.optNormal.TabStop = true
-		Me.optNormal.Text = "MTGM v2"
-		Me.optNormal.UseVisualStyleBackColor = true
 		'
 		'lblFormat
 		'
 		Me.lblFormat.Dock = System.Windows.Forms.DockStyle.Left
 		Me.lblFormat.Location = New System.Drawing.Point(3, 125)
 		Me.lblFormat.Name = "lblFormat"
-		Me.lblFormat.Size = New System.Drawing.Size(100, 22)
+		Me.lblFormat.Size = New System.Drawing.Size(100, 35)
 		Me.lblFormat.TabIndex = 10
 		Me.lblFormat.Text = "Format de sortie :"
 		Me.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
 		'
-		'optOld
-		'
-		Me.optOld.AutoSize = true
-		Me.optOld.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optOld.Location = New System.Drawing.Point(187, 125)
-		Me.optOld.Name = "optOld"
-		Me.optOld.Size = New System.Drawing.Size(58, 22)
-		Me.optOld.TabIndex = 9
-		Me.optOld.Text = "MTGM"
-		Me.optOld.UseVisualStyleBackColor = true
-		'
-		'optApprentice
-		'
-		Me.optApprentice.AutoSize = true
-		Me.optApprentice.Dock = System.Windows.Forms.DockStyle.Right
-		Me.optApprentice.Location = New System.Drawing.Point(245, 125)
-		Me.optApprentice.Name = "optApprentice"
-		Me.optApprentice.Size = New System.Drawing.Size(76, 22)
-		Me.optApprentice.TabIndex = 8
-		Me.optApprentice.Text = "Apprentice"
-		Me.optApprentice.UseVisualStyleBackColor = true
-		'
 		'cmdExport
 		'
 		Me.cmdExport.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdExport.Location = New System.Drawing.Point(3, 147)
+		Me.cmdExport.Location = New System.Drawing.Point(3, 160)
 		Me.cmdExport.Name = "cmdExport"
 		Me.cmdExport.Size = New System.Drawing.Size(318, 23)
 		Me.cmdExport.TabIndex = 6
@@ -270,18 +230,18 @@ Partial Class frmExport
 		Me.lstchkSources.Size = New System.Drawing.Size(318, 109)
 		Me.lstchkSources.TabIndex = 5
 		'
+		'btImport
+		'
+		Me.btImport.Checked = true
+		Me.btImport.Icon = CType(resources.GetObject("btImport.Icon"),System.Drawing.Icon)
+		Me.btImport.Text = "Import"
+		AddHandler Me.btImport.Activate, AddressOf Me.BtImportActivate
+		'
 		'btExport
 		'
 		Me.btExport.Icon = CType(resources.GetObject("btExport.Icon"),System.Drawing.Icon)
 		Me.btExport.Text = "Export"
 		AddHandler Me.btExport.Activate, AddressOf Me.BtExportActivate
-		'
-		'btImport
-		'
-		Me.btImport.Icon = CType(resources.GetObject("btImport.Icon"),System.Drawing.Icon)
-		Me.btImport.Text = "Import"
-		Me.btImport.Checked = true
-		AddHandler Me.btImport.Activate, AddressOf Me.BtImportActivate
 		'
 		'dlgFileBrowser
 		'
@@ -289,11 +249,21 @@ Partial Class frmExport
 		" deck (*.xml) | *.xml"
 		Me.dlgFileBrowser.Title = "Sélectionner le fichier à importer"
 		'
+		'cboFormat
+		'
+		Me.cboFormat.FormattingEnabled = true
+		Me.cboFormat.Items.AddRange(New Object() {"MTGM v2 (*.dk2)", "MTGM (*.dck)", "Apprentice (*.dec)", "Magic Workstation (*.mwDeck)"})
+		Me.cboFormat.Location = New System.Drawing.Point(109, 133)
+		Me.cboFormat.Name = "cboFormat"
+		Me.cboFormat.Size = New System.Drawing.Size(212, 21)
+		Me.cboFormat.TabIndex = 11
+		Me.cboFormat.Text = "MTGM v2 (*.dk2)"
+		'
 		'frmExport
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(328, 224)
+		Me.ClientSize = New System.Drawing.Size(328, 237)
 		Me.Controls.Add(Me.cbarImpExp)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -305,13 +275,10 @@ Partial Class frmExport
 		Me.grpImport.ResumeLayout(false)
 		Me.grpImport.PerformLayout
 		Me.grpExport.ResumeLayout(false)
-		Me.grpExport.PerformLayout
 		Me.ResumeLayout(false)
 	End Sub
-	Private optOld As System.Windows.Forms.RadioButton
+	Private cboFormat As System.Windows.Forms.ComboBox
 	Private lblFormat As System.Windows.Forms.Label
-	Private optApprentice As System.Windows.Forms.RadioButton
-	Private optNormal As System.Windows.Forms.RadioButton
 	Private dlgFileBrowser As System.Windows.Forms.OpenFileDialog
 	Private optImpNew As System.Windows.Forms.RadioButton
 	Private txtSourceImp As System.Windows.Forms.TextBox

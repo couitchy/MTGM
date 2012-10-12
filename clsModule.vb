@@ -32,12 +32,12 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 30972
-	Public Const CgLastUpdateAut As String			= "11/02/2012"
-	Public Const CgLastUpdateSimu As String			= "31/03/2012"
-	Public Const CgLastUpdateTxtVF As String		= "05/02/2012"
-	Public Const CgLastUpdateRulings As String		= "18/02/2012"
-	Public Const CgLastUpdateTradPatch As String	= "24/03/2012"
+	Public Const CgCodeLines As Integer   			= 31099
+	Public Const CgLastUpdateAut As String			= "30/07/2012"
+	Public Const CgLastUpdateSimu As String			= "27/07/2012"
+	Public Const CgLastUpdateTxtVF As String		= "24/07/2012"
+	Public Const CgLastUpdateRulings As String		= "27/07/2012"
+	Public Const CgLastUpdateTradPatch As String	= "20/09/2012"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8
@@ -132,6 +132,7 @@ Public Module clsModule
 	Public Const CgFExtO As String					= ".dck"
 	Public Const CgFExtN As String					= ".dk2"
 	Public Const CgFExtA As String					= ".dec"
+	Public Const CgFExtW As String					= ".mwDeck"
 	Public Const CgFExtM As String					= ".xml"
 	Public Const CgFExtD As String					= ".mdb"
 	Public Const CgIconsExt As String				= ".png"
@@ -187,6 +188,12 @@ Public Module clsModule
 	Public WithEvents VgTray As NotifyIcon
 	Public WithEvents VgTimer As Timer
 	Public WithEvents VgClient As New WebClient
+	Public Enum eFormat
+		MTGMv2 = 0
+		MTGM
+		Apprentice
+		MWS
+	End Enum
 	Public Enum eSearchType
 		Alpha = 0
 		Num
