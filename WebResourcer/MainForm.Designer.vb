@@ -56,6 +56,8 @@ Partial Class MainForm
 		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardReplaceTitle = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
@@ -64,6 +66,8 @@ Partial Class MainForm
 		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPricesUpdate = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuPricesUpdateAll = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuPricesUpdateListe = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildPatch = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPictures = New System.Windows.Forms.ToolStripMenuItem
@@ -71,6 +75,7 @@ Partial Class MainForm
 		Me.mnuPicturesFix = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPicturesDelta = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPicturesNewSP = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuPicturesRevertSP = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
 		Me.toolStrip = New System.Windows.Forms.ToolStrip
@@ -103,7 +108,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuPicturesRevertSP = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCardsExtractDiff5 = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -181,7 +186,7 @@ Partial Class MainForm
 		'
 		'mnuCardsExtract
 		'
-		Me.mnuCardsExtract.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtractAll, Me.mnuCardsExtractDiff, Me.mnuCardsExtractDiff3, Me.mnuCardsExtractDiff4, Me.mnuCardsExtractDiff2})
+		Me.mnuCardsExtract.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtractAll, Me.mnuCardsExtractDiff, Me.mnuCardsExtractDiff3, Me.mnuCardsExtractDiff4, Me.mnuCardsExtractDiff2, Me.mnuCardsExtractDiff5})
 		Me.mnuCardsExtract.Image = CType(resources.GetObject("mnuCardsExtract.Image"),System.Drawing.Image)
 		Me.mnuCardsExtract.Name = "mnuCardsExtract"
 		Me.mnuCardsExtract.Size = New System.Drawing.Size(278, 22)
@@ -260,11 +265,25 @@ Partial Class MainForm
 		'
 		'mnuCardsAut
 		'
+		Me.mnuCardsAut.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsAutAll, Me.mnuCardsAutListe})
 		Me.mnuCardsAut.Image = CType(resources.GetObject("mnuCardsAut.Image"),System.Drawing.Image)
 		Me.mnuCardsAut.Name = "mnuCardsAut"
 		Me.mnuCardsAut.Size = New System.Drawing.Size(278, 22)
 		Me.mnuCardsAut.Text = "Récupérer les autorisations en tournois"
-		AddHandler Me.mnuCardsAut.Click, AddressOf Me.MnuCardsAutClick
+		'
+		'mnuCardsAutAll
+		'
+		Me.mnuCardsAutAll.Name = "mnuCardsAutAll"
+		Me.mnuCardsAutAll.Size = New System.Drawing.Size(110, 22)
+		Me.mnuCardsAutAll.Text = "Toutes"
+		AddHandler Me.mnuCardsAutAll.Click, AddressOf Me.MnuCardsAutClick
+		'
+		'mnuCardsAutListe
+		'
+		Me.mnuCardsAutListe.Name = "mnuCardsAutListe"
+		Me.mnuCardsAutListe.Size = New System.Drawing.Size(110, 22)
+		Me.mnuCardsAutListe.Text = "Liste"
+		AddHandler Me.mnuCardsAutListe.Click, AddressOf Me.MnuCardsAutListeClick
 		'
 		'mnuCardReplaceTitle
 		'
@@ -319,11 +338,25 @@ Partial Class MainForm
 		'
 		'mnuPricesUpdate
 		'
+		Me.mnuPricesUpdate.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPricesUpdateAll, Me.mnuPricesUpdateListe})
 		Me.mnuPricesUpdate.Image = CType(resources.GetObject("mnuPricesUpdate.Image"),System.Drawing.Image)
 		Me.mnuPricesUpdate.Name = "mnuPricesUpdate"
 		Me.mnuPricesUpdate.Size = New System.Drawing.Size(259, 22)
 		Me.mnuPricesUpdate.Text = "Récupérer les prix"
-		AddHandler Me.mnuPricesUpdate.Click, AddressOf Me.MnuPricesUpdateClick
+		'
+		'mnuPricesUpdateAll
+		'
+		Me.mnuPricesUpdateAll.Name = "mnuPricesUpdateAll"
+		Me.mnuPricesUpdateAll.Size = New System.Drawing.Size(100, 22)
+		Me.mnuPricesUpdateAll.Text = "Tous"
+		AddHandler Me.mnuPricesUpdateAll.Click, AddressOf Me.MnuPricesUpdateClick
+		'
+		'mnuPricesUpdateListe
+		'
+		Me.mnuPricesUpdateListe.Name = "mnuPricesUpdateListe"
+		Me.mnuPricesUpdateListe.Size = New System.Drawing.Size(100, 22)
+		Me.mnuPricesUpdateListe.Text = "Liste"
+		AddHandler Me.mnuPricesUpdateListe.Click, AddressOf Me.MnuPricesUpdateListeClick
 		'
 		'mnuPricesHistoryAdd
 		'
@@ -379,6 +412,13 @@ Partial Class MainForm
 		Me.mnuPicturesNewSP.Size = New System.Drawing.Size(316, 22)
 		Me.mnuPicturesNewSP.Text = "Assembler un nouveau Service Pack"
 		AddHandler Me.mnuPicturesNewSP.Click, AddressOf Me.MnuPicturesNewSPClick
+		'
+		'mnuPicturesRevertSP
+		'
+		Me.mnuPicturesRevertSP.Name = "mnuPicturesRevertSP"
+		Me.mnuPicturesRevertSP.Size = New System.Drawing.Size(316, 22)
+		Me.mnuPicturesRevertSP.Text = "Reconstruire jusqu'à un Service Pack antérieur"
+		AddHandler Me.mnuPicturesRevertSP.Click, AddressOf Me.MnuPicturesRevertSPClick
 		'
 		'mnuHelp
 		'
@@ -649,12 +689,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuPicturesRevertSP
+		'mnuCardsExtractDiff5
 		'
-		Me.mnuPicturesRevertSP.Name = "mnuPicturesRevertSP"
-		Me.mnuPicturesRevertSP.Size = New System.Drawing.Size(316, 22)
-		Me.mnuPicturesRevertSP.Text = "Reconstruire jusqu'à un Service Pack antérieur"
-		AddHandler Me.mnuPicturesRevertSP.Click, AddressOf Me.MnuPicturesRevertSPClick
+		Me.mnuCardsExtractDiff5.Name = "mnuCardsExtractDiff5"
+		Me.mnuCardsExtractDiff5.Size = New System.Drawing.Size(406, 22)
+		Me.mnuCardsExtractDiff5.Text = "celles sans mise à jour de prix (qui a échoué)"
+		AddHandler Me.mnuCardsExtractDiff5.Click, AddressOf Me.MnuCardsExtractDiff5Click
 		'
 		'MainForm
 		'
@@ -683,6 +723,11 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuCardsExtractDiff5 As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPricesUpdateListe As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPricesUpdateAll As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCardsAutListe As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCardsAutAll As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPicturesRevertSP As System.Windows.Forms.ToolStripMenuItem
 	Private btReplaceTitle As System.Windows.Forms.ToolStripButton
 	Private mnuCardReplaceTitle As System.Windows.Forms.ToolStripMenuItem

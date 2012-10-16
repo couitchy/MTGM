@@ -363,6 +363,8 @@ Public Partial Class frmExport
 				Return "PT"
 			Case "CF"
 				Return "CFX"
+			Case "RR"
+				Return "RTR"
 			Case Else
 				Return VpSerie
 		End Select

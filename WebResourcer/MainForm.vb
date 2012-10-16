@@ -222,18 +222,26 @@ Public Partial Class MainForm
 		End With
 		Return VpCards
 	End Function
-	Private Function BuildListeFromFile As List(Of String)
+	Private Function BuildListeFromFile(Optional VpCut As Boolean = False) As List(Of String)
 	Dim VpCards As New StreamReader(Me.dlgOpen4.FileName)
 	Dim VpListe As New List(Of String)
+	Dim VpStr As String
 		Me.prgAvance.Style = ProgressBarStyle.Marquee
 		While Not VpCards.EndOfStream
-			VpListe.Add(VpCards.ReadLine)
+			If Not VpCut Then
+				VpListe.Add(VpCards.ReadLine)
+			Else
+				VpStr = VpCards.ReadLine
+				If VpStr.Contains("#") Then
+					VpListe.Add(VpStr.Split("#")(0))
+				End If
+			End If
 			Application.DoEvents
 		End While
 		VpCards.Close
 		Return VpListe
 	End Function
-	Private Sub UpdatePrices
+	Private Sub UpdatePrices(VpAll As Boolean)
 	'------------------------------------------------
 	'Mise à jour de la liste des prix depuis Internet
 	'------------------------------------------------
@@ -270,7 +278,18 @@ Public Partial Class MainForm
 				VpOut.WriteLine(Now.ToShortDateString)
 			End If
 			'Récupère la liste des cartes
-			VpCards = Me.BuildListeFromDB(VpLast)
+			If VpAll Then
+				VpCards = Me.BuildListeFromDB(VpLast)
+			Else
+				Me.dlgOpen4.FileName = ""
+				Me.dlgOpen4.ShowDialog
+				If Me.dlgOpen4.FileName <> "" Then
+					VpCards = Me.BuildListeFromFile
+				Else
+					VpOut.Close
+					Exit Sub
+				End If
+			End If
 			'Récupère le prix pour chaque carte
 			Me.prgAvance.Maximum = VpCards.Count
 			Me.prgAvance.Value = 0
@@ -706,6 +725,52 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Sub ExtractCardsPricesAborted
+	'-----------------------------------------------------------------------------------
+	'Listing des cartes dont la mise à jour des prix ne semble pas avoir été téléchargée
+	'-----------------------------------------------------------------------------------
+	Dim VpOut As StreamWriter
+	Dim VpCards As List(Of String)
+	Dim VpCardsDB As List(Of String)
+	Dim VpFound As Boolean
+		Me.dlgOpen4.FileName = ""
+		Me.dlgOpen4.ShowDialog
+		If Me.dlgOpen4.FileName <> "" Then
+			VpCards = Me.BuildListeFromFile(True)
+		Else
+			Exit Sub
+		End If
+		Me.dlgSave.FileName = ""
+		Me.dlgSave.ShowDialog
+		If Me.dlgSave.FileName <> "" Then
+			VpOut = New StreamWriter(Me.dlgSave.FileName)
+	    	Call Me.AddToLog("L'extraction des titres des cartes a commencé...", eLogType.Information, True)
+	    	Me.prgAvance.Style = ProgressBarStyle.Marquee
+	    	VpCardsDB = Me.BuildListeFromDB
+			For Each VpCardDB As String In VpCardsDB
+				Application.DoEvents
+				VpFound = False
+				For Each VpCard As String In VpCards
+					If VpCard = VpCardDB Then
+						VpFound = True
+						Exit For
+					End If
+				Next VpCard
+				If Not VpFound Then
+					VpOut.WriteLine(VpCardDB)
+					Me.txtCur.Text = VpCardDB
+				End If
+				If Me.btCancel.Tag Then Exit For
+			Next VpCardDB
+			VpOut.Flush
+			VpOut.Close
+			If Me.btCancel.Tag Then
+				Call Me.AddToLog("L'extraction des titres des cartes a été annulée.", eLogType.Warning, , True)
+			Else
+				Call Me.AddToLog("L'extraction des titres des cartes est terminée.", eLogType.Information, , True)
+			End If
+		End If
+	End Sub
 	Private Function GetTextVF(VpIn As String) As String
 	'------------------------------------------------------------
 	'Retourne le texte français pour la carte passée en paramètre
@@ -885,7 +950,7 @@ Public Partial Class MainForm
 		Next VpA
 		Return VpAut.Substring(0, VpAut.Length - 1)
 	End Function
-	Private Sub UpdateAutorisations
+	Private Sub UpdateAutorisations(VpAll As Boolean)
 	'----------------------------------------------------
 	'Mise à jour des autorisations des cartes en tournois
 	'----------------------------------------------------
@@ -897,7 +962,7 @@ Public Partial Class MainForm
 	Dim VpLast As String = ""
 		Me.dlgSave.FileName = ""
 		Me.dlgSave.ShowDialog
-		If Me.dlgSave.FileName <> "" Then			
+		If Me.dlgSave.FileName <> "" Then
 			VpAppend = File.Exists(Me.dlgSave.FileName)
 			If VpAppend Then
 				'Si le fichier existe déjà, regarde la dernière carte qui a été traitée
@@ -922,7 +987,18 @@ Public Partial Class MainForm
 				VpOut.WriteLine(Now.ToShortDateString)
 			End If
 			'Récupère la liste des cartes
-			VpCards = Me.BuildListeFromDB(VpLast)
+			If VpAll Then
+				VpCards = Me.BuildListeFromDB(VpLast)
+			Else
+				Me.dlgOpen4.FileName = ""
+				Me.dlgOpen4.ShowDialog
+				If Me.dlgOpen4.FileName <> "" Then
+					VpCards = Me.BuildListeFromFile
+				Else
+					VpOut.Close
+					Exit Sub
+				End If
+			End If
 			Me.prgAvance.Maximum = VpCards.Count
 			Me.prgAvance.Value = 0
 			Me.prgAvance.Style = ProgressBarStyle.Blocks
@@ -1070,6 +1146,10 @@ Public Partial Class MainForm
 				Return "magic2013#" + VpStr
 			Case "RR"
 				Return "returntoravnica#" + VpStr
+			Case "DG"
+				Return "DuelDecksIzzetvsGolgari#" + VpStr
+			Case "V5"
+				Return "FromtheVaultRealms#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1186,6 +1266,10 @@ Public Partial Class MainForm
 				Return "M4"
 			Case "returntoravnica"
 				Return "RR"
+			Case "DuelDecksIzzetvsGolgari"
+				Return "DG"
+			Case "FromtheVaultRealms"
+				Return "V5"
 			Case Else
 				Return ""
 		End Select
@@ -1216,13 +1300,13 @@ Public Partial Class MainForm
 				End While
 				.Close
 			End With
-			VpTxt.WriteLine("3rdBB#3B#Third Edition (Black Border)#Revised###1#1#B#02/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition a été éditée en bords noirs en Italien, Français et Allemand, cette édition est aussi appelée ""Beta"" puisque c'est la première édition de base à sortir dans ces pays. Cette édition est datée de 1994 et cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord noir)")
-			VpTxt.WriteLine("3rdWB#3W#Third Edition (White Border)#Revised###1#1#W#03/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition est sortie en 1994 en français, et en 1995 en italien et en allemand (la 3ème édition anglaise étant Revised). Cette édition est donc datée de 1994, cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord blanc)")
-			VpTxt.WriteLine("coldsnapthemedecks#CT#Coldsnap Theme Decks#Coldsnap Theme Decks###1#1#B#22/07/2006 00:00:00##62#52#0#0#0#0#0#############Cette édition, sortie à l'occasion de Coldsnap en Juillet 2006, est une réédition de certaines cartes du bloc Ère glaciaire. À noter qu'il s'agit seulement de decks préconstruits, vous n'aurez donc aucune carte rare dans cette édition spéciale de 62 cartes. On retrouve toutefois des cartes assez mythiques comme Brainstorm, Disanchant, Swords to Plowshare, Dark Ritual, Tinder Wall, Incinerate...#Coldsnap Theme Decks")
-			VpTxt.WriteLine("deckmasters#DM#Deckmasters#Deckmasters###1#1#W#01/12/2001 00:00:00##124#44#0#0#0#0#0#############Deckmasters: Garfield vs. Finkel, usually known as simply Deckmasters, was a set created in 2001 to showcase the epic match between Richard Garfield, the creator of the card game, and Jon Finkel, a Magic World Champion. Two decks were included in the set, a red/green deck that Richard Garfield used, and a red/black deck that was played by Finkel. This set was created to let players relive this famous match. It is the fifth compilation set.#Deckmasters")
-			VpTxt.WriteLine("planechase#PH#Planechase#Planechase###1#1#B#04/09/2004 00:00:00##240#169#0#0#0#0#0#############Planechase is a new variant of Magic: The Gathering with an emphasis on multiplayer games. The set utilizes new oversized Plane cards, cards that are based on various locations (Planes) within the Magic multiverse, to modify the rules of gameplay. Four game packs were released on September 4, 2009: Elemental Thunder, Metallic Dreams, Strike Force, and Zombie Empire. Each game pack comes with a 60-card preconstructed deck, 10 Plane cards, a six-sided Planar die, and multiplayer rules. The cards within each preconstructed deck have all been reprinted from various Magic sets. All of the cards are black bordered and tournament legal in their original formats. Outside of the initial release, there have been five promotional cards released.#Planechase")
-			VpTxt.WriteLine("planechase2012#PI#Planechase 2012#Planechase 2012###1#1#B#01/06/2012 00:00:00##177#177#0#0#0#0#0#############The new Planechase cards introduce many new planes as well as an entirely new oversized card type: phenomena. Phenomena capture the events which transpire as you jump between planes, as immediate events during the change. These phenomena and plane cards add to the exciting and unpredictable events which will unfold during your Planechase games.  Play Commander with Planechase! These two casual variants go hand in hand, as they allow you to enjoy an unpredictable and high-powered casual format that never stops bringing you new and exciting games.  Cards and decks from Planechase's 2012 Edition are able to be played with decks from the original Planechase release without any changes! These decks and their components come with everything you need to use and enjoy a planar Magic game.#Planechase 2012")
-			VpTxt.WriteLine("pegase#PG#Pégase#Pégase###1#1#W#02/03/2006 00:00:00##600#236#0#0#0#0#0#############Pégase est une édition particulière de Magic, car éditée en collaboration entre Wizard of The Coast et Hachette. Les collectionneurs sont ainsi invités à construire 10 decks (Rats, Elves, Spirits, Slivers, Ninjas, Zombies, Angels, Wizards, Berserk et Thallids) au fur et à mesure de leurs passages chez leur marchand de journaux. Les publications s'étendent du 2 mars 2006 au 3 juillet 2007. Pégase n'est disponible qu'en français et en italien.#Pégase")
+'			VpTxt.WriteLine("3rdBB#3B#Third Edition (Black Border)#Revised###1#1#B#02/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition a été éditée en bords noirs en Italien, Français et Allemand, cette édition est aussi appelée ""Beta"" puisque c'est la première édition de base à sortir dans ces pays. Cette édition est datée de 1994 et cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord noir)")
+'			VpTxt.WriteLine("3rdWB#3W#Third Edition (White Border)#Revised###1#1#W#03/01/1994 00:00:00##296#296#121#95#75#5#0#############La 3ème édition est sortie en 1994 en français, et en 1995 en italien et en allemand (la 3ème édition anglaise étant Revised). Cette édition est donc datée de 1994, cette date suffit a reconnaître les cartes de cette édition.#3ème édition (bord blanc)")
+'			VpTxt.WriteLine("coldsnapthemedecks#CT#Coldsnap Theme Decks#Coldsnap Theme Decks###1#1#B#22/07/2006 00:00:00##62#52#0#0#0#0#0#############Cette édition, sortie à l'occasion de Coldsnap en Juillet 2006, est une réédition de certaines cartes du bloc Ère glaciaire. À noter qu'il s'agit seulement de decks préconstruits, vous n'aurez donc aucune carte rare dans cette édition spéciale de 62 cartes. On retrouve toutefois des cartes assez mythiques comme Brainstorm, Disanchant, Swords to Plowshare, Dark Ritual, Tinder Wall, Incinerate...#Coldsnap Theme Decks")
+'			VpTxt.WriteLine("deckmasters#DM#Deckmasters#Deckmasters###1#1#W#01/12/2001 00:00:00##124#44#0#0#0#0#0#############Deckmasters: Garfield vs. Finkel, usually known as simply Deckmasters, was a set created in 2001 to showcase the epic match between Richard Garfield, the creator of the card game, and Jon Finkel, a Magic World Champion. Two decks were included in the set, a red/green deck that Richard Garfield used, and a red/black deck that was played by Finkel. This set was created to let players relive this famous match. It is the fifth compilation set.#Deckmasters")
+'			VpTxt.WriteLine("planechase#PH#Planechase#Planechase###1#1#B#04/09/2004 00:00:00##240#169#0#0#0#0#0#############Planechase is a new variant of Magic: The Gathering with an emphasis on multiplayer games. The set utilizes new oversized Plane cards, cards that are based on various locations (Planes) within the Magic multiverse, to modify the rules of gameplay. Four game packs were released on September 4, 2009: Elemental Thunder, Metallic Dreams, Strike Force, and Zombie Empire. Each game pack comes with a 60-card preconstructed deck, 10 Plane cards, a six-sided Planar die, and multiplayer rules. The cards within each preconstructed deck have all been reprinted from various Magic sets. All of the cards are black bordered and tournament legal in their original formats. Outside of the initial release, there have been five promotional cards released.#Planechase")
+'			VpTxt.WriteLine("planechase2012#PI#Planechase 2012#Planechase 2012###1#1#B#01/06/2012 00:00:00##177#177#0#0#0#0#0#############The new Planechase cards introduce many new planes as well as an entirely new oversized card type: phenomena. Phenomena capture the events which transpire as you jump between planes, as immediate events during the change. These phenomena and plane cards add to the exciting and unpredictable events which will unfold during your Planechase games.  Play Commander with Planechase! These two casual variants go hand in hand, as they allow you to enjoy an unpredictable and high-powered casual format that never stops bringing you new and exciting games.  Cards and decks from Planechase's 2012 Edition are able to be played with decks from the original Planechase release without any changes! These decks and their components come with everything you need to use and enjoy a planar Magic game.#Planechase 2012")
+'			VpTxt.WriteLine("pegase#PG#Pégase#Pégase###1#1#W#02/03/2006 00:00:00##600#236#0#0#0#0#0#############Pégase est une édition particulière de Magic, car éditée en collaboration entre Wizard of The Coast et Hachette. Les collectionneurs sont ainsi invités à construire 10 decks (Rats, Elves, Spirits, Slivers, Ninjas, Zombies, Angels, Wizards, Berserk et Thallids) au fur et à mesure de leurs passages chez leur marchand de journaux. Les publications s'étendent du 2 mars 2006 au 3 juillet 2007. Pégase n'est disponible qu'en français et en italien.#Pégase")
 			VpTxt.Flush
 			VpTxt.Close
 			If Me.btCancel.Tag Then
@@ -1766,7 +1850,12 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuPricesUpdateClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.UpdatePrices
+			Call Me.UpdatePrices(True)
+		End If
+	End Sub
+	Sub MnuPricesUpdateListeClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.UpdatePrices(False)
 		End If
 	End Sub
 	Sub MnuPricesHistoryAddClick(sender As Object, e As EventArgs)
@@ -1814,9 +1903,19 @@ Public Partial Class MainForm
 			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select Autorisations.Title From Autorisations Where Card.Title = Autorisations.Title) Order By Card.Title Asc;")
 		End If
 	End Sub
+	Sub MnuCardsExtractDiff5Click(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.ExtractCardsPricesAborted
+		End If
+	End Sub
 	Sub MnuCardsAutClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.UpdateAutorisations
+			Call Me.UpdateAutorisations(True)
+		End If
+	End Sub
+	Sub MnuCardsAutListeClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.UpdateAutorisations(False)
 		End If
 	End Sub
 	Sub WbMVDocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)

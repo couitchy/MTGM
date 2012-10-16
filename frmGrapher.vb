@@ -88,11 +88,13 @@ Public Partial Class frmGrapher
 	Private Function GetExtremum(VpMaximum As Boolean) As Single
 	Dim VpExtremum As Single = If(VpMaximum, Single.MinValue, Single.MaxValue)
 		For Each VpPlot As clsGrapherSettings In VmPlots
-			For Each VpY As Single In VpPlot.RefPlot.DataSource
-				If (VpY > VpExtremum And VpMaximum) Or (VpY < VpExtremum And Not VpMaximum) Then
-					VpExtremum = VpY
-				End If
-			Next VpY
+			If VpPlot.myVisible
+				For Each VpY As Single In VpPlot.RefPlot.DataSource
+					If (VpY > VpExtremum And VpMaximum) Or (VpY < VpExtremum And Not VpMaximum) Then
+						VpExtremum = VpY
+					End If
+				Next VpY
+			End If
 		Next VpPlot		
 		Return VpExtremum
 	End Function
