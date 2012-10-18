@@ -30,6 +30,7 @@ Public Partial Class frmExport
 	Private VmMustReload As Boolean = False	'Rechargement des menus obligatoires dans le père
 	Private VmFormat As clsModule.eFormat
 	Private VmOwner As MainForm
+	Private VmMWSTags As New Hashtable
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmOwner = VpOwner
@@ -99,6 +100,7 @@ Public Partial Class frmExport
 	Dim VpLog As StreamWriter
 	Dim VpConverted As StreamWriter
 	Dim VpStrs(0 To 1) As String
+	Dim VpStr As String
 	Dim VpId As Integer
 	Dim VpSQL As String
 	Dim VpO As Object
@@ -227,6 +229,47 @@ Public Partial Class frmExport
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
 				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtM, clsModule.CgFExtO), VpSource, False)
+			'** Gestion format Magic Workstation **
+			Case clsModule.CgFExtW.ToLower
+				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgPicLogExt))
+				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgFExtO))
+				While Not VpIn.EndOfStream
+					VpStr = VpIn.ReadLine
+					If VpStr.Contains("[") Then
+						VpQte = CInt(Val(VpStr.Substring(0, VpStr.IndexOf("["))))
+						VpEdition = VpStr.Substring(VpStr.IndexOf("[") + 1)
+						VpEdition = VpEdition.Substring(0, VpEdition.IndexOf("]"))
+						VpEdition = Me.GetMWSSerieTag(VpEdition, True)
+						VpName = VpStr.Substring(VpStr.IndexOf("]") + 1).Trim
+						'Exact match
+						VgDBCommand.CommandText = "Select EncNbr From Card Where Title = '" + VpName.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
+						VpO = VgDBCommand.ExecuteScalar
+						If Not VpO Is Nothing Then
+							VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+						Else
+							VpNeedLog = True
+							'Partial match
+							VgDBCommand.CommandText = "Select EncNbr From Card Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And Series = '" + VpEdition + "';"
+							VpO = VgDBCommand.ExecuteScalar
+							If Not VpO Is Nothing Then
+								VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+							Else
+								VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+							End If
+						End If
+					End If
+				End While
+				VpConverted.Close
+				VpLog.Close
+				VpIn.Close
+				If VpNeedLog Then
+					If clsModule.ShowQuestion("Certaines cartes n'ont pas été trouvées..." + vbCrLf + "Voulez-vous afficher le journal ?") = System.Windows.Forms.DialogResult.Yes Then
+						Process.Start(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgPicLogExt))
+					End If
+				End If
+				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
+				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgFExtO), VpSource, False)
 			Case Else
 				Call clsModule.ShowWarning("Format non pris en charge...")
 		End Select
@@ -245,136 +288,94 @@ Public Partial Class frmExport
 				Return ""
 		End Select
 	End Function
-	Private Function GetMWSSerieTag(VpSerie As String) As String
-		Select Case VpSerie
-			Case "1E"
-				Return "10E"
-			Case "AL"
-				Return "A"
-			Case "AC"
-				Return "AL"
-			Case "SL"
-				Return "ALA"
-			Case "AR"
-				Return "ARB"
-			Case "BE"
-				Return "B"
-			Case "BT"
-				Return "BD"
-			Case "BK"
-				Return "BOK"
-			Case "CK"
-				Return "CHK"
-			Case "CT"
-				Return "CST"
-			Case "DI"
-				Return "DIS"
-			Case "ET"
-				Return "EVE"
-			Case "FS"
-				Return "FUT"
-			Case "HM"
-				Return "HL"
-			Case "IV"
-				Return "IN"
-			Case "IN"
-				Return "ISD"
-			Case "LW"
-				Return "LRW"
-			Case "M1"
-				Return "M10"
-			Case "M2"
-				Return "M11"
-			Case "M3"
-				Return "M12"
-			Case "M4"
-				Return "M13"
-			Case "MR"
-				Return "MI"
-			Case "MT"
-				Return "MOR"
-			Case "MD"
-				Return "MR"
-			Case "NP"
-				Return "NPH"
-			Case "PC"
-				Return "PLC"
-			Case "RV"
-				Return "R"
-			Case "RA"
-				Return "RAV"
-			Case "RI"
-				Return "ROE"
-			Case "SM"
-				Return "SHM"
-			Case "SK"
-				Return "SOK"
-			Case "SD"
-				Return "SOM"
-			Case "S1"
-				Return "ST"
-			Case "TP"
-				Return "TE"
-			Case "TD"
-				Return "TSB"
-			Case "TS"
-				Return "TSP"
-			Case "UN"
-				Return "U"
-			Case "VS"
-				Return "VI"
-			Case "WW"
-				Return "WWK"
-			Case "YR"
-				Return "AVR"
-			Case "ZK"
-				Return "ZEN"
-			Case "D1"
-				Return "DDC"
-			Case "D2"
-				Return "DDF"
-			Case "D3"
-				Return "EVG"
-			Case "D4"
-				Return "DDD"
-			Case "D5"
-				Return "DD2"
-			Case "D6"
-				Return "DDE"
-			Case "D7"
-				Return "DDG"
-			Case "D8"
-				Return "DDH"
-			Case "D9"
-				Return "DDI"
-			Case "V1"
-				Return "DRB"
-			Case "V2"
-				Return "V09"
-			Case "V3"
-				Return "V10"
-			Case "V4"
-				Return "V11"
-			Case "LG"
-				Return "LE"
-			Case "LE"
-				Return "LG"
-			Case "P1"
-				Return "PT"
-			Case "CF"
-				Return "CFX"
-			Case "RR"
-				Return "RTR"
-			Case Else
+	Private Function GetMWSSerieTag(VpSerie As String, Optional VpReverse As Boolean = False) As String
+		With VmMWSTags
+			'Remplit une seule fois la table de correspondance des tags d'édition MTGM<=>MWS
+			If .Count = 0 Then
+				.Add("1E", "10E")
+				.Add("AL", "A")
+				.Add("AC", "AL")
+				.Add("SL", "ALA")
+				.Add("AR", "ARB")
+				.Add("BE", "B")
+				.Add("BT", "BD")
+				.Add("BK", "BOK")
+				.Add("CK", "CHK")
+				.Add("CT", "CST")
+				.Add("DI", "DIS")
+				.Add("ET", "EVE")
+				.Add("FS", "FUT")
+				.Add("HM", "HL")
+				.Add("IV", "IN")
+				.Add("IN", "ISD")
+				.Add("LW", "LRW")
+				.Add("M1", "M10")
+				.Add("M2", "M11")
+				.Add("M3", "M12")
+				.Add("M4", "M13")
+				.Add("MR", "MI")
+				.Add("MT", "MOR")
+				.Add("MD", "MR")
+				.Add("NP", "NPH")
+				.Add("PC", "PLC")
+				.Add("RV", "R")
+				.Add("RA", "RAV")
+				.Add("RI", "ROE")
+				.Add("SM", "SHM")
+				.Add("SK", "SOK")
+				.Add("SD", "SOM")
+				.Add("S1", "ST")
+				.Add("TP", "TE")
+				.Add("TD", "TSB")
+				.Add("TS", "TSP")
+				.Add("UN", "U")
+				.Add("VS", "VI")
+				.Add("WW", "WWK")
+				.Add("YR", "AVR")
+				.Add("ZK", "ZEN")
+				.Add("D1", "DDC")
+				.Add("D2", "DDF")
+				.Add("D3", "EVG")
+				.Add("D4", "DDD")
+				.Add("D5", "DD2")
+				.Add("D6", "DDE")
+				.Add("D7", "DDG")
+				.Add("D8", "DDH")
+				.Add("D9", "DDI")
+				.Add("V1", "DRB")
+				.Add("V2", "V09")
+				.Add("V3", "V10")
+				.Add("V4", "V11")
+				.Add("LG", "LE")
+				.Add("LE", "LG")
+				.Add("P1", "PT")
+				.Add("CF", "CFX")
+				.Add("RR", "RTR")
+			End If
+			'Conversion MTGM => MWS
+			If Not VpReverse Then
+				If .Contains(VpSerie) Then
+					Return .Item(VpSerie)
+				Else
+					Return VpSerie
+				End If
+			'Conversion MWS => MTGM
+			Else
+				For Each VpItem As String In .Keys
+					If .Item(VpItem) = VpSerie Then
+						Return VpItem
+					End If
+				Next VpItem
 				Return VpSerie
-		End Select
+			End If
+		End With
 	End Function
 	Public Sub InitImport(VpFile As String)
 		Me.grpImport.Visible = True
 		Me.grpExport.Visible = False
 		Me.txtFileImp.Text = VpFile
 		Me.txtSourceImp.Text = Me.txtFileImp.Text.Substring(Me.txtFileImp.Text.LastIndexOf("\") + 1)
-		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "").Replace(clsModule.CgFExtO, "").Replace(clsModule.CgFExtM, "")
+		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "").Replace(clsModule.CgFExtO, "").Replace(clsModule.CgFExtM, "").Replace(clsModule.CgFExtW, "")
 	End Sub
 	Sub CmdExportClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Me.lstchkSources.CheckedItems.Count > 0 Then

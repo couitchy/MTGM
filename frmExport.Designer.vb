@@ -37,6 +37,11 @@ Partial Class frmExport
 		Me.dlgBrowser = New System.Windows.Forms.FolderBrowserDialog
 		Me.cbarImpExp = New TD.SandBar.ContainerBar
 		Me.pnlImpExp = New TD.SandBar.ContainerBarClientPanel
+		Me.grpExport = New System.Windows.Forms.GroupBox
+		Me.cboFormat = New System.Windows.Forms.ComboBox
+		Me.lblFormat = New System.Windows.Forms.Label
+		Me.cmdExport = New System.Windows.Forms.Button
+		Me.lstchkSources = New System.Windows.Forms.CheckedListBox
 		Me.grpImport = New System.Windows.Forms.GroupBox
 		Me.lstImp = New System.Windows.Forms.ListBox
 		Me.optImpAdd = New System.Windows.Forms.RadioButton
@@ -46,18 +51,13 @@ Partial Class frmExport
 		Me.txtFileImp = New System.Windows.Forms.TextBox
 		Me.lblImp = New System.Windows.Forms.Label
 		Me.cmdImport = New System.Windows.Forms.Button
-		Me.grpExport = New System.Windows.Forms.GroupBox
-		Me.lblFormat = New System.Windows.Forms.Label
-		Me.cmdExport = New System.Windows.Forms.Button
-		Me.lstchkSources = New System.Windows.Forms.CheckedListBox
 		Me.btImport = New TD.SandBar.ButtonItem
 		Me.btExport = New TD.SandBar.ButtonItem
 		Me.dlgFileBrowser = New System.Windows.Forms.OpenFileDialog
-		Me.cboFormat = New System.Windows.Forms.ComboBox
 		Me.cbarImpExp.SuspendLayout
 		Me.pnlImpExp.SuspendLayout
-		Me.grpImport.SuspendLayout
 		Me.grpExport.SuspendLayout
+		Me.grpImport.SuspendLayout
 		Me.SuspendLayout
 		'
 		'cbarImpExp
@@ -87,6 +87,62 @@ Partial Class frmExport
 		Me.pnlImpExp.Name = "pnlImpExp"
 		Me.pnlImpExp.Size = New System.Drawing.Size(324, 186)
 		Me.pnlImpExp.TabIndex = 0
+		'
+		'grpExport
+		'
+		Me.grpExport.BackColor = System.Drawing.Color.Transparent
+		Me.grpExport.Controls.Add(Me.cboFormat)
+		Me.grpExport.Controls.Add(Me.lblFormat)
+		Me.grpExport.Controls.Add(Me.cmdExport)
+		Me.grpExport.Controls.Add(Me.lstchkSources)
+		Me.grpExport.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.grpExport.Location = New System.Drawing.Point(0, 0)
+		Me.grpExport.Name = "grpExport"
+		Me.grpExport.Size = New System.Drawing.Size(324, 186)
+		Me.grpExport.TabIndex = 0
+		Me.grpExport.TabStop = false
+		Me.grpExport.Visible = false
+		'
+		'cboFormat
+		'
+		Me.cboFormat.FormattingEnabled = true
+		Me.cboFormat.Items.AddRange(New Object() {"MTGM v2 (*.dk2)", "MTGM (*.dck)", "Apprentice (*.dec)", "Magic Workstation (*.mwDeck)"})
+		Me.cboFormat.Location = New System.Drawing.Point(109, 133)
+		Me.cboFormat.Name = "cboFormat"
+		Me.cboFormat.Size = New System.Drawing.Size(212, 21)
+		Me.cboFormat.TabIndex = 11
+		Me.cboFormat.Text = "MTGM v2 (*.dk2)"
+		'
+		'lblFormat
+		'
+		Me.lblFormat.Dock = System.Windows.Forms.DockStyle.Left
+		Me.lblFormat.Location = New System.Drawing.Point(3, 125)
+		Me.lblFormat.Name = "lblFormat"
+		Me.lblFormat.Size = New System.Drawing.Size(100, 35)
+		Me.lblFormat.TabIndex = 10
+		Me.lblFormat.Text = "Format de sortie :"
+		Me.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+		'
+		'cmdExport
+		'
+		Me.cmdExport.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.cmdExport.Location = New System.Drawing.Point(3, 160)
+		Me.cmdExport.Name = "cmdExport"
+		Me.cmdExport.Size = New System.Drawing.Size(318, 23)
+		Me.cmdExport.TabIndex = 6
+		Me.cmdExport.Text = "Exporter"
+		Me.cmdExport.UseVisualStyleBackColor = true
+		AddHandler Me.cmdExport.Click, AddressOf Me.CmdExportClick
+		'
+		'lstchkSources
+		'
+		Me.lstchkSources.CheckOnClick = true
+		Me.lstchkSources.Dock = System.Windows.Forms.DockStyle.Top
+		Me.lstchkSources.FormattingEnabled = true
+		Me.lstchkSources.Location = New System.Drawing.Point(3, 16)
+		Me.lstchkSources.Name = "lstchkSources"
+		Me.lstchkSources.Size = New System.Drawing.Size(318, 109)
+		Me.lstchkSources.TabIndex = 5
 		'
 		'grpImport
 		'
@@ -184,52 +240,6 @@ Partial Class frmExport
 		Me.cmdImport.UseVisualStyleBackColor = true
 		AddHandler Me.cmdImport.Click, AddressOf Me.CmdImportClick
 		'
-		'grpExport
-		'
-		Me.grpExport.BackColor = System.Drawing.Color.Transparent
-		Me.grpExport.Controls.Add(Me.cboFormat)
-		Me.grpExport.Controls.Add(Me.lblFormat)
-		Me.grpExport.Controls.Add(Me.cmdExport)
-		Me.grpExport.Controls.Add(Me.lstchkSources)
-		Me.grpExport.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.grpExport.Location = New System.Drawing.Point(0, 0)
-		Me.grpExport.Name = "grpExport"
-		Me.grpExport.Size = New System.Drawing.Size(324, 186)
-		Me.grpExport.TabIndex = 0
-		Me.grpExport.TabStop = false
-		Me.grpExport.Visible = false
-		'
-		'lblFormat
-		'
-		Me.lblFormat.Dock = System.Windows.Forms.DockStyle.Left
-		Me.lblFormat.Location = New System.Drawing.Point(3, 125)
-		Me.lblFormat.Name = "lblFormat"
-		Me.lblFormat.Size = New System.Drawing.Size(100, 35)
-		Me.lblFormat.TabIndex = 10
-		Me.lblFormat.Text = "Format de sortie :"
-		Me.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-		'
-		'cmdExport
-		'
-		Me.cmdExport.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdExport.Location = New System.Drawing.Point(3, 160)
-		Me.cmdExport.Name = "cmdExport"
-		Me.cmdExport.Size = New System.Drawing.Size(318, 23)
-		Me.cmdExport.TabIndex = 6
-		Me.cmdExport.Text = "Exporter"
-		Me.cmdExport.UseVisualStyleBackColor = true
-		AddHandler Me.cmdExport.Click, AddressOf Me.CmdExportClick
-		'
-		'lstchkSources
-		'
-		Me.lstchkSources.CheckOnClick = true
-		Me.lstchkSources.Dock = System.Windows.Forms.DockStyle.Top
-		Me.lstchkSources.FormattingEnabled = true
-		Me.lstchkSources.Location = New System.Drawing.Point(3, 16)
-		Me.lstchkSources.Name = "lstchkSources"
-		Me.lstchkSources.Size = New System.Drawing.Size(318, 109)
-		Me.lstchkSources.TabIndex = 5
-		'
 		'btImport
 		'
 		Me.btImport.Checked = true
@@ -246,18 +256,8 @@ Partial Class frmExport
 		'dlgFileBrowser
 		'
 		Me.dlgFileBrowser.Filter = "Fichiers de deck v2 (*.dk2) | *.dk2|Fichiers de deck (*.dck) | *.dck|Magic Master"& _ 
-		" deck (*.xml) | *.xml"
+		" deck (*.xml) | *.xml|Magic Workstation (*.mwDeck) | *.mwDeck"
 		Me.dlgFileBrowser.Title = "Sélectionner le fichier à importer"
-		'
-		'cboFormat
-		'
-		Me.cboFormat.FormattingEnabled = true
-		Me.cboFormat.Items.AddRange(New Object() {"MTGM v2 (*.dk2)", "MTGM (*.dck)", "Apprentice (*.dec)", "Magic Workstation (*.mwDeck)"})
-		Me.cboFormat.Location = New System.Drawing.Point(109, 133)
-		Me.cboFormat.Name = "cboFormat"
-		Me.cboFormat.Size = New System.Drawing.Size(212, 21)
-		Me.cboFormat.TabIndex = 11
-		Me.cboFormat.Text = "MTGM v2 (*.dk2)"
 		'
 		'frmExport
 		'
@@ -272,9 +272,9 @@ Partial Class frmExport
 		AddHandler FormClosing, AddressOf Me.FrmExportFormClosing
 		Me.cbarImpExp.ResumeLayout(false)
 		Me.pnlImpExp.ResumeLayout(false)
+		Me.grpExport.ResumeLayout(false)
 		Me.grpImport.ResumeLayout(false)
 		Me.grpImport.PerformLayout
-		Me.grpExport.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
 	Private cboFormat As System.Windows.Forms.ComboBox

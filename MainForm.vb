@@ -1118,6 +1118,9 @@ Public Partial Class MainForm
 						VpChildTag.Value2 = .GetString(2)
 						'Flag double carte
 						VpChildTag.Value3 = .GetBoolean(3)
+						If .GetBoolean(3) Then
+							VpChild.NodeFont = New Font(Me.tvwExplore.Font, FontStyle.Bold)
+						End If
 						VpChild.Text = VpChildTag.Value
 					End If
 					'Ajout effectif
