@@ -1145,7 +1145,7 @@ Public Partial Class MainForm
 				Return VpField + " = '" + VpValue + "' And "
 		End Select
 	End Function
-	Public Function Restriction(Optional VpTextMode As Boolean = False, Optional VpIncludeNull As Boolean = False) As String
+	Public Function Restriction(Optional VpTextMode As Boolean = False) As String
 	'------------------------------------------------------------------------
 	'Retourne une clause de restriction pour n'afficher que les jeux demandés
 	'------------------------------------------------------------------------
@@ -1167,9 +1167,6 @@ Public Partial Class MainForm
 				End If
 			End If
 		Next VpItem
-		If VpIncludeNull Then
-			VpStr = VpStr + "GameID Is Null Or "
-		End If
 		'Retourne la restriction de manière textuelle (non pour une utilisation dans une requête)
 		If VpTextMode Then
 			Return VpStr
@@ -1298,24 +1295,27 @@ Public Partial Class MainForm
 	Dim VpSQLStockInfosCollecFoil As String	'Sous-table d'infos liées au stock dans la collection, en dissociant les cartes foils
 	Dim VpSQLColumnsRequired As String		'Colonnes communes demandées dans le résultat final
 	Dim VpSQLTitleCriteria As String		'Clause sur le nom de la carte
-	Dim VpJointure As String
+	Dim VpSQLSorting As String				'Critère de tri
+	Dim VpSQLJointure As String				'Type de jointure (Inner ou Left, selon qu'on veut tout afficher ou pas)
 	Dim VpIsCreature As Boolean
 	Dim VpSubType As String
 	Dim VpRow As Integer
 	Dim VpPrice As Single
 	Dim VpCellVisual As VisualModels.Common
 	Dim VpCellModel As DataModels.IDataModel
+	Dim VpCellBehavior As New BehaviorModels.CustomEvents
 		If MainForm.VgMe.IsMainReaderBusy Then
 			Call ShowWarning(CgErr3)
 		Else
 			'Préparation des requêtes
 			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)) As T1"
 			VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)) As T1"
-			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Group By GameID, EncNbr) As T2"
+			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Where " + Me.Restriction + "True Group By GameID, EncNbr) As T2"
 			VpSQLStockInfosCollecFoil = "(Select EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyCollection Group By EncNbr) As T2"
 			VpSQLColumnsRequired = "Select T1.Series, T1.Price, T1.PriceDate, T1.Rarity, T1.CardText, T1.Cost, T1.SeriesNM, T1.SeriesNM_FR, T1.FoilPrice, T1.FoilDate, T1.Rulings, T1.Release, T1.Artist"
 			VpSQLTitleCriteria = " Where T1.Title = '" + VpCard.Replace("'", "''") + "'"
-			VpJointure = If(Me.btShowAll.Checked Or VpTransformed, " Left", " Inner")
+			VpSQLSorting = " Order By T1.Release"
+			VpSQLJointure = If(Me.btShowAll.Checked Or VpTransformed, " Left", " Inner")
 			'Finalisation de la construction des requêtes ; 12 possibilités selon que :
 			'- type de source :
 			'	* recherche
@@ -1327,18 +1327,16 @@ Public Partial Class MainForm
 				VpSQLForCreatures = VpSQLColumnsRequired + ", T1.SubType, T1.SubTypeVF, T1.Tough, T1.Power From " + VpSQLGeneralCreatures + VpSQLTitleCriteria
 				VpSQLForAll = VpSQLColumnsRequired + " From " + VpSQLGeneralAll + VpSQLTitleCriteria
 			Else
-				VpSQLForCreatures = VpSQLColumnsRequired + ", T1.SubType, T1.SubTypeVF, T1.Tough, T1.Power, T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralCreatures + VpJointure + " Join " + If(VmDeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr" + VpSQLTitleCriteria + " And "
-				VpSQLForAll = VpSQLColumnsRequired + ", T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralAll + VpJointure + " Join " + If(VmDeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr Where T1.Title = '" + VpCard.Replace("'", "''") + "' And "
+				VpSQLForCreatures = VpSQLColumnsRequired + ", T1.SubType, T1.SubTypeVF, T1.Tough, T1.Power, T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralCreatures + VpSQLJointure + " Join " + If(VmDeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr" + VpSQLTitleCriteria
+				VpSQLForAll = VpSQLColumnsRequired + ", T2.MyItems, T2.MyItemsFoil From " + VpSQLGeneralAll + VpSQLJointure + " Join " + If(VmDeckMode, VpSQLStockInfosDecksFoil, VpSQLStockInfosCollecFoil) +  " On T1.EncNbr = T2.EncNbr" + VpSQLTitleCriteria
 			End If
-			VpSQLForCreatures = VpSQLForCreatures + Me.Restriction(, True)
-			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQLForCreatures, , " Order By T1.Release")
+			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQLForCreatures, , VpSQLSorting)
 			VgDBReader = VgDBCommand.ExecuteReader
 			'S'il n'y a pas de réponse, c'est que ce n'est pas une créature, on supprime donc les champs force et endurance et on suppose que c'est un sort
 			If Not VgDBReader.HasRows Then
 				VpIsCreature = False
 				VgDBReader.Close
-				VpSQLForAll = VpSQLForAll + Me.Restriction(, True)
-				VgDBCommand.CommandText = clsModule.TrimQuery(VpSQLForAll, , " Order By T1.Release")
+				VgDBCommand.CommandText = clsModule.TrimQuery(VpSQLForAll, , VpSQLSorting)
 				VgDBReader = VgDBCommand.ExecuteReader
 				'S'il n'y a encore pas de réponse, c'est que la carte a été supprimée dans l'intervalle
 				If Not VgDBReader.HasRows Then
@@ -1352,6 +1350,7 @@ Public Partial Class MainForm
 			'Nettoyage grilles
 			Call Me.ClearGrid(Me.grdPropCard)
 			Call Me.ClearGrid(Me.grdPropPicture)
+			AddHandler VpCellBehavior.FocusEntered, AddressOf CellFocusEntered
 			'Remplissage grilles
 			With VgDBReader
 				While .Read
@@ -1361,14 +1360,16 @@ Public Partial Class MainForm
 					Me.grdPropPicture.Rows.Insert(VpRow)
 					'Colonne série
 					Me.grdPropCard(VpRow, 0) = New Cells.Cell(.GetString(.GetOrdinal(If(Me.mnuCardsFR.Checked, "SeriesNM_FR", "SeriesNM"))))
+					Me.grdPropCard(VpRow, 0).Tag = .GetString(.GetOrdinal("Series"))
 					Me.grdPropPicture(VpRow, 0) = New Cells.Cell(CDate(.GetValue(.GetOrdinal("Release"))).Year)
-					VpCellVisual = New VisualModels.Common()
+					VpCellVisual = New VisualModels.Common
 					Try
 						VpCellVisual.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetString(.GetOrdinal("Series")) + CgIconsExt))
 					Catch
 						VpCellVisual.Image = Nothing
 					End Try
 					Me.grdPropCard(VpRow, 0).VisualModel = VpCellVisual
+					Me.grdPropCard(VpRow, 0).Behaviors.Add(VpCellBehavior)
 					Me.grdPropPicture(VpRow, 0).VisualModel = VpCellVisual
 					'Colonne illustrateur
 					Try
@@ -2168,6 +2169,12 @@ Public Partial Class MainForm
 				VpNode = VpNode.NextNode
 			End While
 			Return VpNode
+		End Get
+	End Property
+	Public ReadOnly Property CurrentCardTitle As String
+		Get
+		Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
+			Return If(Me.IsTransformed(VpNode), Me.picScanCard.Tag, VpNode.Tag.Value)
 		End Get
 	End Property
 	#End Region
@@ -3012,6 +3019,18 @@ Public Partial Class MainForm
 			End If
 		Else
 			Call clsModule.ShowWarning("Aucune version antérieure n'a été trouvée dans le répertoire d'installation...")
+		End If
+	End Sub
+	Sub CellFocusEntered(sender As Object, e As PositionEventArgs)
+	'--------------------------------------------------------------------------------------
+	'Ajuste l'édition courante (celle qui a été sélectionnée dans la grid par l'utilisteur)
+	'--------------------------------------------------------------------------------------
+	Dim VpCell As Cells.Cell = e.Cell
+	Dim VpEdition As String = VpCell.Tag
+		'Si on est en VO, il peut arriver que le texte change selon l'édition
+		If Not Me.mnuCardsFR.Checked Then
+			VgDBCommand.CommandText = "Select CardText From Card Where Title = '" + Me.CurrentCardTitle.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
+			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, VgDBCommand.ExecuteScalar.ToString, "")
 		End If
 	End Sub
 	Sub CellValidated(sender As Object, e As CellEventArgs)
