@@ -28,7 +28,7 @@ Public Partial Class frmXL
 	Private VmSource As String
 	Private VmRestriction As String
 	Private VmRestrictionTXT As String
-	Private VmBusy As Boolean = False	
+	Private VmBusy As Boolean = False
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmSource = VpOwner.MySource
@@ -102,13 +102,13 @@ Public Partial Class frmXL
 				.Name = VmRestrictionTXT
 				'En-têtes
 				If Me.chkHeaders.Checked Then
-					VpX = 1		
+					VpX = 1
 					'Quantité
 					.Cells(VpY, VpX) = "Quantité"
 					VpX = VpX + 1
 					'Nom
 					.Cells(VpY, VpX) = "Nom"
-					VpX = VpX + 1				
+					VpX = VpX + 1
 					'Type
 					If Me.chklstXL.GetItemChecked(7) Then
 						.Cells(VpY, VpX) = "Type"
@@ -152,10 +152,10 @@ Public Partial Class frmXL
 					'Texte
 					If Me.chklstXL.GetItemChecked(8) Then
 						.Cells(VpY, VpX) = "Texte descriptif"
-						VpX = VpX + 1						
+						VpX = VpX + 1
 					End If
 					.Cells(VpY, VpX).EntireRow.Font.Bold = True
-					VpY = VpY + 1				
+					VpY = VpY + 1
 				End If
 				'Eléments
 				For Each VpCur In VpElementsGroupes
@@ -248,9 +248,9 @@ Public Partial Class frmXL
 			Me.chkAllNone.CheckState = CheckState.Unchecked
 		Else
 			Me.chkAllNone.CheckState = CheckState.Indeterminate
-		End If		
-		VmBusy = False				
-	End Sub	
+		End If
+		VmBusy = False
+	End Sub
 	Private Sub CbarXLMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
 		VmCanClose = True
@@ -281,14 +281,14 @@ Public Partial Class frmXL
 	Sub BtColumnsActivate(sender As Object, e As EventArgs)
 		Me.grpColumns.Visible = True
 		Me.grpOptions.Visible = False
-	End Sub	
+	End Sub
 	Sub BtAdvanceActivate(sender As Object, e As EventArgs)
 		Me.grpColumns.Visible = False
 		Me.grpOptions.Visible = True
 	End Sub
 	Sub ChkAllNoneCheckedChanged(sender As Object, e As EventArgs)
 		If VmBusy Then Exit Sub
-		VmBusy = True		
+		VmBusy = True
 		For VpI As Integer = 0 To Me.chklstXL.Items.Count - 1
 			Me.chklstXL.SetItemChecked(VpI, Me.chkAllNone.Checked)
 		Next VpI
@@ -385,7 +385,7 @@ Public Class clsXLItem
 		Get
 			Return VmForceEndurance
 		End Get
-	End Property	
+	End Property
 	Public ReadOnly Property Invoc As String
 		Get
 			Return VmInvoc
@@ -420,5 +420,5 @@ Public Class clsXLItem
 		Get
 			Return VmCardText
 		End Get
-	End Property	
+	End Property
 End Class

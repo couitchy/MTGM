@@ -27,6 +27,9 @@ Public Partial Class frmUpdateContenu
 	Private VmMousePos As Point						'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False   		'Formulaire peut être fermé
 	Private VmNewContenu As List(Of clsMAJContenu)	'Eléments de mise à jour
+	Private VmBusy As Boolean
+	Private VmCancel As Boolean
+	Private VmAnswered As Boolean
 	Private VmPassiveUpdate As EgPassiveUpdate = EgPassiveUpdate.NotNow
 	Public Enum EgPassiveUpdate
 		NotNow = 0
@@ -275,7 +278,9 @@ Public Partial Class frmUpdateContenu
 	End Function
 	Sub CmdUpdateClick(sender As Object, e As EventArgs)
 		Me.cmdUpdate.Enabled = False
-		Me.prgWait.Style = ProgressBarStyle.Marquee
+		Me.IsBusy = True
+		VmCancel = False
+		VmAnswered = False
 		For Each VpItem As ListViewItem In Me.chklstContenus.CheckedItems
 			VpItem.ForeColor = Color.Blue
 			Application.DoEvents
@@ -286,10 +291,20 @@ Public Partial Class frmUpdateContenu
 				VpItem.ForeColor = Color.Red
 			End If
 			Application.DoEvents
+			If VmCancel Then
+				Exit For
+			Else
+				VmAnswered = False
+			End If
 		Next VpItem
-		Call VgOptions.SaveSettings
-		Me.prgWait.Style = ProgressBarStyle.Blocks
-		Call clsModule.ShowInformation("Opération terminée.")
+		If VmCancel Then
+			Me.IsBusy = False
+			Me.Close
+		Else
+			Call VgOptions.SaveSettings
+			Me.IsBusy = False
+			Call clsModule.ShowInformation("Opération terminée.")
+		End If
 	End Sub
 	Sub CbarUpdateMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
@@ -306,7 +321,15 @@ Public Partial Class frmUpdateContenu
 	End Sub
 	Sub CbarUpdateVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
 		If VmCanClose Then
-			Me.Close
+			If Me.IsBusy Then
+				Me.cbarUpdate.Show
+				If Not VmAnswered Then
+					VmCancel = ( clsModule.ShowQuestion("Voulez-vous annuler les mises à jour de contenu ?" + vbCrLf + "L'annulation aura lieu à la fin de l'opération en cours...") = System.Windows.Forms.DialogResult.Yes )
+					VmAnswered = True
+				End If
+			Else
+				Me.Close
+			End If
 		End If
 	End Sub
 	Sub FrmUpdateContenuActivated(sender As Object, e As EventArgs)
@@ -341,6 +364,15 @@ Public Partial Class frmUpdateContenu
 		End Get
 		Set (VpPassiveUpdate As EgPassiveUpdate)
 			VmPassiveUpdate = VpPassiveUpdate
+		End Set
+	End Property
+	Public Property IsBusy As Boolean
+		Get
+			Return VmBusy
+		End Get
+		Set (VpBusy As Boolean)
+			VmBusy = VpBusy
+			Me.prgWait.Style = If(VpBusy, ProgressBarStyle.Marquee, ProgressBarStyle.Blocks)
 		End Set
 	End Property
 End Class
