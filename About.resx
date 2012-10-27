@@ -120,15 +120,21 @@
   <data name="lbl2.Text" xml:space="preserve">
     <value>Ce logiciel est protégé par la loi relative au droit d'auteur et par les conventions internationales. Toute décompilation, modification, altération, partielle ou totale du logiciel, par quelque moyen que ce soit, est strictement interdite. Toute personne ne respectant pas ces dispositions se rendra coupable du délit de contrefaçon et sera passible des sanctions pénales prévues par la loi. 
 
-Vous êtes en revanche libre d'utiliser ce logiciel gratuitement, de le recommander et/ou de le diffuser à vos proches si vous en êtes satisfait. Pour une diffusion hors d'un cadre restreint (site Web par exemple), il conviendra de contacter l'auteur.
+Vous êtes en revanche libre d'utiliser ce logiciel gratuitement. Si vous souhaitez le diffuser hors d'un cadre restreint (site Web par exemple), il conviendra de contacter l'auteur.
 
-Développement réalisé par Couitchy et compilé sous Microsoft .NET Framework 2.0</value>
+Tous les textes et les visuels des cartes, les logos des éditions et des symboles Magic: the Gathering © sont des marques déposées et la propriété de Wizards of the Coast (WoC), Hasbro, LLC. Magic the Gathering Manager n'est ni approuvé, ni supporté, ni affilié d'aucune manière que ce soit à WoC.</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Le développeur ne saurait être tenu responsable de problèmes sur la configuration des utilisateurs survenus après l'installation du logiciel et dont la coïncidence serait vraisemblablement fortuite.
 
+Compilation : Microsoft .NET Framework 2.0
+http://www.microsoft.com
 
-       Pour toute suggestion, remarque, critique, n'hésitez pas :</value>
+Environnement de développement : SharpDevelop 3.2 @ic#code
+http://www.icsharpcode.net
+
+Développement réalisé par Couitchy.
+Pour toute suggestion, remarque, critique, n'hésitez pas :</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Si le logiciel vous plaît et que le coeur vous en dit (mais sentez-vous très libre), vous pouvez cliquer ci-dessous pour effectuer un don à l'auteur.

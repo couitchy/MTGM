@@ -103,6 +103,8 @@ Public Partial Class frmSearch
 	'Effectue la requête de l'utilisateur dans la base de données
 	'------------------------------------------------------------
 	Dim VpSQL As String
+	Dim VpSQL1 As String
+	Dim VpSQL2 As String
 	Dim VpEntry As String
 	Dim VpCriteria As String
 		'Gestion des différents modes de recherche
@@ -124,13 +126,29 @@ Public Partial Class frmSearch
 		'Recherche restreinte aux cartes possédées
 		If Me.chkRestriction.Checked Then
 			'Possédées dans la collection
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyCollection On MyCollection.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Union "
+			VpSQL1 = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyCollection On MyCollection.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Group By Card.Title, CardFR.TitleFR, Card.EncNbr"
 			'Possédées dans les decks
-			VpSQL = VpSQL + "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyGames On MyGames.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria
+			VpSQL2 = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyGames On MyGames.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Group By Card.Title, CardFR.TitleFR, Card.EncNbr"
+			If Me.chkRestrictionMyCollection.Checked And Me.chkRestrictionMyGames.Checked Then
+				VpSQL = VpSQL1 + " Union " + VpSQL2
+			ElseIf Me.chkRestrictionMyCollection.Checked Then
+				VpSQL = VpSQL1
+			Else
+				VpSQL = VpSQL2
+			End If
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche restreinte aux cartes non possédées
 		ElseIf Me.chkRestrictionInv.Checked Then
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " And Card.EncNbr Not In (Select EncNbr From MyCollection) And Card.EncNbr Not In (Select EncNbr From MyGames)"
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria
+			VpSQL1 = " And Card.EncNbr Not In (Select EncNbr From MyCollection)"
+			VpSQL2 = " And Card.EncNbr Not In (Select EncNbr From MyGames)"
+			If Me.chkRestrictionMyCollection.Checked And Me.chkRestrictionMyGames.Checked Then
+				VpSQL = VpSQL + VpSQL1 + VpSQL2
+			ElseIf Me.chkRestrictionMyCollection.Checked Then
+				VpSQL = VpSQL + VpSQL1
+			Else
+				VpSQL = VpSQL + VpSQL2
+			End If
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche étendue (toutes les cartes de la base de données)
 		Else
@@ -206,10 +224,6 @@ Public Partial Class frmSearch
 	Dim VpType As Integer = Me.cboSearchType.SelectedIndex
 		Me.lstResult.Items.Clear
 		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
-		If Me.chkRestriction.Checked And Not VmOwner.IsSourcePresent Then
-			Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
-			Exit Sub
-		End If
 		'Mémorisation requête
 		If Not Me.cboFind.Items.Contains(Me.cboFind.Text) AndAlso Me.cboFind.Text.Trim <> "" Then
 			Me.cboFind.Items.Insert(0, Me.cboFind.Text)
@@ -233,7 +247,7 @@ Public Partial Class frmSearch
 			Case Else
 		End Select
 		'Nombre de réponses
-		Me.lblOccur.Text = Me.lstResult.Items.Count.ToString + " occurence(s) trouvée(s)"
+		Me.lblOccur.Text = Me.lstResult.Items.Count.ToString + " résultat(s) trouvé(s)"
 		'Chargement éventuel dans le treeview
 		If Me.chkShowExternal.Checked Then
 			Call VmOwner.LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, clsModule.CgFromSearch + " (" + Me.cboFind.Tag +")")
@@ -278,6 +292,11 @@ Public Partial Class frmSearch
 		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		If Me.chkRestriction.Checked Then
 			Me.chkRestrictionInv.Checked = False
+			Me.chkRestrictionMyCollection.Enabled = True
+			Me.chkRestrictionMyGames.Enabled = True
+		ElseIf Not Me.chkRestrictionInv.Checked Then
+			Me.chkRestrictionMyCollection.Enabled = False
+			Me.chkRestrictionMyGames.Enabled = False
 		End If
 	End Sub
 	Sub ChkRestrictionInvCheckedChanged(sender As Object, e As EventArgs)
@@ -285,6 +304,21 @@ Public Partial Class frmSearch
 		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		If Me.chkRestrictionInv.Checked Then
 			Me.chkRestriction.Checked = False
+			Me.chkRestrictionMyCollection.Enabled = True
+			Me.chkRestrictionMyGames.Enabled = True
+		ElseIf Not Me.chkRestriction.Checked Then
+			Me.chkRestrictionMyCollection.Enabled = False
+			Me.chkRestrictionMyGames.Enabled = False
+		End If
+	End Sub
+	Sub ChkRestrictionMyCollectionCheckedChanged(sender As Object, e As EventArgs)
+		If Not Me.chkRestrictionMyCollection.Checked Then
+			Me.chkRestrictionMyGames.Checked = True
+		End If
+	End Sub
+	Sub ChkRestrictionMyGamesCheckedChanged(sender As Object, e As EventArgs)
+		If Not Me.chkRestrictionMyGames.Checked Then
+			Me.chkRestrictionMyCollection.Checked = True
 		End If
 	End Sub
 	Sub ChkShowExternalCheckedChanged(sender As Object, e As EventArgs)

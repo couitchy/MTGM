@@ -32,6 +32,7 @@ Public Partial Class About
 		Me.txtVer.Text = Application.ProductVersion.Substring(0, 8)
 		Me.txtDateCompile.Text = System.IO.File.GetLastWriteTimeUtc(Process.GetCurrentProcess().MainModule.FileName).ToShortDateString
 		Me.txtCodeLines.Text = clsModule.CgCodeLines.ToString	
+		Me.txtNClasses.Text = clsModule.CGNClasses.ToString
 		If File.Exists(Windows.Forms.Application.StartupPath + clsModule.CgHSTFile) Then
 			VpHisto = New StreamReader(Windows.Forms.Application.StartupPath + clsModule.CgHSTFile, Encoding.Default)
 			Me.txtVersions.Text = VpHisto.ReadToEnd().Replace(vbLf, vbCrLf)

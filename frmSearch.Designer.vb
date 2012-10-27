@@ -37,18 +37,22 @@ Partial Class frmSearch
 		Me.cbarSearch = New TD.SandBar.ContainerBar
 		Me.pnlSearch = New TD.SandBar.ContainerBarClientPanel
 		Me.grpSearch = New System.Windows.Forms.GroupBox
+		Me.grpRestriction = New System.Windows.Forms.GroupBox
+		Me.chkRestrictionMyGames = New System.Windows.Forms.CheckBox
+		Me.chkRestrictionMyCollection = New System.Windows.Forms.CheckBox
+		Me.chkRestriction = New System.Windows.Forms.CheckBox
+		Me.chkRestrictionInv = New System.Windows.Forms.CheckBox
+		Me.grpOutput = New System.Windows.Forms.GroupBox
+		Me.chkShowExternal = New System.Windows.Forms.CheckBox
+		Me.chkClearPrev = New System.Windows.Forms.CheckBox
+		Me.chkMerge = New System.Windows.Forms.CheckBox
 		Me.picScanCard = New System.Windows.Forms.PictureBox
 		Me.chkSup = New System.Windows.Forms.CheckBox
 		Me.chkEq = New System.Windows.Forms.CheckBox
 		Me.chkInf = New System.Windows.Forms.CheckBox
-		Me.chkRestrictionInv = New System.Windows.Forms.CheckBox
 		Me.cmdClearSearches = New System.Windows.Forms.Button
 		Me.cboFind = New System.Windows.Forms.ComboBox
 		Me.lblOccur = New System.Windows.Forms.Label
-		Me.chkMerge = New System.Windows.Forms.CheckBox
-		Me.chkClearPrev = New System.Windows.Forms.CheckBox
-		Me.chkShowExternal = New System.Windows.Forms.CheckBox
-		Me.chkRestriction = New System.Windows.Forms.CheckBox
 		Me.cboSearchType = New System.Windows.Forms.ComboBox
 		Me.cmdGo = New System.Windows.Forms.Button
 		Me.lstResult = New System.Windows.Forms.ListBox
@@ -56,6 +60,8 @@ Partial Class frmSearch
 		Me.cbarSearch.SuspendLayout
 		Me.pnlSearch.SuspendLayout
 		Me.grpSearch.SuspendLayout
+		Me.grpRestriction.SuspendLayout
+		Me.grpOutput.SuspendLayout
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.imgSearch,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
@@ -71,7 +77,7 @@ Partial Class frmSearch
 		Me.cbarSearch.Location = New System.Drawing.Point(0, 0)
 		Me.cbarSearch.Movable = false
 		Me.cbarSearch.Name = "cbarSearch"
-		Me.cbarSearch.Size = New System.Drawing.Size(618, 356)
+		Me.cbarSearch.Size = New System.Drawing.Size(618, 400)
 		Me.cbarSearch.TabIndex = 7
 		Me.cbarSearch.Text = "Recherche avancée"
 		AddHandler Me.cbarSearch.VisibleChanged, AddressOf Me.CbarSearchVisibleChanged
@@ -84,24 +90,21 @@ Partial Class frmSearch
 		Me.pnlSearch.Controls.Add(Me.grpSearch)
 		Me.pnlSearch.Location = New System.Drawing.Point(2, 27)
 		Me.pnlSearch.Name = "pnlSearch"
-		Me.pnlSearch.Size = New System.Drawing.Size(614, 327)
+		Me.pnlSearch.Size = New System.Drawing.Size(614, 371)
 		Me.pnlSearch.TabIndex = 0
 		'
 		'grpSearch
 		'
 		Me.grpSearch.BackColor = System.Drawing.Color.Transparent
+		Me.grpSearch.Controls.Add(Me.grpRestriction)
+		Me.grpSearch.Controls.Add(Me.grpOutput)
 		Me.grpSearch.Controls.Add(Me.picScanCard)
 		Me.grpSearch.Controls.Add(Me.chkSup)
 		Me.grpSearch.Controls.Add(Me.chkEq)
 		Me.grpSearch.Controls.Add(Me.chkInf)
-		Me.grpSearch.Controls.Add(Me.chkRestrictionInv)
 		Me.grpSearch.Controls.Add(Me.cmdClearSearches)
 		Me.grpSearch.Controls.Add(Me.cboFind)
 		Me.grpSearch.Controls.Add(Me.lblOccur)
-		Me.grpSearch.Controls.Add(Me.chkMerge)
-		Me.grpSearch.Controls.Add(Me.chkClearPrev)
-		Me.grpSearch.Controls.Add(Me.chkShowExternal)
-		Me.grpSearch.Controls.Add(Me.chkRestriction)
 		Me.grpSearch.Controls.Add(Me.cboSearchType)
 		Me.grpSearch.Controls.Add(Me.cmdGo)
 		Me.grpSearch.Controls.Add(Me.lstResult)
@@ -109,13 +112,128 @@ Partial Class frmSearch
 		Me.grpSearch.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpSearch.Location = New System.Drawing.Point(0, 0)
 		Me.grpSearch.Name = "grpSearch"
-		Me.grpSearch.Size = New System.Drawing.Size(614, 327)
+		Me.grpSearch.Size = New System.Drawing.Size(614, 371)
 		Me.grpSearch.TabIndex = 0
 		Me.grpSearch.TabStop = false
 		'
+		'grpRestriction
+		'
+		Me.grpRestriction.Controls.Add(Me.chkRestrictionMyGames)
+		Me.grpRestriction.Controls.Add(Me.chkRestrictionMyCollection)
+		Me.grpRestriction.Controls.Add(Me.chkRestriction)
+		Me.grpRestriction.Controls.Add(Me.chkRestrictionInv)
+		Me.grpRestriction.Location = New System.Drawing.Point(31, 189)
+		Me.grpRestriction.Name = "grpRestriction"
+		Me.grpRestriction.Size = New System.Drawing.Size(328, 102)
+		Me.grpRestriction.TabIndex = 40
+		Me.grpRestriction.TabStop = false
+		'
+		'chkRestrictionMyGames
+		'
+		Me.chkRestrictionMyGames.AutoSize = true
+		Me.chkRestrictionMyGames.BackColor = System.Drawing.Color.Transparent
+		Me.chkRestrictionMyGames.Checked = true
+		Me.chkRestrictionMyGames.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkRestrictionMyGames.Enabled = false
+		Me.chkRestrictionMyGames.Location = New System.Drawing.Point(23, 82)
+		Me.chkRestrictionMyGames.Name = "chkRestrictionMyGames"
+		Me.chkRestrictionMyGames.Size = New System.Drawing.Size(99, 17)
+		Me.chkRestrictionMyGames.TabIndex = 29
+		Me.chkRestrictionMyGames.Text = "parmi les decks"
+		Me.chkRestrictionMyGames.UseVisualStyleBackColor = false
+		AddHandler Me.chkRestrictionMyGames.CheckedChanged, AddressOf Me.ChkRestrictionMyGamesCheckedChanged
+		'
+		'chkRestrictionMyCollection
+		'
+		Me.chkRestrictionMyCollection.AutoSize = true
+		Me.chkRestrictionMyCollection.BackColor = System.Drawing.Color.Transparent
+		Me.chkRestrictionMyCollection.Checked = true
+		Me.chkRestrictionMyCollection.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkRestrictionMyCollection.Enabled = false
+		Me.chkRestrictionMyCollection.Location = New System.Drawing.Point(23, 59)
+		Me.chkRestrictionMyCollection.Name = "chkRestrictionMyCollection"
+		Me.chkRestrictionMyCollection.Size = New System.Drawing.Size(110, 17)
+		Me.chkRestrictionMyCollection.TabIndex = 28
+		Me.chkRestrictionMyCollection.Text = "parmi la collection"
+		Me.chkRestrictionMyCollection.UseVisualStyleBackColor = false
+		AddHandler Me.chkRestrictionMyCollection.CheckedChanged, AddressOf Me.ChkRestrictionMyCollectionCheckedChanged
+		'
+		'chkRestriction
+		'
+		Me.chkRestriction.AutoSize = true
+		Me.chkRestriction.BackColor = System.Drawing.Color.Transparent
+		Me.chkRestriction.Location = New System.Drawing.Point(6, 13)
+		Me.chkRestriction.Name = "chkRestriction"
+		Me.chkRestriction.Size = New System.Drawing.Size(261, 17)
+		Me.chkRestriction.TabIndex = 19
+		Me.chkRestriction.Text = "Rechercher seulement dans les cartes possédées"
+		Me.chkRestriction.UseVisualStyleBackColor = false
+		AddHandler Me.chkRestriction.CheckedChanged, AddressOf Me.ChkRestrictionCheckedChanged
+		'
+		'chkRestrictionInv
+		'
+		Me.chkRestrictionInv.AutoSize = true
+		Me.chkRestrictionInv.BackColor = System.Drawing.Color.Transparent
+		Me.chkRestrictionInv.Location = New System.Drawing.Point(6, 36)
+		Me.chkRestrictionInv.Name = "chkRestrictionInv"
+		Me.chkRestrictionInv.Size = New System.Drawing.Size(282, 17)
+		Me.chkRestrictionInv.TabIndex = 27
+		Me.chkRestrictionInv.Text = "Rechercher seulement dans les cartes non possédées"
+		Me.chkRestrictionInv.UseVisualStyleBackColor = false
+		AddHandler Me.chkRestrictionInv.CheckedChanged, AddressOf Me.ChkRestrictionInvCheckedChanged
+		'
+		'grpOutput
+		'
+		Me.grpOutput.Controls.Add(Me.chkShowExternal)
+		Me.grpOutput.Controls.Add(Me.chkClearPrev)
+		Me.grpOutput.Controls.Add(Me.chkMerge)
+		Me.grpOutput.Location = New System.Drawing.Point(31, 288)
+		Me.grpOutput.Name = "grpOutput"
+		Me.grpOutput.Size = New System.Drawing.Size(328, 78)
+		Me.grpOutput.TabIndex = 39
+		Me.grpOutput.TabStop = false
+		'
+		'chkShowExternal
+		'
+		Me.chkShowExternal.AutoSize = true
+		Me.chkShowExternal.BackColor = System.Drawing.Color.Transparent
+		Me.chkShowExternal.Checked = true
+		Me.chkShowExternal.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkShowExternal.Location = New System.Drawing.Point(6, 11)
+		Me.chkShowExternal.Name = "chkShowExternal"
+		Me.chkShowExternal.Size = New System.Drawing.Size(206, 17)
+		Me.chkShowExternal.TabIndex = 20
+		Me.chkShowExternal.Text = "Charger les résultats dans l'explorateur"
+		Me.chkShowExternal.UseVisualStyleBackColor = false
+		AddHandler Me.chkShowExternal.CheckedChanged, AddressOf Me.ChkShowExternalCheckedChanged
+		'
+		'chkClearPrev
+		'
+		Me.chkClearPrev.AutoSize = true
+		Me.chkClearPrev.BackColor = System.Drawing.Color.Transparent
+		Me.chkClearPrev.Checked = true
+		Me.chkClearPrev.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkClearPrev.Location = New System.Drawing.Point(23, 34)
+		Me.chkClearPrev.Name = "chkClearPrev"
+		Me.chkClearPrev.Size = New System.Drawing.Size(164, 17)
+		Me.chkClearPrev.TabIndex = 21
+		Me.chkClearPrev.Text = "Effacer le contenu précédent"
+		Me.chkClearPrev.UseVisualStyleBackColor = false
+		'
+		'chkMerge
+		'
+		Me.chkMerge.AutoSize = true
+		Me.chkMerge.BackColor = System.Drawing.Color.Transparent
+		Me.chkMerge.Location = New System.Drawing.Point(23, 57)
+		Me.chkMerge.Name = "chkMerge"
+		Me.chkMerge.Size = New System.Drawing.Size(218, 17)
+		Me.chkMerge.TabIndex = 22
+		Me.chkMerge.Text = "Fusionner avec la recherche précédente"
+		Me.chkMerge.UseVisualStyleBackColor = false
+		'
 		'picScanCard
 		'
-		Me.picScanCard.Location = New System.Drawing.Point(390, 16)
+		Me.picScanCard.Location = New System.Drawing.Point(390, 43)
 		Me.picScanCard.Name = "picScanCard"
 		Me.picScanCard.Size = New System.Drawing.Size(207, 295)
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
@@ -160,18 +278,6 @@ Partial Class frmSearch
 		Me.chkInf.Visible = false
 		AddHandler Me.chkInf.CheckedChanged, AddressOf Me.ChkInfCheckedChanged
 		'
-		'chkRestrictionInv
-		'
-		Me.chkRestrictionInv.AutoSize = true
-		Me.chkRestrictionInv.BackColor = System.Drawing.Color.Transparent
-		Me.chkRestrictionInv.Location = New System.Drawing.Point(31, 215)
-		Me.chkRestrictionInv.Name = "chkRestrictionInv"
-		Me.chkRestrictionInv.Size = New System.Drawing.Size(282, 17)
-		Me.chkRestrictionInv.TabIndex = 27
-		Me.chkRestrictionInv.Text = "Rechercher seulement dans les cartes non possédées"
-		Me.chkRestrictionInv.UseVisualStyleBackColor = false
-		AddHandler Me.chkRestrictionInv.CheckedChanged, AddressOf Me.ChkRestrictionInvCheckedChanged
-		'
 		'cmdClearSearches
 		'
 		Me.cmdClearSearches.Image = CType(resources.GetObject("cmdClearSearches.Image"),System.Drawing.Image)
@@ -200,58 +306,8 @@ Partial Class frmSearch
 		Me.lblOccur.Name = "lblOccur"
 		Me.lblOccur.Size = New System.Drawing.Size(328, 17)
 		Me.lblOccur.TabIndex = 23
-		Me.lblOccur.Text = "0 occurence(s) trouvée(s)"
+		Me.lblOccur.Text = "0 résultat(s) trouvé(s)"
 		Me.lblOccur.TextAlign = System.Drawing.ContentAlignment.TopRight
-		'
-		'chkMerge
-		'
-		Me.chkMerge.AutoSize = true
-		Me.chkMerge.BackColor = System.Drawing.Color.Transparent
-		Me.chkMerge.Location = New System.Drawing.Point(48, 284)
-		Me.chkMerge.Name = "chkMerge"
-		Me.chkMerge.Size = New System.Drawing.Size(218, 17)
-		Me.chkMerge.TabIndex = 22
-		Me.chkMerge.Text = "Fusionner avec la recherche précédente"
-		Me.chkMerge.UseVisualStyleBackColor = false
-		'
-		'chkClearPrev
-		'
-		Me.chkClearPrev.AutoSize = true
-		Me.chkClearPrev.BackColor = System.Drawing.Color.Transparent
-		Me.chkClearPrev.Checked = true
-		Me.chkClearPrev.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.chkClearPrev.Location = New System.Drawing.Point(48, 261)
-		Me.chkClearPrev.Name = "chkClearPrev"
-		Me.chkClearPrev.Size = New System.Drawing.Size(164, 17)
-		Me.chkClearPrev.TabIndex = 21
-		Me.chkClearPrev.Text = "Effacer le contenu précédent"
-		Me.chkClearPrev.UseVisualStyleBackColor = false
-		'
-		'chkShowExternal
-		'
-		Me.chkShowExternal.AutoSize = true
-		Me.chkShowExternal.BackColor = System.Drawing.Color.Transparent
-		Me.chkShowExternal.Checked = true
-		Me.chkShowExternal.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.chkShowExternal.Location = New System.Drawing.Point(31, 238)
-		Me.chkShowExternal.Name = "chkShowExternal"
-		Me.chkShowExternal.Size = New System.Drawing.Size(206, 17)
-		Me.chkShowExternal.TabIndex = 20
-		Me.chkShowExternal.Text = "Charger les résultats dans l'explorateur"
-		Me.chkShowExternal.UseVisualStyleBackColor = false
-		AddHandler Me.chkShowExternal.CheckedChanged, AddressOf Me.ChkShowExternalCheckedChanged
-		'
-		'chkRestriction
-		'
-		Me.chkRestriction.AutoSize = true
-		Me.chkRestriction.BackColor = System.Drawing.Color.Transparent
-		Me.chkRestriction.Location = New System.Drawing.Point(31, 192)
-		Me.chkRestriction.Name = "chkRestriction"
-		Me.chkRestriction.Size = New System.Drawing.Size(261, 17)
-		Me.chkRestriction.TabIndex = 19
-		Me.chkRestriction.Text = "Rechercher seulement dans les cartes possédées"
-		Me.chkRestriction.UseVisualStyleBackColor = false
-		AddHandler Me.chkRestriction.CheckedChanged, AddressOf Me.ChkRestrictionCheckedChanged
 		'
 		'cboSearchType
 		'
@@ -301,7 +357,7 @@ Partial Class frmSearch
 		Me.AcceptButton = Me.cmdGo
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(618, 356)
+		Me.ClientSize = New System.Drawing.Size(618, 400)
 		Me.Controls.Add(Me.cbarSearch)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -314,10 +370,18 @@ Partial Class frmSearch
 		Me.pnlSearch.ResumeLayout(false)
 		Me.grpSearch.ResumeLayout(false)
 		Me.grpSearch.PerformLayout
+		Me.grpRestriction.ResumeLayout(false)
+		Me.grpRestriction.PerformLayout
+		Me.grpOutput.ResumeLayout(false)
+		Me.grpOutput.PerformLayout
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.imgSearch,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private grpOutput As System.Windows.Forms.GroupBox
+	Private chkRestrictionMyCollection As System.Windows.Forms.CheckBox
+	Private chkRestrictionMyGames As System.Windows.Forms.CheckBox
+	Private grpRestriction As System.Windows.Forms.GroupBox
 	Private chkInf As System.Windows.Forms.CheckBox
 	Private chkEq As System.Windows.Forms.CheckBox
 	Private chkSup As System.Windows.Forms.CheckBox

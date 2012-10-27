@@ -1308,14 +1308,14 @@ Public Partial Class MainForm
 			Call ShowWarning(CgErr3)
 		Else
 			'Préparation des requêtes
-			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)) As T1"
-			VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)) As T1"
+			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)" + If(Me.IsInAdvSearch, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
+			VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)" + If(Me.IsInAdvSearch, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
 			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Where " + Me.Restriction + "True Group By GameID, EncNbr) As T2"
 			VpSQLStockInfosCollecFoil = "(Select EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyCollection Group By EncNbr) As T2"
 			VpSQLColumnsRequired = "Select T1.Series, T1.Price, T1.PriceDate, T1.Rarity, T1.CardText, T1.Cost, T1.SeriesNM, T1.SeriesNM_FR, T1.FoilPrice, T1.FoilDate, T1.Rulings, T1.Release, T1.Artist"
 			VpSQLTitleCriteria = " Where T1.Title = '" + VpCard.Replace("'", "''") + "'"
 			VpSQLSorting = " Order By T1.Release"
-			VpSQLJointure = If(Me.btShowAll.Checked Or VpTransformed, " Left", " Inner")
+			VpSQLJointure = If((Me.btShowAll.Enabled And Me.btShowAll.Checked) Or VpTransformed, " Left", " Inner")
 			'Finalisation de la construction des requêtes ; 12 possibilités selon que :
 			'- type de source :
 			'	* recherche

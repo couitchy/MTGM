@@ -42,6 +42,8 @@ Partial Class About
 		Me.groupBox1 = New System.Windows.Forms.GroupBox
 		Me.tabControl1 = New System.Windows.Forms.TabControl
 		Me.tabPage2 = New System.Windows.Forms.TabPage
+		Me.txtNClasses = New System.Windows.Forms.TextBox
+		Me.label7 = New System.Windows.Forms.Label
 		Me.txtCodeLines = New System.Windows.Forms.TextBox
 		Me.txtDateCompile = New System.Windows.Forms.TextBox
 		Me.txtVer = New System.Windows.Forms.TextBox
@@ -70,7 +72,7 @@ Partial Class About
 		'
 		Me.lnkMail.BackColor = System.Drawing.Color.White
 		Me.lnkMail.LinkColor = System.Drawing.Color.FromArgb(CType(CType(255,Byte),Integer), CType(CType(128,Byte),Integer), CType(CType(128,Byte),Integer))
-		Me.lnkMail.Location = New System.Drawing.Point(238, 115)
+		Me.lnkMail.Location = New System.Drawing.Point(238, 187)
 		Me.lnkMail.Name = "lnkMail"
 		Me.lnkMail.Size = New System.Drawing.Size(100, 17)
 		Me.lnkMail.TabIndex = 15
@@ -87,7 +89,7 @@ Partial Class About
 		Me.lbl2.Location = New System.Drawing.Point(6, 15)
 		Me.lbl2.Name = "lbl2"
 		Me.lbl2.RightToLeft = System.Windows.Forms.RightToLeft.No
-		Me.lbl2.Size = New System.Drawing.Size(424, 141)
+		Me.lbl2.Size = New System.Drawing.Size(424, 190)
 		Me.lbl2.TabIndex = 14
 		Me.lbl2.Text = resources.GetString("lbl2.Text")
 		Me.lbl2.UseCompatibleTextRendering = true
@@ -97,9 +99,9 @@ Partial Class About
 		Me.label1.BackColor = System.Drawing.Color.Transparent
 		Me.label1.Font = New System.Drawing.Font("Tahoma", 11!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World, CType(0,Byte))
 		Me.label1.ForeColor = System.Drawing.Color.Black
-		Me.label1.Location = New System.Drawing.Point(6, 46)
+		Me.label1.Location = New System.Drawing.Point(11, 46)
 		Me.label1.Name = "label1"
-		Me.label1.Size = New System.Drawing.Size(424, 22)
+		Me.label1.Size = New System.Drawing.Size(336, 22)
 		Me.label1.TabIndex = 13
 		Me.label1.Text = "Copyright 2008-2012 Couitchy Corporation. Tous droits réservés."
 		Me.label1.UseCompatibleTextRendering = true
@@ -134,7 +136,7 @@ Partial Class About
 		Me.groupBox1.Controls.Add(Me.label1)
 		Me.groupBox1.Location = New System.Drawing.Point(12, 12)
 		Me.groupBox1.Name = "groupBox1"
-		Me.groupBox1.Size = New System.Drawing.Size(342, 73)
+		Me.groupBox1.Size = New System.Drawing.Size(361, 73)
 		Me.groupBox1.TabIndex = 16
 		Me.groupBox1.TabStop = false
 		'
@@ -148,12 +150,14 @@ Partial Class About
 		Me.tabControl1.Location = New System.Drawing.Point(12, 91)
 		Me.tabControl1.Name = "tabControl1"
 		Me.tabControl1.SelectedIndex = 0
-		Me.tabControl1.Size = New System.Drawing.Size(442, 188)
+		Me.tabControl1.Size = New System.Drawing.Size(442, 242)
 		Me.tabControl1.TabIndex = 17
 		'
 		'tabPage2
 		'
 		Me.tabPage2.BackColor = System.Drawing.Color.Transparent
+		Me.tabPage2.Controls.Add(Me.txtNClasses)
+		Me.tabPage2.Controls.Add(Me.label7)
 		Me.tabPage2.Controls.Add(Me.txtCodeLines)
 		Me.tabPage2.Controls.Add(Me.txtDateCompile)
 		Me.tabPage2.Controls.Add(Me.txtVer)
@@ -163,10 +167,28 @@ Partial Class About
 		Me.tabPage2.Location = New System.Drawing.Point(4, 22)
 		Me.tabPage2.Name = "tabPage2"
 		Me.tabPage2.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabPage2.Size = New System.Drawing.Size(434, 162)
+		Me.tabPage2.Size = New System.Drawing.Size(434, 216)
 		Me.tabPage2.TabIndex = 1
 		Me.tabPage2.Text = "Version"
 		Me.tabPage2.UseVisualStyleBackColor = true
+		'
+		'txtNClasses
+		'
+		Me.txtNClasses.Location = New System.Drawing.Point(269, 166)
+		Me.txtNClasses.Name = "txtNClasses"
+		Me.txtNClasses.ReadOnly = true
+		Me.txtNClasses.Size = New System.Drawing.Size(69, 20)
+		Me.txtNClasses.TabIndex = 7
+		Me.txtNClasses.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+		'
+		'label7
+		'
+		Me.label7.AutoSize = true
+		Me.label7.Location = New System.Drawing.Point(32, 169)
+		Me.label7.Name = "label7"
+		Me.label7.Size = New System.Drawing.Size(97, 13)
+		Me.label7.TabIndex = 6
+		Me.label7.Text = "Nombre de classes"
 		'
 		'txtCodeLines
 		'
@@ -228,7 +250,7 @@ Partial Class About
 		Me.tabPage3.Controls.Add(Me.label5)
 		Me.tabPage3.Location = New System.Drawing.Point(4, 22)
 		Me.tabPage3.Name = "tabPage3"
-		Me.tabPage3.Size = New System.Drawing.Size(434, 162)
+		Me.tabPage3.Size = New System.Drawing.Size(434, 216)
 		Me.tabPage3.TabIndex = 2
 		Me.tabPage3.Text = "Contact"
 		Me.tabPage3.UseVisualStyleBackColor = true
@@ -242,7 +264,7 @@ Partial Class About
 		Me.label5.Location = New System.Drawing.Point(6, 20)
 		Me.label5.Name = "label5"
 		Me.label5.RightToLeft = System.Windows.Forms.RightToLeft.No
-		Me.label5.Size = New System.Drawing.Size(424, 132)
+		Me.label5.Size = New System.Drawing.Size(424, 194)
 		Me.label5.TabIndex = 16
 		Me.label5.Text = resources.GetString("label5.Text")
 		Me.label5.UseCompatibleTextRendering = true
@@ -253,7 +275,7 @@ Partial Class About
 		Me.tabPage1.Location = New System.Drawing.Point(4, 22)
 		Me.tabPage1.Name = "tabPage1"
 		Me.tabPage1.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabPage1.Size = New System.Drawing.Size(434, 162)
+		Me.tabPage1.Size = New System.Drawing.Size(434, 216)
 		Me.tabPage1.TabIndex = 0
 		Me.tabPage1.Text = "Informations"
 		Me.tabPage1.UseVisualStyleBackColor = true
@@ -264,7 +286,7 @@ Partial Class About
 		Me.tabPage4.Location = New System.Drawing.Point(4, 22)
 		Me.tabPage4.Name = "tabPage4"
 		Me.tabPage4.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabPage4.Size = New System.Drawing.Size(434, 162)
+		Me.tabPage4.Size = New System.Drawing.Size(434, 216)
 		Me.tabPage4.TabIndex = 3
 		Me.tabPage4.Text = "Historique"
 		Me.tabPage4.UseVisualStyleBackColor = true
@@ -276,7 +298,7 @@ Partial Class About
 		Me.txtVersions.Multiline = true
 		Me.txtVersions.Name = "txtVersions"
 		Me.txtVersions.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-		Me.txtVersions.Size = New System.Drawing.Size(428, 156)
+		Me.txtVersions.Size = New System.Drawing.Size(428, 210)
 		Me.txtVersions.TabIndex = 0
 		'
 		'tabPage5
@@ -285,7 +307,7 @@ Partial Class About
 		Me.tabPage5.Controls.Add(Me.picPaypal)
 		Me.tabPage5.Location = New System.Drawing.Point(4, 22)
 		Me.tabPage5.Name = "tabPage5"
-		Me.tabPage5.Size = New System.Drawing.Size(434, 162)
+		Me.tabPage5.Size = New System.Drawing.Size(434, 216)
 		Me.tabPage5.TabIndex = 4
 		Me.tabPage5.Text = "Don"
 		Me.tabPage5.UseVisualStyleBackColor = true
@@ -314,7 +336,7 @@ Partial Class About
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
 		Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-		Me.ClientSize = New System.Drawing.Size(464, 290)
+		Me.ClientSize = New System.Drawing.Size(464, 336)
 		Me.Controls.Add(Me.tabControl1)
 		Me.Controls.Add(Me.groupBox1)
 		Me.Controls.Add(Me.button1)
@@ -340,6 +362,8 @@ Partial Class About
 		CType(Me.picPaypal,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private label7 As System.Windows.Forms.Label
+	Private txtNClasses As System.Windows.Forms.TextBox
 	Private picPaypal As System.Windows.Forms.PictureBox
 	Private label6 As System.Windows.Forms.Label
 	Private tabPage5 As System.Windows.Forms.TabPage
