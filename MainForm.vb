@@ -1417,10 +1417,12 @@ Public Partial Class MainForm
 						Else
 							Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, .GetValue(.GetOrdinal("CardText")).ToString, VpSubType)
 						End If
+						Me.txtRichOther.Clear
 						Me.txtRichOther.Text = .GetValue(.GetOrdinal("Rulings")).ToString
 						With Me.txtRichOther
 							If .Text.Trim <> "" Then
 								.Text = .Text.Substring(1).Replace("£", vbCrLf + vbCrLf)
+								.InsertTextAsRtf(clsModule.CgRulings + vbCrLf + vbCrLf, New Font(.Font, FontStyle.Bold))
 							End If
 						End With
 					End If

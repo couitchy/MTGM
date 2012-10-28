@@ -235,6 +235,7 @@ Public Partial Class frmGestDecks
 		Me.btUp.Enabled = False
 		Me.btDown.Enabled = False
 		VmMustReload = True
+		Call VmOwner.LoadMnu
 	End Sub
 	Sub BtRenameActivate(sender As Object, e As EventArgs)
 	Dim VpDeckName As String

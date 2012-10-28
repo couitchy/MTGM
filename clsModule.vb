@@ -143,6 +143,7 @@ Public Module clsModule
 	Public Const CgImgColors As String				= "_colors_"
 	Public Const CgDefaultName As String			= "(Deck)"
 	Public Const CgDefaultFormat As String			= "Classique"
+	Public Const CgRulings As String				= "Règles spécifiques"
 	Public Const CgPlateau As String				= "Plateau de jeu : "
 	Public Const CgStats As String					= "Statistiques : "
 	Public Const CgSimus As String					= "Simulations : "
