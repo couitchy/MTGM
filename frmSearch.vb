@@ -250,7 +250,11 @@ Public Partial Class frmSearch
 		Me.lblOccur.Text = Me.lstResult.Items.Count.ToString + " résultat(s) trouvé(s)"
 		'Chargement éventuel dans le treeview
 		If Me.chkShowExternal.Checked Then
-			Call VmOwner.LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, clsModule.CgFromSearch + " (" + Me.cboFind.Tag +")")
+			With VmOwner
+				.mnuDispAdvSearch.Enabled = True
+				Call .ManageDispMenu(.mnuDispAdvSearch.Text, False)
+				Call .LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, clsModule.CgFromSearch + " (" + Me.cboFind.Tag +")")
+			End With
 		End If
 		Me.cboFind.Focus
 	End Sub

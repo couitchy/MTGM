@@ -87,6 +87,7 @@ Partial Class MainForm
 		Me.mnuRefresh = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuShowImage = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeparator6 = New System.Windows.Forms.ToolStripSeparator
+		Me.mnuDispAdvSearch = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuDispCollection = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuGestDecks = New System.Windows.Forms.ToolStripMenuItem
@@ -721,7 +722,7 @@ Partial Class MainForm
 		'
 		'mnuDisp
 		'
-		Me.mnuDisp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuRefresh, Me.mnuShowImage, Me.mnuSeparator6, Me.mnuDispCollection})
+		Me.mnuDisp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuRefresh, Me.mnuShowImage, Me.mnuSeparator6, Me.mnuDispAdvSearch, Me.mnuDispCollection})
 		Me.mnuDisp.Name = "mnuDisp"
 		Me.mnuDisp.Size = New System.Drawing.Size(70, 20)
 		Me.mnuDisp.Text = "Affichage"
@@ -748,6 +749,14 @@ Partial Class MainForm
 		'
 		Me.mnuSeparator6.Name = "mnuSeparator6"
 		Me.mnuSeparator6.Size = New System.Drawing.Size(254, 6)
+		'
+		'mnuDispAdvSearch
+		'
+		Me.mnuDispAdvSearch.Enabled = false
+		Me.mnuDispAdvSearch.Name = "mnuDispAdvSearch"
+		Me.mnuDispAdvSearch.Size = New System.Drawing.Size(257, 22)
+		Me.mnuDispAdvSearch.Text = "Résultats de recherche"
+		AddHandler Me.mnuDispAdvSearch.Click, AddressOf Me.MnuDispCollectionActivate
 		'
 		'mnuDispCollection
 		'
@@ -1915,6 +1924,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Public mnuDispAdvSearch As System.Windows.Forms.ToolStripMenuItem
 	Private btHistPricesSimple As System.Windows.Forms.ToolStripMenuItem
 	Private btHistPricesFoil As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuCbar As System.Windows.Forms.ContextMenuStrip

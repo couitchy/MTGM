@@ -268,6 +268,7 @@ Public Partial Class frmGestDecks
 			VgDBCommand.ExecuteNonQuery
 			Me.lstDecks.Items(Me.lstDecks.SelectedIndex) = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
 			VmMustReload = True
+			Call VmOwner.LoadMnu
 		End If
 	End Sub
 	Sub BtDownActivate(sender As Object, e As EventArgs)

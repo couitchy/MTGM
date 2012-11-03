@@ -36,6 +36,7 @@
 '| - gestion des règles spécifiques		   18/02/2012 |
 '| - gestion des "Planes" et "Phenomenons" 22/06/2012 |
 '| - refonte affichage propriétés (grids)  23/08/2012 |
+'| - menu dédié 'Résultats de recherche'   02/11/2012 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -989,8 +990,10 @@ Public Partial Class MainForm
 	Dim VpNode As TreeNode
 	Dim VpSource As String = Me.MySource
 		If Not clsModule.DBOK Then Exit Sub
-		VmAdvSearch = VpLoadFromSearch
-		VmAdvSearchLabel = VpSearchName
+		If VpLoadFromSearch <> "" Then
+			VmAdvSearch = VpLoadFromSearch
+			VmAdvSearchLabel = VpSearchName
+		End If
 		Me.tvwExplore.SelectedNodes.Clear
 		If VpClear Then
 			Me.tvwExplore.Nodes.Clear
@@ -1009,14 +1012,13 @@ Public Partial Class MainForm
 			VpNode.SelectedImageIndex = 1
 			'Cas 1 : chargement des résultats d'une recherche de l'utilisateur
 			If Me.IsInAdvSearch Then
-				Call Me.MnuDispCollectionActivate(Me.mnuDispCollection, Nothing) 'Un peu crade mais il faut absolument déselectionner les decks avant de vouloir charger la recherche (car sinon le me.restriction va altérer l'expression de la requête)
 				VpNode.Text = VpSearchName
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(VpLoadFromSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction)
+				Call Me.RecurLoadTvw(VmAdvSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction)
 				Me.lblNCards.Text = ""
 				VmSuggestions = Nothing
 			'Cas 2 : chargement des cartes de la collection ou d'un deck
@@ -1150,20 +1152,15 @@ Public Partial Class MainForm
 	'Retourne une clause de restriction pour n'afficher que les jeux demandés
 	'------------------------------------------------------------------------
 	Dim VpStr As String = ""
+		If Not VmDeckMode Or Me.IsInAdvSearch Then
+			Return If(VpTextMode, clsModule.CgCollection, "")
+		End If
 		For Each VpItem As Object In Me.mnuDisp.DropDownItems
 			If clsModule.SafeGetChecked(VpItem) Then
-				If VpItem.Text = clsModule.CgCollection Then
-					If VpTextMode Then
-						Return clsModule.CgCollection
-					Else
-						Return ""
-					End If
+				If VpTextMode Then
+					VpStr = VpStr + VpItem.Text + " "
 				Else
-					If VpTextMode Then
-						VpStr = VpStr + VpItem.Text + " "
-					Else
-						VpStr = VpStr + "GameID = " + clsModule.GetDeckIndex(VpItem.Text) + " Or "
-					End If
+					VpStr = VpStr + "GameID = " + clsModule.GetDeckIndex(VpItem.Text) + " Or "
 				End If
 			End If
 		Next VpItem
@@ -1259,6 +1256,21 @@ Public Partial Class MainForm
 			End If
 		End With
 	End Sub
+	Public Sub ManageDispMenu(VpMenuTitle As String, VpDeckMode As Boolean)
+	Dim VpStr As String
+		For Each VpItem As Object In Me.mnuDisp.DropDownItems
+			VpStr = clsModule.SafeGetText(VpItem)
+			'On sélectionne les résultats de recherche
+			If VpStr = VpMenuTitle Then
+				VpItem.Checked = True
+			ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
+			'mais on déselectionne tous les decks ainsi que la collection
+			Else
+				VpItem.Checked = False
+			End If
+		Next VpItem
+		VmDeckMode = VpDeckMode
+	End Sub
 	Private Function ShowCard(VpTitle As String, VpDownFace As Boolean, VpTransformed As Boolean) As Boolean
 	'-------------------------------------------------------------------
 	'Affiche les infos d'une carte après sa sélection dans l'explorateur
@@ -1308,7 +1320,7 @@ Public Partial Class MainForm
 			Call ShowWarning(CgErr3)
 		Else
 			'Préparation des requêtes
-			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)" + If(Me.IsInAdvSearch, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
+			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)" + If(Me.IsInAdvSearch And Not VpTransformed, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
 			VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)" + If(Me.IsInAdvSearch, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
 			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Where " + Me.Restriction + "True Group By GameID, EncNbr) As T2"
 			VpSQLStockInfosCollecFoil = "(Select EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyCollection Group By EncNbr) As T2"
@@ -1708,7 +1720,7 @@ Public Partial Class MainForm
 			Else
 				Call clsModule.ShowWarning(clsModule.CgErr2)
 			End If
-		End If		
+		End If
 	End Sub
 	Private Function IsTransformed(VpNode As TreeNode) As Boolean
 	'-----------------------------------
@@ -1937,9 +1949,9 @@ Public Partial Class MainForm
 					.STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
 				End If
 				'Opération effective
-				If Me.IsInAdvSearch Or (.TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+				If .TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
 					Call frmTransfert.CommitAction(VpTransfertResult)
-					Return False
+					Return Me.IsInAdvSearch AndAlso Me.IsInRestrictedAdvSearch
 				ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
 					Call frmTransfert.CommitAction(VpTransfertResult)
 					Return True
@@ -2119,7 +2131,12 @@ Public Partial Class MainForm
 	'Retourne si l'on est actuellement en affichage de résultats de recherche avancée
 	'--------------------------------------------------------------------------------
 		Get
-			Return ( VmAdvSearch <> "" )
+			Return Me.mnuDispAdvSearch.Checked
+		End Get
+	End Property
+	Public ReadOnly Property IsInRestrictedAdvSearch As Boolean
+		Get
+			Return VmAdvSearch.Contains("Not In (Select")	'crade, mais permet de savoir si la requête comprend un critère sur la non-possession
 		End Get
 	End Property
 	Public ReadOnly Property MySource As String
@@ -2387,39 +2404,11 @@ Public Partial Class MainForm
 	'---------------------------------------------
 	'Changement de la sélection active d'affichage
 	'---------------------------------------------
-	Dim VpStr As String
 		If Me.IsGridBusy Then
 			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
 			Application.DoEvents
 		End If
-		'Si l'utilisateur a cliqué sur "Collection"
-		If sender.Text = clsModule.CgCollection Then
-			For Each VpItem As Object In Me.mnuDisp.DropDownItems
-				VpStr = clsModule.SafeGetText(VpItem)
-				'On sélectionne la collection
-				If VpStr = clsModule.CgCollection Then
-					VpItem.Checked = True
-				ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
-				'mais on déselectionne tous les decks
-				Else
-					VpItem.Checked = False
-				End If
-			Next VpItem
-			VmDeckMode = False
-		'Si l'utilisateur a cliqué sur un deck
-		Else
-			'On désélectionne tout sauf l'envoyeur
-			For Each VpItem As Object In Me.mnuDisp.DropDownItems
-				VpStr = clsModule.SafeGetText(VpItem)
-				If VpStr = sender.Text Then
-					VpItem.Checked = True
-				ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
-				Else
-					VpItem.Checked = False
-				End If
-			Next VpItem
-			VmDeckMode = True
-		End If
+		Call Me.ManageDispMenu(sender.Text, Not (sender Is Me.mnuDispCollection Or sender Is Me.mnuDispAdvSearch))
 		If Not e Is Nothing Then
 			Call Me.LoadTvw
 		End If
@@ -3087,7 +3076,7 @@ Public Partial Class MainForm
 			'un peu crade mais le dropdownmenu ne fonctionne plus sous Windows 7 et oblige à passer par un menu contextuel
 			Me.cmnuCbar.Show(Me.cbarProperties, New Point(.Left, .Bottom))
 		End With
-	End Sub	
+	End Sub
 	Sub BtShowAllActivate(sender As Object, e As EventArgs)
 		Me.btShowAll.Checked = Not Me.btShowAll.Checked
 		Call Me.ReloadCarac

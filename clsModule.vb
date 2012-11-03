@@ -42,7 +42,7 @@ Public Module clsModule
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8
-	Public Const CgNDispMenuBase As Integer 		= 3
+	Public Const CgNDispMenuBase As Integer 		= 4
 	Public Const CgNMain As Integer					= 7
 	Public Const CgNLives As Integer				= 20
 	Public Const CgMaxPot As Integer				= 100
@@ -156,6 +156,7 @@ Public Module clsModule
 	Public Const CgCollection As String	  			= "Collection"
 	Public Const CgSCollection As String  			= "MyCollection"
 	Public Const CgSDecks As String		  			= "MyGames"
+	Public Const CgAdvSearch As String				= "Résultats de recherche"
 	Public Const CgFromSearch As String				= "Recherche"
 	Public Const CgSFromSearch As String			= "MySearch"
 	Public Const CgCard As String		  			= "(carte)"
