@@ -840,23 +840,42 @@ Public Partial Class MainForm
 	Private Sub ShowNCards(VpSource As String)
 		Me.lblNCards.Text = "(" + Me.GetNCards(VpSource).ToString + " cartes attachées, " + Me.GetNCards(VpSource, True).ToString + " distinctes)"
 	End Sub
+	Private Function GetRootIndex(VpRoot As TreeNode) As Integer
+	'---------------------------------------------------
+	'Retourne le numéro de la racine passée en paramètre
+	'---------------------------------------------------
+	Dim VpNode As TreeNode = Me.FirstRoot
+	Dim VpIndex As Integer = 0
+		While VpNode IsNot VpRoot
+			VpIndex += 1
+			VpNode = VpNode.NextNode
+		End While
+		Return VpIndex
+	End Function
+	Private Function GetNthRoot(VpIndex As Integer) As TreeNode
+	'----------------------------------------------
+	'Retourne la nième racine demandée en paramètre
+	'----------------------------------------------
+	Dim VpNode As TreeNode = Me.FirstRoot
+		For VpI As Integer = 0 To VpIndex - 1
+			VpNode = VpNode.NextNode
+		Next VpI
+		Return VpNode
+	End Function
 	Private Function SaveNode(VpNode As TreeNode) As String
-	'-----------------------------------------------------
-	'Sauvegarder la généalogie du noeud passé en paramètre
-	'-----------------------------------------------------
+	'----------------------------------------------------
+	'Sauvegarde la généalogie du noeud passé en paramètre
+	'----------------------------------------------------
 	Dim VpHistory As String = ""
 	Dim VpStr As String
-		If VpNode Is Me.FirstRoot Then
+		If VpNode.Parent Is Nothing Then
 			Return ""
 		Else
 			Do
 				VpStr = VpNode.Text
-				'If ( Not VpNode.Parent Is Nothing ) AndAlso ( VpNode.Parent.Tag = "Card.Title" ) AndAlso Me.mnuCardsFR.Checked Then
-				'	VpStr = VpNode.Tag
-				'End If
 				VpHistory = "#" + VpStr + VpHistory
 				VpNode = VpNode.Parent
-			Loop Until VpNode Is Me.FirstRoot
+			Loop Until VpNode.Parent Is Nothing
 			Return VpHistory.Substring(1)
 		End If
 	End Function
@@ -890,11 +909,11 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Private Sub ReloadWithHistory
-	Dim VpHistory As String
-		VpHistory = Me.SaveNode(Me.tvwExplore.SelectedNode)
+	Dim VpHistory As String = Me.SaveNode(Me.tvwExplore.SelectedNode)
+	Dim VpMyRoot As Integer = Me.GetRootIndex(Me.MyRoot)
 		Call Me.LoadTvw
 		Me.tvwExplore.BeginUpdate
-		Call Me.RestoreNode(VpHistory, Me.FirstRoot)
+		Call Me.RestoreNode(VpHistory, Me.GetNthRoot(VpMyRoot))
 		Me.tvwExplore.EndUpdate
 	End Sub
 	Private Sub InitBars(VpMax As Integer)
@@ -969,6 +988,7 @@ Public Partial Class MainForm
 			End While
 			.Close
 		End With
+		Me.mnuDispAdvSearch.Checked = False
 		Me.mnuDispCollection.Checked = True
 		VmDeckMode = False
 	End Sub
@@ -984,6 +1004,12 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Public Sub LoadTvw(Optional VpLoadFromSearch As String = "", Optional VpClear As Boolean = True, Optional VpSearchName As String = clsModule.CgFromSearch)
+		Call Me.LoadDualTvw(VpLoadFromSearch, VpClear, VpSearchName)
+		If VmDeckMode Then
+			Call Me.LoadDualTvw(VpLoadFromSearch, False, VpSearchName, True)
+		End If
+	End Sub
+	Private Sub LoadDualTvw(VpLoadFromSearch As String, VpClear As Boolean, VpSearchName As String, Optional VpReserve As Boolean = False)
 	'-----------------------------------------------------------------------------------------------------------------------------------
 	'Chargement du treeview avec les sélections spécifiées dans le menu Affichage ou bien les résultats de la recherche de l'utilisateur
 	'-----------------------------------------------------------------------------------------------------------------------------------
@@ -1018,18 +1044,18 @@ Public Partial Class MainForm
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(VmAdvSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction)
+				Call Me.RecurLoadTvw(VmAdvSearch, clsModule.CgSFromSearch, VpNode, 1, Me.Restriction, VpReserve)
 				Me.lblNCards.Text = ""
 				VmSuggestions = Nothing
 			'Cas 2 : chargement des cartes de la collection ou d'un deck
 			Else
-				VpNode.Text = Me.GetSelectedSource
+				VpNode.Text = Me.GetSelectedSource + If(VpReserve, " -- Side", "")
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
 				Catch
 					Call clsModule.ShowWarning(clsModule.CgErr7)
 				End Try
-				Call Me.RecurLoadTvw(VpSource, VpSource, VpNode, 1, Me.Restriction)
+				Call Me.RecurLoadTvw(VpSource, VpSource, VpNode, 1, Me.Restriction, VpReserve)
 				Call Me.ShowNCards(VpSource)
 			End If
 			Me.tvwExplore.Nodes.Add(VpNode)
@@ -1060,7 +1086,7 @@ Public Partial Class MainForm
 			Return ( VpCard <> "" )
 		End If
 	End Function
-	Private Sub RecurLoadTvw(VpSource1 As String, VpSource2 As String, VpNode As TreeNode, VpRecurLevel As Integer, VpRestriction As String)
+	Private Sub RecurLoadTvw(VpSource1 As String, VpSource2 As String, VpNode As TreeNode, VpRecurLevel As Integer, VpRestriction As String, VpReserve As Boolean)
 	'---------------------------------------------------------------------------------------------------------------------
 	'Méthode de chargement récursive du treeview : à chaque niveau i, sélectionne les cartes correspondant au ième critère
 	'remplissant également les critères de la branche courante de i-1 jusqu'à 1
@@ -1081,6 +1107,10 @@ Public Partial Class MainForm
 		End If
 		'Ajoute les conditions sur les identifiants des jeux
 		VpSQL = VpSQL + VpRestriction
+		'Ajoute éventuellement la condition sur le flag réserve
+		If VpSource1 = clsModule.CgSDecks Then
+			VpSQL = VpSQL + "Reserve = " + VpReserve.ToString + " And "
+		End If
 		'Ajoute les conditions sur les critères des ancêtres
 		While Not VpParent.Parent Is Nothing
 			VpSQL = VpSQL + Me.ElderCriteria(CType(VpParent.Tag, clsTag).Value, CType(VpParent.Parent.Tag, clsTag).Key)
@@ -1134,7 +1164,7 @@ Public Partial Class MainForm
 		End With
 		'Appel récursif sur chaque enfant au niveau supérieur
 		For Each VpChild In VpNode.Nodes
-			Call Me.RecurLoadTvw(VpSource1, VpSource2, VpChild, VpRecurLevel + 1, VpRestriction)
+			Call Me.RecurLoadTvw(VpSource1, VpSource2, VpChild, VpRecurLevel + 1, VpRestriction, VpReserve)
 		Next VpChild
 	End Sub
 	Private Function ElderCriteria(VpValue As String, VpField As String) As String
@@ -1271,12 +1301,12 @@ Public Partial Class MainForm
 		Next VpItem
 		VmDeckMode = VpDeckMode
 	End Sub
-	Private Function ShowCard(VpTitle As String, VpDownFace As Boolean, VpTransformed As Boolean) As Boolean
+	Private Function ShowCard(VpTitle As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean) As Boolean
 	'-------------------------------------------------------------------
 	'Affiche les infos d'une carte après sa sélection dans l'explorateur
 	'-------------------------------------------------------------------
 		If Not VpTitle Is Nothing AndAlso VpTitle <> "" Then
-			Call Me.LoadCarac(VpTitle, VpDownFace, VpTransformed)
+			Call Me.LoadCarac(VpTitle, VpDownFace, VpTransformed, VpReserve)
 			If Not Me.splitV2.Panel2Collapsed Then
 				Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
 			End If
@@ -1295,7 +1325,7 @@ Public Partial Class MainForm
 			End If
 		End With
 	End Sub
-	Private Sub LoadCarac(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean)
+	Private Sub LoadCarac(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
 	'-----------------------------------------------
@@ -1322,7 +1352,7 @@ Public Partial Class MainForm
 			'Préparation des requêtes
 			VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)" + If(Me.IsInAdvSearch And Not VpTransformed, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
 			VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)" + If(Me.IsInAdvSearch, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + clsModule.CgSFromSearch + ".EncNbr", "") + ") As T1"
-			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Where " + Me.Restriction + "True Group By GameID, EncNbr) As T2"
+			VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Where Reserve = " + VpReserve.ToString + " And " + Me.Restriction + "True Group By GameID, EncNbr) As T2"
 			VpSQLStockInfosCollecFoil = "(Select EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyCollection Group By EncNbr) As T2"
 			VpSQLColumnsRequired = "Select T1.Series, T1.Price, T1.PriceDate, T1.Rarity, T1.CardText, T1.Cost, T1.SeriesNM, T1.SeriesNM_FR, T1.FoilPrice, T1.FoilDate, T1.Rulings, T1.Release, T1.Artist"
 			VpSQLTitleCriteria = " Where T1.Title = '" + VpCard.Replace("'", "''") + "'"
@@ -1457,7 +1487,7 @@ Public Partial Class MainForm
 				VpTransformed = Me.IsTransformed(VpNode)
 				VpTitle = If(VpTransformed, Me.picScanCard.Tag, VpNode.Tag.Value)
 				If VpTitle <> "" Then
-					Call Me.LoadCarac(VpTitle, Me.IsDownFace(VpNode) Xor VpTransformed, VpTransformed)
+					Call Me.LoadCarac(VpTitle, Me.IsDownFace(VpNode) Xor VpTransformed, VpTransformed, Me.IsReserveSelected)
 				End If
 			End If
 		End If
@@ -1722,6 +1752,12 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Function IsReserveSelected As Boolean
+	'---------------------------------------------------------------------
+	'Regarde si la carte sélectionnée dans un deck appartient à la réserve
+	'---------------------------------------------------------------------
+		Return Not ( Me.MyRoot Is Me.FirstRoot )
+	End Function
 	Private Function IsTransformed(VpNode As TreeNode) As Boolean
 	'-----------------------------------
 	'Renvoie si la carte est transformée
@@ -1922,6 +1958,8 @@ Public Partial Class MainForm
 		With VpTransfertResult
 			'Type d'opération
 			.TransfertType = VpTransfertType
+			'Présence réserve éventuelle
+			.ReserveFrom = Me.IsReserveSelected
 			'Gestion des cas multiples / foils
 			If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType, VpFoil) Then
 				VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
@@ -1952,7 +1990,7 @@ Public Partial Class MainForm
 				If .TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
 					Call frmTransfert.CommitAction(VpTransfertResult)
 					Return Me.IsInAdvSearch AndAlso Me.IsInRestrictedAdvSearch
-				ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
+				ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
 					Call frmTransfert.CommitAction(VpTransfertResult)
 					Return True
 				Else
@@ -2176,7 +2214,7 @@ Public Partial Class MainForm
 			Return VmFilterCriteria
 		End Get
 	End Property
-	Public ReadOnly Property FirstRoot As TreeNode
+	Private ReadOnly Property FirstRoot As TreeNode
 		Get
 			Return Me.tvwExplore.Nodes.Item(0)
 		End Get
@@ -2190,7 +2228,18 @@ Public Partial Class MainForm
 			Return VpNode
 		End Get
 	End Property
-	Public ReadOnly Property CurrentCardTitle As String
+	Private ReadOnly Property MyRoot As TreeNode
+		Get
+		Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
+			If VpNode.Parent IsNot Nothing Then
+				Do
+					VpNode = VpNode.Parent
+				Loop Until VpNode.Parent Is Nothing
+			End If
+			Return VpNode
+		End Get
+	End Property
+	Private ReadOnly Property CurrentCardTitle As String
 		Get
 		Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode
 			Return If(Me.IsTransformed(VpNode), Me.picScanCard.Tag, VpNode.Tag.Value)
@@ -2404,11 +2453,12 @@ Public Partial Class MainForm
 	'---------------------------------------------
 	'Changement de la sélection active d'affichage
 	'---------------------------------------------
+	Dim VpDeckMode As Boolean = Not (sender Is Me.mnuDispCollection Or sender Is Me.mnuDispAdvSearch)
 		If Me.IsGridBusy Then
 			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
 			Application.DoEvents
 		End If
-		Call Me.ManageDispMenu(sender.Text, Not (sender Is Me.mnuDispCollection Or sender Is Me.mnuDispAdvSearch))
+		Call Me.ManageDispMenu(sender.Text, VpDeckMode)
 		If Not e Is Nothing Then
 			Call Me.LoadTvw
 		End If
@@ -2476,7 +2526,7 @@ Public Partial Class MainForm
 			'Sélection d'un élément de type 'carte'
 			If e.Node.Parent.Tag.Key = "Card.Title" Then
 				VpTransformed = Me.IsTransformed(e.Node)
-				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), Me.IsDownFace(e.Node) Xor VpTransformed, VpTransformed)
+				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), Me.IsDownFace(e.Node) Xor VpTransformed, VpTransformed, Me.IsReserveSelected)
 			Else
 				'Préconstruction de la requête avec les conditions sur les critères des ancêtres
 				VpParent = e.Node
@@ -2815,7 +2865,7 @@ Public Partial Class MainForm
 				VpDownFace = Me.IsDownFace(VpNode)
 				VpTransformed = Me.IsTransformed(VpNode)
 				VpNames = Me.GetTransformedNames(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)
-				If Me.ShowCard(VpNames.Value, Not (VpDownFace Xor VpTransformed), Not VpTransformed) Then
+				If Me.ShowCard(VpNames.Value, Not (VpDownFace Xor VpTransformed), Not VpTransformed, Me.IsReserveSelected) Then
 					'Met à jour le noeud de l'arbre
 					VpNode.Text = If(Me.mnuCardsFR.Checked, VpNames.Value2, VpNames.Value)
 					'Mémorise la référence de l'image
@@ -3033,29 +3083,31 @@ Public Partial Class MainForm
 	Dim VpSource As String = Me.MySource
 	Dim VpEncNbr As Long
 	Dim VpFoil As Boolean
+	Dim VpReserve As Boolean
 	Dim VpItems As Integer
 		'Cohérence de la valeur
 		If CInt(VpCell.Value) < 0 Then
 			VpCell.Value = 0
 		End If
-		'Récupération du numéro encyclopédique et du flag foil
+		'Récupération du numéro encyclopédique, du flag foil et du flag réserve
 		VpEncNbr = clsModule.GetEncNbr(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value, clsModule.GetSerieCodeFromName(VpGrid(VpCell.Row, 0).Value, , Me.mnuCardsFR.Checked))
 		VpFoil = (VpCell.Column = 5) 'un peu crade, mais une modification sur la dernière colonne indique qu'on a touché au stock foil
+		VpReserve = Me.IsReserveSelected
 		'Cas 1 : si la valeur est nulle, il s'agit d'une suppression
 		With VgDBCommand
 			If VpCell.Value = 0 Then
-				.CommandText = "Delete * From " + VpSource + " Where Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+				.CommandText = "Delete * From " + VpSource + " Where Reserve = " + VpReserve.ToString + " And Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 				.ExecuteNonQuery
 			Else
-				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+				.CommandText = "Select Items From " + VpSource + " Where Reserve = " + VpReserve.ToString + " And EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 				VpItems = .ExecuteScalar
 				'Cas 2 : il s'agit d'une mise à jour du stock
 				If VpItems > 0 Then
-					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where Reserve = " + VpReserve.ToString + " And EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
 					.ExecuteNonQuery
 				'Cas 3 : il s'agit d'une insertion
 				Else
-					.CommandText = "Insert Into " + VpSource + " Values (" + If(VmDeckMode, clsModule.GetDeckIndex(Me.GetSelectedSource).ToString + ", ", "") + VpEncNbr.ToString + ", " + VpCell.Value.ToString + ", " + VpFoil.ToString + ");"
+					.CommandText = "Insert Into " + VpSource + " Values (" + If(VmDeckMode, clsModule.GetDeckIndex(Me.GetSelectedSource).ToString + ", ", "") + VpEncNbr.ToString + ", " + VpCell.Value.ToString + ", " + VpFoil.ToString + If(VmDeckMode, ", " + VpReserve.ToString, "") + ");"
 					.ExecuteNonQuery
 				End If
 			End If

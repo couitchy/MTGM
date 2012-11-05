@@ -387,11 +387,20 @@ Public Partial Class frmSearch
 	Sub ChkSupCheckedChanged(sender As Object, e As EventArgs)
 		If Me.chkSup.Checked Then
 			Me.chkInf.Checked = False
+		ElseIf Not Me.chkInf.Checked And Not Me.chkEq.Checked Then
+			Me.chkEq.Checked = True
 		End If
 	End Sub
 	Sub ChkInfCheckedChanged(sender As Object, e As EventArgs)
 		If Me.chkInf.Checked Then
 			Me.chkSup.Checked = False
+		ElseIf Not Me.chkSup.Checked And Not Me.chkEq.Checked Then
+			Me.chkEq.Checked = True
+		End If
+	End Sub
+	Sub ChkEqCheckedChanged(sender As Object, e As EventArgs)
+		If Not Me.chkInf.Checked And Not Me.chkSup.Checked And Not Me.chkEq.Checked Then
+			Me.chkEq.Checked = True
 		End If
 	End Sub
 	Sub CboSearchTypeSelectedIndexChanged(sender As Object, e As EventArgs)

@@ -247,20 +247,21 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque infos MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque infos MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque infos MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque infos MyGamesID, SubTypes
-		BDD_v13		'manque infos MyGamesID
-		BDD_v14		'à jour
+		BDD_v1		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque infos Réserve, MyGamesID
+		BDD_v14		'manque infos Réserve
+		BDD_v15		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -408,8 +409,14 @@ Public Module clsModule
 								'Si on est ici, BDD version 13
 								VpDBVersion = eDBVersion.BDD_v13
 							Else
-								'Si on est ici, BDD version 14
-								VpDBVersion = eDBVersion.BDD_v14
+								VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyGames", Nothing})
+								If VpSchemaTable.Rows.Count <> 5 Then
+									'Si on est ici, BDD version 14
+									VpDBVersion = eDBVersion.BDD_v14
+								Else
+									'Si on est ici, BDD version 15
+									VpDBVersion = eDBVersion.BDD_v15
+								End If
 							End If
 						End If
 					End If
@@ -422,10 +429,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v14 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v15 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v14)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v15)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -540,6 +547,11 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update MyGamesID Set GameFormat = '" + clsModule.CgDefaultFormat + "';"
 						VgDBCommand.ExecuteNonQuery
+					End If
+					'Passage version 14 à 15
+					If CInt(VpDBVersion) < 15 Then
+						VgDBCommand.CommandText = "Alter Table MyGames Add Reserve Bit;"
+						VgDBCommand.ExecuteNonQuery						
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
@@ -1486,7 +1498,7 @@ Public Module clsModule
 				If VpCurName <> VpLastName Then
 					VpCur = New SortedList
 					VpLastName = VpCurName
-					VpHist.Add(VpLastName, VpCur)					
+					VpHist.Add(VpLastName, VpCur)
 				End If
 				VpCur.Add(.GetDateTime(1), .GetFloat(2))
 			End While

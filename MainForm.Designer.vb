@@ -529,7 +529,7 @@ Partial Class MainForm
 		Me.mnuSwapSerie.Image = CType(resources.GetObject("mnuSwapSerie.Image"),System.Drawing.Image)
 		Me.mnuSwapSerie.Name = "mnuSwapSerie"
 		Me.mnuSwapSerie.Size = New System.Drawing.Size(233, 22)
-		Me.mnuSwapSerie.Text = "Modifier l'édition..."
+		Me.mnuSwapSerie.Text = "Modifier édition, foil, réserve"
 		AddHandler Me.mnuSwapSerie.Click, AddressOf Me.MnuSwapSerieClick
 		'
 		'mnuDeleteACard

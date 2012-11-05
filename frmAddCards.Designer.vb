@@ -37,10 +37,13 @@ Partial Class frmAddCards
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAddCards))
 		Me.cbarAjout = New TD.SandBar.ContainerBar
 		Me.pnlAjout = New TD.SandBar.ContainerBarClientPanel
+		Me.grpDest = New System.Windows.Forms.GroupBox
+		Me.lblDest = New System.Windows.Forms.Label
+		Me.chkReserve = New System.Windows.Forms.CheckBox
+		Me.cmdDestination = New System.Windows.Forms.Button
 		Me.grpQuality = New System.Windows.Forms.GroupBox
 		Me.chkFoil = New System.Windows.Forms.CheckBox
 		Me.cmdClose = New System.Windows.Forms.Button
-		Me.cmdDestination = New System.Windows.Forms.Button
 		Me.cmdAdd = New System.Windows.Forms.Button
 		Me.grpQuantite = New System.Windows.Forms.GroupBox
 		Me.scrollStock = New System.Windows.Forms.VScrollBar
@@ -59,8 +62,10 @@ Partial Class frmAddCards
 		Me.cboTitleFR = New System.Windows.Forms.ComboBox
 		Me.cmnuDestination = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.mnuDropToCollection = New System.Windows.Forms.ToolStripMenuItem
+		Me.imgDest = New System.Windows.Forms.PictureBox
 		Me.cbarAjout.SuspendLayout
 		Me.pnlAjout.SuspendLayout
+		Me.grpDest.SuspendLayout
 		Me.grpQuality.SuspendLayout
 		Me.grpQuantite.SuspendLayout
 		CType(Me.imgAdd,System.ComponentModel.ISupportInitialize).BeginInit
@@ -70,6 +75,7 @@ Partial Class frmAddCards
 		CType(Me.pictureBox2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.imgVF,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cmnuDestination.SuspendLayout
+		CType(Me.imgDest,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
 		'
 		'cbarAjout
@@ -82,7 +88,7 @@ Partial Class frmAddCards
 		Me.cbarAjout.Location = New System.Drawing.Point(0, 0)
 		Me.cbarAjout.Movable = false
 		Me.cbarAjout.Name = "cbarAjout"
-		Me.cbarAjout.Size = New System.Drawing.Size(365, 354)
+		Me.cbarAjout.Size = New System.Drawing.Size(365, 403)
 		Me.cbarAjout.TabIndex = 1
 		Me.cbarAjout.Text = "Ajout de cartes"
 		AddHandler Me.cbarAjout.VisibleChanged, AddressOf Me.CBarAjoutVisibleChanged
@@ -92,17 +98,59 @@ Partial Class frmAddCards
 		'
 		'pnlAjout
 		'
+		Me.pnlAjout.Controls.Add(Me.grpDest)
 		Me.pnlAjout.Controls.Add(Me.grpQuality)
 		Me.pnlAjout.Controls.Add(Me.cmdClose)
-		Me.pnlAjout.Controls.Add(Me.cmdDestination)
 		Me.pnlAjout.Controls.Add(Me.cmdAdd)
 		Me.pnlAjout.Controls.Add(Me.grpQuantite)
 		Me.pnlAjout.Controls.Add(Me.grpEdition)
 		Me.pnlAjout.Controls.Add(Me.grpId)
 		Me.pnlAjout.Location = New System.Drawing.Point(2, 27)
 		Me.pnlAjout.Name = "pnlAjout"
-		Me.pnlAjout.Size = New System.Drawing.Size(361, 325)
+		Me.pnlAjout.Size = New System.Drawing.Size(361, 374)
 		Me.pnlAjout.TabIndex = 0
+		'
+		'grpDest
+		'
+		Me.grpDest.Controls.Add(Me.imgDest)
+		Me.grpDest.Controls.Add(Me.lblDest)
+		Me.grpDest.Controls.Add(Me.chkReserve)
+		Me.grpDest.Controls.Add(Me.cmdDestination)
+		Me.grpDest.Location = New System.Drawing.Point(10, 292)
+		Me.grpDest.Name = "grpDest"
+		Me.grpDest.Size = New System.Drawing.Size(252, 72)
+		Me.grpDest.TabIndex = 104
+		Me.grpDest.TabStop = false
+		Me.grpDest.Text = "Destination"
+		'
+		'lblDest
+		'
+		Me.lblDest.AutoSize = true
+		Me.lblDest.Location = New System.Drawing.Point(38, 25)
+		Me.lblDest.Name = "lblDest"
+		Me.lblDest.Size = New System.Drawing.Size(60, 13)
+		Me.lblDest.TabIndex = 8
+		Me.lblDest.Text = "Destination"
+		'
+		'chkReserve
+		'
+		Me.chkReserve.AutoSize = true
+		Me.chkReserve.Location = New System.Drawing.Point(16, 48)
+		Me.chkReserve.Name = "chkReserve"
+		Me.chkReserve.Size = New System.Drawing.Size(126, 17)
+		Me.chkReserve.TabIndex = 7
+		Me.chkReserve.Text = "Jeu de réserve (Side)"
+		Me.chkReserve.UseVisualStyleBackColor = true
+		'
+		'cmdDestination
+		'
+		Me.cmdDestination.Location = New System.Drawing.Point(171, 20)
+		Me.cmdDestination.Name = "cmdDestination"
+		Me.cmdDestination.Size = New System.Drawing.Size(75, 23)
+		Me.cmdDestination.TabIndex = 6
+		Me.cmdDestination.Text = "Modifier..."
+		Me.cmdDestination.UseVisualStyleBackColor = true
+		AddHandler Me.cmdDestination.MouseDown, AddressOf Me.CmdDestinationMouseDown
 		'
 		'grpQuality
 		'
@@ -128,7 +176,7 @@ Partial Class frmAddCards
 		'
 		'cmdClose
 		'
-		Me.cmdClose.Location = New System.Drawing.Point(187, 292)
+		Me.cmdClose.Location = New System.Drawing.Point(268, 312)
 		Me.cmdClose.Name = "cmdClose"
 		Me.cmdClose.Size = New System.Drawing.Size(75, 23)
 		Me.cmdClose.TabIndex = 8
@@ -136,19 +184,9 @@ Partial Class frmAddCards
 		Me.cmdClose.UseVisualStyleBackColor = true
 		AddHandler Me.cmdClose.Click, AddressOf Me.CmdCloseClick
 		'
-		'cmdDestination
-		'
-		Me.cmdDestination.Location = New System.Drawing.Point(10, 292)
-		Me.cmdDestination.Name = "cmdDestination"
-		Me.cmdDestination.Size = New System.Drawing.Size(75, 23)
-		Me.cmdDestination.TabIndex = 6
-		Me.cmdDestination.Text = "Ajouter à >"
-		Me.cmdDestination.UseVisualStyleBackColor = true
-		AddHandler Me.cmdDestination.MouseDown, AddressOf Me.CmdDestinationMouseDown
-		'
 		'cmdAdd
 		'
-		Me.cmdAdd.Location = New System.Drawing.Point(268, 292)
+		Me.cmdAdd.Location = New System.Drawing.Point(268, 341)
 		Me.cmdAdd.Name = "cmdAdd"
 		Me.cmdAdd.Size = New System.Drawing.Size(75, 23)
 		Me.cmdAdd.TabIndex = 7
@@ -338,12 +376,22 @@ Partial Class frmAddCards
 		Me.mnuDropToCollection.Text = "Collection"
 		AddHandler Me.mnuDropToCollection.Click, AddressOf Me.DropTo
 		'
+		'imgDest
+		'
+		Me.imgDest.BackColor = System.Drawing.Color.Transparent
+		Me.imgDest.Image = CType(resources.GetObject("imgDest.Image"),System.Drawing.Image)
+		Me.imgDest.Location = New System.Drawing.Point(16, 22)
+		Me.imgDest.Name = "imgDest"
+		Me.imgDest.Size = New System.Drawing.Size(16, 16)
+		Me.imgDest.TabIndex = 16
+		Me.imgDest.TabStop = false
+		'
 		'frmAddCards
 		'
 		Me.AcceptButton = Me.cmdAdd
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(365, 354)
+		Me.ClientSize = New System.Drawing.Size(365, 403)
 		Me.Controls.Add(Me.cbarAjout)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -356,6 +404,8 @@ Partial Class frmAddCards
 		AddHandler FormClosing, AddressOf Me.FrmAddCardsFormClosing
 		Me.cbarAjout.ResumeLayout(false)
 		Me.pnlAjout.ResumeLayout(false)
+		Me.grpDest.ResumeLayout(false)
+		Me.grpDest.PerformLayout
 		Me.grpQuality.ResumeLayout(false)
 		Me.grpQuality.PerformLayout
 		Me.grpQuantite.ResumeLayout(false)
@@ -368,8 +418,13 @@ Partial Class frmAddCards
 		CType(Me.pictureBox2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.imgVF,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cmnuDestination.ResumeLayout(false)
+		CType(Me.imgDest,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private imgDest As System.Windows.Forms.PictureBox
+	Private chkReserve As System.Windows.Forms.CheckBox
+	Private lblDest As System.Windows.Forms.Label
+	Private grpDest As System.Windows.Forms.GroupBox
 	Private scrollStock As System.Windows.Forms.VScrollBar
 	Private chkFoil As System.Windows.Forms.CheckBox
 	Private grpQuality As System.Windows.Forms.GroupBox

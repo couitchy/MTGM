@@ -265,6 +265,7 @@ Partial Class frmSearch
 		Me.chkEq.Text = "="
 		Me.chkEq.UseVisualStyleBackColor = true
 		Me.chkEq.Visible = false
+		AddHandler Me.chkEq.CheckedChanged, AddressOf Me.ChkEqCheckedChanged
 		'
 		'chkInf
 		'

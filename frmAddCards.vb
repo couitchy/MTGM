@@ -168,6 +168,7 @@ Public Partial Class frmAddCards
 					If VpItem1.Text = VpItem2.Text Then
 						VpItem2.Checked = True
 						Me.cmdDestination.Tag = clsModule.GetDeckIndex(VpItem2.Text)
+						Me.lblDest.Text = VpItem2.Text
 						Exit For
 					End If
 				Next VpItem2
@@ -182,6 +183,7 @@ Public Partial Class frmAddCards
 			VpItem.Checked = ( VpItem Is sender )
 		Next VpItem
 		Me.cmdDestination.Tag = clsModule.GetDeckIndex(sender.Text)
+		Me.lblDest.Text = sender.Text
 		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked)
 	End Sub
 	Sub ChkFoilCheckedChanged(sender As Object, e As EventArgs)
@@ -223,13 +225,13 @@ Public Partial Class frmAddCards
 		If Val(Me.txtNbItems.Text) <> 0 Then
 			Try
 				If CInt(Me.lblNbItems.Tag) = 0 Then
-					VgDBCommand.CommandText = "Insert Into " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + If(Me.mnuDropToCollection.Checked = False, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + ");"
+					VgDBCommand.CommandText = "Insert Into " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + If(Not Me.mnuDropToCollection.Checked, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, ", " + Me.chkReserve.Checked.ToString, "") + ");"
 					VgDBCommand.ExecuteNonQuery
 				ElseIf ( CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text) ) <= 0 Then
-					VgDBCommand.CommandText = "Delete * From " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+					VgDBCommand.CommandText = "Delete * From " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
 					VgDBCommand.ExecuteNonQuery
 				Else
-					VgDBCommand.CommandText = "Update " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Me.mnuDropToCollection.Checked = False, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+					VgDBCommand.CommandText = "Update " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
 					VgDBCommand.ExecuteNonQuery
 				End If
 				Me.cboSerie.Tag = Me.cboSerie.Text

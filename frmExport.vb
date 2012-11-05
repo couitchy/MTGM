@@ -138,7 +138,7 @@ Public Partial Class frmExport
 					If IsNumeric(VpStrs(0)) AndAlso CInt(VpStrs(0)) <> 0 Then
 						'Cas 1 : nouveau deck
 						If VpIsNew Then
-							VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VpId.ToString + ", " + VpFoil.ToString + ");"
+							VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil, Reserve) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + VpId.ToString + ", " + VpFoil.ToString + ", False);"
 						Else
 							'Cas 2 : complément collection
 							If VpSource = clsModule.CgCollection Then
@@ -160,7 +160,7 @@ Public Partial Class frmExport
 									VpSQL = "Update MyGames Set Items = " + (CInt(VpO) + CInt(VpStrs(1))).ToString + " Where EncNbr = " + VpStrs(0) + " And Foil = " + VpFoil.ToString + " And GameID = " + clsModule.GetDeckIndex(VpSource) + ";"
 								'Cas 3.2 : nouvelle carte => insertion
 								Else
-									VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + clsModule.GetDeckIndex(VpSource) + ", " + VpFoil.ToString + ");"
+									VpSQL = "Insert Into MyGames(EncNbr, Items, GameID, Foil, Reserve) Values (" + VpStrs(0) + ", " + VpStrs(1) + ", " + clsModule.GetDeckIndex(VpSource) + ", " + VpFoil.ToString + ", False);"
 								End If
 							End If
 						End If

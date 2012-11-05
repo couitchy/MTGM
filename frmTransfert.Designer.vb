@@ -47,6 +47,7 @@ Partial Class frmTransfert
 		Me.chkFoil = New System.Windows.Forms.CheckBox
 		Me.picSerie2 = New System.Windows.Forms.PictureBox
 		Me.cboSerie2 = New System.Windows.Forms.ComboBox
+		Me.chkReserve = New System.Windows.Forms.CheckBox
 		Me.grpSource.SuspendLayout
 		CType(Me.sldQuant,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picSerie,System.ComponentModel.ISupportInitialize).BeginInit
@@ -56,7 +57,7 @@ Partial Class frmTransfert
 		'
 		'cmdOK
 		'
-		Me.cmdOK.Location = New System.Drawing.Point(165, 214)
+		Me.cmdOK.Location = New System.Drawing.Point(182, 214)
 		Me.cmdOK.Name = "cmdOK"
 		Me.cmdOK.Size = New System.Drawing.Size(75, 23)
 		Me.cmdOK.TabIndex = 6
@@ -66,7 +67,7 @@ Partial Class frmTransfert
 		'
 		'cmdCancel
 		'
-		Me.cmdCancel.Location = New System.Drawing.Point(84, 214)
+		Me.cmdCancel.Location = New System.Drawing.Point(101, 214)
 		Me.cmdCancel.Name = "cmdCancel"
 		Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
 		Me.cmdCancel.TabIndex = 7
@@ -84,7 +85,7 @@ Partial Class frmTransfert
 		Me.grpSource.Controls.Add(Me.cboSerie)
 		Me.grpSource.Location = New System.Drawing.Point(12, 12)
 		Me.grpSource.Name = "grpSource"
-		Me.grpSource.Size = New System.Drawing.Size(228, 121)
+		Me.grpSource.Size = New System.Drawing.Size(245, 121)
 		Me.grpSource.TabIndex = 13
 		Me.grpSource.TabStop = false
 		Me.grpSource.Text = "Source"
@@ -140,18 +141,19 @@ Partial Class frmTransfert
 		Me.cboSerie.FormattingEnabled = true
 		Me.cboSerie.Location = New System.Drawing.Point(33, 37)
 		Me.cboSerie.Name = "cboSerie"
-		Me.cboSerie.Size = New System.Drawing.Size(182, 21)
+		Me.cboSerie.Size = New System.Drawing.Size(195, 21)
 		Me.cboSerie.TabIndex = 10
 		AddHandler Me.cboSerie.SelectedIndexChanged, AddressOf Me.CboSerieSelectedIndexChanged
 		'
 		'grpDest
 		'
+		Me.grpDest.Controls.Add(Me.chkReserve)
 		Me.grpDest.Controls.Add(Me.chkFoil)
 		Me.grpDest.Controls.Add(Me.picSerie2)
 		Me.grpDest.Controls.Add(Me.cboSerie2)
 		Me.grpDest.Location = New System.Drawing.Point(12, 139)
 		Me.grpDest.Name = "grpDest"
-		Me.grpDest.Size = New System.Drawing.Size(228, 69)
+		Me.grpDest.Size = New System.Drawing.Size(245, 69)
 		Me.grpDest.TabIndex = 14
 		Me.grpDest.TabStop = false
 		Me.grpDest.Text = "Destination"
@@ -160,7 +162,7 @@ Partial Class frmTransfert
 		'chkFoil
 		'
 		Me.chkFoil.AutoSize = true
-		Me.chkFoil.Location = New System.Drawing.Point(124, 46)
+		Me.chkFoil.Location = New System.Drawing.Point(138, 46)
 		Me.chkFoil.Name = "chkFoil"
 		Me.chkFoil.Size = New System.Drawing.Size(91, 17)
 		Me.chkFoil.TabIndex = 15
@@ -181,16 +183,26 @@ Partial Class frmTransfert
 		Me.cboSerie2.FormattingEnabled = true
 		Me.cboSerie2.Location = New System.Drawing.Point(33, 19)
 		Me.cboSerie2.Name = "cboSerie2"
-		Me.cboSerie2.Size = New System.Drawing.Size(182, 21)
+		Me.cboSerie2.Size = New System.Drawing.Size(195, 21)
 		Me.cboSerie2.TabIndex = 13
 		AddHandler Me.cboSerie2.SelectedIndexChanged, AddressOf Me.CboSerie2SelectedIndexChanged
+		'
+		'chkReserve
+		'
+		Me.chkReserve.AutoSize = true
+		Me.chkReserve.Location = New System.Drawing.Point(33, 46)
+		Me.chkReserve.Name = "chkReserve"
+		Me.chkReserve.Size = New System.Drawing.Size(96, 17)
+		Me.chkReserve.TabIndex = 16
+		Me.chkReserve.Text = "Réserve (Side)"
+		Me.chkReserve.UseVisualStyleBackColor = true
 		'
 		'frmTransfert
 		'
 		Me.AcceptButton = Me.cmdOK
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(253, 245)
+		Me.ClientSize = New System.Drawing.Size(269, 245)
 		Me.Controls.Add(Me.grpDest)
 		Me.Controls.Add(Me.grpSource)
 		Me.Controls.Add(Me.cmdCancel)
@@ -209,6 +221,7 @@ Partial Class frmTransfert
 		CType(Me.picSerie2,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private chkReserve As System.Windows.Forms.CheckBox
 	Private grpDest As System.Windows.Forms.GroupBox
 	Private grpSource As System.Windows.Forms.GroupBox
 	Private chkFoil As System.Windows.Forms.CheckBox
