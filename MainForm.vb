@@ -1038,7 +1038,7 @@ Public Partial Class MainForm
 			VpNode.SelectedImageIndex = 1
 			'Cas 1 : chargement des résultats d'une recherche de l'utilisateur
 			If Me.IsInAdvSearch Then
-				VpNode.Text = VpSearchName
+				VpNode.Text = VmAdvSearchLabel
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
 				Catch
@@ -1049,7 +1049,7 @@ Public Partial Class MainForm
 				VmSuggestions = Nothing
 			'Cas 2 : chargement des cartes de la collection ou d'un deck
 			Else
-				VpNode.Text = Me.GetSelectedSource + If(VpReserve, " -- Side", "")
+				VpNode.Text = If(Not VpReserve, Me.GetSelectedSource, "~ Side ~")
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
 				Catch
@@ -3096,14 +3096,14 @@ Public Partial Class MainForm
 		'Cas 1 : si la valeur est nulle, il s'agit d'une suppression
 		With VgDBCommand
 			If VpCell.Value = 0 Then
-				.CommandText = "Delete * From " + VpSource + " Where Reserve = " + VpReserve.ToString + " And Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+				.CommandText = "Delete * From " + VpSource + " Where Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
 				.ExecuteNonQuery
 			Else
-				.CommandText = "Select Items From " + VpSource + " Where Reserve = " + VpReserve.ToString + " And EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
 				VpItems = .ExecuteScalar
 				'Cas 2 : il s'agit d'une mise à jour du stock
 				If VpItems > 0 Then
-					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where Reserve = " + VpReserve.ToString + " And EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + ";", ";")
+					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
 					.ExecuteNonQuery
 				'Cas 3 : il s'agit d'une insertion
 				Else

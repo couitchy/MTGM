@@ -38,11 +38,16 @@ Partial Class frmPlateau
 		Me.toolStrip = New System.Windows.Forms.ToolStrip
 		Me.btNewPartie = New System.Windows.Forms.ToolStripButton
 		Me.btMulligan = New System.Windows.Forms.ToolStripButton
+		Me.btReserve = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator0 = New System.Windows.Forms.ToolStripSeparator
 		Me.btLives = New System.Windows.Forms.ToolStripButton
 		Me.btPoisons = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator1 = New System.Windows.Forms.ToolStripSeparator
 		Me.btTurns = New System.Windows.Forms.ToolStripButton
+		Me.btNextRound = New System.Windows.Forms.ToolStripButton
+		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
+		Me.btDe = New System.Windows.Forms.ToolStripButton
+		Me.btPiece = New System.Windows.Forms.ToolStripButton
 		Me.btAnchorDown = New System.Windows.Forms.ToolStripButton
 		Me.btAnchorUp = New System.Windows.Forms.ToolStripButton
 		Me.splitV1 = New System.Windows.Forms.SplitContainer
@@ -140,10 +145,10 @@ Partial Class frmPlateau
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btAnchorDown, Me.btAnchorUp})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btReserve, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btNextRound, Me.btSeparator2, Me.btDe, Me.btPiece, Me.btAnchorDown, Me.btAnchorUp})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolStrip.Name = "toolStrip"
-		Me.toolStrip.Size = New System.Drawing.Size(727, 54)
+		Me.toolStrip.Size = New System.Drawing.Size(855, 54)
 		Me.toolStrip.TabIndex = 1
 		'
 		'btNewPartie
@@ -168,6 +173,19 @@ Partial Class frmPlateau
 		Me.btMulligan.Text = "Mulligan"
 		Me.btMulligan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btMulligan.Click, AddressOf Me.BtMulliganClick
+		'
+		'btReserve
+		'
+		Me.btReserve.AutoSize = false
+		Me.btReserve.Image = CType(resources.GetObject("btReserve.Image"),System.Drawing.Image)
+		Me.btReserve.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btReserve.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btReserve.Name = "btReserve"
+		Me.btReserve.Size = New System.Drawing.Size(74, 51)
+		Me.btReserve.Text = "Réserve"
+		Me.btReserve.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btReserve.ToolTipText = "Voir la réserve"
+		AddHandler Me.btReserve.Click, AddressOf Me.BtReserveClick
 		'
 		'btSeparator0
 		'
@@ -218,6 +236,50 @@ Partial Class frmPlateau
 		Me.btTurns.ToolTipText = "Clic gauche pour +, droit pour -"
 		AddHandler Me.btTurns.MouseUp, AddressOf Me.BtTurnsMouseUp
 		'
+		'btNextRound
+		'
+		Me.btNextRound.AutoSize = false
+		Me.btNextRound.Image = CType(resources.GetObject("btNextRound.Image"),System.Drawing.Image)
+		Me.btNextRound.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btNextRound.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btNextRound.Name = "btNextRound"
+		Me.btNextRound.Size = New System.Drawing.Size(74, 51)
+		Me.btNextRound.Text = "Prochain"
+		Me.btNextRound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btNextRound.ToolTipText = "Tout dégager et piocher"
+		AddHandler Me.btNextRound.Click, AddressOf Me.BtNextRoundClick
+		'
+		'btSeparator2
+		'
+		Me.btSeparator2.Name = "btSeparator2"
+		Me.btSeparator2.Size = New System.Drawing.Size(6, 54)
+		'
+		'btDe
+		'
+		Me.btDe.AutoSize = false
+		Me.btDe.Image = CType(resources.GetObject("btDe.Image"),System.Drawing.Image)
+		Me.btDe.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btDe.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btDe.Name = "btDe"
+		Me.btDe.Size = New System.Drawing.Size(74, 51)
+		Me.btDe.Text = "Dé"
+		Me.btDe.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btDe.ToolTipText = "1 dé 6"
+		AddHandler Me.btDe.Click, AddressOf Me.BtDeClick
+		'
+		'btPiece
+		'
+		Me.btPiece.AutoSize = false
+		Me.btPiece.Image = CType(resources.GetObject("btPiece.Image"),System.Drawing.Image)
+		Me.btPiece.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btPiece.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btPiece.Name = "btPiece"
+		Me.btPiece.Size = New System.Drawing.Size(74, 51)
+		Me.btPiece.Text = "Pièce"
+		Me.btPiece.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btPiece.ToolTipText = "Pile ou face"
+		AddHandler Me.btPiece.Click, AddressOf Me.BtPieceClick
+		'
 		'btAnchorDown
 		'
 		Me.btAnchorDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
@@ -259,8 +321,8 @@ Partial Class frmPlateau
 		'splitV1.Panel2
 		'
 		Me.splitV1.Panel2.Controls.Add(Me.splitH1)
-		Me.splitV1.Size = New System.Drawing.Size(727, 474)
-		Me.splitV1.SplitterDistance = 243
+		Me.splitV1.Size = New System.Drawing.Size(855, 474)
+		Me.splitV1.SplitterDistance = 285
 		Me.splitV1.TabIndex = 2
 		Me.splitV1.TabStop = false
 		'
@@ -278,7 +340,7 @@ Partial Class frmPlateau
 		'splitH3.Panel2
 		'
 		Me.splitH3.Panel2.Controls.Add(Me.splitH4)
-		Me.splitH3.Size = New System.Drawing.Size(243, 474)
+		Me.splitH3.Size = New System.Drawing.Size(285, 474)
 		Me.splitH3.SplitterDistance = 132
 		Me.splitH3.TabIndex = 0
 		Me.splitH3.TabStop = false
@@ -294,7 +356,7 @@ Partial Class frmPlateau
 		Me.cbarBibli.Location = New System.Drawing.Point(0, 0)
 		Me.cbarBibli.Movable = false
 		Me.cbarBibli.Name = "cbarBibli"
-		Me.cbarBibli.Size = New System.Drawing.Size(243, 132)
+		Me.cbarBibli.Size = New System.Drawing.Size(285, 132)
 		Me.cbarBibli.TabIndex = 1
 		Me.cbarBibli.Text = "Bibliothèque"
 		'
@@ -304,7 +366,7 @@ Partial Class frmPlateau
 		Me.cbarpanelBibli.Controls.Add(Me.toolStripBibli)
 		Me.cbarpanelBibli.Location = New System.Drawing.Point(2, 27)
 		Me.cbarpanelBibli.Name = "cbarpanelBibli"
-		Me.cbarpanelBibli.Size = New System.Drawing.Size(239, 103)
+		Me.cbarpanelBibli.Size = New System.Drawing.Size(281, 103)
 		Me.cbarpanelBibli.TabIndex = 0
 		'
 		'panelBibli
@@ -313,7 +375,7 @@ Partial Class frmPlateau
 		Me.panelBibli.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelBibli.Location = New System.Drawing.Point(24, 0)
 		Me.panelBibli.Name = "panelBibli"
-		Me.panelBibli.Size = New System.Drawing.Size(215, 103)
+		Me.panelBibli.Size = New System.Drawing.Size(257, 103)
 		Me.panelBibli.TabIndex = 2
 		AddHandler Me.panelBibli.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelBibli.DragDrop, AddressOf Me.PanelBibliDragDrop
@@ -373,7 +435,7 @@ Partial Class frmPlateau
 		'splitH4.Panel2
 		'
 		Me.splitH4.Panel2.Controls.Add(Me.cbarExil)
-		Me.splitH4.Size = New System.Drawing.Size(243, 338)
+		Me.splitH4.Size = New System.Drawing.Size(285, 338)
 		Me.splitH4.SplitterDistance = 163
 		Me.splitH4.TabIndex = 0
 		Me.splitH4.TabStop = false
@@ -389,7 +451,7 @@ Partial Class frmPlateau
 		Me.cbarGraveyard.Location = New System.Drawing.Point(0, 0)
 		Me.cbarGraveyard.Movable = false
 		Me.cbarGraveyard.Name = "cbarGraveyard"
-		Me.cbarGraveyard.Size = New System.Drawing.Size(243, 163)
+		Me.cbarGraveyard.Size = New System.Drawing.Size(285, 163)
 		Me.cbarGraveyard.TabIndex = 1
 		Me.cbarGraveyard.Text = "Cimetière"
 		'
@@ -399,7 +461,7 @@ Partial Class frmPlateau
 		Me.cbarpanelGraveyard.Controls.Add(Me.toolStripGraveyard)
 		Me.cbarpanelGraveyard.Location = New System.Drawing.Point(2, 27)
 		Me.cbarpanelGraveyard.Name = "cbarpanelGraveyard"
-		Me.cbarpanelGraveyard.Size = New System.Drawing.Size(239, 134)
+		Me.cbarpanelGraveyard.Size = New System.Drawing.Size(281, 134)
 		Me.cbarpanelGraveyard.TabIndex = 0
 		'
 		'panelGraveyard
@@ -408,7 +470,7 @@ Partial Class frmPlateau
 		Me.panelGraveyard.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelGraveyard.Location = New System.Drawing.Point(24, 0)
 		Me.panelGraveyard.Name = "panelGraveyard"
-		Me.panelGraveyard.Size = New System.Drawing.Size(215, 134)
+		Me.panelGraveyard.Size = New System.Drawing.Size(257, 134)
 		Me.panelGraveyard.TabIndex = 3
 		AddHandler Me.panelGraveyard.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelGraveyard.DragDrop, AddressOf Me.PanelGraveyardDragDrop
@@ -445,7 +507,7 @@ Partial Class frmPlateau
 		Me.cbarExil.Location = New System.Drawing.Point(0, 0)
 		Me.cbarExil.Movable = false
 		Me.cbarExil.Name = "cbarExil"
-		Me.cbarExil.Size = New System.Drawing.Size(243, 171)
+		Me.cbarExil.Size = New System.Drawing.Size(285, 171)
 		Me.cbarExil.TabIndex = 1
 		Me.cbarExil.Text = "Exil"
 		'
@@ -455,7 +517,7 @@ Partial Class frmPlateau
 		Me.cbarpanelExil.Controls.Add(Me.toolStripExil)
 		Me.cbarpanelExil.Location = New System.Drawing.Point(2, 27)
 		Me.cbarpanelExil.Name = "cbarpanelExil"
-		Me.cbarpanelExil.Size = New System.Drawing.Size(239, 142)
+		Me.cbarpanelExil.Size = New System.Drawing.Size(281, 142)
 		Me.cbarpanelExil.TabIndex = 0
 		'
 		'panelExil
@@ -464,7 +526,7 @@ Partial Class frmPlateau
 		Me.panelExil.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelExil.Location = New System.Drawing.Point(24, 0)
 		Me.panelExil.Name = "panelExil"
-		Me.panelExil.Size = New System.Drawing.Size(215, 142)
+		Me.panelExil.Size = New System.Drawing.Size(257, 142)
 		Me.panelExil.TabIndex = 3
 		AddHandler Me.panelExil.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelExil.DragDrop, AddressOf Me.PanelExilDragDrop
@@ -504,7 +566,7 @@ Partial Class frmPlateau
 		'splitH1.Panel2
 		'
 		Me.splitH1.Panel2.Controls.Add(Me.splitH2)
-		Me.splitH1.Size = New System.Drawing.Size(480, 474)
+		Me.splitH1.Size = New System.Drawing.Size(566, 474)
 		Me.splitH1.SplitterDistance = 130
 		Me.splitH1.TabIndex = 0
 		Me.splitH1.TabStop = false
@@ -520,7 +582,7 @@ Partial Class frmPlateau
 		Me.cbarRegard.Location = New System.Drawing.Point(0, 0)
 		Me.cbarRegard.Movable = false
 		Me.cbarRegard.Name = "cbarRegard"
-		Me.cbarRegard.Size = New System.Drawing.Size(480, 130)
+		Me.cbarRegard.Size = New System.Drawing.Size(566, 130)
 		Me.cbarRegard.TabIndex = 0
 		Me.cbarRegard.Text = "Regard"
 		'
@@ -530,7 +592,7 @@ Partial Class frmPlateau
 		Me.cbarpanelRegard.Controls.Add(Me.toolStripRegard)
 		Me.cbarpanelRegard.Location = New System.Drawing.Point(2, 27)
 		Me.cbarpanelRegard.Name = "cbarpanelRegard"
-		Me.cbarpanelRegard.Size = New System.Drawing.Size(476, 101)
+		Me.cbarpanelRegard.Size = New System.Drawing.Size(562, 101)
 		Me.cbarpanelRegard.TabIndex = 0
 		'
 		'panelRegard
@@ -539,7 +601,7 @@ Partial Class frmPlateau
 		Me.panelRegard.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelRegard.Location = New System.Drawing.Point(24, 0)
 		Me.panelRegard.Name = "panelRegard"
-		Me.panelRegard.Size = New System.Drawing.Size(452, 101)
+		Me.panelRegard.Size = New System.Drawing.Size(538, 101)
 		Me.panelRegard.TabIndex = 3
 		AddHandler Me.panelRegard.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelRegard.DragDrop, AddressOf Me.PanelRegardDragDrop
@@ -579,7 +641,7 @@ Partial Class frmPlateau
 		'splitH2.Panel2
 		'
 		Me.splitH2.Panel2.Controls.Add(Me.cbarField)
-		Me.splitH2.Size = New System.Drawing.Size(480, 340)
+		Me.splitH2.Size = New System.Drawing.Size(566, 340)
 		Me.splitH2.SplitterDistance = 131
 		Me.splitH2.TabIndex = 0
 		Me.splitH2.TabStop = false
@@ -595,7 +657,7 @@ Partial Class frmPlateau
 		Me.cbarMain.Location = New System.Drawing.Point(0, 0)
 		Me.cbarMain.Movable = false
 		Me.cbarMain.Name = "cbarMain"
-		Me.cbarMain.Size = New System.Drawing.Size(480, 131)
+		Me.cbarMain.Size = New System.Drawing.Size(566, 131)
 		Me.cbarMain.TabIndex = 1
 		Me.cbarMain.Text = "Main"
 		'
@@ -605,7 +667,7 @@ Partial Class frmPlateau
 		Me.cbarpanelMain.Controls.Add(Me.toolStripMain)
 		Me.cbarpanelMain.Location = New System.Drawing.Point(2, 27)
 		Me.cbarpanelMain.Name = "cbarpanelMain"
-		Me.cbarpanelMain.Size = New System.Drawing.Size(476, 102)
+		Me.cbarpanelMain.Size = New System.Drawing.Size(562, 102)
 		Me.cbarpanelMain.TabIndex = 0
 		'
 		'panelMain
@@ -614,7 +676,7 @@ Partial Class frmPlateau
 		Me.panelMain.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelMain.Location = New System.Drawing.Point(24, 0)
 		Me.panelMain.Name = "panelMain"
-		Me.panelMain.Size = New System.Drawing.Size(452, 102)
+		Me.panelMain.Size = New System.Drawing.Size(538, 102)
 		Me.panelMain.TabIndex = 3
 		AddHandler Me.panelMain.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelMain.DragDrop, AddressOf Me.PanelMainDragDrop
@@ -651,7 +713,7 @@ Partial Class frmPlateau
 		Me.cbarField.Location = New System.Drawing.Point(0, 0)
 		Me.cbarField.Movable = false
 		Me.cbarField.Name = "cbarField"
-		Me.cbarField.Size = New System.Drawing.Size(480, 205)
+		Me.cbarField.Size = New System.Drawing.Size(566, 205)
 		Me.cbarField.TabIndex = 1
 		Me.cbarField.Text = "Champ de bataille"
 		'
@@ -661,7 +723,7 @@ Partial Class frmPlateau
 		Me.cbarpanelField.Controls.Add(Me.toolStripField)
 		Me.cbarpanelField.Location = New System.Drawing.Point(2, 27)
 		Me.cbarpanelField.Name = "cbarpanelField"
-		Me.cbarpanelField.Size = New System.Drawing.Size(476, 176)
+		Me.cbarpanelField.Size = New System.Drawing.Size(562, 176)
 		Me.cbarpanelField.TabIndex = 0
 		'
 		'panelField
@@ -670,7 +732,7 @@ Partial Class frmPlateau
 		Me.panelField.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.panelField.Location = New System.Drawing.Point(24, 0)
 		Me.panelField.Name = "panelField"
-		Me.panelField.Size = New System.Drawing.Size(452, 176)
+		Me.panelField.Size = New System.Drawing.Size(538, 176)
 		Me.panelField.TabIndex = 3
 		AddHandler Me.panelField.DragOver, AddressOf Me.PanelDragOver
 		AddHandler Me.panelField.DragDrop, AddressOf Me.PanelFieldDragDrop
@@ -840,7 +902,7 @@ Partial Class frmPlateau
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(727, 528)
+		Me.ClientSize = New System.Drawing.Size(855, 528)
 		Me.Controls.Add(Me.splitV1)
 		Me.Controls.Add(Me.toolStrip)
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -901,6 +963,11 @@ Partial Class frmPlateau
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btPiece As System.Windows.Forms.ToolStripButton
+	Private btDe As System.Windows.Forms.ToolStripButton
+	Private btSeparator2 As System.Windows.Forms.ToolStripSeparator
+	Private btNextRound As System.Windows.Forms.ToolStripButton
+	Private btReserve As System.Windows.Forms.ToolStripButton
 	Private btAnchorDown As System.Windows.Forms.ToolStripButton
 	Private btAnchorUp As System.Windows.Forms.ToolStripButton
 	Private cmnuTransform As System.Windows.Forms.ToolStripMenuItem

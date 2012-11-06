@@ -211,6 +211,12 @@ Public Partial Class frmPlateau
 			End If
 		End If
 	End Sub
+	Private Sub UntapAll
+		For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
+			VpCard.Tapped = False
+		Next VpCard
+		Call Me.ManageReDraw(VmPlateauPartie.Field)
+	End Sub
 	Private Sub ManageTap(VpPicture As PictureBox, Optional VpStatic As Boolean = False)
 	'------------------------------------------------------------------
 	'Gestion de l'orientation de la carte (engagée @ 90°, dégagée @ 0°)
@@ -410,10 +416,7 @@ Public Partial Class frmPlateau
 		Call Me.ManageReDraw(VmPlateauPartie.Bibli)
 	End Sub
 	Sub BtFieldUntapAllClick(sender As Object, e As EventArgs)
-		For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
-			VpCard.Tapped = False
-		Next VpCard
-		Call Me.ManageReDraw(VmPlateauPartie.Field)
+		Call Me.UntapAll
 	End Sub
 	Sub BtBibliSearchClick(sender As Object, e As EventArgs)
 		Call Me.SearchIn(VmPlateauPartie.Bibli, 0)
@@ -507,14 +510,18 @@ Public Partial Class frmPlateau
 		If VpCard.SendTo(VmPlateauPartie.Main) Then
 			Call Me.ManageReDraw(VmPlateauPartie.Bibli, VmPlateauPartie.Main)
 		End If
-		VmPlateauPartie.Tours += 1
-		Me.btTurns.Text = VmPlateauPartie.Tours.ToString
 	End Sub
 	Sub CardGraveyardDoubleClick(sender As Object, e As EventArgs)
-		
+	Dim VpCard As clsPlateauCard = sender.Tag
+		If VpCard.SendTo(VmPlateauPartie.Exil) Then
+			Call Me.ManageReDraw(VmPlateauPartie.Graveyard, VmPlateauPartie.Exil)
+		End If		
 	End Sub
 	Sub CardExilDoubleClick(sender As Object, e As EventArgs)
-		
+	Dim VpCard As clsPlateauCard = sender.Tag
+		If VpCard.SendTo(VmPlateauPartie.Regard) Then
+			Call Me.ManageReDraw(VmPlateauPartie.Exil, VmPlateauPartie.Regard)
+		End If			
 	End Sub
 	Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
@@ -649,7 +656,26 @@ Public Partial Class frmPlateau
 	Dim VpScreen As Rectangle = Me.HalfSize
 		Me.Location = New Point(VpScreen.Location.X, VpScreen.Location.Y + VpScreen.Height / 2)
 	End Sub	
-	#End Region	
+	Sub BtNextRoundClick(sender As Object, e As EventArgs)
+		Call Me.UntapAll
+		With VmPlateauPartie
+			If .BibliTop.SendTo(.Main) Then
+				Call Me.ManageReDraw(.Bibli, .Main)
+			End If
+			.Tours += 1
+			Me.btTurns.Text = .Tours.ToString		
+		End With
+	End Sub
+	Sub BtReserveClick(sender As Object, e As EventArgs)
+		
+	End Sub
+	Sub BtDeClick(sender As Object, e As EventArgs)
+		Call clsModule.ShowInformation("Le lancer de dé a donné : " + clsModule.VgRandom.Next(1, 7).ToString)
+	End Sub
+	Sub BtPieceClick(sender As Object, e As EventArgs)
+		Call clsModule.ShowInformation("Le lancer de pièce a donné : " + If(clsModule.VgRandom.Next(1, 3) = 1, "pile", "face"))
+	End Sub
+	#End Region
 End Class
 Public Class clsPlateauPartie
 	Private VmDeck As New List(Of clsPlateauCard)
