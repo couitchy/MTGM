@@ -805,7 +805,7 @@ Public Partial Class MainForm
 		Me.txtRichCard.Clear
 		Me.txtRichOther.Clear
 		Me.btHistPrices.Enabled = False
-		Me.btShowAll.Enabled = Not Me.IsInAdvSearch
+		Me.btShowAll.Enabled = (Not Me.IsInAdvSearch) And (Not Me.btCardUse.Checked)
 		Call Me.InitGrids
 		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		Call Me.LoadAutorisations("")
@@ -949,12 +949,16 @@ Public Partial Class MainForm
 		End With
 	End Sub
 	Private Sub InitGrids
-		If Me.IsInAdvSearch Then
-			Call Me.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)"})
+		If Me.btCardUse.Checked Then
+			Call Me.InitGrid(Me.grdPropCard, New String() {"Source", "Stock total"})
 		Else
-			Call Me.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)", "Stock", "Stock foil"})
+			If Me.IsInAdvSearch Then
+				Call Me.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)"})
+			Else
+				Call Me.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)", "Stock", "Stock foil"})
+			End If
+			Call Me.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur"})
 		End If
-		Call Me.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur"})
 	End Sub
 	Public Sub LoadMnu
 	'------------------------------
@@ -1276,6 +1280,7 @@ Public Partial Class MainForm
 				Me.btHistPrices.Enabled = True
 				Me.btHistPrices.Visible = True
 				Me.btShowAll.Visible = True
+				Me.btCardUse.Visible = True
 				Me.pnlCard.BringToFront
 			Else
 				Me.grdPropCard.Visible = False
@@ -1283,6 +1288,7 @@ Public Partial Class MainForm
 				Me.pnlCard.SendToBack
 				Me.btHistPrices.Visible = False
 				Me.btShowAll.Visible = False
+				Me.btCardUse.Visible = False
 			End If
 		End With
 	End Sub
@@ -1326,6 +1332,41 @@ Public Partial Class MainForm
 		End With
 	End Sub
 	Private Sub LoadCarac(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
+		If Me.btCardUse.Checked Then
+			Call Me.LoadCaracUse(VpCard)
+		Else
+			Call Me.LoadCaracDetails(VpCard, VpDownFace, VpTransformed, VpReserve)
+		End If
+	End Sub
+	Private Sub LoadCaracUse(VpCard As String)
+	'--------------------------------------------------------------------
+	'Affiche où est disponible (decks / collection) la carte sélectionnée
+	'--------------------------------------------------------------------
+		'Nettoyage grille
+		Call Me.ClearGrid(Me.grdPropCard)	
+		'Remplissage grille pour la collection
+		Call Me.ShowUseInGrid(VpCard, clsModule.CgSCollection, clsModule.CgCollection, False)
+		'Remplissage grille pour les decks
+		For Each VpSource As String In Me.GetAllSources
+			Call Me.ShowUseInGrid(VpCard, clsModule.CgSDecks, VpSource, True)
+		Next VpSource
+		Me.grdPropCard.AutoSize
+	End Sub
+	Private Sub ShowUseInGrid(VpCard As String, VpSource As String, VpSource2 As String, VpDeckMode As Boolean)
+	Dim VpRow As Integer
+	Dim VpCount As Integer
+		'Sélectionne le stock total pour la source passée en paramètre
+		VgDBCommand.CommandText = "Select Sum(" + VpSource + ".Items) From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + If(VpDeckMode, " And GameID = " + clsModule.GetDeckIndex(VpSource2), "") + " Group By Card.Title;"
+		VpCount = CInt(VgDBCommand.ExecuteScalar)
+		If VpCount > 0 Then
+			'Insertion nouvelle ligne
+			VpRow = Me.grdPropCard.RowsCount
+			Me.grdPropCard.Rows.Insert(VpRow)
+			Me.grdPropCard(VpRow, 0) = New Cells.Cell(VpSource2)
+			Me.grdPropCard(VpRow, 1) = New Cells.Cell(VpCount)
+		End If	
+	End Sub
+	Private Sub LoadCaracDetails(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
 	'-----------------------------------------------
@@ -1731,7 +1772,6 @@ Public Partial Class MainForm
 	Dim VpPricesHistory As frmGrapher
 	Dim VpCardName As String = Me.tvwExplore.SelectedNode.Tag.Value
 	Dim VpHist As Hashtable
-		Me.btHistPrices.Checked = False
 		Application.DoEvents
 		If clsModule.DBOK Then
 			If clsModule.HasPriceHistory Then
@@ -1812,6 +1852,21 @@ Public Partial Class MainForm
 			End If
 		Next VpItem
 		Return ""
+	End Function
+	Private Function GetAllSources As List(Of String)
+	'---------------------------------------
+	'Retourne toutes les sources disponibles
+	'---------------------------------------
+	Dim VpSources As New List(Of String)
+		VgDBCommand.CommandText = "Select GameName From MyGamesID;"
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpSources.Add(.GetString(0))
+			End While
+			.Close
+		End With		
+		Return VpSources
 	End Function
 	Private Sub ChangeLanguage(VpNode As TreeNode, VpSeriesAldreadyDone As Boolean)
 	'-----------------------------------------------------
@@ -2284,6 +2339,7 @@ Public Partial Class MainForm
 			If Not Me.IsSourcePresent Then
 				Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
 			Else
+				Cursor.Current = Cursors.WaitCursor
 				VpAddCards = New frmAddCards(Me)
 				VpAddCards.ShowDialog
 			End If
@@ -3116,10 +3172,14 @@ Public Partial Class MainForm
 		Call Me.ShowNCards(VpSource)
 	End Sub
 	Sub BtHistPricesFoilClick(sender As Object, e As EventArgs)
+		Application.UseWaitCursor = True
 		Call Me.LoadPricesHistory(True)
+		Application.UseWaitCursor = False
 	End Sub
 	Sub BtHistPricesSimpleClick(sender As Object, e As EventArgs)
+		Application.UseWaitCursor = True
 		Call Me.LoadPricesHistory(False)
+		Application.UseWaitCursor = False
 	End Sub
 	Sub BtHistPricesActivate(sender As Object, e As EventArgs)
 		Me.btHistPrices.Checked = True
@@ -3131,6 +3191,12 @@ Public Partial Class MainForm
 	End Sub
 	Sub BtShowAllActivate(sender As Object, e As EventArgs)
 		Me.btShowAll.Checked = Not Me.btShowAll.Checked
+		Call Me.ReloadCarac
+	End Sub
+	Sub BtCardUseActivate(sender As Object, e As EventArgs)
+		Me.btCardUse.Checked = Not Me.btCardUse.Checked
+		Me.btShowAll.Enabled = (Not Me.IsInAdvSearch) And (Not Me.btCardUse.Checked)
+		Call Me.InitGrids
 		Call Me.ReloadCarac
 	End Sub
 	Sub TvwExploreDragEnter(sender As Object, e As DragEventArgs)
@@ -3182,6 +3248,9 @@ Public Partial Class MainForm
 		If Control.MouseButtons = MouseButtons.None Then
 			Me.splitH3.SplitterDistance = 42
 		End If
+	End Sub
+	Sub CmnuCbarClosed(sender As Object, e As ToolStripDropDownClosedEventArgs)
+		Me.btHistPrices.Checked = False
 	End Sub
 	#End Region
 End Class

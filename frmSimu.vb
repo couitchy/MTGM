@@ -448,8 +448,12 @@ Public Partial Class frmSimu
 		Next VpToRemove
 		'Affichage dans le treeview
 		Call clsModule.ShowInformation(VpSuggest.Count.ToString + " occurence(s) trouvée(s).")
-		MainForm.VgMe.Suggestions = VpSuggest
-		Call MainForm.VgMe.LoadTvw("(" + VpSQL + ") As " + clsModule.CgSFromSearch)
+		With MainForm.VgMe
+			.Suggestions = VpSuggest
+			.mnuDispAdvSearch.Enabled = True
+			Call .ManageDispMenu(.mnuDispAdvSearch.Text, False)
+			Call .LoadTvw("(" + VpSQL + ") As " + clsModule.CgSFromSearch)
+		End With
 	End Sub
 	Private Sub GestVisible(Optional VpCombos As Boolean = False, Optional VpDeploy As Boolean = False, Optional VpSuggest As Boolean = False)
 	'------------------

@@ -187,6 +187,7 @@ Partial Class MainForm
 		Me.picAutBloc = New System.Windows.Forms.PictureBox
 		Me.btShowAll = New TD.SandBar.ButtonItem
 		Me.btHistPrices = New TD.SandBar.ButtonItem
+		Me.btCardUse = New TD.SandBar.ButtonItem
 		Me.cbarImage = New TD.SandBar.ContainerBar
 		Me.pnlImage = New TD.SandBar.ContainerBarClientPanel
 		Me.splitH4 = New System.Windows.Forms.SplitContainer
@@ -1407,7 +1408,7 @@ Partial Class MainForm
 		Me.cbarProperties.DrawActionsButton = false
 		Me.cbarProperties.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarProperties.Guid = New System.Guid("ea1edb50-d1b7-4eab-b136-020bcdc24f2d")
-		Me.cbarProperties.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btShowAll, Me.btHistPrices})
+		Me.cbarProperties.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btShowAll, Me.btCardUse, Me.btHistPrices})
 		Me.cbarProperties.Location = New System.Drawing.Point(0, 0)
 		Me.cbarProperties.Movable = false
 		Me.cbarProperties.Name = "cbarProperties"
@@ -1721,6 +1722,12 @@ Partial Class MainForm
 		Me.btHistPrices.Text = "Historique"
 		AddHandler Me.btHistPrices.Activate, AddressOf Me.BtHistPricesActivate
 		'
+		'btCardUse
+		'
+		Me.btCardUse.Icon = CType(resources.GetObject("btCardUse.Icon"),System.Drawing.Icon)
+		Me.btCardUse.Text = "Utilisation"
+		AddHandler Me.btCardUse.Activate, AddressOf Me.BtCardUseActivate
+		'
 		'cbarImage
 		'
 		Me.cbarImage.Closable = false
@@ -1834,19 +1841,20 @@ Partial Class MainForm
 		'
 		Me.cmnuCbar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btHistPricesSimple, Me.btHistPricesFoil})
 		Me.cmnuCbar.Name = "cmnuCbar"
-		Me.cmnuCbar.Size = New System.Drawing.Size(114, 48)
+		Me.cmnuCbar.Size = New System.Drawing.Size(153, 70)
+		AddHandler Me.cmnuCbar.Closed, AddressOf Me.CmnuCbarClosed
 		'
 		'btHistPricesSimple
 		'
 		Me.btHistPricesSimple.Name = "btHistPricesSimple"
-		Me.btHistPricesSimple.Size = New System.Drawing.Size(113, 22)
+		Me.btHistPricesSimple.Size = New System.Drawing.Size(152, 22)
 		Me.btHistPricesSimple.Text = "Prix"
 		AddHandler Me.btHistPricesSimple.Click, AddressOf Me.BtHistPricesSimpleClick
 		'
 		'btHistPricesFoil
 		'
 		Me.btHistPricesFoil.Name = "btHistPricesFoil"
-		Me.btHistPricesFoil.Size = New System.Drawing.Size(113, 22)
+		Me.btHistPricesFoil.Size = New System.Drawing.Size(152, 22)
 		Me.btHistPricesFoil.Text = "Prix foil"
 		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
@@ -1924,6 +1932,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btCardUse As TD.SandBar.ButtonItem
 	Public mnuDispAdvSearch As System.Windows.Forms.ToolStripMenuItem
 	Private btHistPricesSimple As System.Windows.Forms.ToolStripMenuItem
 	Private btHistPricesFoil As System.Windows.Forms.ToolStripMenuItem

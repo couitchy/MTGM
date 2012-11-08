@@ -57,7 +57,7 @@ Public Partial Class frmPlateau
 			'Efface les anciennes images (celles à redessiner)
 			For Each VpPictureBox As PictureBox In VmPlateau.Pictures
 				VpCard = VpPictureBox.Tag
-				If (VpCard.Owner Is .Bibli And VpBibli) Or (VpCard.Owner Is .Graveyard And VpGraveyard) Or (VpCard.Owner Is .Exil And VpExil) Or (VpCard.Owner Is .Regard And VpRegard) Or (VpCard.Owner Is .Main And VpMain) Or (VpCard.Owner Is .Field And VpField) Then
+				If (VpCard.Owner Is .Bibli And VpBibli) Or (VpCard.Owner Is .Graveyard And VpGraveyard) Or (VpCard.Owner Is .Exil And VpExil) Or (VpCard.Owner Is .Regard And VpRegard) Or (VpCard.Owner Is .Main And VpMain) Or (VpCard.Owner Is .Field And VpField) Or (VpCard.InReserve And Not VpCard.PlayedFromReserve And Not Me.btReserve.Checked) Then
 					VpToRemove.Add(VpPictureBox)
 					VpPictureBox.Parent.Controls.Remove(VpPictureBox)
 					VpPictureBox.Dispose
@@ -292,9 +292,9 @@ Public Partial Class frmPlateau
 	Dim VpScreen As Rectangle
 		VpScreen = Screen.GetBounds(Me.Location)
 		Me.WindowState = FormWindowState.Normal
-		Me.Size = New Size(VpScreen.Width, VpScreen.Height / 2)		
+		Me.Size = New Size(VpScreen.Width, VpScreen.Height / 2)
 		Return VpScreen
-	End Function	
+	End Function
 	Private Function CalcNewPosition(VpMouseLocation As Point, VpDestinationPanel As Panel, VpDestination As List(Of clsPlateauCard)) As Integer
 	Dim VpPos As Integer
 		If VpDestination.Count > 0 And ( VpDestination Is VmPlateauPartie.Regard Or VpDestination Is VmPlateauPartie.Main Or VpDestination Is VmPlateauPartie.Field ) Then
@@ -363,19 +363,20 @@ Public Partial Class frmPlateau
 		Me.Text = clsModule.CgPlateau + VmRestrictionTXT
 		VmPlateau.DragMode = False
 	End Sub
-	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)		
-		Call Me.ManageResize		
+	Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)
+		Call Me.ManageResize
 	End Sub
 	Sub FrmPlateauResize(sender As Object, e As EventArgs)
 		If Control.MouseButtons = MouseButtons.None Then
 			Call Me.ManageResize
-		End If		
+		End If
 	End Sub
 	Sub BtNewPartieClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
 		Me.btPoisons.Text = "Poisons"
 		Me.btTurns.Text = "Tours"
 		VmPlateauPartie.Mulligan = 0
+		Me.btReserve.Checked = False
 		Call VmPlateauPartie.BeginPlateauPartie
 		Call Me.ManageReDraw
 	End Sub
@@ -384,6 +385,7 @@ Public Partial Class frmPlateau
 		Me.btPoisons.Text = "Poisons"
 		Me.btTurns.Text = "Tours"
 		VmPlateauPartie.Mulligan = Math.Min(VmPlateauPartie.Mulligan + 1, clsModule.CgNMain - 1)
+		Me.btReserve.Checked = False
 		Call VmPlateauPartie.BeginPlateauPartie
 		Call Me.ManageReDraw
 	End Sub
@@ -503,7 +505,7 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub BtRegardShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Regard)
-		Call Me.ManageReDraw(VmPlateauPartie.Regard)		
+		Call Me.ManageReDraw(VmPlateauPartie.Regard)
 	End Sub
 	Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
@@ -515,13 +517,13 @@ Public Partial Class frmPlateau
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Exil) Then
 			Call Me.ManageReDraw(VmPlateauPartie.Graveyard, VmPlateauPartie.Exil)
-		End If		
+		End If
 	End Sub
 	Sub CardExilDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
 		If VpCard.SendTo(VmPlateauPartie.Regard) Then
 			Call Me.ManageReDraw(VmPlateauPartie.Exil, VmPlateauPartie.Regard)
-		End If			
+		End If
 	End Sub
 	Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
@@ -650,12 +652,12 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub BtAnchorUpClick(sender As Object, e As EventArgs)
 	Dim VpScreen As Rectangle = Me.HalfSize
-		Me.Location = New Point(VpScreen.Location.X, VpScreen.Location.Y)		
+		Me.Location = New Point(VpScreen.Location.X, VpScreen.Location.Y)
 	End Sub
 	Sub BtAnchorDownClick(sender As Object, e As EventArgs)
 	Dim VpScreen As Rectangle = Me.HalfSize
 		Me.Location = New Point(VpScreen.Location.X, VpScreen.Location.Y + VpScreen.Height / 2)
-	End Sub	
+	End Sub
 	Sub BtNextRoundClick(sender As Object, e As EventArgs)
 		Call Me.UntapAll
 		With VmPlateauPartie
@@ -663,11 +665,22 @@ Public Partial Class frmPlateau
 				Call Me.ManageReDraw(.Bibli, .Main)
 			End If
 			.Tours += 1
-			Me.btTurns.Text = .Tours.ToString		
+			Me.btTurns.Text = .Tours.ToString
 		End With
 	End Sub
 	Sub BtReserveClick(sender As Object, e As EventArgs)
-		
+		Me.btReserve.Checked = Not Me.btReserve.Checked
+		With VmPlateauPartie
+			For Each VpCard As clsPlateauCard In .GetReserve
+				If Not VpCard.PlayedFromReserve And Me.btReserve.Checked Then
+					VpCard.Hidden = False
+					.Regard.Add(VpCard)
+				ElseIf VpCard.Owner IsNot .Regard Then
+					.Regard.Remove(VpCard)
+				End If
+			Next VpCard
+			Call Me.ManageReDraw(.Regard)
+		End With
 	End Sub
 	Sub BtDeClick(sender As Object, e As EventArgs)
 		Call clsModule.ShowInformation("Le lancer de dé a donné : " + clsModule.VgRandom.Next(1, 7).ToString)
@@ -694,7 +707,7 @@ Public Class clsPlateauPartie
 	'Construction du jeu
 	'-------------------
 	Dim VpSQL As String
-		VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type, Card.SpecialDoubleCard From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
+		VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type, Card.SpecialDoubleCard" + If(VpSource = clsModule.CgSDecks, ", Reserve", "") + " From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
 		VgDBCommand.CommandText = VpSQL
@@ -703,14 +716,22 @@ Public Class clsPlateauPartie
 			While .Read
 				'Carte normale
 				If Not .GetBoolean(4) Then
-					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0))
+					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0), .GetBoolean(5))
 				'Carte transformable
 				Else
-					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, clsModule.GetTransformedName(.GetString(0)))
+					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, clsModule.GetTransformedName(.GetString(0)), .GetBoolean(5))
 				End If
 			End While
 			.Close
 		End With
+	End Sub
+	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String, VpReserve As Boolean)
+	'--------------------
+	'Construction du deck
+	'--------------------
+		For VpI As Integer = 1 To VpCount
+			VmDeck.Add(New clsPlateauCard(VmDeck, VpName, VpNameFR, VpType, VpTransformable, VpTransformedCardName, VpReserve))
+		Next VpI
 	End Sub
 	Public Sub BeginPlateauPartie
 	'-------------------------------
@@ -723,8 +744,12 @@ Public Class clsPlateauPartie
 		VmGraveyard.Clear
 		VmExil.Clear
 		For Each VpCard As clsPlateauCard In VmDeck
-			Call VpCard.ReInit(VmBibli)
-			VmBibli.Add(VpCard)
+			If Not VpCard.InReserve Then
+				Call VpCard.ReInit(VmBibli)
+				VmBibli.Add(VpCard)
+			Else
+				Call VpCard.ReInit(VmDeck)
+			End If
 		Next VpCard
 		Call Shuffle(VmBibli)
 		VmMain.AddRange(VmBibli.GetRange(0, clsModule.CgNMain - VmMulligan))
@@ -737,14 +762,18 @@ Public Class clsPlateauPartie
 		VmPoisons = 0
 		VmTours = 0
 	End Sub
-	Private Sub AddCard(VpName As String, VpNameFR As String, VpCount As Integer, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String)
-	'--------------------
-	'Construction du deck
-	'--------------------
-		For VpI As Integer = 1 To VpCount
-			VmDeck.Add(New clsPlateauCard(VmDeck, VpName, VpNameFR, VpType, VpTransformable, VpTransformedCardName))
-		Next VpI
-	End Sub
+	Public Function GetReserve As List(Of clsPlateauCard)
+	'---------------------------------
+	'Retourne les cartes de la réserve
+	'---------------------------------
+	Dim VpReserve As New List(Of clsPlateauCard)
+		For Each VpCard As clsPlateauCard In VmDeck
+			If VpCard.InReserve Then
+				VpReserve.Add(VpCard)
+			End If
+		Next VpCard
+		Return VpReserve
+	End Function
 	Public Shared Sub Shuffle(ByRef VpListe As List(Of clsPlateauCard))
 	'----------------------------------------
 	'Mélange la sélection passée en paramètre
@@ -889,18 +918,22 @@ Public Class clsPlateauCard
 	Private VmAttachedTo As clsPlateauCard
 	Private VmAttachments As New List(Of clsPlateauCard)
 	Private VmMissingImg As Boolean
-	Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String)
+	Private VmReserve As Boolean
+	Private VmReserveInPlay As Boolean
+	Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String, VpReserve As Boolean)
 		VmCardName = VpName
 		VmCardNameFR = VpNameFR
 		VmCardType = VpType
 		VmTransformable = VpTransformable
 		VmTransformedCardName = VpTransformedCardName
+		VmReserve = VpReserve
 		Call Me.ReInit(VpOwner)
 	End Sub
 	Public Sub ReInit(VpOwner As List(Of clsPlateauCard))
 		VmOwner = VpOwner
 		VmTapped = False
 		VmHidden = True
+		VmReserveInPlay = False
 		VmCounters = 0
 		VmAttachedTo = Nothing
 		VmAttachments.Clear
@@ -920,7 +953,11 @@ Public Class clsPlateauCard
 			End If
 			VmAttachedTo = Nothing
 			VmHidden = False
-			VmOwner.Remove(Me)
+			If VmReserve And Not VmReserveInPlay Then
+				VmReserveInPlay = True
+			Else
+				VmOwner.Remove(Me)
+			End If
 			VmOwner = VpNewOwner
 			If VpIndex <> -1 Then
 				VmOwner.Insert(VpIndex, Me)
@@ -988,6 +1025,16 @@ Public Class clsPlateauCard
 	Public ReadOnly Property MissingPicture As Boolean
 		Get
 			Return VmMissingImg
+		End Get
+	End Property
+	Public ReadOnly Property InReserve As Boolean
+		Get
+			Return VmReserve
+		End Get
+	End Property
+	Public ReadOnly Property PlayedFromReserve As Boolean
+		Get
+			Return VmReserveInPlay
 		End Get
 	End Property
 	Public ReadOnly Property IsAPermanent As Boolean
