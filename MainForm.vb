@@ -248,7 +248,7 @@ Public Partial Class MainForm
 		End If
 		'Ouverture de la base sélectionnée
 		If clsModule.DBOpen(VpFile) Then
-			Me.lblDB.Text = "Base - " + VgDB.DataSource
+			Me.lblDB.Text = VgDB.DataSource
 			Call Me.LoadMnu
 			Call Me.LoadTvw
 		End If
@@ -820,17 +820,23 @@ Public Partial Class MainForm
 		Me.lblNCards.Text = ""
 		Call Me.ClearCarac
 	End Sub
-	Private Function GetNCards(VpSource As String, Optional VpDistinct As Boolean = False) As Integer
+	Private Function GetNCards(VpSource As String, VpCountMode As clsModule.eCountMode) As Integer
 	'-------------------------------------------------------------------------
 	'Retourne le nombre de cartes présentes dans la source passée en paramètre
 	'-------------------------------------------------------------------------
-	Dim VpSQL As String
+	Dim VpSQL As String = ""
 		Try
-			If Not VpDistinct Then
-				VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction
-			Else
-				VpSQL = "Select Count(*) From " + VpSource + " Where " + Me.Restriction
-			End If
+			Select Case VpCountMode
+				Case clsModule.eCountMode.All			
+					VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction
+				Case clsModule.eCountMode.Distinct
+					VpSQL = "Select Count(*) From " + VpSource + " Where " + Me.Restriction
+				Case clsModule.eCountMode.NoReserve
+					VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction + "Reserve = False"
+				Case clsModule.eCountMode.OnlyReserve
+					VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction + "Reserve = True"
+				Case Else					
+			End Select
 			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 			Return VgDBCommand.ExecuteScalar
 		Catch
@@ -838,7 +844,11 @@ Public Partial Class MainForm
 		End Try
 	End Function
 	Private Sub ShowNCards(VpSource As String)
-		Me.lblNCards.Text = "(" + Me.GetNCards(VpSource).ToString + " cartes attachées, " + Me.GetNCards(VpSource, True).ToString + " distinctes)"
+		If VpSource = clsModule.CgSDecks Then
+			Me.lblNCards.Text = "|  " + Me.GetNCards(VpSource, clsModule.eCountMode.NoReserve).ToString + " cartes dans le deck, " + Me.GetNCards(VpSource, clsModule.eCountMode.OnlyReserve).ToString + " dans la réserve"
+		Else
+			Me.lblNCards.Text = "|  " + Me.GetNCards(VpSource, clsModule.eCountMode.All).ToString + " cartes, " + Me.GetNCards(VpSource, clsModule.eCountMode.Distinct).ToString + " distinctes"
+		End If
 	End Sub
 	Private Function GetRootIndex(VpRoot As TreeNode) As Integer
 	'---------------------------------------------------
@@ -960,6 +970,23 @@ Public Partial Class MainForm
 			Call Me.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur"})
 		End If
 	End Sub
+	Private Sub CheckGridBusy
+	'----------------------------------------------------------
+	'S'assure que les opérations sur la grille soient terminées
+	'----------------------------------------------------------
+	Dim VpBusy As Boolean
+		With Me.grdPropCard
+			If .Selection.Count = 0 OrElse .Selection.GetCells(0).DataModel Is Nothing Then
+				VpBusy = False
+			Else
+				VpBusy = .Selection.GetCells(0).DataModel.IsEditing
+			End If
+		End With
+		If VpBusy Then
+			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
+			Application.DoEvents
+		End If		
+	End Sub
 	Public Sub LoadMnu
 	'------------------------------
 	'Chargement des menus variables
@@ -1008,6 +1035,7 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Public Sub LoadTvw(Optional VpLoadFromSearch As String = "", Optional VpClear As Boolean = True, Optional VpSearchName As String = clsModule.CgFromSearch)
+		Cursor.Current = Cursors.WaitCursor
 		Call Me.LoadDualTvw(VpLoadFromSearch, VpClear, VpSearchName)
 		If VmDeckMode Then
 			Call Me.LoadDualTvw(VpLoadFromSearch, False, VpSearchName, True)
@@ -1031,7 +1059,7 @@ Public Partial Class MainForm
 		End If
 		Me.mnuFindNext.Enabled = False
 		Me.mnuSearchText.Text = clsModule.CgCard
-		Me.lblDB.Text = "Base - " + VgDB.DataSource
+		Me.lblDB.Text = VgDB.DataSource
 		Call Me.ClearCarac
 		If Not Me.IsSourcePresent And Not Me.IsInAdvSearch Then
 			Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
@@ -1053,7 +1081,7 @@ Public Partial Class MainForm
 				VmSuggestions = Nothing
 			'Cas 2 : chargement des cartes de la collection ou d'un deck
 			Else
-				VpNode.Text = If(Not VpReserve, Me.GetSelectedSource, "~ Side ~")
+				VpNode.Text = If(Not VpReserve, Me.GetSelectedSource, clsModule.CgSide)
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
 				Catch
@@ -1226,7 +1254,7 @@ Public Partial Class MainForm
 			Return "0"
 		End If
 	End Function
-	Private Sub LoadCaracOther(VpCritere As String, VpModeCarac As clsModule.eModeCarac, VpElderCriteria As String)
+	Private Sub LoadCaracOther(VpCritere As String, VpModeCarac As clsModule.eModeCarac, VpPartialElderCriteria As String)
 	'------------------------------------------------------------------------------------
 	'Charge des informations sur {édition, couleur, type} sélectionné(e) dans le treeview
 	'------------------------------------------------------------------------------------
@@ -1234,9 +1262,15 @@ Public Partial Class MainForm
 	Dim VpCaracSerie As clsCaracSerie
 	Dim VpO As Object
 	Dim VpSource As String = Me.MySource
+	Dim VpElderCriteria As String
+		If VpSource = clsModule.CgSDecks Then
+			VpElderCriteria = VpPartialElderCriteria + "Reserve = " + Me.IsReserveSelected.ToString
+		Else
+			VpElderCriteria = VpPartialElderCriteria
+		End If
 		With VpCaracOther
 			'Nombre de cartes total répondant aux critères
-			VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpElderCriteria, False) + ");"
+			VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpPartialElderCriteria, False) + ");"
 			.TotalCards = VgDBCommand.ExecuteScalar
 			'Nombre de carte possédées répondant aux critères
 			.MyTotalCards = Me.QueryInfo("Select Sum(Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", VpElderCriteria)
@@ -2208,17 +2242,6 @@ Public Partial Class MainForm
 			VmMainReaderBusy = VpMainReaderBusy
 		End Set
 	End Property
-	Public ReadOnly Property IsGridBusy As Boolean
-		Get
-			With Me.grdPropCard
-				If .Selection.Count = 0 OrElse .Selection.GetCells(0).DataModel Is Nothing Then
-					Return False
-				Else
-					Return .Selection.GetCells(0).DataModel.IsEditing
-				End If
-			End With
-		End Get
-	End Property
 	Public ReadOnly Property IsInAdvSearch As Boolean
 	'--------------------------------------------------------------------------------
 	'Retourne si l'on est actuellement en affichage de résultats de recherche avancée
@@ -2510,10 +2533,7 @@ Public Partial Class MainForm
 	'Changement de la sélection active d'affichage
 	'---------------------------------------------
 	Dim VpDeckMode As Boolean = Not (sender Is Me.mnuDispCollection Or sender Is Me.mnuDispAdvSearch)
-		If Me.IsGridBusy Then
-			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
-			Application.DoEvents
-		End If
+		Call Me.CheckGridBusy
 		Call Me.ManageDispMenu(sender.Text, VpDeckMode)
 		If Not e Is Nothing Then
 			Call Me.LoadTvw
@@ -2754,7 +2774,7 @@ Public Partial Class MainForm
 	Sub MnuStatsActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpStats As frmStats
 		If clsModule.DBOK Then
-			If Me.GetNCards(Me.MySource, True) > 1 Then
+			If Me.GetNCards(Me.MySource, clsModule.eCountMode.Distinct) > 1 Then
 				VpStats = New frmStats(Me)
 				VpStats.Show
 			Else
@@ -2968,7 +2988,7 @@ Public Partial Class MainForm
 	Dim VpPlateau As frmPlateau
 	Dim VpN As Integer
 		If clsModule.DBOK Then
-			VpN = Me.GetNCards(Me.MySource)
+			VpN = Me.GetNCards(Me.MySource, clsModule.eCountMode.All)
 			If VpN <= clsModule.CgMaxVignettes Then
 				If VpN >= clsModule.CgNMain Then
 					VpPlateau = New frmPlateau(Me)
@@ -3067,7 +3087,7 @@ Public Partial Class MainForm
 					If Not File.Exists(Me.dlgSave.FileName) Then
 						File.Copy(VpSource.FullName, Me.dlgSave.FileName)
 						If clsModule.DBOpen(Me.dlgSave.FileName) Then
-							Me.lblDB.Text = "Base - " + VgDB.DataSource
+							Me.lblDB.Text = VgDB.DataSource
 							Call Me.LoadMnu
 							Call Me.LoadTvw
 						End If
@@ -3189,13 +3209,15 @@ Public Partial Class MainForm
 			Me.cmnuCbar.Show(Me.cbarProperties, New Point(.Left, .Bottom))
 		End With
 	End Sub
-	Sub BtShowAllActivate(sender As Object, e As EventArgs)
+	Sub BtShowAllActivate(sender As Object, e As EventArgs)		
 		Me.btShowAll.Checked = Not Me.btShowAll.Checked
+		Call Me.CheckGridBusy
 		Call Me.ReloadCarac
 	End Sub
 	Sub BtCardUseActivate(sender As Object, e As EventArgs)
 		Me.btCardUse.Checked = Not Me.btCardUse.Checked
 		Me.btShowAll.Enabled = (Not Me.IsInAdvSearch) And (Not Me.btCardUse.Checked)
+		Call Me.CheckGridBusy
 		Call Me.InitGrids
 		Call Me.ReloadCarac
 	End Sub

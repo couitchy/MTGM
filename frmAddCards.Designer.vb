@@ -139,7 +139,7 @@ Partial Class frmAddCards
 		Me.chkReserve.Name = "chkReserve"
 		Me.chkReserve.Size = New System.Drawing.Size(126, 17)
 		Me.chkReserve.TabIndex = 7
-		Me.chkReserve.Text = "Jeu de réserve (Side)"
+		Me.chkReserve.Text = "Jeu de réserve"
 		Me.chkReserve.UseVisualStyleBackColor = true
 		'
 		'cmdDestination

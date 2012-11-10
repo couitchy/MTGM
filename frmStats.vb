@@ -34,6 +34,9 @@ Public Partial Class frmStats
 		Me.InitializeComponent()
 		VmSource = VpOwner.MySource
 		VmRestriction = VpOwner.Restriction
+		If VmSource = clsModule.CgSDecks Then
+			VmRestriction += "Reserve = False"
+		End If
 		VmOwnerChildren = VpOwner.MyChildren
 		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)
 		AddHandler Me.cboCriterion.ComboBox.SelectedIndexChanged, AddressOf CboCriterionSelectedIndexChanged

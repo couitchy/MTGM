@@ -34,29 +34,31 @@ Partial Class frmSearch
 	''' </summary>
 	Private Sub InitializeComponent()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSearch))
-		Me.cbarSearch = New TD.SandBar.ContainerBar
-		Me.pnlSearch = New TD.SandBar.ContainerBarClientPanel
-		Me.grpSearch = New System.Windows.Forms.GroupBox
-		Me.grpRestriction = New System.Windows.Forms.GroupBox
-		Me.chkRestrictionMyGames = New System.Windows.Forms.CheckBox
-		Me.chkRestrictionMyCollection = New System.Windows.Forms.CheckBox
-		Me.chkRestriction = New System.Windows.Forms.CheckBox
-		Me.chkRestrictionInv = New System.Windows.Forms.CheckBox
-		Me.grpOutput = New System.Windows.Forms.GroupBox
-		Me.chkShowExternal = New System.Windows.Forms.CheckBox
-		Me.chkClearPrev = New System.Windows.Forms.CheckBox
-		Me.chkMerge = New System.Windows.Forms.CheckBox
-		Me.picScanCard = New System.Windows.Forms.PictureBox
-		Me.chkSup = New System.Windows.Forms.CheckBox
-		Me.chkEq = New System.Windows.Forms.CheckBox
-		Me.chkInf = New System.Windows.Forms.CheckBox
-		Me.cmdClearSearches = New System.Windows.Forms.Button
-		Me.cboFind = New System.Windows.Forms.ComboBox
-		Me.lblOccur = New System.Windows.Forms.Label
-		Me.cboSearchType = New System.Windows.Forms.ComboBox
-		Me.cmdGo = New System.Windows.Forms.Button
-		Me.lstResult = New System.Windows.Forms.ListBox
-		Me.imgSearch = New System.Windows.Forms.PictureBox
+		Me.cbarSearch = New TD.SandBar.ContainerBar()
+		Me.pnlSearch = New TD.SandBar.ContainerBarClientPanel()
+		Me.grpSearch = New System.Windows.Forms.GroupBox()
+		Me.grpRestriction = New System.Windows.Forms.GroupBox()
+		Me.chkRestrictionMyGames = New System.Windows.Forms.CheckBox()
+		Me.chkRestrictionMyCollection = New System.Windows.Forms.CheckBox()
+		Me.chkRestriction = New System.Windows.Forms.CheckBox()
+		Me.chkRestrictionInv = New System.Windows.Forms.CheckBox()
+		Me.grpOutput = New System.Windows.Forms.GroupBox()
+		Me.optMergeAnd = New System.Windows.Forms.RadioButton()
+		Me.optMergeOr = New System.Windows.Forms.RadioButton()
+		Me.chkShowExternal = New System.Windows.Forms.CheckBox()
+		Me.chkClearPrev = New System.Windows.Forms.CheckBox()
+		Me.chkMerge = New System.Windows.Forms.CheckBox()
+		Me.picScanCard = New System.Windows.Forms.PictureBox()
+		Me.chkSup = New System.Windows.Forms.CheckBox()
+		Me.chkEq = New System.Windows.Forms.CheckBox()
+		Me.chkInf = New System.Windows.Forms.CheckBox()
+		Me.cmdClearSearches = New System.Windows.Forms.Button()
+		Me.cboFind = New System.Windows.Forms.ComboBox()
+		Me.lblOccur = New System.Windows.Forms.Label()
+		Me.cboSearchType = New System.Windows.Forms.ComboBox()
+		Me.cmdGo = New System.Windows.Forms.Button()
+		Me.lstResult = New System.Windows.Forms.ListBox()
+		Me.imgSearch = New System.Windows.Forms.PictureBox()
 		Me.cbarSearch.SuspendLayout
 		Me.pnlSearch.SuspendLayout
 		Me.grpSearch.SuspendLayout
@@ -77,12 +79,12 @@ Partial Class frmSearch
 		Me.cbarSearch.Location = New System.Drawing.Point(0, 0)
 		Me.cbarSearch.Movable = false
 		Me.cbarSearch.Name = "cbarSearch"
-		Me.cbarSearch.Size = New System.Drawing.Size(618, 400)
+		Me.cbarSearch.Size = New System.Drawing.Size(618, 423)
 		Me.cbarSearch.TabIndex = 7
 		Me.cbarSearch.Text = "Recherche avancée"
 		AddHandler Me.cbarSearch.VisibleChanged, AddressOf Me.CbarSearchVisibleChanged
-		AddHandler Me.cbarSearch.MouseMove, AddressOf Me.CbarSearchMouseMove
 		AddHandler Me.cbarSearch.MouseDown, AddressOf Me.CbarSearchMouseDown
+		AddHandler Me.cbarSearch.MouseMove, AddressOf Me.CbarSearchMouseMove
 		AddHandler Me.cbarSearch.MouseUp, AddressOf Me.CbarSearchMouseUp
 		'
 		'pnlSearch
@@ -90,7 +92,7 @@ Partial Class frmSearch
 		Me.pnlSearch.Controls.Add(Me.grpSearch)
 		Me.pnlSearch.Location = New System.Drawing.Point(2, 27)
 		Me.pnlSearch.Name = "pnlSearch"
-		Me.pnlSearch.Size = New System.Drawing.Size(614, 371)
+		Me.pnlSearch.Size = New System.Drawing.Size(614, 394)
 		Me.pnlSearch.TabIndex = 0
 		'
 		'grpSearch
@@ -112,7 +114,7 @@ Partial Class frmSearch
 		Me.grpSearch.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpSearch.Location = New System.Drawing.Point(0, 0)
 		Me.grpSearch.Name = "grpSearch"
-		Me.grpSearch.Size = New System.Drawing.Size(614, 371)
+		Me.grpSearch.Size = New System.Drawing.Size(614, 394)
 		Me.grpSearch.TabIndex = 0
 		Me.grpSearch.TabStop = false
 		'
@@ -184,14 +186,40 @@ Partial Class frmSearch
 		'
 		'grpOutput
 		'
+		Me.grpOutput.Controls.Add(Me.optMergeAnd)
+		Me.grpOutput.Controls.Add(Me.optMergeOr)
 		Me.grpOutput.Controls.Add(Me.chkShowExternal)
 		Me.grpOutput.Controls.Add(Me.chkClearPrev)
 		Me.grpOutput.Controls.Add(Me.chkMerge)
 		Me.grpOutput.Location = New System.Drawing.Point(31, 288)
 		Me.grpOutput.Name = "grpOutput"
-		Me.grpOutput.Size = New System.Drawing.Size(328, 78)
+		Me.grpOutput.Size = New System.Drawing.Size(328, 100)
 		Me.grpOutput.TabIndex = 39
 		Me.grpOutput.TabStop = false
+		'
+		'optMergeAnd
+		'
+		Me.optMergeAnd.AutoSize = true
+		Me.optMergeAnd.Enabled = false
+		Me.optMergeAnd.Location = New System.Drawing.Point(108, 78)
+		Me.optMergeAnd.Name = "optMergeAnd"
+		Me.optMergeAnd.Size = New System.Drawing.Size(90, 17)
+		Me.optMergeAnd.TabIndex = 24
+		Me.optMergeAnd.Text = "intersection(s)"
+		Me.optMergeAnd.UseVisualStyleBackColor = true
+		'
+		'optMergeOr
+		'
+		Me.optMergeOr.AutoSize = true
+		Me.optMergeOr.Checked = true
+		Me.optMergeOr.Enabled = false
+		Me.optMergeOr.Location = New System.Drawing.Point(40, 78)
+		Me.optMergeOr.Name = "optMergeOr"
+		Me.optMergeOr.Size = New System.Drawing.Size(62, 17)
+		Me.optMergeOr.TabIndex = 23
+		Me.optMergeOr.TabStop = true
+		Me.optMergeOr.Text = "union(s)"
+		Me.optMergeOr.UseVisualStyleBackColor = true
 		'
 		'chkShowExternal
 		'
@@ -226,14 +254,15 @@ Partial Class frmSearch
 		Me.chkMerge.BackColor = System.Drawing.Color.Transparent
 		Me.chkMerge.Location = New System.Drawing.Point(23, 57)
 		Me.chkMerge.Name = "chkMerge"
-		Me.chkMerge.Size = New System.Drawing.Size(218, 17)
+		Me.chkMerge.Size = New System.Drawing.Size(262, 17)
 		Me.chkMerge.TabIndex = 22
-		Me.chkMerge.Text = "Fusionner avec la recherche précédente"
+		Me.chkMerge.Text = "Fusionner avec la (les) recherche(s) précédente(s)"
 		Me.chkMerge.UseVisualStyleBackColor = false
+		AddHandler Me.chkMerge.CheckedChanged, AddressOf Me.ChkMergeCheckedChanged
 		'
 		'picScanCard
 		'
-		Me.picScanCard.Location = New System.Drawing.Point(390, 43)
+		Me.picScanCard.Location = New System.Drawing.Point(390, 52)
 		Me.picScanCard.Name = "picScanCard"
 		Me.picScanCard.Size = New System.Drawing.Size(207, 295)
 		Me.picScanCard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
@@ -298,8 +327,8 @@ Partial Class frmSearch
 		Me.cboFind.Name = "cboFind"
 		Me.cboFind.Size = New System.Drawing.Size(264, 21)
 		Me.cboFind.TabIndex = 15
-		AddHandler Me.cboFind.KeyUp, AddressOf Me.CboFindKeyUp
 		AddHandler Me.cboFind.KeyDown, AddressOf Me.CboFindKeyDown
+		AddHandler Me.cboFind.KeyUp, AddressOf Me.CboFindKeyUp
 		'
 		'lblOccur
 		'
@@ -358,15 +387,15 @@ Partial Class frmSearch
 		Me.AcceptButton = Me.cmdGo
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(618, 400)
+		Me.ClientSize = New System.Drawing.Size(618, 423)
 		Me.Controls.Add(Me.cbarSearch)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmSearch"
 		Me.ShowInTaskbar = false
 		Me.Text = "Recherche avancée"
-		AddHandler Load, AddressOf Me.FrmSearchLoad
 		AddHandler FormClosing, AddressOf Me.FrmSearchFormClosing
+		AddHandler Load, AddressOf Me.FrmSearchLoad
 		Me.cbarSearch.ResumeLayout(false)
 		Me.pnlSearch.ResumeLayout(false)
 		Me.grpSearch.ResumeLayout(false)
@@ -379,6 +408,8 @@ Partial Class frmSearch
 		CType(Me.imgSearch,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
+	Private optMergeOr As System.Windows.Forms.RadioButton
+	Private optMergeAnd As System.Windows.Forms.RadioButton
 	Private grpOutput As System.Windows.Forms.GroupBox
 	Private chkRestrictionMyCollection As System.Windows.Forms.CheckBox
 	Private chkRestrictionMyGames As System.Windows.Forms.CheckBox

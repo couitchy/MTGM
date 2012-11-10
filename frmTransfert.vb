@@ -215,6 +215,12 @@ Public Partial Class frmTransfert
 			Me.sldQuant.Maximum = CInt(VgDBCommand.ExecuteScalar)
 			Me.lblQuant.Text = Me.sldQuant.Value.ToString
 		End If
+		'Correspondance éventuelle avec le combobox de destination
+		If Me.grpDest.Visible Then
+			If Me.cboSerie2.Items.Contains(Me.cboSerie.Text) Then
+				Me.cboSerie2.SelectedItem = Me.cboSerie.Text
+			End If
+		End If
 	End Sub
 	Sub CboSerie2SelectedIndexChanged(sender As Object, e As EventArgs)
 		'Logo édition destination

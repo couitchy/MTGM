@@ -194,7 +194,7 @@ Partial Class frmTransfert
 		Me.chkReserve.Name = "chkReserve"
 		Me.chkReserve.Size = New System.Drawing.Size(96, 17)
 		Me.chkReserve.TabIndex = 16
-		Me.chkReserve.Text = "Réserve (Side)"
+		Me.chkReserve.Text = "Jeu de réserve"
 		Me.chkReserve.UseVisualStyleBackColor = true
 		'
 		'frmTransfert

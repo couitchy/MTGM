@@ -313,8 +313,12 @@ Public Partial Class frmPlateau
 	'---------------------------------------------
 	Dim VpCard As clsPlateauCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
 	Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
-		If VpCard.SendTo(VpDestination, Me.CalcNewPosition(New Point(VpEventArgs.X, VpEventArgs.Y), VpDestinationPanel, VpDestination)) Then
-			Call Me.ManageReDraw(VpSource, VpDestination)
+		If Me.btReserve.Checked AndAlso VpDestination Is VmPlateauPartie.Regard Then
+			Call clsModule.ShowWarning(clsModule.CgErr9)
+		Else	
+			If VpCard.SendTo(VpDestination, Me.CalcNewPosition(New Point(VpEventArgs.X, VpEventArgs.Y), VpDestinationPanel, VpDestination)) Then
+				Call Me.ManageReDraw(VpSource, VpDestination)
+			End If
 		End If
 		Call VmPlateau.StopDragging
 	End Sub
@@ -470,7 +474,11 @@ Public Partial Class frmPlateau
 				Case Me.cmnuSendToMain.Name
 					VpRedraw = .SendTo(VmPlateauPartie.Main)
 				Case Me.cmnuSendToRegard.Name
-					VpRedraw = .SendTo(VmPlateauPartie.Regard)
+					If Not Me.btReserve.Checked Then
+						VpRedraw = .SendTo(VmPlateauPartie.Regard)
+					Else
+						Call clsModule.ShowWarning(clsModule.CgErr9)
+					End If
 				Case Else
 			End Select
 			If VpRedraw Then
@@ -521,8 +529,12 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub CardExilDoubleClick(sender As Object, e As EventArgs)
 	Dim VpCard As clsPlateauCard = sender.Tag
-		If VpCard.SendTo(VmPlateauPartie.Regard) Then
-			Call Me.ManageReDraw(VmPlateauPartie.Exil, VmPlateauPartie.Regard)
+		If Not Me.btReserve.Checked Then
+			If VpCard.SendTo(VmPlateauPartie.Regard) Then
+				Call Me.ManageReDraw(VmPlateauPartie.Exil, VmPlateauPartie.Regard)
+			End If
+		Else
+			Call clsModule.ShowWarning(clsModule.CgErr9)
 		End If
 	End Sub
 	Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
@@ -669,18 +681,22 @@ Public Partial Class frmPlateau
 		End With
 	End Sub
 	Sub BtReserveClick(sender As Object, e As EventArgs)
-		Me.btReserve.Checked = Not Me.btReserve.Checked
-		With VmPlateauPartie
-			For Each VpCard As clsPlateauCard In .GetReserve
-				If Not VpCard.PlayedFromReserve And Me.btReserve.Checked Then
-					VpCard.Hidden = False
-					.Regard.Add(VpCard)
-				ElseIf VpCard.Owner IsNot .Regard Then
-					.Regard.Remove(VpCard)
-				End If
-			Next VpCard
-			Call Me.ManageReDraw(.Regard)
-		End With
+		If Not Me.btReserve.Checked AndAlso VmPlateauPartie.Regard.Count > 0 Then
+			Call clsModule.ShowWarning(clsModule.CgErr10)
+		Else
+			Me.btReserve.Checked = Not Me.btReserve.Checked
+			With VmPlateauPartie
+				For Each VpCard As clsPlateauCard In .GetReserve
+					If Not VpCard.PlayedFromReserve And Me.btReserve.Checked Then
+						VpCard.Hidden = False
+						.Regard.Add(VpCard)
+					ElseIf VpCard.Owner IsNot .Regard Then
+						.Regard.Remove(VpCard)
+					End If
+				Next VpCard
+				Call Me.ManageReDraw(.Regard)
+			End With
+		End If
 	End Sub
 	Sub BtDeClick(sender As Object, e As EventArgs)
 		Call clsModule.ShowInformation("Le lancer de dé a donné : " + clsModule.VgRandom.Next(1, 7).ToString)

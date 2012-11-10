@@ -197,6 +197,7 @@ Public Partial Class frmSearch
 	'Retourne la requête globale (simple ou fusionnée) associée à la recherche courante
 	'----------------------------------------------------------------------------------
 	Dim VpSQLs As String = ""
+	Dim VpI As Integer
 		If Not Me.chkMerge.Checked Then
 			VmPrevSearchs.Clear
 		End If
@@ -210,10 +211,25 @@ Public Partial Class frmSearch
 			Return "(" + VpSQL + ") As " + clsModule.CgSFromSearch
 		Else
 			Me.cboFind.Tag = Me.cboFind.Tag + ", " + Me.cboFind.Text
-			For Each VpSQLi As String In VmPrevSearchs
-				VpSQLs = VpSQLs + VpSQLi + " Union "
-			Next VpSQLi
-			Return "(" + VpSQLs.Substring(0, VpSQLs.Length - 7) + ") As " + clsModule.CgSFromSearch
+			'Fusion des requêtes en Union
+			If Me.optMergeOr.Checked Then
+				For Each VpSQLi As String In VmPrevSearchs
+					VpSQLs = VpSQLs + VpSQLi + " Union "
+				Next VpSQLi
+				Return "(" + VpSQLs.Substring(0, VpSQLs.Length - 7) + ") As " + clsModule.CgSFromSearch
+			Else
+				'Fusion des requêtes en Intersection
+				VpI = 1
+				For Each VpSQLi As String In VmPrevSearchs
+					If VpI = 1 Then
+						VpSQLs = "(" + VpSQLi + ") As T1"
+					Else
+						VpSQLs = "(" + VpSQLs + ") Inner Join (" + VpSQLi + ") As T" + VpI.ToString + " On T" + VpI.ToString + ".EncNbr = T1.EncNbr"
+					End If
+					VpI += 1
+				Next VpSQLi
+				Return "(Select T1.* From " + VpSQLs + ") As " + clsModule.CgSFromSearch
+			End If
 		End If
 	End Function
 	#End Region
@@ -330,6 +346,8 @@ Public Partial Class frmSearch
 		Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 		Me.chkClearPrev.Enabled = ( Me.chkShowExternal.Checked )
 		Me.chkMerge.Enabled = ( Me.chkShowExternal.Checked )
+		Me.optMergeOr.Enabled = Me.chkMerge.Enabled And Me.chkMerge.Checked
+		Me.optMergeAnd.Enabled = Me.chkMerge.Enabled And Me.chkMerge.Checked		
 		If Me.chkShowExternal.Checked Then
 			Me.picScanCard.Visible = False
 			Me.Width = 390
@@ -403,6 +421,10 @@ Public Partial Class frmSearch
 			Me.chkEq.Checked = True
 		End If
 	End Sub
+	Sub ChkMergeCheckedChanged(sender As Object, e As EventArgs)
+		Me.optMergeOr.Enabled = Me.chkMerge.Checked
+		Me.optMergeAnd.Enabled = Me.chkMerge.Checked
+	End Sub	
 	Sub CboSearchTypeSelectedIndexChanged(sender As Object, e As EventArgs)
 		Select Case Me.cboSearchType.SelectedIndex
 			Case 4, 5, 6, 9

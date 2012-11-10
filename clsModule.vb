@@ -32,7 +32,7 @@ Imports System.ComponentModel
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 31846
+	Public Const CgCodeLines As Integer   			= 31955
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "30/07/2012"
 	Public Const CgLastUpdateSimu As String			= "27/07/2012"
@@ -130,6 +130,8 @@ Public Module clsModule
 	Public Const CgErr6 As String					= "Le plug-in spécifié est introuvable..."
 	Public Const CgErr7 As String					= "Aucun critère de classement n'a été sélectionné..."
 	Public Const CgErr8 As String					= "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
+	Public Const CgErr9 As String					= "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."
+	Public Const CgErr10 As String					= "La zone 'Regard' doit être vide pour pouvoir afficher la Réserve..."
 	Public Const CgFExtO As String					= ".dck"
 	Public Const CgFExtN As String					= ".dk2"
 	Public Const CgFExtA As String					= ".dec"
@@ -153,6 +155,7 @@ Public Module clsModule
 	Public Const CgRefresh As String				= "Rafraîchir"
 	Public Const CgPanel As String					= "Ouvrir / fermer panneau image"
 	Public Const CgStock As String					= "Nombre déjà en stock"
+	Public Const CgSide As String					= "~ Jeu de réserve ~"
 	Public Const CgCollection As String	  			= "Collection"
 	Public Const CgSCollection As String  			= "MyCollection"
 	Public Const CgSDecks As String		  			= "MyGames"
@@ -201,6 +204,12 @@ Public Module clsModule
 		Alpha = 0
 		Num
 		NumOverAlpha
+	End Enum
+	Public Enum eCountMode
+		All
+		Distinct
+		OnlyReserve
+		NoReserve
 	End Enum
 	Public Enum eForbiddenCharset
 		Standard = 0
