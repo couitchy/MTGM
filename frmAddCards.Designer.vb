@@ -122,6 +122,7 @@ Partial Class frmAddCards
 		Me.grpDest.TabIndex = 104
 		Me.grpDest.TabStop = false
 		Me.grpDest.Text = "Destination"
+		Me.grpDest.BackColor = System.Drawing.Color.Transparent
 		'
 		'imgDest
 		'
