@@ -2150,6 +2150,8 @@ Public Partial Class MainForm
 				.EncNbrTo = .EncNbrFrom
 				.FoilFrom = If(Me.IsInAdvSearch, False, VpDBReader.GetBoolean(2))
 				.FoilTo = .FoilFrom
+				.ReserveFrom = Me.IsReserveSelected
+				.ReserveTo = .ReserveFrom
 				.NCartes = If(Me.IsInAdvSearch, VpQuant, VpDBReader.GetInt32(1))
 				.TFrom = Me.GetSelectedSource
 				.SFrom = VpSource
@@ -2159,9 +2161,9 @@ Public Partial Class MainForm
 				End If
 				'Opération effective
 				If .NCartes > 0 Then
-					If Me.IsInAdvSearch Or (.TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy) Then
+					If .TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
 						Call frmTransfert.CommitAction(VpTransfertResult)
-					ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .FoilFrom <> .FoilTo)) Then
+					ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
 						Call frmTransfert.CommitAction(VpTransfertResult)
 						VpMustReload = True
 					Else

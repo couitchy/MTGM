@@ -265,7 +265,7 @@ Public Partial Class frmSearch
 		'Nombre de réponses
 		Me.lblOccur.Text = Me.lstResult.Items.Count.ToString + " résultat(s) trouvé(s)"
 		'Chargement éventuel dans le treeview
-		If Me.chkShowExternal.Checked Then
+		If Me.chkShowExternal.Checked And VpSQL <> "" Then
 			With VmOwner
 				.mnuDispAdvSearch.Enabled = True
 				Call .ManageDispMenu(.mnuDispAdvSearch.Text, False)

@@ -38,6 +38,7 @@ Partial Class frmAddCards
 		Me.cbarAjout = New TD.SandBar.ContainerBar
 		Me.pnlAjout = New TD.SandBar.ContainerBarClientPanel
 		Me.grpDest = New System.Windows.Forms.GroupBox
+		Me.imgDest = New System.Windows.Forms.PictureBox
 		Me.lblDest = New System.Windows.Forms.Label
 		Me.chkReserve = New System.Windows.Forms.CheckBox
 		Me.cmdDestination = New System.Windows.Forms.Button
@@ -62,10 +63,10 @@ Partial Class frmAddCards
 		Me.cboTitleFR = New System.Windows.Forms.ComboBox
 		Me.cmnuDestination = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.mnuDropToCollection = New System.Windows.Forms.ToolStripMenuItem
-		Me.imgDest = New System.Windows.Forms.PictureBox
 		Me.cbarAjout.SuspendLayout
 		Me.pnlAjout.SuspendLayout
 		Me.grpDest.SuspendLayout
+		CType(Me.imgDest,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.grpQuality.SuspendLayout
 		Me.grpQuantite.SuspendLayout
 		CType(Me.imgAdd,System.ComponentModel.ISupportInitialize).BeginInit
@@ -75,7 +76,6 @@ Partial Class frmAddCards
 		CType(Me.pictureBox2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.imgVF,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cmnuDestination.SuspendLayout
-		CType(Me.imgDest,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
 		'
 		'cbarAjout
@@ -123,6 +123,16 @@ Partial Class frmAddCards
 		Me.grpDest.TabStop = false
 		Me.grpDest.Text = "Destination"
 		'
+		'imgDest
+		'
+		Me.imgDest.BackColor = System.Drawing.Color.Transparent
+		Me.imgDest.Image = CType(resources.GetObject("imgDest.Image"),System.Drawing.Image)
+		Me.imgDest.Location = New System.Drawing.Point(16, 22)
+		Me.imgDest.Name = "imgDest"
+		Me.imgDest.Size = New System.Drawing.Size(16, 16)
+		Me.imgDest.TabIndex = 16
+		Me.imgDest.TabStop = false
+		'
 		'lblDest
 		'
 		Me.lblDest.AutoSize = true
@@ -137,10 +147,11 @@ Partial Class frmAddCards
 		Me.chkReserve.AutoSize = true
 		Me.chkReserve.Location = New System.Drawing.Point(16, 48)
 		Me.chkReserve.Name = "chkReserve"
-		Me.chkReserve.Size = New System.Drawing.Size(126, 17)
+		Me.chkReserve.Size = New System.Drawing.Size(96, 17)
 		Me.chkReserve.TabIndex = 7
 		Me.chkReserve.Text = "Jeu de réserve"
 		Me.chkReserve.UseVisualStyleBackColor = true
+		AddHandler Me.chkReserve.CheckedChanged, AddressOf Me.ChkReserveCheckedChanged
 		'
 		'cmdDestination
 		'
@@ -376,16 +387,6 @@ Partial Class frmAddCards
 		Me.mnuDropToCollection.Text = "Collection"
 		AddHandler Me.mnuDropToCollection.Click, AddressOf Me.DropTo
 		'
-		'imgDest
-		'
-		Me.imgDest.BackColor = System.Drawing.Color.Transparent
-		Me.imgDest.Image = CType(resources.GetObject("imgDest.Image"),System.Drawing.Image)
-		Me.imgDest.Location = New System.Drawing.Point(16, 22)
-		Me.imgDest.Name = "imgDest"
-		Me.imgDest.Size = New System.Drawing.Size(16, 16)
-		Me.imgDest.TabIndex = 16
-		Me.imgDest.TabStop = false
-		'
 		'frmAddCards
 		'
 		Me.AcceptButton = Me.cmdAdd
@@ -406,6 +407,7 @@ Partial Class frmAddCards
 		Me.pnlAjout.ResumeLayout(false)
 		Me.grpDest.ResumeLayout(false)
 		Me.grpDest.PerformLayout
+		CType(Me.imgDest,System.ComponentModel.ISupportInitialize).EndInit
 		Me.grpQuality.ResumeLayout(false)
 		Me.grpQuality.PerformLayout
 		Me.grpQuantite.ResumeLayout(false)
@@ -418,7 +420,6 @@ Partial Class frmAddCards
 		CType(Me.pictureBox2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.imgVF,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cmnuDestination.ResumeLayout(false)
-		CType(Me.imgDest,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 	End Sub
 	Private imgDest As System.Windows.Forms.PictureBox

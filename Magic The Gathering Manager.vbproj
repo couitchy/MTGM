@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -72,6 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmReserve.resx">
+      <DependentUpon>frmReserve.vb</DependentUpon>
+    </EmbeddedResource>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -142,6 +146,10 @@
       <DependentUpon>frmPlateau.vb</DependentUpon>
     </Compile>
     <Compile Include="frmPlateau.vb" />
+    <Compile Include="frmReserve.Designer.vb">
+      <DependentUpon>frmReserve.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmReserve.vb" />
     <Compile Include="frmSearch.Designer.vb">
       <DependentUpon>frmSearch.vb</DependentUpon>
     </Compile>
