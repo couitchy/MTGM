@@ -29,10 +29,12 @@ Imports System.Text.RegularExpressions
 Imports System.Net
 Imports System.IO
 Imports System.ComponentModel
+Imports SourceGrid2
+Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 32092
+	Public Const CgCodeLines As Integer   			= 32357
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "30/07/2012"
 	Public Const CgLastUpdateSimu As String			= "27/07/2012"
@@ -1194,6 +1196,25 @@ Public Module clsModule
 		For VpI As Integer = 0 To VpMainForm.FilterCriteria.NCriteria - 1
 			CgCriteres.Add(VpMainForm.FilterCriteria.MyList.Items(VpI), CgCriterionsFields(VpI))
 		Next VpI
+	End Sub
+	Public Sub InitGrid(VpGrid As Grid, VpColumns() As String)
+	'-----------------------------------
+	'Initialisation des contrôles grille
+	'-----------------------------------
+		With VpGrid
+			'Nettoyage
+			If .Rows.Count > 0 Then
+				.Rows.RemoveRange(0, .Rows.Count)
+			End If
+			'Nombre de colonnes et d'en-têtes
+			.ColumnsCount = VpColumns.Length
+			.FixedRows = 1
+			.Rows.Insert(0)
+			For VpI As Integer = 0 To VpColumns.Length - 1
+				VpGrid(0, VpI) = New Cells.ColumnHeader(VpColumns(VpI))
+			Next VpI
+			.AutoSize
+		End With
 	End Sub
 	Public Function GetPictSP As String
 	Dim VpRequest As HttpWebRequest

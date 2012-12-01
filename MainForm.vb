@@ -939,35 +939,16 @@ Public Partial Class MainForm
 		Me.prgAvance.Visible = True
 '		VgBar.ShowInTaskbar = True
 	End Sub
-	Private Sub InitGrid(VpGrid As Grid, VpColumns() As String)
-	'-----------------------------------
-	'Initialisation des contrôles grille
-	'-----------------------------------
-		With VpGrid
-			'Nettoyage
-			If .Rows.Count > 0 Then
-				.Rows.RemoveRange(0, .Rows.Count)
-			End If
-			'Nombre de colonnes et d'en-têtes
-			.ColumnsCount = VpColumns.Length
-			.FixedRows = 1
-			.Rows.Insert(0)
-			For VpI As Integer = 0 To VpColumns.Length - 1
-				VpGrid(0, VpI) = New Cells.ColumnHeader(VpColumns(VpI))
-			Next VpI
-			.AutoSize
-		End With
-	End Sub
 	Private Sub InitGrids
 		If Me.btCardUse.Checked Then
-			Call Me.InitGrid(Me.grdPropCard, New String() {"Source", "Stock total"})
+			Call clsModule.InitGrid(Me.grdPropCard, New String() {"Source", "Stock total"})
 		Else
 			If Me.IsInAdvSearch Then
-				Call Me.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)"})
+				Call clsModule.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)"})
 			Else
-				Call Me.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)", "Stock", "Stock foil"})
+				Call clsModule.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)", "Stock", "Stock foil"})
 			End If
-			Call Me.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur"})
+			Call clsModule.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur"})
 		End If
 	End Sub
 	Private Sub CheckGridBusy
@@ -1040,6 +1021,10 @@ Public Partial Class MainForm
 		If VmDeckMode Then
 			Call Me.LoadDualTvw(VpLoadFromSearch, False, VpSearchName, True)
 		End If
+		If Me.btExpand.Checked Then
+			Me.tvwExplore.ExpandAll
+		End If
+		Me.FirstRoot.EnsureVisible
 	End Sub
 	Private Sub LoadDualTvw(VpLoadFromSearch As String, VpClear As Boolean, VpSearchName As String, Optional VpReserve As Boolean = False)
 	'-----------------------------------------------------------------------------------------------------------------------------------
@@ -1830,7 +1815,7 @@ Public Partial Class MainForm
 	'---------------------------------------------------------------------
 	'Regarde si la carte sélectionnée dans un deck appartient à la réserve
 	'---------------------------------------------------------------------
-		Return Not ( Me.MyRoot Is Me.FirstRoot )
+		Return ( Me.MyRoot.Text = clsModule.CgSide )
 	End Function
 	Private Function IsTransformed(VpNode As TreeNode) As Boolean
 	'-----------------------------------
@@ -2555,6 +2540,10 @@ Public Partial Class MainForm
 		Me.tvwExplore.EndUpdate
 		Call Me.ReloadCarac
 	End Sub
+	Sub BtExpandClick(sender As Object, e As EventArgs)
+		Me.btExpand.Checked = Not Me.btExpand.Checked
+		Call Me.MyRefresh
+	End Sub	
 	Sub TvwExploreMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
 	'---------------------------------------------------------------
 	'Gère l'état du menu contextuel (éléments grisés, cochés, etc...

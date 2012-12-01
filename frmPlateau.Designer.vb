@@ -38,6 +38,7 @@ Partial Class frmPlateau
 		Me.toolStrip = New System.Windows.Forms.ToolStrip
 		Me.btNewPartie = New System.Windows.Forms.ToolStripButton
 		Me.btMulligan = New System.Windows.Forms.ToolStripButton
+		Me.btReserveSwap = New System.Windows.Forms.ToolStripButton
 		Me.btReserve = New System.Windows.Forms.ToolStripButton
 		Me.btSeparator0 = New System.Windows.Forms.ToolStripSeparator
 		Me.btLives = New System.Windows.Forms.ToolStripButton
@@ -145,7 +146,7 @@ Partial Class frmPlateau
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btReserve, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btNextRound, Me.btSeparator2, Me.btDe, Me.btPiece, Me.btAnchorDown, Me.btAnchorUp})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btReserveSwap, Me.btReserve, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btNextRound, Me.btSeparator2, Me.btDe, Me.btPiece, Me.btAnchorDown, Me.btAnchorUp})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(855, 54)
@@ -173,6 +174,19 @@ Partial Class frmPlateau
 		Me.btMulligan.Text = "Mulligan"
 		Me.btMulligan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
 		AddHandler Me.btMulligan.Click, AddressOf Me.BtMulliganClick
+		'
+		'btReserveSwap
+		'
+		Me.btReserveSwap.AutoSize = false
+		Me.btReserveSwap.Image = CType(resources.GetObject("btReserveSwap.Image"),System.Drawing.Image)
+		Me.btReserveSwap.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+		Me.btReserveSwap.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btReserveSwap.Name = "btReserveSwap"
+		Me.btReserveSwap.Size = New System.Drawing.Size(74, 51)
+		Me.btReserveSwap.Text = "Échange"
+		Me.btReserveSwap.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+		Me.btReserveSwap.ToolTipText = "Échanger des cartes avec le jeu de réserve"
+		AddHandler Me.btReserveSwap.Click, AddressOf Me.BtReserveSwapClick
 		'
 		'btReserve
 		'
@@ -963,6 +977,7 @@ Partial Class frmPlateau
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btReserveSwap As System.Windows.Forms.ToolStripButton
 	Private btPiece As System.Windows.Forms.ToolStripButton
 	Private btDe As System.Windows.Forms.ToolStripButton
 	Private btSeparator2 As System.Windows.Forms.ToolStripSeparator

@@ -18,6 +18,7 @@
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - gestion de la position d'insertion	   29/01/2012 |
+'| - gestion des cartes en réserve		   01/12/2012 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmPlateau
@@ -322,6 +323,18 @@ Public Partial Class frmPlateau
 		End If
 		Call VmPlateau.StopDragging
 	End Sub
+	Private Sub NewPartie
+	'------------------------------
+	'Réinitialise le plateau de jeu		
+	'------------------------------
+		Me.btLives.Text = "Vies"
+		Me.btPoisons.Text = "Poisons"
+		Me.btTurns.Text = "Tours"
+		VmPlateauPartie.Mulligan = 0
+		Me.btReserve.Checked = False
+		Call VmPlateauPartie.BeginPlateauPartie
+		Call Me.ManageReDraw			
+	End Sub
 	#End Region
 	#Region "Evènements"
 	Sub PictureBoxPaint(sender As Object, e As PaintEventArgs)
@@ -376,13 +389,7 @@ Public Partial Class frmPlateau
 		End If
 	End Sub
 	Sub BtNewPartieClick(sender As Object, e As EventArgs)
-		Me.btLives.Text = "Vies"
-		Me.btPoisons.Text = "Poisons"
-		Me.btTurns.Text = "Tours"
-		VmPlateauPartie.Mulligan = 0
-		Me.btReserve.Checked = False
-		Call VmPlateauPartie.BeginPlateauPartie
-		Call Me.ManageReDraw
+		Call Me.NewPartie
 	End Sub
 	Sub BtMulliganClick(sender As Object, e As EventArgs)
 		Me.btLives.Text = "Vies"
@@ -698,12 +705,27 @@ Public Partial Class frmPlateau
 			End With
 		End If
 	End Sub
+	Sub BtReserveSwapClick(sender As Object, e As EventArgs)
+	Dim VpReserveManager As frmReserve
+		If clsModule.ShowQuestion("Cette opération va interrompre la partie en cours..." + vbCrLf + "Continuer ?") = System.Windows.Forms.DialogResult.Yes Then
+			VpReserveManager = New frmReserve(Me)
+			VpReserveManager.ShowDialog
+			Call Me.NewPartie
+		End If
+	End Sub
 	Sub BtDeClick(sender As Object, e As EventArgs)
 		Call clsModule.ShowInformation("Le lancer de dé a donné : " + clsModule.VgRandom.Next(1, 7).ToString)
 	End Sub
 	Sub BtPieceClick(sender As Object, e As EventArgs)
 		Call clsModule.ShowInformation("Le lancer de pièce a donné : " + If(clsModule.VgRandom.Next(1, 3) = 1, "pile", "face"))
 	End Sub
+	#End Region
+	#Region "Propriétés"
+	Public ReadOnly Property PlateauPartie As clsPlateauPartie
+		Get
+			Return VmPlateauPartie
+		End Get
+	End Property
 	#End Region
 End Class
 Public Class clsPlateauPartie
@@ -723,6 +745,7 @@ Public Class clsPlateauPartie
 	'Construction du jeu
 	'-------------------
 	Dim VpSQL As String
+	Dim VpReserve As Boolean = False
 		VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type, Card.SpecialDoubleCard" + If(VpSource = clsModule.CgSDecks, ", Reserve", "") + " From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)
@@ -730,12 +753,15 @@ Public Class clsPlateauPartie
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
+				If VpSource = clsModule.CgSDecks Then
+					VpReserve = .GetBoolean(5)
+				End If				
 				'Carte normale
 				If Not .GetBoolean(4) Then
-					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0), .GetBoolean(5))
+					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0), VpReserve)
 				'Carte transformable
 				Else
-					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, clsModule.GetTransformedName(.GetString(0)), .GetBoolean(5))
+					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, clsModule.GetTransformedName(.GetString(0)), VpReserve)
 				End If
 			End While
 			.Close
@@ -918,6 +944,11 @@ Public Class clsPlateauPartie
 			VmTours = VpTours
 		End Set
 	End Property
+	Public ReadOnly Property CardsInDeck As List(Of clsPlateauCard)
+		Get
+			Return VmDeck
+		End Get
+	End Property
 	#End Region
 End Class
 Public Class clsPlateauCard
@@ -1043,10 +1074,13 @@ Public Class clsPlateauCard
 			Return VmMissingImg
 		End Get
 	End Property
-	Public ReadOnly Property InReserve As Boolean
+	Public Property InReserve As Boolean
 		Get
 			Return VmReserve
 		End Get
+		Set (VpReserve As Boolean)
+			VmReserve = VpReserve
+		End Set
 	End Property
 	Public ReadOnly Property PlayedFromReserve As Boolean
 		Get

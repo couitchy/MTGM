@@ -32,172 +32,173 @@ Partial Class MainForm
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
-		Me.components = New System.ComponentModel.Container
+		Me.components = New System.ComponentModel.Container()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-		Me.statusStrip = New System.Windows.Forms.StatusStrip
-		Me.lblDB = New System.Windows.Forms.ToolStripStatusLabel
-		Me.lblNCards = New System.Windows.Forms.ToolStripStatusLabel
-		Me.prgAvance = New System.Windows.Forms.ToolStripProgressBar
-		Me.btDownload = New System.Windows.Forms.ToolStripSplitButton
-		Me.mnuInfosDL = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCancel = New System.Windows.Forms.ToolStripMenuItem
-		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
+		Me.statusStrip = New System.Windows.Forms.StatusStrip()
+		Me.lblDB = New System.Windows.Forms.ToolStripStatusLabel()
+		Me.lblNCards = New System.Windows.Forms.ToolStripStatusLabel()
+		Me.prgAvance = New System.Windows.Forms.ToolStripProgressBar()
+		Me.btDownload = New System.Windows.Forms.ToolStripSplitButton()
+		Me.mnuInfosDL = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCancel = New System.Windows.Forms.ToolStripMenuItem()
+		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog()
 		Me.imglstTvw = New System.Windows.Forms.ImageList(Me.components)
 		Me.imglstCarac = New System.Windows.Forms.ImageList(Me.components)
 		Me.cmnuTvw = New System.Windows.Forms.ContextMenuStrip(Me.components)
-		Me.mnuCardsFR = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSort = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSearchCard = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSearchText = New System.Windows.Forms.ToolStripTextBox
-		Me.mnuFindNext = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnucAddCards = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator1 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuTransform = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuMoveACard = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuMoveToCollection = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCopyACard = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCopyToCollection = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSwapSerie = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDeleteACard = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator2 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuBuy = New System.Windows.Forms.ToolStripMenuItem
-		Me.dlgOpen2 = New System.Windows.Forms.OpenFileDialog
-		Me.dlgOpen3 = New System.Windows.Forms.OpenFileDialog
-		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
-		Me.mnu = New System.Windows.Forms.MenuStrip
-		Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDBSelect = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDBSave = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuExport = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator3 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuNewEdition = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRemEdition = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuTranslate = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator4 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuUpdatePrices = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuUpdatePictures = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuUpdateAutorisations = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuUpdateRulings = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuUpdateSimu = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuUpdateTxtFR = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator5 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDisp = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRefresh = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuShowImage = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator6 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuDispAdvSearch = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDispCollection = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuGestDecks = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuGestAdv = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuAddCards = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRemCards = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRemScores = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRemCollec = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRemGames = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixTable = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixPrices = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixFR = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixCreatures = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixSerie = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixSerie2 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator10 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuFixCollec = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixGames = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixDivers = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixAssoc = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixPic = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixFR2 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCollapseRarete = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator7 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuPrefs = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuBigSearch = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuStdSearch = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuAdvancedSearch = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator8 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuExcelGen = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuWordGen = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPerfs = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPlateau = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSimu = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuStats = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuMV = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPlugins = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPlugResourcer = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuInfo = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuApplicationUpdate = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuContenuUpdate = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCheckForBetas = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRestorePrev = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator9 = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuWebsite = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
-		Me.toolStrip = New System.Windows.Forms.ToolStrip
-		Me.btExport = New System.Windows.Forms.ToolStripButton
-		Me.btSeparator1 = New System.Windows.Forms.ToolStripSeparator
-		Me.btGestDecks = New System.Windows.Forms.ToolStripButton
-		Me.btAddCards = New System.Windows.Forms.ToolStripButton
-		Me.btAdvancedSearch = New System.Windows.Forms.ToolStripButton
-		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
-		Me.btExcelGen = New System.Windows.Forms.ToolStripButton
-		Me.btWordGen = New System.Windows.Forms.ToolStripButton
-		Me.btPlateau = New System.Windows.Forms.ToolStripButton
-		Me.btStats = New System.Windows.Forms.ToolStripButton
-		Me.btSimu = New System.Windows.Forms.ToolStripButton
-		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton
-		Me.btWebsite = New System.Windows.Forms.ToolStripButton
-		Me.splitV = New System.Windows.Forms.SplitContainer
-		Me.cbarTvw = New TD.SandBar.ContainerBar
-		Me.pnlTvw = New TD.SandBar.ContainerBarClientPanel
-		Me.tvwExplore = New TreeViewMS.TreeViewMS
-		Me.toolSubStrip = New System.Windows.Forms.ToolStrip
-		Me.btCriteria = New System.Windows.Forms.ToolStripButton
-		Me.btSeparator = New System.Windows.Forms.ToolStripSeparator
-		Me.btCardsFR = New System.Windows.Forms.ToolStripButton
-		Me.btSort = New System.Windows.Forms.ToolStripButton
-		Me.splitV2 = New System.Windows.Forms.SplitContainer
-		Me.cbarProperties = New TD.SandBar.ContainerBar
-		Me.pnlProperties = New TD.SandBar.ContainerBarClientPanel
-		Me.splitH = New System.Windows.Forms.SplitContainer
-		Me.pnlCard = New System.Windows.Forms.Panel
-		Me.splitH2 = New System.Windows.Forms.SplitContainer
-		Me.pnlCard1 = New System.Windows.Forms.Panel
-		Me.grdPropCard = New SourceGrid2.Grid
-		Me.splitH3 = New System.Windows.Forms.SplitContainer
-		Me.splitV3 = New System.Windows.Forms.SplitContainer
-		Me.pnlCard2 = New System.Windows.Forms.Panel
-		Me.picCost = New System.Windows.Forms.PictureBox
-		Me.pnlCard3 = New System.Windows.Forms.Panel
-		Me.lblPowerTough = New System.Windows.Forms.Label
-		Me.picPowerTough = New System.Windows.Forms.PictureBox
-		Me.txtRichCard = New Magic_The_Gathering_Manager.ExRichTextBox
-		Me.pnlAlternate = New System.Windows.Forms.Panel
-		Me.propAlternate = New System.Windows.Forms.PropertyGrid
-		Me.txtRichOther = New Magic_The_Gathering_Manager.ExRichTextBox
-		Me.grpAutorisations = New System.Windows.Forms.GroupBox
-		Me.picAutT1 = New System.Windows.Forms.PictureBox
-		Me.picAutT15 = New System.Windows.Forms.PictureBox
-		Me.picAutM = New System.Windows.Forms.PictureBox
-		Me.picAutT1x = New System.Windows.Forms.PictureBox
-		Me.picAutT2 = New System.Windows.Forms.PictureBox
-		Me.picAutBloc = New System.Windows.Forms.PictureBox
-		Me.btShowAll = New TD.SandBar.ButtonItem
-		Me.btHistPrices = New TD.SandBar.ButtonItem
-		Me.btCardUse = New TD.SandBar.ButtonItem
-		Me.cbarImage = New TD.SandBar.ContainerBar
-		Me.pnlImage = New TD.SandBar.ContainerBarClientPanel
-		Me.splitH4 = New System.Windows.Forms.SplitContainer
-		Me.picScanCard = New System.Windows.Forms.PictureBox
-		Me.grdPropPicture = New SourceGrid2.Grid
-		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
+		Me.mnuCardsFR = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSort = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSearchCard = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSearchText = New System.Windows.Forms.ToolStripTextBox()
+		Me.mnuFindNext = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnucAddCards = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuTransform = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuMoveACard = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuMoveToCollection = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCopyACard = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCopyToCollection = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSwapSerie = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDeleteACard = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuBuy = New System.Windows.Forms.ToolStripMenuItem()
+		Me.dlgOpen2 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgOpen3 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog()
+		Me.mnu = New System.Windows.Forms.MenuStrip()
+		Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDBSelect = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDBSave = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuExport = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuNewEdition = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRemEdition = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuTranslate = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuUpdatePrices = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuUpdatePictures = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuUpdateAutorisations = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuUpdateRulings = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuUpdateSimu = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuUpdateTxtFR = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDisp = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRefresh = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuShowImage = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator6 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuDispAdvSearch = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDispCollection = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuGestDecks = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuGestAdv = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuAddCards = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRemCards = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRemScores = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRemCollec = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRemGames = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixTable = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixPrices = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixFR = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixCreatures = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixSerie = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixSerie2 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator10 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuFixCollec = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixGames = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixDivers = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixAssoc = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixPic = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixFR2 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCollapseRarete = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator7 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuPrefs = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuBigSearch = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuStdSearch = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuAdvancedSearch = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuExcelGen = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuWordGen = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPerfs = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPlateau = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSimu = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuStats = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuMV = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPlugins = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPlugResourcer = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuInfo = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuApplicationUpdate = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuContenuUpdate = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCheckForBetas = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRestorePrev = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator9 = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuWebsite = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
+		Me.toolStrip = New System.Windows.Forms.ToolStrip()
+		Me.btExport = New System.Windows.Forms.ToolStripButton()
+		Me.btSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+		Me.btGestDecks = New System.Windows.Forms.ToolStripButton()
+		Me.btAddCards = New System.Windows.Forms.ToolStripButton()
+		Me.btAdvancedSearch = New System.Windows.Forms.ToolStripButton()
+		Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+		Me.btExcelGen = New System.Windows.Forms.ToolStripButton()
+		Me.btWordGen = New System.Windows.Forms.ToolStripButton()
+		Me.btPlateau = New System.Windows.Forms.ToolStripButton()
+		Me.btStats = New System.Windows.Forms.ToolStripButton()
+		Me.btSimu = New System.Windows.Forms.ToolStripButton()
+		Me.btCheckForUpdates = New System.Windows.Forms.ToolStripButton()
+		Me.btWebsite = New System.Windows.Forms.ToolStripButton()
+		Me.splitV = New System.Windows.Forms.SplitContainer()
+		Me.cbarTvw = New TD.SandBar.ContainerBar()
+		Me.pnlTvw = New TD.SandBar.ContainerBarClientPanel()
+		Me.tvwExplore = New TreeViewMS.TreeViewMS()
+		Me.toolSubStrip = New System.Windows.Forms.ToolStrip()
+		Me.btCriteria = New System.Windows.Forms.ToolStripButton()
+		Me.btSeparator = New System.Windows.Forms.ToolStripSeparator()
+		Me.btCardsFR = New System.Windows.Forms.ToolStripButton()
+		Me.btSort = New System.Windows.Forms.ToolStripButton()
+		Me.splitV2 = New System.Windows.Forms.SplitContainer()
+		Me.cbarProperties = New TD.SandBar.ContainerBar()
+		Me.pnlProperties = New TD.SandBar.ContainerBarClientPanel()
+		Me.splitH = New System.Windows.Forms.SplitContainer()
+		Me.pnlCard = New System.Windows.Forms.Panel()
+		Me.splitH2 = New System.Windows.Forms.SplitContainer()
+		Me.pnlCard1 = New System.Windows.Forms.Panel()
+		Me.grdPropCard = New SourceGrid2.Grid()
+		Me.splitH3 = New System.Windows.Forms.SplitContainer()
+		Me.splitV3 = New System.Windows.Forms.SplitContainer()
+		Me.pnlCard2 = New System.Windows.Forms.Panel()
+		Me.picCost = New System.Windows.Forms.PictureBox()
+		Me.pnlCard3 = New System.Windows.Forms.Panel()
+		Me.lblPowerTough = New System.Windows.Forms.Label()
+		Me.picPowerTough = New System.Windows.Forms.PictureBox()
+		Me.txtRichCard = New Magic_The_Gathering_Manager.ExRichTextBox()
+		Me.pnlAlternate = New System.Windows.Forms.Panel()
+		Me.propAlternate = New System.Windows.Forms.PropertyGrid()
+		Me.txtRichOther = New Magic_The_Gathering_Manager.ExRichTextBox()
+		Me.grpAutorisations = New System.Windows.Forms.GroupBox()
+		Me.picAutT1 = New System.Windows.Forms.PictureBox()
+		Me.picAutT15 = New System.Windows.Forms.PictureBox()
+		Me.picAutM = New System.Windows.Forms.PictureBox()
+		Me.picAutT1x = New System.Windows.Forms.PictureBox()
+		Me.picAutT2 = New System.Windows.Forms.PictureBox()
+		Me.picAutBloc = New System.Windows.Forms.PictureBox()
+		Me.btShowAll = New TD.SandBar.ButtonItem()
+		Me.btCardUse = New TD.SandBar.ButtonItem()
+		Me.btHistPrices = New TD.SandBar.ButtonItem()
+		Me.cbarImage = New TD.SandBar.ContainerBar()
+		Me.pnlImage = New TD.SandBar.ContainerBarClientPanel()
+		Me.splitH4 = New System.Windows.Forms.SplitContainer()
+		Me.picScanCard = New System.Windows.Forms.PictureBox()
+		Me.grdPropPicture = New SourceGrid2.Grid()
+		Me.dlgSave = New System.Windows.Forms.SaveFileDialog()
 		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
 		Me.cmnuCbar = New System.Windows.Forms.ContextMenuStrip(Me.components)
-		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem
-		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem
+		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem()
+		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem()
+		Me.btExpand = New System.Windows.Forms.ToolStripButton()
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -1323,26 +1324,26 @@ Partial Class MainForm
 		Me.tvwExplore.HideSelection = false
 		Me.tvwExplore.ImageIndex = 0
 		Me.tvwExplore.ImageList = Me.imglstTvw
-		Me.tvwExplore.Location = New System.Drawing.Point(24, 0)
+		Me.tvwExplore.Location = New System.Drawing.Point(32, 0)
 		Me.tvwExplore.Name = "tvwExplore"
 		Me.tvwExplore.SelectedImageIndex = 0
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
-		Me.tvwExplore.Size = New System.Drawing.Size(272, 437)
+		Me.tvwExplore.Size = New System.Drawing.Size(264, 437)
 		Me.tvwExplore.TabIndex = 6
-		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
-		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
 		AddHandler Me.tvwExplore.AfterSelect, AddressOf Me.TvwExploreAfterSelect
+		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
 		AddHandler Me.tvwExplore.DragEnter, AddressOf Me.TvwExploreDragEnter
 		AddHandler Me.tvwExplore.KeyUp, AddressOf Me.TvwExploreKeyUp
+		AddHandler Me.tvwExplore.MouseUp, AddressOf Me.TvwExploreMouseUp
 		'
 		'toolSubStrip
 		'
 		Me.toolSubStrip.Dock = System.Windows.Forms.DockStyle.Left
 		Me.toolSubStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btSeparator, Me.btCardsFR, Me.btSort})
+		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btExpand, Me.btSeparator, Me.btCardsFR, Me.btSort})
 		Me.toolSubStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolSubStrip.Name = "toolSubStrip"
-		Me.toolSubStrip.Size = New System.Drawing.Size(24, 437)
+		Me.toolSubStrip.Size = New System.Drawing.Size(32, 437)
 		Me.toolSubStrip.TabIndex = 0
 		'
 		'btCriteria
@@ -1351,14 +1352,14 @@ Partial Class MainForm
 		Me.btCriteria.Image = CType(resources.GetObject("btCriteria.Image"),System.Drawing.Image)
 		Me.btCriteria.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCriteria.Name = "btCriteria"
-		Me.btCriteria.Size = New System.Drawing.Size(21, 20)
+		Me.btCriteria.Size = New System.Drawing.Size(29, 20)
 		Me.btCriteria.Text = "Filtres d'affichage"
 		AddHandler Me.btCriteria.Click, AddressOf Me.BtCriteriaClick
 		'
 		'btSeparator
 		'
 		Me.btSeparator.Name = "btSeparator"
-		Me.btSeparator.Size = New System.Drawing.Size(21, 6)
+		Me.btSeparator.Size = New System.Drawing.Size(29, 6)
 		'
 		'btCardsFR
 		'
@@ -1366,7 +1367,7 @@ Partial Class MainForm
 		Me.btCardsFR.Image = CType(resources.GetObject("btCardsFR.Image"),System.Drawing.Image)
 		Me.btCardsFR.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCardsFR.Name = "btCardsFR"
-		Me.btCardsFR.Size = New System.Drawing.Size(21, 20)
+		Me.btCardsFR.Size = New System.Drawing.Size(29, 20)
 		Me.btCardsFR.Text = "Titre des cartes en français"
 		AddHandler Me.btCardsFR.MouseUp, AddressOf Me.MnuCardsFRActivate
 		'
@@ -1376,7 +1377,7 @@ Partial Class MainForm
 		Me.btSort.Image = CType(resources.GetObject("btSort.Image"),System.Drawing.Image)
 		Me.btSort.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btSort.Name = "btSort"
-		Me.btSort.Size = New System.Drawing.Size(21, 20)
+		Me.btSort.Size = New System.Drawing.Size(29, 20)
 		Me.btSort.Text = "Trier par ordre alphabétique"
 		AddHandler Me.btSort.Click, AddressOf Me.MnuSortClick
 		'
@@ -1715,18 +1716,18 @@ Partial Class MainForm
 		Me.btShowAll.Text = "Tout afficher"
 		AddHandler Me.btShowAll.Activate, AddressOf Me.BtShowAllActivate
 		'
+		'btCardUse
+		'
+		Me.btCardUse.Icon = CType(resources.GetObject("btCardUse.Icon"),System.Drawing.Icon)
+		Me.btCardUse.Text = "Utilisation"
+		AddHandler Me.btCardUse.Activate, AddressOf Me.BtCardUseActivate
+		'
 		'btHistPrices
 		'
 		Me.btHistPrices.Enabled = false
 		Me.btHistPrices.Icon = CType(resources.GetObject("btHistPrices.Icon"),System.Drawing.Icon)
 		Me.btHistPrices.Text = "Historique"
 		AddHandler Me.btHistPrices.Activate, AddressOf Me.BtHistPricesActivate
-		'
-		'btCardUse
-		'
-		Me.btCardUse.Icon = CType(resources.GetObject("btCardUse.Icon"),System.Drawing.Icon)
-		Me.btCardUse.Text = "Utilisation"
-		AddHandler Me.btCardUse.Activate, AddressOf Me.BtCardUseActivate
 		'
 		'cbarImage
 		'
@@ -1858,6 +1859,16 @@ Partial Class MainForm
 		Me.btHistPricesFoil.Text = "Prix foil"
 		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
+		'btExpand
+		'
+		Me.btExpand.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btExpand.Image = CType(resources.GetObject("btExpand.Image"),System.Drawing.Image)
+		Me.btExpand.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btExpand.Name = "btExpand"
+		Me.btExpand.Size = New System.Drawing.Size(29, 20)
+		Me.btExpand.Text = "Déplier l'arborescence"
+		AddHandler Me.btExpand.Click, AddressOf Me.BtExpandClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1871,10 +1882,10 @@ Partial Class MainForm
 		Me.MainMenuStrip = Me.mnu
 		Me.Name = "MainForm"
 		Me.Text = "agic The Gathering Manager"
-		AddHandler Load, AddressOf Me.MainFormLoad
 		AddHandler FormClosing, AddressOf Me.MainFormFormClosing
-		AddHandler Resize, AddressOf Me.MainFormResize
+		AddHandler Load, AddressOf Me.MainFormLoad
 		AddHandler ResizeEnd, AddressOf Me.MainFormResizeEnd
+		AddHandler Resize, AddressOf Me.MainFormResize
 		Me.statusStrip.ResumeLayout(false)
 		Me.statusStrip.PerformLayout
 		Me.cmnuTvw.ResumeLayout(false)
@@ -1932,6 +1943,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btExpand As System.Windows.Forms.ToolStripButton
 	Private btCardUse As TD.SandBar.ButtonItem
 	Public mnuDispAdvSearch As System.Windows.Forms.ToolStripMenuItem
 	Private btHistPricesSimple As System.Windows.Forms.ToolStripMenuItem
