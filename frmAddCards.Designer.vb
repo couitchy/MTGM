@@ -112,17 +112,17 @@ Partial Class frmAddCards
 		'
 		'grpDest
 		'
+		Me.grpDest.BackColor = System.Drawing.Color.Transparent
 		Me.grpDest.Controls.Add(Me.imgDest)
-		Me.grpDest.Controls.Add(Me.lblDest)
 		Me.grpDest.Controls.Add(Me.chkReserve)
 		Me.grpDest.Controls.Add(Me.cmdDestination)
+		Me.grpDest.Controls.Add(Me.lblDest)
 		Me.grpDest.Location = New System.Drawing.Point(10, 292)
 		Me.grpDest.Name = "grpDest"
 		Me.grpDest.Size = New System.Drawing.Size(252, 72)
 		Me.grpDest.TabIndex = 104
 		Me.grpDest.TabStop = false
 		Me.grpDest.Text = "Destination"
-		Me.grpDest.BackColor = System.Drawing.Color.Transparent
 		'
 		'imgDest
 		'

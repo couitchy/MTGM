@@ -658,7 +658,7 @@ Partial Class frmSimu
 		'
 		'sldPertin
 		'
-		Me.sldPertin.BackColor = System.Drawing.SystemColors.Control
+		Me.sldPertin.BackColor = Me.BackColor
 		Me.sldPertin.Enabled = false
 		Me.sldPertin.Location = New System.Drawing.Point(129, 297)
 		Me.sldPertin.Minimum = 1
