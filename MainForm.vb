@@ -1255,7 +1255,7 @@ Public Partial Class MainForm
 		End If
 		With VpCaracOther
 			'Nombre de cartes total répondant aux critères
-			VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.TrimQuery(VpPartialElderCriteria, False) + ");"
+			VgDBCommand.CommandText = "Select Count(*) From (Select Distinct Card.Title From Card Inner Join Spell On Card.Title = Spell.Title Where Card.EncNbr Not In (Select EncNbrDownFace From CardDouble) And " + clsModule.TrimQuery(VpPartialElderCriteria, False) + ");"
 			.TotalCards = VgDBCommand.ExecuteScalar
 			'Nombre de carte possédées répondant aux critères
 			.MyTotalCards = Me.QueryInfo("Select Sum(Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", VpElderCriteria)
@@ -2806,6 +2806,7 @@ Public Partial Class MainForm
 	Sub MnuAdvancedSearchActivate(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpSearch As frmSearch
 		If clsModule.DBOK Then
+			Call Me.CheckGridBusy
 			If VmMyChildren.DoesntExist(VmMyChildren.Searcher) Then
 				VpSearch = New frmSearch(Me)
 				VmMyChildren.Searcher = VpSearch

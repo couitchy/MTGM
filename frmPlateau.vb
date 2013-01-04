@@ -680,7 +680,7 @@ Public Partial Class frmPlateau
 	Sub BtNextRoundClick(sender As Object, e As EventArgs)
 		Call Me.UntapAll
 		With VmPlateauPartie
-			If .BibliTop.SendTo(.Main) Then
+			If .BibliTop IsNot Nothing AndAlso .BibliTop.SendTo(.Main) Then
 				Call Me.ManageReDraw(.Bibli, .Main)
 			End If
 			.Tours += 1

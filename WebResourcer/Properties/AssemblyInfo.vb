@@ -13,7 +13,7 @@ Imports System.Runtime.InteropServices
 <assembly: AssemblyConfiguration("")>
 <assembly: AssemblyCompany("")>
 <assembly: AssemblyProduct("WebResourcer")>
-<assembly: AssemblyCopyright("Copyright 2011")>
+<assembly: AssemblyCopyright("Copyright 2013")>
 <assembly: AssemblyTrademark("")>
 <assembly: AssemblyCulture("")>
 

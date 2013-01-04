@@ -13,7 +13,7 @@ Imports System.Runtime.InteropServices
 <assembly: AssemblyConfiguration("")>
 <assembly: AssemblyCompany("")>
 <assembly: AssemblyProduct("Updater")>
-<assembly: AssemblyCopyright("")>
+<assembly: AssemblyCopyright("Copyright 2013")>
 <assembly: AssemblyTrademark("")>
 <assembly: AssemblyCulture("")>
 
