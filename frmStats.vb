@@ -465,7 +465,9 @@ Public Partial Class frmStats
 	End Sub
 	Sub CmnuHistDeckClick(sender As Object, e As EventArgs)
 		If clsModule.HasPriceHistory Then
+			Application.UseWaitCursor = True
 			Me.GetGrapher.AddNewPlot(Me.GetPriceHistory, Me.Text.Replace(clsModule.CgStats, ""))
+			Application.UseWaitCursor = False
 		Else
 			Call clsModule.ShowWarning(clsModule.CgErr2)
 		End If
@@ -474,10 +476,14 @@ Public Partial Class frmStats
 		Me.cmnuHisto.Show(sender, New Point(e.X, e.Y))
 	End Sub
 	Sub CmnuHistAllCardsClick(sender As Object, e As EventArgs)
+		Application.UseWaitCursor = True
 		Call Me.ShowCardsPrices(Me.GetGrapher)
+		Application.UseWaitCursor = False
 	End Sub
 	Sub CmnuHistCardsPriceClick(sender As Object, e As EventArgs)
+		Application.UseWaitCursor = True
 		Call Me.ShowCardsPrices(Me.GetGrapher, sender.Tag)
+		Application.UseWaitCursor = False
 	End Sub
 End Class
 Public Class clsNumComparer

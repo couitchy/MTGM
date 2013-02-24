@@ -658,6 +658,7 @@ Public Partial Class frmPerfs
 	End Sub
 	Sub BtEfficiencyActivate(ByVal sender As Object, ByVal e As EventArgs)
 		If clsModule.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Ceci peut prendre plusieurs secondes...")= System.Windows.Forms.DialogResult.Yes Then
+			Cursor.Current = Cursors.WaitCursor
 			Call Me.ExcelEfficiency
 		End If
 	End Sub

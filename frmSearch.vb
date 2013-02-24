@@ -126,9 +126,9 @@ Public Partial Class frmSearch
 		'Recherche restreinte aux cartes possédées
 		If Me.chkRestriction.Checked Then
 			'Possédées dans la collection
-			VpSQL1 = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyCollection On MyCollection.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Group By Card.Title, CardFR.TitleFR, Card.EncNbr"
+			VpSQL1 = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO) Inner Join MyCollection On MyCollection.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Group By Card.Title, CardFR.TitleFR, Card.EncNbr"
 			'Possédées dans les decks
-			VpSQL2 = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Inner Join MyGames On MyGames.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Group By Card.Title, CardFR.TitleFR, Card.EncNbr"
+			VpSQL2 = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO) Inner Join MyGames On MyGames.EncNbr = Card.EncNbr) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + " Group By Card.Title, CardFR.TitleFR, Card.EncNbr"
 			If Me.chkRestrictionMyCollection.Checked And Me.chkRestrictionMyGames.Checked Then
 				VpSQL = VpSQL1 + " Union " + VpSQL2
 			ElseIf Me.chkRestrictionMyCollection.Checked Then
@@ -139,7 +139,7 @@ Public Partial Class frmSearch
 			VpSQL = clsModule.TrimQuery(VpSQL)
 		'Recherche restreinte aux cartes non possédées
 		ElseIf Me.chkRestrictionInv.Checked Then
-			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From (((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria
+			VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria
 			VpSQL1 = " And Card.EncNbr Not In (Select EncNbr From MyCollection)"
 			VpSQL2 = " And Card.EncNbr Not In (Select EncNbr From MyGames)"
 			If Me.chkRestrictionMyCollection.Checked And Me.chkRestrictionMyGames.Checked Then

@@ -148,6 +148,7 @@ Public Partial Class frmAddCards
 		End Try
 	End Function
 	Public Sub New(VpOwner As MainForm)
+	Dim VpFound As Boolean = False
 		Me.InitializeComponent()
 		VmOwner = VpOwner
 		Me.cboSerie.Tag = ""
@@ -166,6 +167,7 @@ Public Partial Class frmAddCards
 			If clsModule.SafeGetChecked(VpItem1) Then
 				For Each VpItem2 As ToolStripMenuItem In Me.cmnuDestination.Items
 					If VpItem1.Text = VpItem2.Text Then
+						VpFound = True
 						VpItem2.Checked = True
 						Me.cmdDestination.Tag = clsModule.GetDeckIndex(VpItem2.Text)
 						Me.lblDest.Text = VpItem2.Text
@@ -175,6 +177,9 @@ Public Partial Class frmAddCards
 				Exit For
 			End If
 		Next VpItem1
+		If Not VpFound Then
+			CType(Me.cmnuDestination.Items.Item(0), ToolStripMenuItem).Checked = True
+		End If
 		Me.chkReserve.Visible = Not Me.mnuDropToCollection.Checked
 	End Sub
 	#End Region

@@ -34,13 +34,13 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 32358
+	Public Const CgCodeLines As Integer   			= 32376
 	Public Const CGNClasses As Integer   			= 69
-	Public Const CgLastUpdateAut As String			= "30/07/2012"
-	Public Const CgLastUpdateSimu As String			= "27/07/2012"
-	Public Const CgLastUpdateTxtVF As String		= "24/07/2012"
-	Public Const CgLastUpdateRulings As String		= "27/07/2012"
-	Public Const CgLastUpdateTradPatch As String	= "20/09/2012"
+	Public Const CgLastUpdateAut As String			= "13/10/2012"
+	Public Const CgLastUpdateSimu As String			= "28/11/2012"
+	Public Const CgLastUpdateTxtVF As String		= "16/10/2012"
+	Public Const CgLastUpdateRulings As String		= "11/10/2012"
+	Public Const CgLastUpdateTradPatch As String	= "29/12/2012"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8

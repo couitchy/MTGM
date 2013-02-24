@@ -421,7 +421,8 @@ Public Partial Class MainForm
 	Dim VpStrs() As String = VpTxt.ReadToEnd.Split(New String() {"##"}, StringSplitOptions.None)
 	Dim VpItem() As String
 	Dim VpTrad As New List(Of clsTxtFR)
-	Dim VpCount As Integer = 0
+	Dim VpCountN As Integer = 0
+	Dim VpCountU As Integer = 0
 		'Parse le contenu du fichier
 		For VpI As Integer = 1 To VpStrs.Length - 1
 			VpItem = VpStrs(VpI).Split(New String() {"^^"}, StringSplitOptions.None)
@@ -453,14 +454,14 @@ Public Partial Class MainForm
 					Try
 						VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpTxtFR.CardName.Replace("'", "''") + "', '" + VpTxtFR.Texte.Replace("'", "''") + "');"
 						VgDBCommand.ExecuteNonQuery
-						VpCount = VpCount + 1
+						VpCountN = VpCountN + 1
 					Catch
 						'Call clsModule.ShowWarning("Erreur lors de la mise à jour de la carte " + VpTxtFR.CardName + "...")
 					End Try
 				ElseIf VpTxtFR.Already = clsTxtFR.eTxtState.Update Then
 					VgDBCommand.CommandText = "Update TextesFR Set TexteFR = '" + VpTxtFR.Texte.Replace("'", "''") + "' Where CardName = '" + VpTxtFR.CardName.Replace("'", "''") + "';"
 					VgDBCommand.ExecuteNonQuery
-					VpCount = VpCount + 1
+					VpCountU = VpCountU + 1
 				End If
 			End If
 			Me.prgAvance.Increment(1)
@@ -469,7 +470,7 @@ Public Partial Class MainForm
 		Next VpTxtFR
 		Me.IsMainReaderBusy = False
 		If Not VpSilent Then
-			Call clsModule.ShowInformation("Mise à jour des textes terminée !" + vbCrLf + VpCount.ToString + " nouvelle(s) traduction(s).")
+			Call clsModule.ShowInformation("Mise à jour des textes terminée !" + vbCrLf + VpCountN.ToString + " nouvelle(s) traduction(s)" + vbCrLf + VpCountU.ToString + " mise(s) à jour")
 		End If
 		Me.prgAvance.Visible = False
 '		VgBar.ShowInTaskbar = False

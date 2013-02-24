@@ -1,12 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-# SharpDevelop 3.1.1.5035
+# SharpDevelop 4.2.2.8818
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Magic The Gathering Manager", "Magic The Gathering Manager.vbproj", "{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Updater", "Updater\Updater.vbproj", "{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebResourcer", "WebResourcer\WebResourcer.vbproj", "{CAA9FEED-F1A4-4AAA-B358-EFC645543536}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CollectionViewer", "CollectionViewer\CollectionViewer.vbproj", "{084919BD-ED01-4755-8E06-D5B952D89A18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,5 +42,13 @@ Global
 		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Debug|x86.ActiveCfg = Debug|x86
 		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Release|x86.Build.0 = Release|x86
 		{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}.Release|x86.ActiveCfg = Release|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Debug|Any CPU.Build.0 = Debug|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Debug|x86.Build.0 = Debug|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Debug|x86.ActiveCfg = Debug|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Release|Any CPU.Build.0 = Release|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Release|Any CPU.ActiveCfg = Release|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Release|x86.Build.0 = Release|x86
+		{084919BD-ED01-4755-8E06-D5B952D89A18}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 EndGlobal
