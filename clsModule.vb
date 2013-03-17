@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 32376
+	Public Const CgCodeLines As Integer   			= 33235
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -75,6 +75,7 @@ Public Module clsModule
 	Public Const CgHSTFile As String      			= "\Historique.txt"
 	Public Const CgUpdater As String      			= "\Updater.exe"
 	Public Const CgMTGMWebResourcer As String		= "\WebResourcer.exe"
+	Public Const CgHTMLCollectionViewer As String	= "\CollectionViewer.exe"
 	Public Const CgUpDFile As String      			= "\Magic The Gathering Manager.new"
 	Public Const CgDownDFile As String     			= "\Magic The Gathering Manager.bak"
 	Public Const CgUpDDB As String      			= "\Images DB.mdb"
@@ -129,7 +130,7 @@ Public Module clsModule
 	Public Const CgErr3 As String					= "Impossible d'afficher les informations demandées maintenant..." + vbCrLf + "Si une mise à jour est en cours, merci d'attendre qu'elle se finisse."
 	Public Const CgErr4 As String					= "Le nombre maximal de courbes affichables a été atteint..." + vbCrLf + "Les suivantes seront ignorées."
 	Public Const CgErr5 As String					= "Le processus de mise à jour a été interrompu..."
-	Public Const CgErr6 As String					= "Le plug-in spécifié est introuvable..."
+	Public Const CgErr6 As String					= "Le plug-in spécifié est introuvable..." + vbCrLf + "Vous pouvez télécharger les plug-ins à l'adresse : http://couitchy.free.fr/upload/MTGM/Plugins"
 	Public Const CgErr7 As String					= "Aucun critère de classement n'a été sélectionné..."
 	Public Const CgErr8 As String					= "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
 	Public Const CgErr9 As String					= "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."
@@ -1506,6 +1507,21 @@ Public Module clsModule
 			Return VpDBCommand.ExecuteScalar.ToString
 		Catch
 			Return ""
+		End Try
+	End Function
+	Public Function GetNameVF(VpCardVO As String) As String
+	'----------------------------------------------------------------------------
+	'Retourne la première traduction disponible pour la carte passée en paramètre
+	'----------------------------------------------------------------------------
+	Dim VpDBCommand As OleDbCommand
+		Try
+			VpDBCommand = New OleDbCommand
+			VpDBCommand.Connection = VgDB
+			VpDBCommand.CommandType = CommandType.Text
+			VpDBCommand.CommandText = "Select CardFR.TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.Title <> CardFR.TitleFR And Card.Title = '" + VpCardVO.Replace("'", "''") + "';"
+			Return VpDBCommand.ExecuteScalar.ToString
+		Catch
+			Return VpCardVO
 		End Try
 	End Function
 	Public Function HasPriceHistory As Boolean

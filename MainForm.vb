@@ -1080,7 +1080,7 @@ Public Partial Class MainForm
 			VpNode.Expand
 			Me.mnuCardsFR.Enabled = True
 			'Restauration des paramètres langue / tri (NB. Si on est en VO on est toujours en ordre alphabétique)
-			If Me.mnuCardsFR.Checked Then
+			If Me.IsInVFMode Then
 				Me.tvwExplore.BeginUpdate
 				Call Me.RecurChangeLanguage(True)
 				Call Me.SortTvw
@@ -1161,7 +1161,7 @@ Public Partial Class MainForm
 					If VpRecurLevel < VmFilterCriteria.NSelectedCriteria Then
 						VpChildTag.Key = clsModule.CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(VpRecurLevel))
 						'Caption explicite
-						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value, Me.mnuCardsFR.Checked)
+						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value, Me.IsInVFMode)
 					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag des paramètres supplémentaires
 					ElseIf VpCurTag.Key = "Card.Title"
 						'Traduction
@@ -1462,7 +1462,7 @@ Public Partial Class MainForm
 					Me.grdPropCard.Rows.Insert(VpRow)
 					Me.grdPropPicture.Rows.Insert(VpRow)
 					'Colonne série
-					Me.grdPropCard(VpRow, 0) = New Cells.Cell(.GetString(.GetOrdinal(If(Me.mnuCardsFR.Checked, "SeriesNM_FR", "SeriesNM"))))
+					Me.grdPropCard(VpRow, 0) = New Cells.Cell(.GetString(.GetOrdinal(If(Me.IsInVFMode, "SeriesNM_FR", "SeriesNM"))))
 					Me.grdPropCard(VpRow, 0).Tag = .GetString(.GetOrdinal("Series"))
 					Me.grdPropPicture(VpRow, 0) = New Cells.Cell(CDate(.GetValue(.GetOrdinal("Release"))).Year)
 					VpCellVisual = New VisualModels.Common
@@ -1506,7 +1506,7 @@ Public Partial Class MainForm
 						'Sous-partie spécifique aux créatures
 						If VpIsCreature Then
 							Me.lblPowerTough.Text = .GetValue(.GetOrdinal("Power")).ToString + " / " + .GetValue(.GetOrdinal("Tough")).ToString
-							VpSubType = .GetValue(.GetOrdinal(If(Me.mnuCardsFR.Checked, "SubTypeVF", "SubType"))).ToString
+							VpSubType = .GetValue(.GetOrdinal(If(Me.IsInVFMode, "SubTypeVF", "SubType"))).ToString
 							Me.splitV3.Panel2Collapsed = False
 						Else
 							Me.lblPowerTough.Text = ""
@@ -1515,7 +1515,7 @@ Public Partial Class MainForm
 						End If
 						'Sous-partie commune à toutes les cartes
 						Call Me.BuildCost(.GetValue(.GetOrdinal("Cost")).ToString)
-						If Me.mnuCardsFR.Checked Then
+						If Me.IsInVFMode Then
 							Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, clsModule.MyTxt(VpCard, True, VpDownFace), VpSubType)
 						Else
 							Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, .GetValue(.GetOrdinal("CardText")).ToString, VpSubType)
@@ -1896,12 +1896,12 @@ Public Partial Class MainForm
 		'1. Gestion titres des éditions
 		If Not VpSeriesAldreadyDone Then
 			If VpNode.Parent IsNot Nothing AndAlso VpNode.Parent.Tag.Key = "Card.Series" Then
-				VpNode.Text = clsModule.FormatTitle("Card.Series", clsModule.GetSerieCodeFromName(VpNode.Text, , Not Me.mnuCardsFR.Checked), Me.mnuCardsFR.Checked)
+				VpNode.Text = clsModule.FormatTitle("Card.Series", clsModule.GetSerieCodeFromName(VpNode.Text, , Not Me.IsInVFMode), Me.IsInVFMode)
 			End If
 		End If
 		'2. Gestion titres des cartes
 		If VpNode.Tag.Key = "Card.Title" Then
-			If Me.mnuCardsFR.Checked Then
+			If Me.IsInVFMode Then
 				For Each VpChild In VpNode.Nodes
 					VpChild.Text = VpChild.Tag.Value2
 				Next VpChild
@@ -2238,6 +2238,11 @@ Public Partial Class MainForm
 			Return Me.mnuDispAdvSearch.Checked
 		End Get
 	End Property
+	Public ReadOnly Property IsInVFMode As Boolean
+		Get
+			Return Me.mnuCardsFR.Checked
+		End Get
+	End Property
 	Public ReadOnly Property IsInRestrictedAdvSearch As Boolean
 		Get
 			Return VmAdvSearch.Contains("Not In (Select")	'crade, mais permet de savoir si la requête comprend un critère sur la non-possession
@@ -2426,7 +2431,7 @@ Public Partial Class MainForm
 			End If
 			'Langue par défaut
 			Me.mnuCardsFR.Checked = .VFDefault
-			Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
+			Me.btCardsFR.Checked = Me.IsInVFMode
 			'Chargement de la base par défaut
 			If clsModule.LoadIcons(Me.imglstTvw) Then
 				Call VmFilterCriteria.ValidateCriteria
@@ -2532,9 +2537,9 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsFRActivate(ByVal sender As Object, ByVal e As MouseEventArgs)
 		Me.mnuCardsFR.Checked = Not Me.mnuCardsFR.Checked
-		Me.btCardsFR.Checked = Me.mnuCardsFR.Checked
+		Me.btCardsFR.Checked = Me.IsInVFMode
 		If Not Me.tvwExplore.SelectedNode Is Nothing Then
-			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.mnuCardsFR.Checked, Me.IsDownFace(Me.tvwExplore.SelectedNode)), "")	'change de suite la traduction de la carte courante
+			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.IsInVFMode, Me.IsDownFace(Me.tvwExplore.SelectedNode)), "")	'change de suite la traduction de la carte courante
 		End If
 		Me.tvwExplore.BeginUpdate
 		Call Me.RecurChangeLanguage(False)
@@ -2608,7 +2613,7 @@ Public Partial Class MainForm
 					Call Me.ManageMode(False)
 					Call Me.LoadCaracOther(e.Node.Tag.Value, clsModule.eModeCarac.Serie, VpElderCriteria)
 					If Not Me.splitV2.Panel2Collapsed Then
-						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text, , Me.mnuCardsFR.Checked), Me.picScanCard)
+						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text, , Me.IsInVFMode), Me.picScanCard)
 					End If
 					Call Me.LoadAutorisations("")
 				'Sélection d'un élément de type 'couleur'
@@ -2936,7 +2941,7 @@ Public Partial Class MainForm
 				VpNames = Me.GetTransformedNames(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)
 				If Me.ShowCard(VpNames.Value, Not (VpDownFace Xor VpTransformed), Not VpTransformed, Me.IsReserveSelected) Then
 					'Met à jour le noeud de l'arbre
-					VpNode.Text = If(Me.mnuCardsFR.Checked, VpNames.Value2, VpNames.Value)
+					VpNode.Text = If(Me.IsInVFMode, VpNames.Value2, VpNames.Value)
 					'Mémorise la référence de l'image
 					Me.picScanCard.Tag = VpNames.Value
 				End If
@@ -3138,7 +3143,7 @@ Public Partial Class MainForm
 	Dim VpCell As Cells.Cell = e.Cell
 	Dim VpEdition As String = VpCell.Tag
 		'Si on est en VO, il peut arriver que le texte change selon l'édition
-		If Not Me.mnuCardsFR.Checked Then
+		If Not Me.IsInVFMode Then
 			VgDBCommand.CommandText = "Select CardText From Card Where Title = '" + Me.CurrentCardTitle.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
 			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, VgDBCommand.ExecuteScalar.ToString, "")
 		End If
@@ -3159,7 +3164,7 @@ Public Partial Class MainForm
 			VpCell.Value = 0
 		End If
 		'Récupération du numéro encyclopédique, du flag foil et du flag réserve
-		VpEncNbr = clsModule.GetEncNbr(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value, clsModule.GetSerieCodeFromName(VpGrid(VpCell.Row, 0).Value, , Me.mnuCardsFR.Checked))
+		VpEncNbr = clsModule.GetEncNbr(CType(Me.tvwExplore.SelectedNode.Tag, clsTag).Value, clsModule.GetSerieCodeFromName(VpGrid(VpCell.Row, 0).Value, , Me.IsInVFMode))
 		VpFoil = (VpCell.Column = 5) 'un peu crade, mais une modification sur la dernière colonne indique qu'on a touché au stock foil
 		VpReserve = Me.IsReserveSelected
 		'Cas 1 : si la valeur est nulle, il s'agit d'une suppression
@@ -3243,6 +3248,13 @@ Public Partial Class MainForm
 			Call clsModule.ShowWarning(clsModule.CgErr6)
 		End If
 	End Sub
+	Sub MnuPlugHTMLClick(sender As Object, e As EventArgs)
+		If File.Exists(VgOptions.VgSettings.Plugins + clsModule.CgHTMLCollectionViewer) Then
+			Process.Start(VgOptions.VgSettings.Plugins + clsModule.CgHTMLCollectionViewer)
+		Else
+			Call clsModule.ShowWarning(clsModule.CgErr6)
+		End If		
+	End Sub	
 	Sub MnuCollapseRareteClick(sender As Object, e As EventArgs)
 		Call Me.FixRarete
 		Call clsModule.ShowInformation("Terminé !")

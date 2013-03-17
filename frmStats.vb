@@ -41,6 +41,16 @@ Public Partial Class frmStats
 		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)
 		AddHandler Me.cboCriterion.ComboBox.SelectedIndexChanged, AddressOf CboCriterionSelectedIndexChanged
 	End Sub
+	Private Function GetCardName(VpCard As String) As String
+	'------------------------------------------------------------------------------------
+	'Si l'utilisateur a choisi l'affichage des cartes en français, effectue la traduction
+	'------------------------------------------------------------------------------------
+		If MainForm.VgMe.IsInVFMode Then
+			Return clsModule.GetNameVF(VpCard)
+		Else
+			Return VpCard
+		End If
+	End Function
 	Private Sub LoadGrid
 	'-----------------------------------------------------------------------------------------------------------
 	'Récupère les différentes valeurs possibles du critère demandé ainsi que le nombre de cartes y correspondant
@@ -238,7 +248,7 @@ Public Partial Class frmStats
 		With VgDBReader
 			While .Read
 				If Not Me.lstTournoiForbid.Items.Contains(.GetString(0)) Then
-					Me.lstTournoiForbid.Items.Add(.GetString(0))
+					Me.lstTournoiForbid.Items.Add(Me.GetCardName(.GetString(0)))
 				End If
 			End While
 			.Close
@@ -253,7 +263,7 @@ Public Partial Class frmStats
 			With VgDBReader
 				While .Read
 					If CInt(.GetValue(1)) > 1 And Not Me.lstTournoiForbid.Items.Contains(.GetString(0)) Then
-						Me.lstTournoiForbid.Items.Add(.GetString(0) + " (1 exemplaire max.)")
+						Me.lstTournoiForbid.Items.Add(Me.GetCardName(.GetString(0)) + " (1 exemplaire max.)")
 					End If
 				End While
 				.Close
@@ -304,7 +314,7 @@ Public Partial Class frmStats
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				While .Read
-					VpTitle = .GetString(0) + " (" + .GetString(1) + If(.GetBoolean(4), " foil)", ")")
+					VpTitle = Me.GetCardName(.GetString(0)) + " (" + .GetString(1) + If(.GetBoolean(4), " foil)", ")")
 					If VpTitle <> VpLastTitle Then
 						If VpHist.Count > 0 Then
 							If VpGrapher.GraphsCount >= clsModule.CgMaxGraphs Then
@@ -369,14 +379,11 @@ Public Partial Class frmStats
 			VpT = Me.QueryInfo("Sum(Val(Tough) * Items) / Sum(Items)", "Inner Join Creature On Card.Title = Creature.Title Where ( InStr(Power, '*') = 0 And InStr(Tough, '*') = 0 And (Power <> '0' Or Tough <> '0') ) And ")
 		Catch
 		End Try
-		Me.txtMaxCost.Text = Me.QueryInfo("Card.Title", , " Order By myCost Desc;") + " : " + Me.QueryInfo("Max(myCost)").ToString
-		'Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(Price)"), "0.00") + " €"
+		Me.txtMaxCost.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By myCost Desc;")) + " : " + Me.QueryInfo("Max(myCost)").ToString
 		Me.txtMeanPrice2.Text = Format(Me.QueryInfo("Avg(IIf(Foil, FoilPrice, Price))"), "0.00") + " €"
 		Me.txtMeanCost.Text = Format(Me.QueryInfo("Sum(myCost * Items) / Sum(Items)"), "0.0")
-		'Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(Price * Items) / Sum(Items)"), "0.00") + " €"
 		Me.txtMeanPrice.Text = Format(Me.QueryInfo("Sum(IIf(Foil, FoilPrice, Price) * Items) / Sum(Items)"), "0.00") + " €"
-		Me.txtMinCost.Text = Me.QueryInfo("Card.Title", "Where Type <> 'L' And ", " Order By myCost Asc;") + " : " + Me.QueryInfo("Min(myCost)", "Where Type <> 'L' And ").ToString
-		'Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Price Desc;") + " : " + Format(Me.QueryInfo("Max(Price)"), "0.00") + " €"
+		Me.txtMinCost.Text = Me.GetCardName(Me.QueryInfo("Card.Title", "Where Type <> 'L' And ", " Order By myCost Asc;")) + " : " + Me.QueryInfo("Min(myCost)", "Where Type <> 'L' And ").ToString
 		VpMaxNoFoil = Me.QueryInfo("Max(Price)")
 		'Trappe d'erreur (si aucune carte foil)
 		Try
@@ -385,16 +392,15 @@ Public Partial Class frmStats
 			VpMaxFoil = 0
 		End Try
 		If VpMaxFoil > VpMaxNoFoil Then
-			Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By FoilPrice Desc;") + clsModule.CgFoil2 + " : " + Format(VpMaxFoil, "0.00") + " €"
+			Me.txtMostExpensive.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By FoilPrice Desc;")) + clsModule.CgFoil2 + " : " + Format(VpMaxFoil, "0.00") + " €"
 		Else
-			Me.txtMostExpensive.Text = Me.QueryInfo("Card.Title", , " Order By Price Desc;") + " : " + Format(VpMaxNoFoil, "0.00") + " €"
+			Me.txtMostExpensive.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By Price Desc;")) + " : " + Format(VpMaxNoFoil, "0.00") + " €"
 		End If
 		Me.txtNCartes.Text = Me.QueryInfo("Sum(Items)").ToString
-		Me.txtOldest.Text = Me.QueryInfo("Card.Title", , " Order By Release Asc;")
-		Me.txtRarest.Text = Me.GetRarest(0)
-		'Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(Price * Items)"), "0.00") + " €"
+		Me.txtOldest.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By Release Asc;"))
+		Me.txtRarest.Text = Me.GetCardName(Me.GetRarest(0))
 		Me.txtTotPrice.Text = Format(Me.QueryInfo("Sum(IIf(Foil, FoilPrice, Price) * Items)"), "0.00") + " €"
-		Me.txtTougher.Text = Me.QueryInfo("Card.Title", "Inner Join Creature On Card.Title = Creature.Title ", " Order By Val(Power) Desc;")
+		Me.txtTougher.Text = Me.GetCardName(Me.QueryInfo("Card.Title", "Inner Join Creature On Card.Title = Creature.Title ", " Order By Val(Power) Desc;"))
 		Me.txtMeanCost2.Text = Format(VpC, "0.0")
 		Me.txtMeanPower.Text = Format(VpP, "0.0")
 		Me.txtMeanTough.Text = Format(VpT, "0.0")

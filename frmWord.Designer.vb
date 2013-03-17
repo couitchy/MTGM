@@ -34,26 +34,26 @@ Partial Class frmWord
 	''' </summary>
 	Private Sub InitializeComponent()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmWord))
-		Me.cbarWord = New TD.SandBar.ContainerBar
-		Me.pnlWord = New TD.SandBar.ContainerBarClientPanel
-		Me.cmdWord = New System.Windows.Forms.Button
-		Me.grpOptions = New System.Windows.Forms.GroupBox
-		Me.chkVF = New System.Windows.Forms.CheckBox
-		Me.optTextOnly = New System.Windows.Forms.RadioButton
-		Me.optSaveImg = New System.Windows.Forms.RadioButton
-		Me.prgAvance = New System.Windows.Forms.ProgressBar
-		Me.cmdSaveImg = New System.Windows.Forms.Button
-		Me.txtSaveImg = New System.Windows.Forms.TextBox
-		Me.chkWordShow = New System.Windows.Forms.CheckBox
-		Me.chkSingle = New System.Windows.Forms.CheckBox
-		Me.grpVignettes = New System.Windows.Forms.GroupBox
-		Me.chklstWord = New System.Windows.Forms.CheckedListBox
-		Me.chkAllNone = New System.Windows.Forms.CheckBox
-		Me.lblWord = New System.Windows.Forms.Label
-		Me.btVignettes = New TD.SandBar.ButtonItem
-		Me.btAdvance = New TD.SandBar.ButtonItem
-		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
-		Me.chkPrintCost = New System.Windows.Forms.CheckBox
+		Me.cbarWord = New TD.SandBar.ContainerBar()
+		Me.pnlWord = New TD.SandBar.ContainerBarClientPanel()
+		Me.grpOptions = New System.Windows.Forms.GroupBox()
+		Me.chkPrintCost = New System.Windows.Forms.CheckBox()
+		Me.chkVF = New System.Windows.Forms.CheckBox()
+		Me.optTextOnly = New System.Windows.Forms.RadioButton()
+		Me.optSaveImg = New System.Windows.Forms.RadioButton()
+		Me.prgAvance = New System.Windows.Forms.ProgressBar()
+		Me.cmdSaveImg = New System.Windows.Forms.Button()
+		Me.txtSaveImg = New System.Windows.Forms.TextBox()
+		Me.chkWordShow = New System.Windows.Forms.CheckBox()
+		Me.chkSingle = New System.Windows.Forms.CheckBox()
+		Me.grpVignettes = New System.Windows.Forms.GroupBox()
+		Me.lblWord = New System.Windows.Forms.Label()
+		Me.btVignettes = New TD.SandBar.ButtonItem()
+		Me.btAdvance = New TD.SandBar.ButtonItem()
+		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog()
+		Me.cmdWord = New System.Windows.Forms.Button()
+		Me.chkAllNone = New System.Windows.Forms.CheckBox()
+		Me.chklstWord = New System.Windows.Forms.CheckedListBox()
 		Me.cbarWord.SuspendLayout
 		Me.pnlWord.SuspendLayout
 		Me.grpOptions.SuspendLayout
@@ -76,30 +76,18 @@ Partial Class frmWord
 		Me.cbarWord.TabIndex = 0
 		Me.cbarWord.Text = "Génération Word"
 		AddHandler Me.cbarWord.VisibleChanged, AddressOf Me.CbarWordVisibleChanged
-		AddHandler Me.cbarWord.MouseMove, AddressOf Me.CbarWordMouseMove
 		AddHandler Me.cbarWord.MouseDown, AddressOf Me.CbarWordMouseDown
+		AddHandler Me.cbarWord.MouseMove, AddressOf Me.CbarWordMouseMove
 		AddHandler Me.cbarWord.MouseUp, AddressOf Me.CbarWordMouseUp
 		'
 		'pnlWord
 		'
-		Me.pnlWord.Controls.Add(Me.cmdWord)
-		Me.pnlWord.Controls.Add(Me.grpOptions)
 		Me.pnlWord.Controls.Add(Me.grpVignettes)
+		Me.pnlWord.Controls.Add(Me.grpOptions)
 		Me.pnlWord.Location = New System.Drawing.Point(2, 49)
 		Me.pnlWord.Name = "pnlWord"
 		Me.pnlWord.Size = New System.Drawing.Size(280, 224)
 		Me.pnlWord.TabIndex = 0
-		'
-		'cmdWord
-		'
-		Me.cmdWord.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdWord.Location = New System.Drawing.Point(0, 201)
-		Me.cmdWord.Name = "cmdWord"
-		Me.cmdWord.Size = New System.Drawing.Size(280, 23)
-		Me.cmdWord.TabIndex = 13
-		Me.cmdWord.Text = "Générer"
-		Me.cmdWord.UseVisualStyleBackColor = true
-		AddHandler Me.cmdWord.Click, AddressOf Me.CmdWordClick
 		'
 		'grpOptions
 		'
@@ -119,6 +107,16 @@ Partial Class frmWord
 		Me.grpOptions.TabIndex = 17
 		Me.grpOptions.TabStop = false
 		Me.grpOptions.Visible = false
+		'
+		'chkPrintCost
+		'
+		Me.chkPrintCost.AutoSize = true
+		Me.chkPrintCost.Location = New System.Drawing.Point(39, 178)
+		Me.chkPrintCost.Name = "chkPrintCost"
+		Me.chkPrintCost.Size = New System.Drawing.Size(169, 17)
+		Me.chkPrintCost.TabIndex = 11
+		Me.chkPrintCost.Text = "Indiquer les coûts d'invocation"
+		Me.chkPrintCost.UseVisualStyleBackColor = true
 		'
 		'chkVF
 		'
@@ -203,6 +201,7 @@ Partial Class frmWord
 		'
 		Me.grpVignettes.Controls.Add(Me.chklstWord)
 		Me.grpVignettes.Controls.Add(Me.chkAllNone)
+		Me.grpVignettes.Controls.Add(Me.cmdWord)
 		Me.grpVignettes.Controls.Add(Me.lblWord)
 		Me.grpVignettes.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpVignettes.Location = New System.Drawing.Point(0, 0)
@@ -210,31 +209,6 @@ Partial Class frmWord
 		Me.grpVignettes.Size = New System.Drawing.Size(280, 224)
 		Me.grpVignettes.TabIndex = 19
 		Me.grpVignettes.TabStop = false
-		'
-		'chklstWord
-		'
-		Me.chklstWord.CheckOnClick = true
-		Me.chklstWord.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.chklstWord.FormattingEnabled = true
-		Me.chklstWord.Location = New System.Drawing.Point(3, 49)
-		Me.chklstWord.Name = "chklstWord"
-		Me.chklstWord.Size = New System.Drawing.Size(274, 139)
-		Me.chklstWord.TabIndex = 13
-		AddHandler Me.chklstWord.SelectedValueChanged, AddressOf Me.ChklstWordSelectedValueChanged
-		'
-		'chkAllNone
-		'
-		Me.chkAllNone.Checked = true
-		Me.chkAllNone.CheckState = System.Windows.Forms.CheckState.Checked
-		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.chkAllNone.Location = New System.Drawing.Point(3, 196)
-		Me.chkAllNone.Name = "chkAllNone"
-		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
-		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
-		Me.chkAllNone.TabIndex = 12
-		Me.chkAllNone.Text = "Sélectionner tout"
-		Me.chkAllNone.UseVisualStyleBackColor = true
-		AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
 		'
 		'lblWord
 		'
@@ -263,15 +237,41 @@ Partial Class frmWord
 		'
 		Me.dlgBrowse.Description = "Répertoire d'extraction des images"
 		'
-		'chkPrintCost
+		'cmdWord
 		'
-		Me.chkPrintCost.AutoSize = true
-		Me.chkPrintCost.Location = New System.Drawing.Point(39, 178)
-		Me.chkPrintCost.Name = "chkPrintCost"
-		Me.chkPrintCost.Size = New System.Drawing.Size(169, 17)
-		Me.chkPrintCost.TabIndex = 11
-		Me.chkPrintCost.Text = "Indiquer les coûts d'invocation"
-		Me.chkPrintCost.UseVisualStyleBackColor = true
+		Me.cmdWord.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.cmdWord.Location = New System.Drawing.Point(3, 198)
+		Me.cmdWord.Name = "cmdWord"
+		Me.cmdWord.Size = New System.Drawing.Size(274, 23)
+		Me.cmdWord.TabIndex = 17
+		Me.cmdWord.Text = "Générer"
+		Me.cmdWord.UseVisualStyleBackColor = true
+		AddHandler Me.cmdWord.Click, AddressOf Me.CmdWordClick
+		'
+		'chkAllNone
+		'
+		Me.chkAllNone.Checked = true
+		Me.chkAllNone.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
+		Me.chkAllNone.Location = New System.Drawing.Point(3, 173)
+		Me.chkAllNone.Name = "chkAllNone"
+		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
+		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
+		Me.chkAllNone.TabIndex = 18
+		Me.chkAllNone.Text = "Sélectionner tout"
+		Me.chkAllNone.UseVisualStyleBackColor = true
+		AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
+		'
+		'chklstWord
+		'
+		Me.chklstWord.CheckOnClick = true
+		Me.chklstWord.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.chklstWord.FormattingEnabled = true
+		Me.chklstWord.Location = New System.Drawing.Point(3, 49)
+		Me.chklstWord.Name = "chklstWord"
+		Me.chklstWord.Size = New System.Drawing.Size(274, 124)
+		Me.chklstWord.TabIndex = 19
+		AddHandler Me.chklstWord.SelectedValueChanged, AddressOf Me.ChklstWordSelectedValueChanged
 		'
 		'frmWord
 		'

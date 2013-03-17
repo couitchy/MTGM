@@ -34,23 +34,23 @@ Partial Class MainForm
 	''' </summary>
 	Private Sub InitializeComponent()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-		Me.statusStrip = New System.Windows.Forms.StatusStrip
-		Me.toolStrip = New System.Windows.Forms.ToolStrip
-		Me.btDBOpen = New System.Windows.Forms.ToolStripButton
-		Me.menuStrip = New System.Windows.Forms.MenuStrip
-		Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuJSONExport = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
-		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
-		Me.prgAvance = New System.Windows.Forms.ProgressBar
-		Me.chklstDecksDispos = New System.Windows.Forms.CheckedListBox
-		Me.dlgBrowser = New System.Windows.Forms.FolderBrowserDialog
-		Me.mnuHTMLExport = New System.Windows.Forms.ToolStripMenuItem
+		Me.statusStrip = New System.Windows.Forms.StatusStrip()
+		Me.toolStrip = New System.Windows.Forms.ToolStrip()
+		Me.btDBOpen = New System.Windows.Forms.ToolStripButton()
+		Me.btHTMLExport = New System.Windows.Forms.ToolStripButton()
+		Me.menuStrip = New System.Windows.Forms.MenuStrip()
+		Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuJSONExport = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuHTMLExport = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
+		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog()
+		Me.chklstDecksDispos = New System.Windows.Forms.CheckedListBox()
+		Me.dlgBrowser = New System.Windows.Forms.FolderBrowserDialog()
 		Me.toolStrip.SuspendLayout
 		Me.menuStrip.SuspendLayout
 		Me.SuspendLayout
@@ -65,7 +65,7 @@ Partial Class MainForm
 		'
 		'toolStrip
 		'
-		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBOpen})
+		Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btDBOpen, Me.btHTMLExport})
 		Me.toolStrip.Location = New System.Drawing.Point(0, 24)
 		Me.toolStrip.Name = "toolStrip"
 		Me.toolStrip.Size = New System.Drawing.Size(281, 25)
@@ -81,6 +81,16 @@ Partial Class MainForm
 		Me.btDBOpen.Size = New System.Drawing.Size(23, 22)
 		Me.btDBOpen.Text = "Base de données source"
 		AddHandler Me.btDBOpen.Click, AddressOf Me.MnuDBOpenClick
+		'
+		'btHTMLExport
+		'
+		Me.btHTMLExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btHTMLExport.Image = CType(resources.GetObject("btHTMLExport.Image"),System.Drawing.Image)
+		Me.btHTMLExport.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btHTMLExport.Name = "btHTMLExport"
+		Me.btHTMLExport.Size = New System.Drawing.Size(23, 22)
+		Me.btHTMLExport.Text = "Base de données source"
+		AddHandler Me.btHTMLExport.Click, AddressOf Me.MnuHTMLExportClick
 		'
 		'menuStrip
 		'
@@ -128,10 +138,19 @@ Partial Class MainForm
 		'
 		'mnuJSONExport
 		'
+		Me.mnuJSONExport.Image = CType(resources.GetObject("mnuJSONExport.Image"),System.Drawing.Image)
 		Me.mnuJSONExport.Name = "mnuJSONExport"
 		Me.mnuJSONExport.Size = New System.Drawing.Size(162, 22)
 		Me.mnuJSONExport.Text = "JSON Exporter"
 		AddHandler Me.mnuJSONExport.Click, AddressOf Me.MnuJSONExportClick
+		'
+		'mnuHTMLExport
+		'
+		Me.mnuHTMLExport.Image = CType(resources.GetObject("mnuHTMLExport.Image"),System.Drawing.Image)
+		Me.mnuHTMLExport.Name = "mnuHTMLExport"
+		Me.mnuHTMLExport.Size = New System.Drawing.Size(162, 22)
+		Me.mnuHTMLExport.Text = "HTML Generator"
+		AddHandler Me.mnuHTMLExport.Click, AddressOf Me.MnuHTMLExportClick
 		'
 		'mnuHelp
 		'
@@ -146,20 +165,13 @@ Partial Class MainForm
 		Me.mnuAbout.Name = "mnuAbout"
 		Me.mnuAbout.Size = New System.Drawing.Size(122, 22)
 		Me.mnuAbout.Text = "A propos"
+		AddHandler Me.mnuAbout.Click, AddressOf Me.MnuAboutClick
 		'
 		'dlgOpen
 		'
 		Me.dlgOpen.DefaultExt = "mdb"
 		Me.dlgOpen.Filter = "Fichiers de base de données Microsoft Access (*.mdb)|*.mdb"
 		Me.dlgOpen.Title = "Sélection de la base de données"
-		'
-		'prgAvance
-		'
-		Me.prgAvance.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.prgAvance.Location = New System.Drawing.Point(0, 217)
-		Me.prgAvance.Name = "prgAvance"
-		Me.prgAvance.Size = New System.Drawing.Size(281, 23)
-		Me.prgAvance.TabIndex = 6
 		'
 		'chklstDecksDispos
 		'
@@ -168,15 +180,8 @@ Partial Class MainForm
 		Me.chklstDecksDispos.FormattingEnabled = true
 		Me.chklstDecksDispos.Location = New System.Drawing.Point(0, 49)
 		Me.chklstDecksDispos.Name = "chklstDecksDispos"
-		Me.chklstDecksDispos.Size = New System.Drawing.Size(281, 154)
+		Me.chklstDecksDispos.Size = New System.Drawing.Size(281, 191)
 		Me.chklstDecksDispos.TabIndex = 7
-		'
-		'mnuHTMLExport
-		'
-		Me.mnuHTMLExport.Name = "mnuHTMLExport"
-		Me.mnuHTMLExport.Size = New System.Drawing.Size(162, 22)
-		Me.mnuHTMLExport.Text = "HTML Generator"
-		AddHandler Me.mnuHTMLExport.Click, AddressOf Me.MnuHTMLExportClick
 		'
 		'MainForm
 		'
@@ -184,10 +189,10 @@ Partial Class MainForm
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
 		Me.ClientSize = New System.Drawing.Size(281, 262)
 		Me.Controls.Add(Me.chklstDecksDispos)
-		Me.Controls.Add(Me.prgAvance)
 		Me.Controls.Add(Me.statusStrip)
 		Me.Controls.Add(Me.toolStrip)
 		Me.Controls.Add(Me.menuStrip)
+		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "MainForm"
 		Me.Text = "CollectionViewer"
 		Me.toolStrip.ResumeLayout(false)
@@ -197,10 +202,10 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private btHTMLExport As System.Windows.Forms.ToolStripButton
 	Private mnuHTMLExport As System.Windows.Forms.ToolStripMenuItem
 	Private dlgBrowser As System.Windows.Forms.FolderBrowserDialog
 	Private chklstDecksDispos As System.Windows.Forms.CheckedListBox
-	Private prgAvance As System.Windows.Forms.ProgressBar
 	Private mnuJSONExport As System.Windows.Forms.ToolStripMenuItem
 	Private dlgOpen As System.Windows.Forms.OpenFileDialog
 	Private mnuAbout As System.Windows.Forms.ToolStripMenuItem

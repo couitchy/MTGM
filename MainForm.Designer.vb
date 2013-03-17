@@ -156,6 +156,7 @@ Partial Class MainForm
 		Me.tvwExplore = New TreeViewMS.TreeViewMS()
 		Me.toolSubStrip = New System.Windows.Forms.ToolStrip()
 		Me.btCriteria = New System.Windows.Forms.ToolStripButton()
+		Me.btExpand = New System.Windows.Forms.ToolStripButton()
 		Me.btSeparator = New System.Windows.Forms.ToolStripSeparator()
 		Me.btCardsFR = New System.Windows.Forms.ToolStripButton()
 		Me.btSort = New System.Windows.Forms.ToolStripButton()
@@ -198,7 +199,7 @@ Partial Class MainForm
 		Me.cmnuCbar = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem()
 		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem()
-		Me.btExpand = New System.Windows.Forms.ToolStripButton()
+		Me.mnuPlugHTML = New System.Windows.Forms.ToolStripMenuItem()
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -1038,7 +1039,7 @@ Partial Class MainForm
 		'
 		'mnuPlugins
 		'
-		Me.mnuPlugins.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPlugResourcer})
+		Me.mnuPlugins.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPlugResourcer, Me.mnuPlugHTML})
 		Me.mnuPlugins.Name = "mnuPlugins"
 		Me.mnuPlugins.Size = New System.Drawing.Size(63, 20)
 		Me.mnuPlugins.Text = "Plug-ins"
@@ -1047,7 +1048,7 @@ Partial Class MainForm
 		'
 		Me.mnuPlugResourcer.Image = CType(resources.GetObject("mnuPlugResourcer.Image"),System.Drawing.Image)
 		Me.mnuPlugResourcer.Name = "mnuPlugResourcer"
-		Me.mnuPlugResourcer.Size = New System.Drawing.Size(190, 22)
+		Me.mnuPlugResourcer.Size = New System.Drawing.Size(199, 22)
 		Me.mnuPlugResourcer.Text = "MTGM WebResourcer"
 		AddHandler Me.mnuPlugResourcer.Click, AddressOf Me.MnuPlugResourcerClick
 		'
@@ -1324,11 +1325,11 @@ Partial Class MainForm
 		Me.tvwExplore.HideSelection = false
 		Me.tvwExplore.ImageIndex = 0
 		Me.tvwExplore.ImageList = Me.imglstTvw
-		Me.tvwExplore.Location = New System.Drawing.Point(32, 0)
+		Me.tvwExplore.Location = New System.Drawing.Point(24, 0)
 		Me.tvwExplore.Name = "tvwExplore"
 		Me.tvwExplore.SelectedImageIndex = 0
 		Me.tvwExplore.SelectedNodes = CType(resources.GetObject("tvwExplore.SelectedNodes"),System.Collections.ArrayList)
-		Me.tvwExplore.Size = New System.Drawing.Size(264, 437)
+		Me.tvwExplore.Size = New System.Drawing.Size(272, 437)
 		Me.tvwExplore.TabIndex = 6
 		AddHandler Me.tvwExplore.AfterSelect, AddressOf Me.TvwExploreAfterSelect
 		AddHandler Me.tvwExplore.DragDrop, AddressOf Me.TvwExploreDragDrop
@@ -1343,7 +1344,7 @@ Partial Class MainForm
 		Me.toolSubStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btCriteria, Me.btExpand, Me.btSeparator, Me.btCardsFR, Me.btSort})
 		Me.toolSubStrip.Location = New System.Drawing.Point(0, 0)
 		Me.toolSubStrip.Name = "toolSubStrip"
-		Me.toolSubStrip.Size = New System.Drawing.Size(32, 437)
+		Me.toolSubStrip.Size = New System.Drawing.Size(24, 437)
 		Me.toolSubStrip.TabIndex = 0
 		'
 		'btCriteria
@@ -1352,14 +1353,24 @@ Partial Class MainForm
 		Me.btCriteria.Image = CType(resources.GetObject("btCriteria.Image"),System.Drawing.Image)
 		Me.btCriteria.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCriteria.Name = "btCriteria"
-		Me.btCriteria.Size = New System.Drawing.Size(29, 20)
+		Me.btCriteria.Size = New System.Drawing.Size(21, 20)
 		Me.btCriteria.Text = "Filtres d'affichage"
 		AddHandler Me.btCriteria.Click, AddressOf Me.BtCriteriaClick
+		'
+		'btExpand
+		'
+		Me.btExpand.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+		Me.btExpand.Image = CType(resources.GetObject("btExpand.Image"),System.Drawing.Image)
+		Me.btExpand.ImageTransparentColor = System.Drawing.Color.Magenta
+		Me.btExpand.Name = "btExpand"
+		Me.btExpand.Size = New System.Drawing.Size(21, 20)
+		Me.btExpand.Text = "Déplier l'arborescence"
+		AddHandler Me.btExpand.Click, AddressOf Me.BtExpandClick
 		'
 		'btSeparator
 		'
 		Me.btSeparator.Name = "btSeparator"
-		Me.btSeparator.Size = New System.Drawing.Size(29, 6)
+		Me.btSeparator.Size = New System.Drawing.Size(21, 6)
 		'
 		'btCardsFR
 		'
@@ -1367,7 +1378,7 @@ Partial Class MainForm
 		Me.btCardsFR.Image = CType(resources.GetObject("btCardsFR.Image"),System.Drawing.Image)
 		Me.btCardsFR.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btCardsFR.Name = "btCardsFR"
-		Me.btCardsFR.Size = New System.Drawing.Size(29, 20)
+		Me.btCardsFR.Size = New System.Drawing.Size(21, 20)
 		Me.btCardsFR.Text = "Titre des cartes en français"
 		AddHandler Me.btCardsFR.MouseUp, AddressOf Me.MnuCardsFRActivate
 		'
@@ -1377,7 +1388,7 @@ Partial Class MainForm
 		Me.btSort.Image = CType(resources.GetObject("btSort.Image"),System.Drawing.Image)
 		Me.btSort.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btSort.Name = "btSort"
-		Me.btSort.Size = New System.Drawing.Size(29, 20)
+		Me.btSort.Size = New System.Drawing.Size(21, 20)
 		Me.btSort.Text = "Trier par ordre alphabétique"
 		AddHandler Me.btSort.Click, AddressOf Me.MnuSortClick
 		'
@@ -1859,15 +1870,13 @@ Partial Class MainForm
 		Me.btHistPricesFoil.Text = "Prix foil"
 		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
-		'btExpand
+		'mnuPlugHTML
 		'
-		Me.btExpand.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-		Me.btExpand.Image = CType(resources.GetObject("btExpand.Image"),System.Drawing.Image)
-		Me.btExpand.ImageTransparentColor = System.Drawing.Color.Magenta
-		Me.btExpand.Name = "btExpand"
-		Me.btExpand.Size = New System.Drawing.Size(29, 20)
-		Me.btExpand.Text = "Déplier l'arborescence"
-		AddHandler Me.btExpand.Click, AddressOf Me.BtExpandClick
+		Me.mnuPlugHTML.Image = CType(resources.GetObject("mnuPlugHTML.Image"),System.Drawing.Image)
+		Me.mnuPlugHTML.Name = "mnuPlugHTML"
+		Me.mnuPlugHTML.Size = New System.Drawing.Size(199, 22)
+		Me.mnuPlugHTML.Text = "HTML CollectionViewer"
+		AddHandler Me.mnuPlugHTML.Click, AddressOf Me.MnuPlugHTMLClick
 		'
 		'MainForm
 		'
@@ -1943,6 +1952,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuPlugHTML As System.Windows.Forms.ToolStripMenuItem
 	Private btExpand As System.Windows.Forms.ToolStripButton
 	Private btCardUse As TD.SandBar.ButtonItem
 	Public mnuDispAdvSearch As System.Windows.Forms.ToolStripMenuItem
@@ -2085,7 +2095,7 @@ Partial Class MainForm
 	Private mnuSearchCard As System.Windows.Forms.ToolStripMenuItem
 	Private lblNCards As System.Windows.Forms.ToolStripStatusLabel
 	Public imglstCarac As System.Windows.Forms.ImageList
-	Public mnuCardsFR As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCardsFR As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuTvw As System.Windows.Forms.ContextMenuStrip
 	Private mnuRefresh As System.Windows.Forms.ToolStripMenuItem
 	Private mnuDispCollection As System.Windows.Forms.ToolStripMenuItem
