@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33235
+	Public Const CgCodeLines As Integer   			= 33296
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"

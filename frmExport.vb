@@ -342,6 +342,7 @@ Public Partial Class frmExport
 				.Add("WW", "WWK")
 				.Add("YR", "AVR")
 				.Add("ZK", "ZEN")
+				.Add("D0", "DDK")
 				.Add("D1", "DDC")
 				.Add("D2", "DDF")
 				.Add("D3", "EVG")

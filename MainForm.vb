@@ -1354,6 +1354,7 @@ Public Partial Class MainForm
 	Private Sub LoadCarac(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
 		If Me.btCardUse.Checked Then
 			Call Me.LoadCaracUse(VpCard)
+			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.IsInVFMode, Me.IsDownFace(Me.tvwExplore.SelectedNode)), "")
 		Else
 			Call Me.LoadCaracDetails(VpCard, VpDownFace, VpTransformed, VpReserve)
 		End If
@@ -1362,30 +1363,65 @@ Public Partial Class MainForm
 	'--------------------------------------------------------------------
 	'Affiche où est disponible (decks / collection) la carte sélectionnée
 	'--------------------------------------------------------------------
-		'Nettoyage grille
-		Call Me.ClearGrid(Me.grdPropCard)	
-		'Remplissage grille pour la collection
-		Call Me.ShowUseInGrid(VpCard, clsModule.CgSCollection, clsModule.CgCollection, False)
-		'Remplissage grille pour les decks
+	Dim VpMatrix As New Hashtable
+	Dim VpUsage As Hashtable
+	Dim VpColumns As New List(Of String)
+	Dim VpRow As Integer
+	Dim VpTotal As Integer
+		'Calcul des présences dans la collection
+		VpMatrix.Add(clsModule.CgCollection, Me.CalcUse(VpCard, clsModule.CgSCollection, clsModule.CgCollection, False))
+		'Calcul des présences dans tous les decks
 		For Each VpSource As String In Me.GetAllSources
-			Call Me.ShowUseInGrid(VpCard, clsModule.CgSDecks, VpSource, True)
+			VpMatrix.Add(VpSource, Me.CalcUse(VpCard, clsModule.CgSDecks, VpSource, True))
+		Next VpSource
+		'Détermine les colonnes de la grille
+		VpColumns.Add("Source")
+		VpColumns.Add("Stock total")
+		For Each VpUsage In VpMatrix.Values
+			For Each VpSerie As String In VpUsage.Keys
+				If Not VpColumns.Contains(VpSerie) Then
+					VpColumns.Add(VpSerie)
+				End If
+			Next VpSerie
+		Next VpUsage
+		'Création de la grille
+		Call clsModule.InitGrid(Me.grdPropCard, VpColumns.ToArray)
+		'Remplissage
+		For Each VpSource As String In VpMatrix.Keys
+			VpUsage = VpMatrix.Item(VpSource)
+			'Calcul du sous-total
+			VpTotal = 0
+			For Each VpItem As Integer In VpUsage.Values
+				VpTotal += VpItem
+			Next VpItem
+			'S'il est > 0, on affiche sa ventilation
+			If VpTotal > 0 Then
+				VpRow = Me.grdPropCard.RowsCount
+				Me.grdPropCard.Rows.Insert(VpRow)
+				Me.grdPropCard(VpRow, 0) = New Cells.Cell(VpSource)
+				Me.grdPropCard(VpRow, 1) = New Cells.Cell(VpTotal)
+				For VpI As Integer = 2 To VpColumns.Count - 1
+					If VpUsage.ContainsKey(VpColumns.Item(VpI)) Then
+						Me.grdPropCard(VpRow, VpI) = New Cells.Cell(VpUsage.Item(VpColumns.Item(VpI)))
+					End If
+				Next VpI
+			End If
 		Next VpSource
 		Me.grdPropCard.AutoSize
 	End Sub
-	Private Sub ShowUseInGrid(VpCard As String, VpSource As String, VpSource2 As String, VpDeckMode As Boolean)
-	Dim VpRow As Integer
-	Dim VpCount As Integer
-		'Sélectionne le stock total pour la source passée en paramètre
-		VgDBCommand.CommandText = "Select Sum(" + VpSource + ".Items) From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + If(VpDeckMode, " And GameID = " + clsModule.GetDeckIndex(VpSource2), "") + " Group By Card.Title;"
-		VpCount = CInt(VgDBCommand.ExecuteScalar)
-		If VpCount > 0 Then
-			'Insertion nouvelle ligne
-			VpRow = Me.grdPropCard.RowsCount
-			Me.grdPropCard.Rows.Insert(VpRow)
-			Me.grdPropCard(VpRow, 0) = New Cells.Cell(VpSource2)
-			Me.grdPropCard(VpRow, 1) = New Cells.Cell(VpCount)
-		End If	
-	End Sub
+	Private Function CalcUse(VpCard As String, VpSource As String, VpSource2 As String, VpDeckMode As Boolean) As Hashtable
+	Dim VpUsage As New Hashtable
+		'Sélectionne le stock par édition pour la source passée en paramètre
+		VgDBCommand.CommandText = "Select Card.Series, Sum(" + VpSource + ".Items) From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + If(VpDeckMode, " And GameID = " + clsModule.GetDeckIndex(VpSource2), "") + " Group By Card.Series;"
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpUsage.Add(.GetString(0), CInt(.GetValue(1)))
+			End While
+			.Close
+		End With
+		Return VpUsage
+	End Function
 	Private Sub LoadCaracDetails(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée

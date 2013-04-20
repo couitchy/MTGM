@@ -34,24 +34,24 @@ Partial Class frmXL
 	''' </summary>
 	Private Sub InitializeComponent()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmXL))
-		Me.cbarXL = New TD.SandBar.ContainerBar
-		Me.pnlXL = New TD.SandBar.ContainerBarClientPanel
-		Me.grpColumns = New System.Windows.Forms.GroupBox
-		Me.chklstXL = New System.Windows.Forms.CheckedListBox
-		Me.chkAllNone = New System.Windows.Forms.CheckBox
-		Me.lblXL = New System.Windows.Forms.Label
-		Me.cmdXL = New System.Windows.Forms.Button
-		Me.grpOptions = New System.Windows.Forms.GroupBox
-		Me.cmdSaveImg = New System.Windows.Forms.Button
-		Me.txtSaveImg = New System.Windows.Forms.TextBox
-		Me.chkSaveImg = New System.Windows.Forms.CheckBox
-		Me.chkXLShow = New System.Windows.Forms.CheckBox
-		Me.chkVF = New System.Windows.Forms.CheckBox
-		Me.chkTextMode = New System.Windows.Forms.CheckBox
-		Me.chkHeaders = New System.Windows.Forms.CheckBox
-		Me.btColumns = New TD.SandBar.ButtonItem
-		Me.btAdvance = New TD.SandBar.ButtonItem
-		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
+		Me.cbarXL = New TD.SandBar.ContainerBar()
+		Me.pnlXL = New TD.SandBar.ContainerBarClientPanel()
+		Me.grpColumns = New System.Windows.Forms.GroupBox()
+		Me.chklstXL = New System.Windows.Forms.CheckedListBox()
+		Me.chkAllNone = New System.Windows.Forms.CheckBox()
+		Me.lblXL = New System.Windows.Forms.Label()
+		Me.cmdXL = New System.Windows.Forms.Button()
+		Me.grpOptions = New System.Windows.Forms.GroupBox()
+		Me.cmdSaveImg = New System.Windows.Forms.Button()
+		Me.txtSaveImg = New System.Windows.Forms.TextBox()
+		Me.chkSaveImg = New System.Windows.Forms.CheckBox()
+		Me.chkXLShow = New System.Windows.Forms.CheckBox()
+		Me.chkVF = New System.Windows.Forms.CheckBox()
+		Me.chkTextMode = New System.Windows.Forms.CheckBox()
+		Me.chkHeaders = New System.Windows.Forms.CheckBox()
+		Me.btColumns = New TD.SandBar.ButtonItem()
+		Me.btAdvance = New TD.SandBar.ButtonItem()
+		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog()
 		Me.cbarXL.SuspendLayout
 		Me.pnlXL.SuspendLayout
 		Me.grpColumns.SuspendLayout
@@ -70,12 +70,12 @@ Partial Class frmXL
 		Me.cbarXL.Location = New System.Drawing.Point(0, 0)
 		Me.cbarXL.Movable = false
 		Me.cbarXL.Name = "cbarXL"
-		Me.cbarXL.Size = New System.Drawing.Size(284, 293)
+		Me.cbarXL.Size = New System.Drawing.Size(284, 305)
 		Me.cbarXL.TabIndex = 0
 		Me.cbarXL.Text = "Génération Excel"
 		AddHandler Me.cbarXL.VisibleChanged, AddressOf Me.CbarXLVisibleChanged
-		AddHandler Me.cbarXL.MouseMove, AddressOf Me.CbarXLMouseMove
 		AddHandler Me.cbarXL.MouseDown, AddressOf Me.CbarXLMouseDown
+		AddHandler Me.cbarXL.MouseMove, AddressOf Me.CbarXLMouseMove
 		AddHandler Me.cbarXL.MouseUp, AddressOf Me.CbarXLMouseUp
 		'
 		'pnlXL
@@ -85,7 +85,7 @@ Partial Class frmXL
 		Me.pnlXL.Controls.Add(Me.grpOptions)
 		Me.pnlXL.Location = New System.Drawing.Point(2, 49)
 		Me.pnlXL.Name = "pnlXL"
-		Me.pnlXL.Size = New System.Drawing.Size(280, 242)
+		Me.pnlXL.Size = New System.Drawing.Size(280, 254)
 		Me.pnlXL.TabIndex = 0
 		'
 		'grpColumns
@@ -96,7 +96,7 @@ Partial Class frmXL
 		Me.grpColumns.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpColumns.Location = New System.Drawing.Point(0, 0)
 		Me.grpColumns.Name = "grpColumns"
-		Me.grpColumns.Size = New System.Drawing.Size(280, 219)
+		Me.grpColumns.Size = New System.Drawing.Size(280, 231)
 		Me.grpColumns.TabIndex = 13
 		Me.grpColumns.TabStop = false
 		'
@@ -105,17 +105,17 @@ Partial Class frmXL
 		Me.chklstXL.CheckOnClick = true
 		Me.chklstXL.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.chklstXL.FormattingEnabled = true
-		Me.chklstXL.Items.AddRange(New Object() {"Couleur", "Force / Endurance", "Coût d'invocation", "Edition", "Prix", "Rareté", "Sous-type", "Type", "Texte"})
+		Me.chklstXL.Items.AddRange(New Object() {"Foil ou pas", "Couleur", "Force / Endurance", "Coût d'invocation", "Edition", "Prix", "Rareté", "Sous-type", "Type", "Texte"})
 		Me.chklstXL.Location = New System.Drawing.Point(3, 49)
 		Me.chklstXL.Name = "chklstXL"
-		Me.chklstXL.Size = New System.Drawing.Size(274, 139)
+		Me.chklstXL.Size = New System.Drawing.Size(274, 154)
 		Me.chklstXL.TabIndex = 8
 		AddHandler Me.chklstXL.SelectedValueChanged, AddressOf Me.ChklstXLSelectedValueChanged
 		'
 		'chkAllNone
 		'
 		Me.chkAllNone.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.chkAllNone.Location = New System.Drawing.Point(3, 191)
+		Me.chkAllNone.Location = New System.Drawing.Point(3, 203)
 		Me.chkAllNone.Name = "chkAllNone"
 		Me.chkAllNone.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
 		Me.chkAllNone.Size = New System.Drawing.Size(274, 25)
@@ -138,7 +138,7 @@ Partial Class frmXL
 		'cmdXL
 		'
 		Me.cmdXL.Dock = System.Windows.Forms.DockStyle.Bottom
-		Me.cmdXL.Location = New System.Drawing.Point(0, 219)
+		Me.cmdXL.Location = New System.Drawing.Point(0, 231)
 		Me.cmdXL.Name = "cmdXL"
 		Me.cmdXL.Size = New System.Drawing.Size(280, 23)
 		Me.cmdXL.TabIndex = 7
@@ -158,7 +158,7 @@ Partial Class frmXL
 		Me.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpOptions.Location = New System.Drawing.Point(0, 0)
 		Me.grpOptions.Name = "grpOptions"
-		Me.grpOptions.Size = New System.Drawing.Size(280, 242)
+		Me.grpOptions.Size = New System.Drawing.Size(280, 254)
 		Me.grpOptions.TabIndex = 10
 		Me.grpOptions.TabStop = false
 		Me.grpOptions.Visible = false
@@ -259,7 +259,7 @@ Partial Class frmXL
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(284, 293)
+		Me.ClientSize = New System.Drawing.Size(284, 305)
 		Me.Controls.Add(Me.cbarXL)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)

@@ -89,7 +89,7 @@ Partial Class MainForm
 		Me.btHTMLExport.ImageTransparentColor = System.Drawing.Color.Magenta
 		Me.btHTMLExport.Name = "btHTMLExport"
 		Me.btHTMLExport.Size = New System.Drawing.Size(23, 22)
-		Me.btHTMLExport.Text = "Base de données source"
+		Me.btHTMLExport.Text = "HTML Generator"
 		AddHandler Me.btHTMLExport.Click, AddressOf Me.MnuHTMLExportClick
 		'
 		'menuStrip

@@ -1162,6 +1162,8 @@ Public Partial Class MainForm
 				Return "FromtheVaultRealms#" + VpStr
 			Case "GC"
 				Return "gatecrash#" + VpStr
+			Case "D0"
+				Return "DuelDecksSorinvsTibalt#" + VpStr				
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1294,6 +1296,8 @@ Public Partial Class MainForm
 				Return "V5"
 			Case "gatecrash"
 				Return "GC"
+			Case "DuelDecksSorinvsTibalt"
+				Return "D0"				
 			Case Else
 				Return ""
 		End Select

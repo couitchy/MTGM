@@ -146,6 +146,9 @@ Public Partial Class MainForm
 			Me.dlgBrowser.SelectedPath = ""
 			Me.dlgBrowser.ShowDialog
 			If Me.dlgBrowser.SelectedPath <> "" Then
+				If Not Directory.Exists(Path.GetTempPath + CmTemp) Then
+					Directory.CreateDirectory(Path.GetTempPath + CmTemp)
+				End If
 				'Extrait le fichier ZIP des ressources dans le répertoire temporaire
 				Using VpFile As Stream = File.OpenWrite(Path.GetTempPath + CmTemp + CmZipRes)
 					Call Me.CopyStream(VpMyHTML, VpFile)
