@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33296
+	Public Const CgCodeLines As Integer   			= 33297
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -1480,14 +1480,15 @@ Public Module clsModule
 			End If
 		End If
 	End Function
-	Public Function GetSerieNameFromCode(VpSerie As String) As String
+	Public Function GetSerieNameFromCode(VpSerie As String, VpVF As Boolean) As String
 	'--------------------------------------------------------
 	'Retourne le nom VO d'une édition à partir de son code id
 	'--------------------------------------------------------
 	Dim VpO As Object
 	Dim VpFoil As Boolean = VpSerie.EndsWith(CgFoil2)
-		VgDBCommand.CommandText = "Select SeriesNM From Series Where SeriesCD = '" + VpSerie.Replace(CgFoil2, "") + "';"
-		VpO = VgDBCommand.ExecuteScalar
+	Dim VpDBCommand As New OleDbCommand("", VgDB)
+		VpDBCommand.CommandText = "Select " + If(VpVF, "SeriesNM_FR", "SeriesNM") + " From Series Where SeriesCD = '" + VpSerie.Replace(CgFoil2, "") + "';"
+		VpO = VpDBCommand.ExecuteScalar
 		If Not VpO Is Nothing Then
 			Return VpO.ToString + If(VpFoil, CgFoil2, "")
 		Else

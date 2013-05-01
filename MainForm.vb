@@ -1416,7 +1416,7 @@ Public Partial Class MainForm
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpUsage.Add(.GetString(0), CInt(.GetValue(1)))
+				VpUsage.Add(clsModule.GetSerieNameFromCode(.GetString(0), Me.IsInVFMode), CInt(.GetValue(1)))
 			End While
 			.Close
 		End With
@@ -1839,7 +1839,7 @@ Public Partial Class MainForm
 				End If
 				VpHist = clsModule.GetPriceHistory(VpCardName, VpFoil)
 				For Each VpEdition As String In VpHist.Keys
-					VpPricesHistory.AddNewPlot(VpHist.Item(VpEdition), clsModule.GetSerieNameFromCode(VpEdition))
+					VpPricesHistory.AddNewPlot(VpHist.Item(VpEdition), clsModule.GetSerieNameFromCode(VpEdition, Me.IsInVFMode))
 				Next VpEdition
 				VpPricesHistory.Show
 				VpPricesHistory.BringToFront
