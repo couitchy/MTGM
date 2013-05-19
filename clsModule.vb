@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33297
+	Public Const CgCodeLines As Integer   			= 33307
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -130,7 +130,7 @@ Public Module clsModule
 	Public Const CgErr3 As String					= "Impossible d'afficher les informations demandées maintenant..." + vbCrLf + "Si une mise à jour est en cours, merci d'attendre qu'elle se finisse."
 	Public Const CgErr4 As String					= "Le nombre maximal de courbes affichables a été atteint..." + vbCrLf + "Les suivantes seront ignorées."
 	Public Const CgErr5 As String					= "Le processus de mise à jour a été interrompu..."
-	Public Const CgErr6 As String					= "Le plug-in spécifié est introuvable..." + vbCrLf + "Vous pouvez télécharger les plug-ins à l'adresse : http://couitchy.free.fr/upload/MTGM/Plugins"
+	Public Const CgErr6 As String					= "Le plug-in spécifié est introuvable..." + vbCrLf + "Vous pouvez télécharger les plug-ins à l'adresse : " + CgDefaultServer + "/Plugins"
 	Public Const CgErr7 As String					= "Aucun critère de classement n'a été sélectionné..."
 	Public Const CgErr8 As String					= "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
 	Public Const CgErr9 As String					= "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."

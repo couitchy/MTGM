@@ -1352,11 +1352,9 @@ Public Partial Class MainForm
 		End With
 	End Sub
 	Private Sub LoadCarac(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
+		Call Me.LoadCaracDetails(VpCard, VpDownFace, VpTransformed, VpReserve, Me.btCardUse.Checked)
 		If Me.btCardUse.Checked Then
 			Call Me.LoadCaracUse(VpCard)
-			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, clsModule.MyTxt(Me.tvwExplore.SelectedNode.Tag.Value, Me.IsInVFMode, Me.IsDownFace(Me.tvwExplore.SelectedNode)), "")
-		Else
-			Call Me.LoadCaracDetails(VpCard, VpDownFace, VpTransformed, VpReserve)
 		End If
 	End Sub
 	Private Sub LoadCaracUse(VpCard As String)
@@ -1422,7 +1420,7 @@ Public Partial Class MainForm
 		End With
 		Return VpUsage
 	End Function
-	Private Sub LoadCaracDetails(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean)
+	Private Sub LoadCaracDetails(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean, VpSkipGrid As Boolean)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
 	'-----------------------------------------------
@@ -1487,58 +1485,62 @@ Public Partial Class MainForm
 				VpIsCreature = True
 			End If
 			'Nettoyage grilles
-			Call Me.ClearGrid(Me.grdPropCard)
+			If Not VpSkipGrid Then
+				Call Me.ClearGrid(Me.grdPropCard)
+			End If
 			Call Me.ClearGrid(Me.grdPropPicture)
 			AddHandler VpCellBehavior.FocusEntered, AddressOf CellFocusEntered
 			'Remplissage grilles
 			With VgDBReader
 				While .Read
-					'Insertion nouvelle ligne
-					VpRow = Me.grdPropCard.RowsCount
-					Me.grdPropCard.Rows.Insert(VpRow)
-					Me.grdPropPicture.Rows.Insert(VpRow)
-					'Colonne série
-					Me.grdPropCard(VpRow, 0) = New Cells.Cell(.GetString(.GetOrdinal(If(Me.IsInVFMode, "SeriesNM_FR", "SeriesNM"))))
-					Me.grdPropCard(VpRow, 0).Tag = .GetString(.GetOrdinal("Series"))
-					Me.grdPropPicture(VpRow, 0) = New Cells.Cell(CDate(.GetValue(.GetOrdinal("Release"))).Year)
-					VpCellVisual = New VisualModels.Common
-					Try
-						VpCellVisual.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetString(.GetOrdinal("Series")) + CgIconsExt))
-					Catch
-						VpCellVisual.Image = Nothing
-					End Try
-					Me.grdPropCard(VpRow, 0).VisualModel = VpCellVisual
-					Me.grdPropCard(VpRow, 0).Behaviors.Add(VpCellBehavior)
-					Me.grdPropPicture(VpRow, 0).VisualModel = VpCellVisual
-					'Colonne illustrateur
-					Try
-						Me.grdPropPicture(VpRow, 1) = New Cells.Cell(.GetString(.GetOrdinal("Artist")))
-					Catch
-					End Try
-					'Colonne rareté
-					Me.grdPropCard(VpRow, 1) = New Cells.Cell(clsModule.FormatTitle("Card.Rarity", .GetString(.GetOrdinal("Rarity"))))
-					'Colonne prix
-					VpPrice = clsModule.SafeGetNonZeroVal("Price")
-					If VpPrice <> 0 Then
-						Me.grdPropCard(VpRow, 2) = New Cells.Cell(VpPrice)
-					End If
-					'Colonne prix foil
-					VpPrice = clsModule.SafeGetNonZeroVal("FoilPrice")
-					If VpPrice <> 0 Then
-						Me.grdPropCard(VpRow, 3) = New Cells.Cell(VpPrice)
-					End If
-					'Colonnes stock et stock foil, qu'on ne gère que si on est pas en mode recherche avancée
-					If Not Me.IsInAdvSearch Then
-						Me.grdPropCard(VpRow, 4) = New Cells.Cell(CInt(clsModule.SafeGetNonZeroVal("MyItems")))
-						Me.grdPropCard(VpRow, 5) = New Cells.Cell(CInt(clsModule.SafeGetNonZeroVal("MyItemsFoil")))
-						VpCellModel = Utility.CreateDataModel(Type.GetType("System.Int32"))
-						VpCellModel.EditableMode = EditableMode.AnyKey Or EditableMode.SingleClick
-						AddHandler VpCellModel.Validated, AddressOf CellValidated
-						Me.grdPropCard(VpRow, 4).DataModel = VpCellModel
-						Me.grdPropCard(VpRow, 5).DataModel = VpCellModel
+					If Not VpSkipGrid Then
+						'Insertion nouvelle ligne
+						VpRow = Me.grdPropCard.RowsCount
+						Me.grdPropCard.Rows.Insert(VpRow)
+						Me.grdPropPicture.Rows.Insert(VpRow)
+						'Colonne série
+						Me.grdPropCard(VpRow, 0) = New Cells.Cell(.GetString(.GetOrdinal(If(Me.IsInVFMode, "SeriesNM_FR", "SeriesNM"))))
+						Me.grdPropCard(VpRow, 0).Tag = .GetString(.GetOrdinal("Series"))
+						Me.grdPropPicture(VpRow, 0) = New Cells.Cell(CDate(.GetValue(.GetOrdinal("Release"))).Year)
+						VpCellVisual = New VisualModels.Common
+						Try
+							VpCellVisual.Image = VgImgSeries.Images(VgImgSeries.Images.IndexOfKey("_e" + .GetString(.GetOrdinal("Series")) + CgIconsExt))
+						Catch
+							VpCellVisual.Image = Nothing
+						End Try
+						Me.grdPropCard(VpRow, 0).VisualModel = VpCellVisual
+						Me.grdPropCard(VpRow, 0).Behaviors.Add(VpCellBehavior)
+						Me.grdPropPicture(VpRow, 0).VisualModel = VpCellVisual
+						'Colonne illustrateur
+						Try
+							Me.grdPropPicture(VpRow, 1) = New Cells.Cell(.GetString(.GetOrdinal("Artist")))
+						Catch
+						End Try
+						'Colonne rareté
+						Me.grdPropCard(VpRow, 1) = New Cells.Cell(clsModule.FormatTitle("Card.Rarity", .GetString(.GetOrdinal("Rarity"))))
+						'Colonne prix
+						VpPrice = clsModule.SafeGetNonZeroVal("Price")
+						If VpPrice <> 0 Then
+							Me.grdPropCard(VpRow, 2) = New Cells.Cell(VpPrice)
+						End If
+						'Colonne prix foil
+						VpPrice = clsModule.SafeGetNonZeroVal("FoilPrice")
+						If VpPrice <> 0 Then
+							Me.grdPropCard(VpRow, 3) = New Cells.Cell(VpPrice)
+						End If
+						'Colonnes stock et stock foil, qu'on ne gère que si on est pas en mode recherche avancée
+						If Not Me.IsInAdvSearch Then
+							Me.grdPropCard(VpRow, 4) = New Cells.Cell(CInt(clsModule.SafeGetNonZeroVal("MyItems")))
+							Me.grdPropCard(VpRow, 5) = New Cells.Cell(CInt(clsModule.SafeGetNonZeroVal("MyItemsFoil")))
+							VpCellModel = Utility.CreateDataModel(Type.GetType("System.Int32"))
+							VpCellModel.EditableMode = EditableMode.AnyKey Or EditableMode.SingleClick
+							AddHandler VpCellModel.Validated, AddressOf CellValidated
+							Me.grdPropCard(VpRow, 4).DataModel = VpCellModel
+							Me.grdPropCard(VpRow, 5).DataModel = VpCellModel
+						End If
 					End If
 					'Partie commune quelle que soit l'édition (à n'exécuter qu'une fois donc...)
-					If VpRow = 1 Then
+					If VpRow = 1 Or VpSkipGrid Then
 						'Sous-partie spécifique aux créatures
 						If VpIsCreature Then
 							Me.lblPowerTough.Text = .GetValue(.GetOrdinal("Power")).ToString + " / " + .GetValue(.GetOrdinal("Tough")).ToString
@@ -1565,6 +1567,7 @@ Public Partial Class MainForm
 							End If
 						End With
 					End If
+					If VpSkipGrid Then Exit While
 				End While
 				.Close
 			End With
@@ -2391,6 +2394,7 @@ Public Partial Class MainForm
 			If Not Me.IsSourcePresent Then
 				Call clsModule.ShowWarning("Aucune source de cartes n'a été sélectionnée...")
 			Else
+				Call Me.CheckGridBusy
 				Cursor.Current = Cursors.WaitCursor
 				VpAddCards = New frmAddCards(Me)
 				VpAddCards.ShowDialog

@@ -1163,7 +1163,9 @@ Public Partial Class MainForm
 			Case "GC"
 				Return "gatecrash#" + VpStr
 			Case "D0"
-				Return "DuelDecksSorinvsTibalt#" + VpStr				
+				Return "DuelDecksSorinvsTibalt#" + VpStr
+			Case "DZ"
+				Return "dragonsmaze#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1297,7 +1299,9 @@ Public Partial Class MainForm
 			Case "gatecrash"
 				Return "GC"
 			Case "DuelDecksSorinvsTibalt"
-				Return "D0"				
+				Return "D0"
+			Case "dragonsmaze"
+				Return "DZ"
 			Case Else
 				Return ""
 		End Select
@@ -1905,7 +1909,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsExtractDiffClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			'Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '""', ''), '?', '')) Order By Card.Title Asc;")
+			'Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '""', ''), '?', '')) Order By Card.Title Asc;
 			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Card.Title) Order By Card.Title Asc;")
 			Call Me.AddToLog("Utiliser la requête Access pour éviter les doublons...", eLogType.Warning)
 		End If

@@ -478,6 +478,7 @@ Public Partial Class frmNewEdition
 				Me.cmdAutoNext.Enabled = False
 				Me.grpAuto.Visible = True
 				Me.lblStatus.Text = "Récupération des en-têtes..."
+				Cursor.Current = Cursors.WaitCursor
 				Application.DoEvents
 				Me.chkNewEditionAuto.Tag = Me.QuerySeries
 				Me.lblStatus.Text = ""
@@ -622,7 +623,7 @@ Public Class clsMyCard
 		If VmCardText = "" Then
 			Return "Null"
 		Else
-			Return "'" + VmCardText.Replace("'", "''") + "'"
+			Return "'" + VmCardText.Replace("'", "''").Replace("/#/", vbCrLf + vbCrLf + "----" + vbCrLf + vbCrLf) + "'"
 		End If
 	End Function
 	Public Function MyColor As String

@@ -362,6 +362,7 @@ Public Partial Class frmExport
 				.Add("CF", "CFX")
 				.Add("RR", "RTR")
 				.Add("GC", "GTC")
+				.Add("DZ", "DGM")
 			End If
 			'Conversion MTGM => MWS
 			If Not VpReverse Then

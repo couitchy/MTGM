@@ -84,6 +84,7 @@ Partial Class frmWord
 		'
 		Me.pnlWord.Controls.Add(Me.grpVignettes)
 		Me.pnlWord.Controls.Add(Me.grpOptions)
+		Me.pnlWord.Controls.Add(Me.cmdWord)
 		Me.pnlWord.Location = New System.Drawing.Point(2, 49)
 		Me.pnlWord.Name = "pnlWord"
 		Me.pnlWord.Size = New System.Drawing.Size(280, 224)
@@ -201,7 +202,6 @@ Partial Class frmWord
 		'
 		Me.grpVignettes.Controls.Add(Me.chklstWord)
 		Me.grpVignettes.Controls.Add(Me.chkAllNone)
-		Me.grpVignettes.Controls.Add(Me.cmdWord)
 		Me.grpVignettes.Controls.Add(Me.lblWord)
 		Me.grpVignettes.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpVignettes.Location = New System.Drawing.Point(0, 0)
