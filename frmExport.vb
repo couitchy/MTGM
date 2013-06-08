@@ -83,7 +83,7 @@ Public Partial Class frmExport
 					Case clsModule.eFormat.MTGMv2
 						VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString + "#" + .GetValue(4).ToString + If(VpIsCollection, "", "#" + .GetValue(5).ToString))
 					Case clsModule.eFormat.MWS
-						VpOut.WriteLine("    " + .GetValue(1).ToString + " [" + Me.GetMWSSerieTag(.GetValue(3).ToString) + "] " + .GetValue(2).ToString)
+						VpOut.WriteLine(If(VpIsCollection, "", If(.GetBoolean(5), "SB:", "")) + "    " + .GetValue(1).ToString + " [" + Me.GetMWSSerieTag(.GetValue(3).ToString) + "] " + .GetValue(2).ToString)
 					Case Else
 				End Select
 			End While
@@ -363,6 +363,7 @@ Public Partial Class frmExport
 				.Add("RR", "RTR")
 				.Add("GC", "GTC")
 				.Add("DZ", "DGM")
+				.Add("MB", "MBS")
 			End If
 			'Conversion MTGM => MWS
 			If Not VpReverse Then

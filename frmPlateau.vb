@@ -979,6 +979,7 @@ Public Class clsPlateauCard
 	Public Sub ReInit(VpOwner As List(Of clsPlateauCard))
 		VmOwner = VpOwner
 		VmTapped = False
+		VmTransformed = False
 		VmHidden = True
 		VmReserveInPlay = False
 		VmCounters = 0

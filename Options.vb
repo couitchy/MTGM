@@ -105,7 +105,7 @@ Public Partial Class Options
 		Private VmShowCorruption As Boolean = True
 		Private VmCopyRange As Integer = 1
 		Private VmShowLines As Boolean = False
-		Private VmDownloadServer As String = clsModule.CgDefaultServer
+		Private VmDownloadServerEnum As clsModule.eServer = clsModule.eServer.FreePagesPerso
 		Private VmShowAllSeries As Boolean = False
 		<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 		Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
@@ -409,13 +409,26 @@ Public Partial Class Options
 			End Set
 		End Property
 		<DisplayName("Serveur de téléchargement"), Category("Mises à jour"), Description("Serveur de téléchargement à contacter pour télécharger les mises à jour d'application et de contenu")> _
-		Public Property DownloadServer As String
+		Public Property DownloadServerEnum As clsModule.eServer
 			Get
-				Return VmDownloadServer
+				Return VmDownloadServerEnum
 			End Get
-			Set (VpDownloadServer As String)
-				VmDownloadServer = VpDownloadServer
+			Set (VpDownloadServerEnum As clsModule.eServer)
+				VmDownloadServerEnum = VpDownloadServerEnum
 			End Set
+		End Property
+		<XmlIgnore(), Browsable(False), Category("Mises à jour"), Description("URL explicite du serveur de téléchargement")> _
+		Public ReadOnly Property DownloadServer As String
+			Get
+				Select Case VmDownloadServerEnum
+					Case clsModule.eServer.FreePagesPerso
+						Return clsModule.CgDefaultServer
+					Case clsModule.eServer.ChromeLightStudio
+						Return "http://chromelight.brutin.fr/MTGM"
+					Case Else
+						Return ""
+				End Select
+			End Get
 		End Property
 		<DisplayName("Moteur de base de données"), Category("Général"), Description("Composant logiciel OLEDB permettant d'accéder aux fichiers de base de données Microsoft Access")> _
 		Public Property DBProvider As clsModule.eDBProvider
@@ -426,13 +439,13 @@ Public Partial Class Options
 				VmDBProvider = VpDBProvider
 			End Set
 		End Property
-	End Class	
+	End Class
 End Class
 Public Class clsSessionSettings
 	Private VmFreeTempFileIndex As Integer = -1
 	Private VmGridClearing As Boolean = False
 	Private VmSplitterDistance As Integer
-	Private VmFormSubWidth As Integer	
+	Private VmFormSubWidth As Integer
 	Public Property FreeTempFileIndex As Integer
 		Get
 			Return VmFreeTempFileIndex
@@ -456,7 +469,7 @@ Public Class clsSessionSettings
 		Set (VpSplitterDistance As Integer)
 			VmSplitterDistance = VpSplitterDistance
 		End Set
-	End Property	
+	End Property
 	Public Property FormSubWidth As Integer
 		Get
 			Return VmFormSubWidth
@@ -464,5 +477,5 @@ Public Class clsSessionSettings
 		Set (VpFormSubWidth As Integer)
 			VmFormSubWidth = VpFormSubWidth
 		End Set
-	End Property	
+	End Property
 End Class

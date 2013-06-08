@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33307
+	Public Const CgCodeLines As Integer   			= 33326
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -202,6 +202,10 @@ Public Module clsModule
 		MTGM
 		Apprentice
 		MWS
+	End Enum
+	Public Enum eServer
+		FreePagesPerso
+		ChromeLightStudio
 	End Enum
 	Public Enum eSearchType
 		Alpha = 0
@@ -563,7 +567,7 @@ Public Module clsModule
 					'Passage version 14 à 15
 					If CInt(VpDBVersion) < 15 Then
 						VgDBCommand.CommandText = "Alter Table MyGames Add Reserve Bit;"
-						VgDBCommand.ExecuteNonQuery						
+						VgDBCommand.ExecuteNonQuery
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
