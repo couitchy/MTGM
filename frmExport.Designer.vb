@@ -255,8 +255,7 @@ Partial Class frmExport
 		'
 		'dlgFileBrowser
 		'
-		Me.dlgFileBrowser.Filter = "Fichiers de deck v2 (*.dk2) | *.dk2|Fichiers de deck (*.dck) | *.dck|Magic Master"& _ 
-		" deck (*.xml) | *.xml|Magic Workstation (*.mwDeck) | *.mwDeck"
+		Me.dlgFileBrowser.Filter = "Fichiers de deck v2 (*.dk2) | *.dk2|Fichiers de deck (*.dck) | *.dck|Magic Master (*.xml) | *.xml|Magic Workstation (*.mwDeck) | *.mwDeck|Magic Online (*.csv) | *.csv"
 		Me.dlgFileBrowser.Title = "Sélectionner le fichier à importer"
 		'
 		'frmExport

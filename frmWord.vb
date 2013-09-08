@@ -18,6 +18,7 @@
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - intégration possible des coûts invoc. 26/05/2012 |
+'| - intégration possible A/D et texte	   03/08/2013 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmWord
@@ -28,6 +29,10 @@ Public Partial Class frmWord
 	Private VmRestriction As String
 	Private VmRestrictionTXT As String
 	Private VmBusy As Boolean = False
+	Private Const CmImgPerPage As Integer = 9
+	Private Const CmImgPerRow As Integer = 3
+	Private Const CmTxtPerRowNoFullTxt As Integer = 6
+	Private Const CmTxtPerRowWithFullTxt As Integer = 4
 	Public Sub New(VpOwner As MainForm)
 	Dim VpPath As String = Path.GetTempPath + clsModule.CgTemp
 		Me.InitializeComponent()
@@ -55,6 +60,7 @@ Public Partial Class frmWord
 	Dim VpLeft As Integer
 	Dim VpCount As Integer
 	Dim VpTotal As Integer
+	Dim VpTxtPerRow As Integer
 	Dim VpItems As New List(Of clsWordItem)
 		Try
 			VpWordApp = CreateObject("Word.Application")
@@ -72,9 +78,9 @@ Public Partial Class frmWord
 		VpWordApp.Visible = Me.chkWordShow.Checked
 		MainForm.VgMe.IsMainReaderBusy = True
 		'Récupération de la liste
-		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost From ((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title Where "
+		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost, Creature.Power, Creature.Tough, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText") + " From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join Creature On Card.Title = Creature.Title Where "
 		VpSQL = VpSQL + VmRestriction
-		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title, Spell.Cost")
+		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title, Spell.Cost, Creature.Power, Creature.Tough, CardText, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText"))
 		VgDBCommand.CommandText = VpSQL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
@@ -82,7 +88,7 @@ Public Partial Class frmWord
 			While .Read
 				If Me.chklstWord.CheckedItems.Contains(.GetString(2)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
 					VpCount = If(Me.chkSingle.Checked, 1, .GetValue(1))
-					VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), .GetValue(3).ToString, VpCount))
+					VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), .GetValue(3).ToString, .GetValue(4).ToString, .GetValue(5).ToString, .GetString(6), VpCount))
 					VpTotal = VpTotal + VpCount
 				End If
 			End While
@@ -112,19 +118,19 @@ Public Partial Class frmWord
 	 					VpPicture.Top = VpTop
 	 					VpPicture.Left = VpLeft
 	 					VpCount = VpCount + 1
-	 					If VpCount Mod 9 = 0 Then		'9 vignettes par page
+	 					If VpCount Mod CmImgPerPage = 0 Then		'9 vignettes par page
 	 						VpWordApp.Selection.InsertBreak
 	 						VpWordApp.Selection.MoveUp
 	 						VpLeft = 0
 	 						VpTop = 0
-	 					ElseIf VpCount Mod 3 = 0 Then	'3 vignettes par ligne
+	 					ElseIf VpCount Mod CmImgPerRow = 0 Then		'3 vignettes par ligne
 	 						VpLeft = 0
 	 						VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm + clsModule.CgYMargin)
 	 					Else
 	 						VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm + clsModule.CgXMargin)
 	 					End If
 						Me.prgAvance.Increment(1)
-						Application.DoEvents	 					
+						Application.DoEvents
 	 				Next VpI
 				Catch
 					Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + VpItem.Title + "...")
@@ -132,17 +138,19 @@ Public Partial Class frmWord
 			Next VpItem
 		'2. Génération mode texte
 		Else
+			VpTxtPerRow = If(Me.chkPrintText.Checked, CmTxtPerRowWithFullTxt, CmTxtPerRowNoFullTxt)
 			'Création du tableau
- 			VpTable = VpDocument.Tables.Add(VpDocument.Range(0, 0), Math.Ceiling(VpTotal / 6), 6, 1, 0)
+ 			VpTable = VpDocument.Tables.Add(VpDocument.Range(0, 0), Math.Ceiling(VpTotal / VpTxtPerRow), VpTxtPerRow, 1, 0)
 			'Remplissage
 			VpCount = 0
 			For Each VpItem As clsWordItem In VpItems
 				For VpI As Integer = 1 To VpItem.Quant
-					VpTable.Cell(1 + (VpCount \ 6), 1 + (VpCount Mod 6)).Range.Text = If(Me.chkPrintCost.Checked, VpItem.Cost + vbCrLf, "") + VpItem.Title	'6 vignettes par ligne
+					'6 (ou 4) vignettes par ligne
+					VpTable.Cell(1 + (VpCount \ VpTxtPerRow), 1 + (VpCount Mod VpTxtPerRow)).Range.Text = If(Me.chkPrintCost.Checked, VpItem.Cost + vbCrLf, "") + VpItem.Title + If(Me.chkPrintText.Checked, vbCrLf + vbCrLf + VpItem.FullText + vbCrLf, "") + If(Me.chkPrintAD.Checked, vbCrLf + VpItem.AD, "") + If(Me.chkPrintText.Checked, vbCrLf, "")
 					VpCount = VpCount + 1
 					Me.prgAvance.Increment(1)
-					Application.DoEvents					
-				Next VpI				
+					Application.DoEvents
+				Next VpI
 			Next VpItem
 			'Formatage
  			For Each VpBorder As Object In VpTable.Borders
@@ -258,11 +266,15 @@ Public Class clsWordItem
 	Private VmTitle As String
 	Private VmCost As String
 	Private VmQuant As Integer
-	Public Sub New(VpTitle As String, VpTitleVO As String, VpCost As String, VpQuant As Integer)
+	Private VmAD As String
+	Private VmFullText As String
+	Public Sub New(VpTitle As String, VpTitleVO As String, VpCost As String, VpA As String, VpD As String, VpFullText As String, VpQuant As Integer)
 		VmTitle = VpTitle
 		VmTitleVO = VpTitleVO
 		VmCost = VpCost
 		VmQuant = VpQuant
+		VmAD = VpA + "/" + VpD
+		VmFullText = VpFullText
 	End Sub
 	Public ReadOnly Property Title As String
 		Get
@@ -277,6 +289,16 @@ Public Class clsWordItem
 	Public ReadOnly Property Cost As String
 		Get
 			Return VmCost
+		End Get
+	End Property
+	Public ReadOnly Property AD As String
+		Get
+			Return If(VmAD = "/", "", VmAD)
+		End Get
+	End Property
+	Public ReadOnly Property FullText As String
+		Get
+			Return VmFullText			
 		End Get
 	End Property
 	Public ReadOnly Property Quant As Integer

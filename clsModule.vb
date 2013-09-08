@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33326
+	Public Const CgCodeLines As Integer   			= 33520
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -140,6 +140,7 @@ Public Module clsModule
 	Public Const CgFExtA As String					= ".dec"
 	Public Const CgFExtW As String					= ".mwDeck"
 	Public Const CgFExtM As String					= ".xml"
+	Public Const CgFExtL As String					= ".csv"
 	Public Const CgFExtD As String					= ".mdb"
 	Public Const CgIconsExt As String				= ".png"
 	Public Const CgPicUpExt As String				= ".dat"
@@ -1841,6 +1842,8 @@ Public Module clsModule
 		Call SecureDelete(Application.StartupPath + CgUpDDBb)
 		Call SecureDelete(Application.StartupPath + CgUpPrices)
 		Call SecureDelete(Application.StartupPath + CgUpSeries)
+		Call SecureDelete(Application.StartupPath + CgUpPic + CgPicLogExt)
+		Call SecureDelete(Application.StartupPath + CgUpPic + CgPicUpExt)
 		For Each VpFile As FileInfo In (New DirectoryInfo(Application.StartupPath)).GetFiles("*_en.txt")
 			Call SecureDelete(VpFile.FullName)
 		Next VpFile

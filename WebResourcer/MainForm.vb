@@ -1166,6 +1166,12 @@ Public Partial Class MainForm
 				Return "DuelDecksSorinvsTibalt#" + VpStr
 			Case "DZ"
 				Return "dragonsmaze#" + VpStr
+			Case "MS"
+				Return "modernmasters#" + VpStr
+			Case "M5"
+				Return "magic2014#" + VpStr
+			Case "JG"
+				Return "DCIJudgeGift#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1302,6 +1308,12 @@ Public Partial Class MainForm
 				Return "D0"
 			Case "dragonsmaze"
 				Return "DZ"
+			Case "modernmasters"
+				Return "MS"
+			Case "magic2014"
+				Return "M5"
+			Case "DCIJudgeGift"
+				Return "JG"
 			Case Else
 				Return ""
 		End Select
@@ -1332,7 +1344,6 @@ Public Partial Class MainForm
 				End While
 				.Close
 			End With
-'			VpTxt.WriteLine("pegase#PG#Pégase#Pégase###1#1#W#02/03/2006 00:00:00##600#236#0#0#0#0#0#############Pégase est une édition particulière de Magic, car éditée en collaboration entre Wizard of The Coast et Hachette. Les collectionneurs sont ainsi invités à construire 10 decks (Rats, Elves, Spirits, Slivers, Ninjas, Zombies, Angels, Wizards, Berserk et Thallids) au fur et à mesure de leurs passages chez leur marchand de journaux. Les publications s'étendent du 2 mars 2006 au 3 juillet 2007. Pégase n'est disponible qu'en français et en italien.#Pégase")
 			VpTxt.Flush
 			VpTxt.Close
 			If Me.btCancel.Tag Then
