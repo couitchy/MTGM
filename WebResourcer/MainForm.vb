@@ -1329,13 +1329,13 @@ Public Partial Class MainForm
 		If Me.dlgSave.FileName <> "" Then
 			VpTxt = New StreamWriter(Me.dlgSave.FileName)
 			Call Me.AddToLog("La construction du fichier d'en-têtes a commencé...", eLogType.Information, True)
-	    	VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR From Series;"
+	    	VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR, SeriesCD_MO, SeriesCD_MW From Series;"
 	    	VmDBReader = VmDBCommand.ExecuteReader
 			With VmDBReader
 				While .Read
 					Application.DoEvents
 					VpStr = ""
-					For VpI As Integer = 0 To 30
+					For VpI As Integer = 0 To 32
 						VpStr = VpStr + Me.Matching(.GetValue(VpI).ToString) + "#"
 					Next VpI
 					VpStr = Me.SerieShortcut(VpStr.Substring(0, VpStr.Length - 1))

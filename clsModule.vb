@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33520
+	Public Const CgCodeLines As Integer   			= 33390
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -108,7 +108,7 @@ Public Module clsModule
 	Public Const CgURL9 As String         			= "/Updates/LastPrices.txt"
 	Public Const CgURL10 As String					= "/Images%20des%20cartes/"
 	Public Const CgURL11 As String         			= "/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         			= "/Updates/Series r14.txt"
+	Public Const CgURL12 As String         			= "/Updates/Series r16.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
 	Public Const CgURL15 As String         			= "/Updates/Tournois r11.txt"
@@ -264,21 +264,22 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque infos Réserve, MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque infos Réserve, MyGamesID, SubTypes
-		BDD_v13		'manque infos Réserve, MyGamesID
-		BDD_v14		'manque infos Réserve
-		BDD_v15		'à jour
+		BDD_v1		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque codes séries, infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque codes séries, infos Réserve, MyGamesID
+		BDD_v14		'manque codes séries, infos Réserve
+		BDD_v15		'manque codes séries
+		BDD_v16		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -431,8 +432,14 @@ Public Module clsModule
 									'Si on est ici, BDD version 14
 									VpDBVersion = eDBVersion.BDD_v14
 								Else
-									'Si on est ici, BDD version 15
-									VpDBVersion = eDBVersion.BDD_v15
+									VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Series", Nothing})
+									If VpSchemaTable.Rows.Count <> 33 Then
+										'Si on est ici, BDD version 15
+										VpDBVersion = eDBVersion.BDD_v15
+									Else
+										'Si on est ici, BDD version 16
+										VpDBVersion = eDBVersion.BDD_v16
+									End If
 								End If
 							End If
 						End If
@@ -446,10 +453,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v15 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v16 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v15)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v16)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -570,6 +577,18 @@ Public Module clsModule
 						VgDBCommand.CommandText = "Alter Table MyGames Add Reserve Bit;"
 						VgDBCommand.ExecuteNonQuery
 					End If
+					'Passage version 15 à 16
+					If CInt(VpDBVersion) < 16 Then
+						VgDBCommand.CommandText = "Alter Table Series Add SeriesCD_MO Text(3) With Compression;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table Series Add SeriesCD_MW Text(3) With Compression;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = SeriesCD;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update Series Set SeriesCD_MW = SeriesCD;"
+						VgDBCommand.ExecuteNonQuery
+						Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des séries / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les formats Magic Workstation et Magic Online...")
+					End If					
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
 					Return False

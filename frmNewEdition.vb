@@ -37,8 +37,8 @@ Public Partial Class frmNewEdition
 	'--------------------------------------------------------------
 		Try
 			With VmEditionHeader
-				'(SeriesCD, SeriesNM, SeriesNM_MtG, SeriesNM_FR, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Foils, Nullx12, Notes)
-				VgDBCommand.CommandText = "Insert Into Series (SeriesCD, SeriesNM, SeriesNM_MtG, SeriesNM_FR, LegalE, LegalS, Border, Release, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, Notes) Values ('" + .SeriesCD + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', '" + .SeriesNM_FR.Replace("'", "''") + "', True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", True, '" + .NotesEdition.Replace("'", "''") + "');"
+				'(SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Foils, Nullx12, Notes)
+				VgDBCommand.CommandText = "Insert Into Series (SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, LegalE, LegalS, Border, Release, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, Notes) Values ('" + .SeriesCD + "', '" + .SeriesCD_MO + "', '" + .SeriesCD_MW + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', '" + .SeriesNM_FR.Replace("'", "''") + "', True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", True, '" + .NotesEdition.Replace("'", "''") + "');"
 				VgDBCommand.ExecuteNonQuery
 			End With
 		Catch
@@ -64,6 +64,8 @@ Public Partial Class frmNewEdition
 			.SeriesNM = VpInfos(2)
 			.SeriesNM_MtG = VpInfos(3)
 			.SeriesNM_FR = VpInfos(31)
+			.SeriesCD_MO = VpInfos(32)
+			.SeriesCD_MW = VpInfos(33)
 			.Border = .SetBorder(VpInfos(8))
 			.Release = Date.Parse(VpInfos(9), New CultureInfo("fr-FR", True), DateTimeStyles.NoCurrentDateDefault)
 			.TotCards = Val(VpInfos(11))
@@ -121,8 +123,10 @@ Public Partial Class frmNewEdition
 	Dim VpSeriesInfos As StreamReader
 	Dim VpInfos() As String
 	Dim VpLine As String
+	Dim VpFullUpdate As Boolean
 		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
 		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
+			VpFullUpdate = ( clsModule.ShowQuestion("Voulez-vous mettre à jour l'intégralité des en-têtes ?" + vbCrLf + "Cliquez sur 'Non' pour mettre uniquement à jour les codes des éditions (compatibilité avec les autres formats de logiciels Magic)") = System.Windows.Forms.DialogResult.Yes )
 			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
 			Do While Not VpSeriesInfos.EndOfStream
 				VpLine = VpSeriesInfos.ReadLine
@@ -131,7 +135,11 @@ Public Partial Class frmNewEdition
 					Call Me.FillHeader(VpInfos)
 					Try
 						With VmEditionHeader
-							VgDBCommand.CommandText = "Update Series Set SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+							If VpFullUpdate Then
+								VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+							Else
+								VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "' Where SeriesCD = '" + .SeriesCD + "';"
+							End If
 							VgDBCommand.ExecuteNonQuery
 						End With
 					Catch
@@ -719,6 +727,8 @@ Public Class clsEditionHeader
 		Silver
 	End Enum
 	Private VmSeriesCD As String = "ME"
+	Private VmSeriesCD_MO As String = "ME"
+	Private VmSeriesCD_MW As String = "ME"
 	Private VmSeriesNM As String = "Magic Edition"
 	Private VmSeriesNM_FR As String = "Édition Magic"
 	Private VmSeriesNM_MtG As String = "Magic Ed..."
@@ -731,13 +741,31 @@ Public Class clsEditionHeader
 	Private VmLand As Integer = 10
 	Private VmLogoEdition As String = ""
 	Private VmNotesEdition As String = ""
-	<Category("Identification"), Description("Code la série à 2 chiffres")> _
+	<Category("Identification"), Description("Code de la série à 2 chiffres")> _
 	Public Property SeriesCD As String
 		Get
 			Return VmSeriesCD.Substring(0, 2)
 		End Get
 		Set (VpSeriesCD As String)
 			VmSeriesCD = VpSeriesCD
+		End Set
+	End Property
+	<Category("Identification"), Description("Code de la série à 2 chiffres (Magic Online)")> _
+	Public Property SeriesCD_MO As String
+		Get
+			Return VmSeriesCD_MO
+		End Get
+		Set (VpSeriesCD_MO As String)
+			VmSeriesCD_MO = VpSeriesCD_MO
+		End Set
+	End Property
+	<Category("Identification"), Description("Code de la série à 2 chiffres (Magic Workstation)")> _
+	Public Property SeriesCD_MW As String
+		Get
+			Return VmSeriesCD_MW
+		End Get
+		Set (VpSeriesCD_MW As String)
+			VmSeriesCD_MW = VpSeriesCD_MW
 		End Set
 	End Property
 	<Category("Identification"), Description("Nom de la série (VO)")> _

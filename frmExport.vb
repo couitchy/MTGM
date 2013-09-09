@@ -19,6 +19,7 @@
 '| Modifications :                                    |
 '| - support passif depuis drag&drop	   27/09/2010 |
 '| - format v2 avec ref. éditions		   01/10/2010 |
+'| - formats MMaster, MWS, MagicOnline	   08/09/2013 |
 '| - gestion cartes foils				   19/12/2010 |
 '------------------------------------------------------
 Imports System.IO
@@ -29,13 +30,10 @@ Public Partial Class frmExport
 	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
 	Private VmMustReload As Boolean = False	'Rechargement des menus obligatoires dans le père
 	Private VmFormat As clsModule.eFormat	'Format de fichier choisi pour l'export
-	Private VmMWSTags As New Hashtable		'Table de correspondance des codes d'édition avec Magic Workstation
-	Private VmMTGTags As New Hashtable		'Table de correspondance des codes d'édition avec Magic Online
 	Private VmOwner As MainForm
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmOwner = VpOwner
-		Call Me.BuildSeriesTables
 	End Sub
 	Private Sub SourcesLoad
 	'-------------------------------
@@ -72,7 +70,7 @@ Public Partial Class frmExport
 				VpOut.WriteLine("")
 			Case Else
 		End Select
-		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Foil" + If(VpIsCollection, "", ", Reserve") + " From " + If(VpIsCollection, "MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;", "MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
+		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Series.SeriesCD_MW, Foil" + If(VpIsCollection, "", ", Reserve") + " From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join " + If(VpIsCollection, "MyCollection On MyCollection.EncNbr = Card.EncNbr;", "MyGames On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIndex(VpSource) + ";")
 		VgDBReader = VgDBCommand.ExecuteReader
 		'Corps
 		With VgDBReader
@@ -83,9 +81,9 @@ Public Partial Class frmExport
 					Case clsModule.eFormat.MTGM
 						VpOut.WriteLine(.GetValue(0).ToString + "#" + .GetValue(1).ToString)
 					Case clsModule.eFormat.MTGMv2
-						VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString + "#" + .GetValue(4).ToString + If(VpIsCollection, "", "#" + .GetValue(5).ToString))
+						VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString + "#" + .GetValue(5).ToString + If(VpIsCollection, "", "#" + .GetValue(6).ToString))
 					Case clsModule.eFormat.MWS
-						VpOut.WriteLine(If(VpIsCollection, "", If(.GetBoolean(5), "SB:", "")) + "    " + .GetValue(1).ToString + " [" + Me.GetSerieTag(.GetValue(3).ToString, VmMWSTags) + "] " + .GetValue(2).ToString)
+						VpOut.WriteLine(If(VpIsCollection, "", If(.GetBoolean(6), "SB:", "")) + "    " + .GetValue(1).ToString + " [" + .GetValue(4).ToString + "] " + .GetValue(2).ToString)
 					Case Else
 				End Select
 			End While
@@ -250,17 +248,16 @@ Public Partial Class frmExport
 						VpQte = CInt(Val(VpStr.Substring(0, VpStr.IndexOf("["))))
 						VpEdition = VpStr.Substring(VpStr.IndexOf("[") + 1)
 						VpEdition = VpEdition.Substring(0, VpEdition.IndexOf("]"))
-						VpEdition = Me.GetSerieTag(VpEdition, VmMWSTags, True)
 						VpName = VpStr.Substring(VpStr.IndexOf("]") + 1).Trim
 						'Exact match
-						VgDBCommand.CommandText = "Select EncNbr From Card Where Title = '" + VpName.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
+						VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MW = '" + VpEdition + "';"
 						VpO = VgDBCommand.ExecuteScalar
 						If Not VpO Is Nothing Then
 							VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
 						Else
 							VpNeedLog = True
 							'Partial match
-							VgDBCommand.CommandText = "Select EncNbr From Card Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And Series = '" + VpEdition + "';"
+							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And SeriesCD_MW = '" + VpEdition + "';"
 							VpO = VgDBCommand.ExecuteScalar
 							If Not VpO Is Nothing Then
 								VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
@@ -291,18 +288,18 @@ Public Partial Class frmExport
 						VpStrs = VpStr.Split(",")
 						If VpStrs.Length = 7 AndAlso IsNumeric(VpStrs(1)) Then
 							VpQte = CInt(Val(VpStrs(1)))
-							VpEdition = Me.GetSerieTag(VpStrs(4), VmMTGTags, True)
+							VpEdition = VpStrs(4)
 							VpName = VpStrs(0)
 							VpFoil = ( VpStrs(6).ToLower = "yes" )
 							'Exact match
-							VgDBCommand.CommandText = "Select EncNbr From Card Where Title = '" + VpName.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
+							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MO = '" + VpEdition + "';"
 							VpO = VgDBCommand.ExecuteScalar
 							If Not VpO Is Nothing Then
 								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
 							Else
 								VpNeedLog = True
 								'Partial match
-								VgDBCommand.CommandText = "Select EncNbr From Card Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And Series = '" + VpEdition + "';"
+								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And SeriesCD_MO = '" + VpEdition + "';"
 								VpO = VgDBCommand.ExecuteScalar
 								If Not VpO Is Nothing Then
 									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
@@ -341,179 +338,6 @@ Public Partial Class frmExport
 			Case Else
 				Return ""
 		End Select
-	End Function
-	Private Sub BuildSeriesTables
-		'Magic Workstation
-		With VmMWSTags
-			.Add("1E", "10E")
-			.Add("AL", "A")
-			.Add("AC", "AL")
-			.Add("SL", "ALA")
-			.Add("AR", "ARB")
-			.Add("BE", "B")
-			.Add("BT", "BD")
-			.Add("BK", "BOK")
-			.Add("CK", "CHK")
-			.Add("CT", "CST")
-			.Add("DI", "DIS")
-			.Add("ET", "EVE")
-			.Add("FS", "FUT")
-			.Add("HM", "HL")
-			.Add("IV", "IN")
-			.Add("IN", "ISD")
-			.Add("LW", "LRW")
-			.Add("M1", "M10")
-			.Add("M2", "M11")
-			.Add("M3", "M12")
-			.Add("M4", "M13")
-			.Add("M5", "M14")
-			.Add("MR", "MI")
-			.Add("MT", "MOR")
-			.Add("MD", "MR")
-			.Add("NP", "NPH")
-			.Add("PC", "PLC")
-			.Add("RV", "R")
-			.Add("RA", "RAV")
-			.Add("RI", "ROE")
-			.Add("SM", "SHM")
-			.Add("SK", "SOK")
-			.Add("SD", "SOM")
-			.Add("S1", "ST")
-			.Add("TP", "TE")
-			.Add("TD", "TSB")
-			.Add("TS", "TSP")
-			.Add("UN", "U")
-			.Add("VS", "VI")
-			.Add("WW", "WWK")
-			.Add("YR", "AVR")
-			.Add("ZK", "ZEN")
-			.Add("D0", "DDK")
-			.Add("D1", "DDC")
-			.Add("D2", "DDF")
-			.Add("D3", "EVG")
-			.Add("D4", "DDD")
-			.Add("D5", "DD2")
-			.Add("D6", "DDE")
-			.Add("D7", "DDG")
-			.Add("D8", "DDH")
-			.Add("D9", "DDI")
-			.Add("V1", "DRB")
-			.Add("V2", "V09")
-			.Add("V3", "V10")
-			.Add("V4", "V11")
-			.Add("LG", "LE")
-			.Add("LE", "LG")
-			.Add("P1", "PT")
-			.Add("CF", "CFX")
-			.Add("RR", "RTR")
-			.Add("GC", "GTC")
-			.Add("DZ", "DGM")
-			.Add("MB", "MBS")
-			.Add("MS", "MMA")
-		End With
-		'Magic Online
-		With VmMTGTags
-			.Add("CS", "CSP")
-			.Add("GP", "GPT")
-			.Add("ON", "ONS")
-			.Add("SC", "SCG")
-			.Add("TO", "TOR")
-			.Add("JU", "JUD")
-			.Add("4E", "4ED")
-			.Add("5E", "5ED")
-			.Add("6E", "6ED")
-			.Add("7E", "7ED")
-			.Add("8E", "8ED")
-			.Add("9E", "9ED")
-			.Add("R1", "PD2")
-			.Add("R2", "H09")
-			.Add("R3", "PD3")
-			.Add("1E", "10E")
-			.Add("AL", "A")
-			.Add("AC", "AL")
-			.Add("SL", "ALA")
-			.Add("AR", "ARB")
-			.Add("BE", "B")
-			.Add("BT", "BD")
-			.Add("BK", "BOK")
-			.Add("CK", "CHK")
-			.Add("CT", "CST")
-			.Add("DI", "DIS")
-			.Add("ET", "EVE")
-			.Add("FS", "FUT")
-			.Add("HM", "HL")
-			.Add("IV", "IN")
-			.Add("IN", "ISD")
-			.Add("LW", "LRW")
-			.Add("M1", "M10")
-			.Add("M2", "M11")
-			.Add("M3", "M12")
-			.Add("M4", "M13")
-			.Add("M5", "M14")
-			.Add("MR", "MI")
-			.Add("MT", "MOR")
-			.Add("MD", "MRD")
-			.Add("NP", "NPH")
-			.Add("PC", "PLC")
-			.Add("RV", "3ED")
-			.Add("RA", "RAV")
-			.Add("RI", "ROE")
-			.Add("SM", "SHM")
-			.Add("SK", "SOK")
-			.Add("SD", "SOM")
-			.Add("S1", "ST")
-			.Add("TP", "TE")
-			.Add("TD", "TSB")
-			.Add("TS", "TSP")
-			.Add("UN", "2ED")
-			.Add("VS", "VI")
-			.Add("WW", "WWK")
-			.Add("YR", "AVR")
-			.Add("ZK", "ZEN")
-			.Add("D0", "DDK")
-			.Add("D1", "DDC")
-			.Add("D2", "DDF")
-			.Add("D3", "EVG")
-			.Add("D4", "DDD")
-			.Add("D5", "DD2")
-			.Add("D6", "DDE")
-			.Add("D7", "DDG")
-			.Add("D8", "DDH")
-			.Add("D9", "DDI")
-			.Add("V1", "DRB")
-			.Add("V2", "V09")
-			.Add("V3", "V10")
-			.Add("V4", "V11")
-			.Add("LG", "LGN")
-			.Add("LE", "LEG")
-			.Add("P1", "PT")
-			.Add("CF", "CON")
-			.Add("RR", "RTR")
-			.Add("GC", "GTC")
-			.Add("DZ", "DGM")
-			.Add("MB", "MBS")
-			.Add("MS", "MMA")
-		End With		
-	End Sub
-	Private Function GetSerieTag(VpSerie As String, VpTable As Hashtable, Optional VpReverse As Boolean = False) As String
-		With VpTable
-			'Conversion MTGM => x
-			If Not VpReverse Then
-				If .Contains(VpSerie) Then
-					Return .Item(VpSerie)
-				Else
-					Return VpSerie
-				End If
-			'Conversion x => MTGM
-			Else
-				For Each VpItem As String In .Keys
-					If .Item(VpItem) = VpSerie Then
-						Return VpItem
-					End If
-				Next VpItem
-				Return VpSerie
-			End If
-		End With
 	End Function
 	Public Sub InitImport(VpFile As String)
 		Me.grpImport.Visible = True
