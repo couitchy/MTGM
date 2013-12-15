@@ -29,6 +29,7 @@ Public Partial Class MainForm
 	Private Const CmURL As String  			= "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
 	Private Const CmURL2 As String  		= "http://www.magiccorporation.com/gathering-cartes-view"
 	Private Const CmURL3 As String  		= "http://www.magiccorporation.com/scan/"
+	Private Const CmURL4 As String  		= "http://www.magiccorporation.com"
 	Private Const CmId As String  			= "#cardname#"
 	Private Const CmKey As String  			= "gathering-cartes-view"
 	Private Const CmKey2 As String  		= "NM/MT"
@@ -37,6 +38,7 @@ Public Partial Class MainForm
 	Private Const CmKey2C As String  		= ">VO<"
 	Private Const CmKey3 As String  		= "src=""/scan/"
 	Private Const CmKey4 As String  		= "src=""http://www.wizards.com/global/images/magic"
+	Private Const CmKey4b As String			= "href=""/images/cartes/illustrations"
 	Private Const CmKey5 As String  		= "Texte Français"
 	Private Const CmFrench  As Integer 		= 2
 	Private Const CmMe As String			= "Moi"
@@ -1172,6 +1174,16 @@ Public Partial Class MainForm
 				Return "magic2014#" + VpStr
 			Case "JG"
 				Return "DCIJudgeGift#" + VpStr
+			Case "AH"
+				Return "archenemy#" + VpStr
+			Case "V6"
+				Return "FromtheVaultTwenty#" + VpStr
+			Case "DD"
+				Return "DuelDecksHeroesvsMonsters#" + VpStr
+			Case "TH"
+				Return "theros#" + VpStr
+			Case "C3"
+				Return "commander2013#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1314,11 +1326,21 @@ Public Partial Class MainForm
 				Return "M5"
 			Case "DCIJudgeGift"
 				Return "JG"
+			Case "archenemy"
+				Return "AH"
+			Case "FromtheVaultTwenty"
+				Return "V6"
+			Case "DuelDecksHeroesvsMonsters"
+				Return "DD"
+			Case "theros"
+				Return "TH"
+			Case "commander2013"
+				Return "C3"
 			Case Else
 				Return ""
 		End Select
 	End Function
-	Private Sub BuildHeaders
+	Private Sub BuildHeaders(VpR14 As Boolean)
 	'-------------------------------------------
 	'Génération du fichier d'en-têtes des séries
 	'-------------------------------------------
@@ -1335,7 +1357,7 @@ Public Partial Class MainForm
 				While .Read
 					Application.DoEvents
 					VpStr = ""
-					For VpI As Integer = 0 To 32
+					For VpI As Integer = 0 To If(VpR14, 30, 32)
 						VpStr = VpStr + Me.Matching(.GetValue(VpI).ToString) + "#"
 					Next VpI
 					VpStr = Me.SerieShortcut(VpStr.Substring(0, VpStr.Length - 1))
@@ -1393,6 +1415,10 @@ Public Partial Class MainForm
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4) + 5)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
 				Call VpClient.DownloadFile(VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
+			ElseIf VpStr.Contains(CmKey4b) Then	
+				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4b) + 6)
+				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
+				Call VpClient.DownloadFile(CmURL4 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
 			End If
 		Catch
 		End Try
@@ -1958,9 +1984,14 @@ Public Partial Class MainForm
 	Sub WbMVDocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
 		VmIsComplete = True
 	End Sub
-	Sub MnuSeriesGenClick(sender As Object, e As EventArgs)
+	Sub MnuSeriesGenR14Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.BuildHeaders
+			Call Me.BuildHeaders(True)
+		End If
+	End Sub
+	Sub MnuSeriesGenR16Click(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.BuildHeaders(False)
 		End If
 	End Sub
 	Sub MnuPicturesUpdateClick(sender As Object, e As EventArgs)

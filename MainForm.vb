@@ -334,9 +334,12 @@ Public Partial Class MainForm
 			If VpCardData.Length = 7 Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ");"
 				VgDBCommand.ExecuteNonQuery
-			ElseIf VpCardData.Length = 6 Then
+			ElseIf VpCardData.Length = 6 AndAlso VpCardData(3).Contains("t1x") Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ");"
 				VgDBCommand.ExecuteNonQuery
+			ElseIf VpCardData.Length = 6 Then
+				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ");"
+				VgDBCommand.ExecuteNonQuery				
 			End If
 			Me.prgAvance.Increment(1)
 			Application.DoEvents
@@ -1056,6 +1059,7 @@ Public Partial Class MainForm
 			VpNode.SelectedImageIndex = 1
 			'Cas 1 : chargement des résultats d'une recherche de l'utilisateur
 			If Me.IsInAdvSearch Then
+				VmFilterCriteria.MyList.SetItemChecked(VmFilterCriteria.MyList.Items.IndexOf("Quantité"), False)
 				VpNode.Text = VmAdvSearchLabel
 				Try
 					VpNode.Tag.Key = CgCriteres.Item(VmFilterCriteria.MyList.CheckedItems(0))
@@ -1188,7 +1192,7 @@ Public Partial Class MainForm
 	Private Function ElderCriteria(VpValue As String, VpField As String) As String
 		Select Case VpField
 			'Champs numériques
-			Case "Card.myPrice", "Spell.myCost"
+			Case "Card.myPrice", "Spell.myCost", "Items"
 				Return VpField + " = " + VpValue + " And "
 			'Champs textuels
 			Case Else
@@ -1982,7 +1986,6 @@ Public Partial Class MainForm
 			Case "Card.Type"
 				Return FindImageIndexType(VpStr)
 			Case Else
-				Stop
 				Return 0
 		End Select
 	End Function
@@ -2462,8 +2465,8 @@ Public Partial Class MainForm
 				'/!\ Rétro-compatitibilité
 				'-------------------------
 				If .DefaultCriteriaOrder.Contains("Decks") Then
-					.DefaultActivatedCriteria = "1#6"
-					.DefaultCriteriaOrder = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
+					.DefaultActivatedCriteria = "1#7"
+					.DefaultCriteriaOrder = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Quantité#Carte"
 				End If
 				'-------------------------
 				VmFilterCriteria.MyList.Items.Clear
@@ -2843,6 +2846,7 @@ Public Partial Class MainForm
 	Dim VpStr As String
 		If clsModule.DBOK Then
 			VpStr = InputBox("Rechercher dans le titre des cartes présentes dans l'explorateur :", "Recherche", clsModule.CgCard)
+			Call Me.CheckGridBusy
 			If VpStr.Trim <> "" Then
 				Me.mnuSearchText.Text = VpStr
 				Call Me.GoFind
@@ -2929,7 +2933,7 @@ Public Partial Class MainForm
 		Call clsModule.CheckForUpdates(True)
 	End Sub
 	Sub BtCheckForUpdatesClick(ByVal sender As Object, ByVal e As EventArgs)
-		Call clsModule.CheckForUpdates(True, ( clsModule.ShowQuestion("Souhaitez-vous également rechercher les mises à jour bêta (moins stables) ?") = System.Windows.Forms.DialogResult.Yes ), True)
+		Call clsModule.CheckForUpdates(True, ( clsModule.ShowQuestion("Souhaitez-vous plutôt rechercher les mises à jour bêta (moins stables) ?") = System.Windows.Forms.DialogResult.Yes ), True)
 	End Sub
 	Public Sub MnuContenuUpdateClick(sender As Object, e As EventArgs)
 	Dim VpContenuUpdate As frmUpdateContenu

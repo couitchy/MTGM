@@ -64,8 +64,13 @@ Public Partial Class frmNewEdition
 			.SeriesNM = VpInfos(2)
 			.SeriesNM_MtG = VpInfos(3)
 			.SeriesNM_FR = VpInfos(31)
-			.SeriesCD_MO = VpInfos(32)
-			.SeriesCD_MW = VpInfos(33)
+			If VpInfos.Length > 32 Then
+				.SeriesCD_MO = VpInfos(32)
+				.SeriesCD_MW = VpInfos(33)
+			Else
+				.SeriesCD_MO = VpInfos(1)
+				.SeriesCD_MW = VpInfos(1)				
+			End If
 			.Border = .SetBorder(VpInfos(8))
 			.Release = Date.Parse(VpInfos(9), New CultureInfo("fr-FR", True), DateTimeStyles.NoCurrentDateDefault)
 			.TotCards = Val(VpInfos(11))

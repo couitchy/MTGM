@@ -34,7 +34,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33390
+	Public Const CgCodeLines As Integer   			= 33453
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/10/2012"
 	Public Const CgLastUpdateSimu As String			= "28/11/2012"
@@ -111,7 +111,7 @@ Public Module clsModule
 	Public Const CgURL12 As String         			= "/Updates/Series r16.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
-	Public Const CgURL15 As String         			= "/Updates/Tournois r11.txt"
+	Public Const CgURL15 As String         			= "/Updates/Tournois r16.txt"
 	Public Const CgURL16 As String					= "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
 	Public Const CgURL17 As String					= "http://mtgm.free.fr"
 	Public Const CgURL18 As String					= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
@@ -135,6 +135,7 @@ Public Module clsModule
 	Public Const CgErr8 As String					= "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
 	Public Const CgErr9 As String					= "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."
 	Public Const CgErr10 As String					= "La zone 'Regard' doit être vide pour pouvoir afficher la Réserve..."
+	Public Const CgErr11 As String					= "Impossible de sauvegarder les préférences..."
 	Public Const CgFExtO As String					= ".dck"
 	Public Const CgFExtN As String					= ".dk2"
 	Public Const CgFExtA As String					= ".dec"
@@ -179,7 +180,7 @@ Public Module clsModule
 	Public Const CgFoil2 As String					= " (Foil)"
 	Public CgBalises() As String 					= {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}
 	Public CgManaParsing() As String 				= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
-	Public CgCriterionsFields() As String 			= {"Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Card.Title"}
+	Public CgCriterionsFields() As String 			= {"Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Items", "Card.Title"}
 	Public CgNumbers() As String 					= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgRarities() As String					= {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
 	Public CgSearchFields() As String 				= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Card.Series", "Spell.myCost", "Card.SubType", "SubTypes.SubTypeVF"}
@@ -587,7 +588,7 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update Series Set SeriesCD_MW = SeriesCD;"
 						VgDBCommand.ExecuteNonQuery
-						Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des séries / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les formats Magic Workstation et Magic Online...")
+						Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des séries / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les autres formats de logiciels Magic...")
 					End If					
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")

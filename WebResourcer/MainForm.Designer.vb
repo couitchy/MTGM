@@ -50,6 +50,7 @@ Partial Class MainForm
 		Me.mnuCardsExtractDiff3 = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsExtractDiff4 = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsExtractDiff2 = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuCardsExtractDiff5 = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuTrad = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuCardsTradTxt = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuExtractTexts = New System.Windows.Forms.ToolStripMenuItem
@@ -62,6 +63,8 @@ Partial Class MainForm
 		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuSeriesGenR14 = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuSeriesGenR16 = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem
@@ -108,7 +111,6 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuCardsExtractDiff5 = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -227,6 +229,13 @@ Partial Class MainForm
 		Me.mnuCardsExtractDiff2.Text = "celles ayant un titre VO/VF identique (hors séries VO exclusives)"
 		AddHandler Me.mnuCardsExtractDiff2.Click, AddressOf Me.MnuCardsExtractDiff2Click
 		'
+		'mnuCardsExtractDiff5
+		'
+		Me.mnuCardsExtractDiff5.Name = "mnuCardsExtractDiff5"
+		Me.mnuCardsExtractDiff5.Size = New System.Drawing.Size(406, 22)
+		Me.mnuCardsExtractDiff5.Text = "celles sans mise à jour de prix (qui a échoué)"
+		AddHandler Me.mnuCardsExtractDiff5.Click, AddressOf Me.MnuCardsExtractDiff5Click
+		'
 		'mnuTrad
 		'
 		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles})
@@ -309,11 +318,25 @@ Partial Class MainForm
 		'
 		'mnuSeriesGen
 		'
+		Me.mnuSeriesGen.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGenR14, Me.mnuSeriesGenR16})
 		Me.mnuSeriesGen.Image = CType(resources.GetObject("mnuSeriesGen.Image"),System.Drawing.Image)
 		Me.mnuSeriesGen.Name = "mnuSeriesGen"
 		Me.mnuSeriesGen.Size = New System.Drawing.Size(432, 22)
 		Me.mnuSeriesGen.Text = "Générer le fichier d'en-têtes"
-		AddHandler Me.mnuSeriesGen.Click, AddressOf Me.MnuSeriesGenClick
+		'
+		'mnuSeriesGenR14
+		'
+		Me.mnuSeriesGenR14.Name = "mnuSeriesGenR14"
+		Me.mnuSeriesGenR14.Size = New System.Drawing.Size(152, 22)
+		Me.mnuSeriesGenR14.Text = "R14"
+		AddHandler Me.mnuSeriesGenR14.Click, AddressOf Me.MnuSeriesGenR14Click
+		'
+		'mnuSeriesGenR16
+		'
+		Me.mnuSeriesGenR16.Name = "mnuSeriesGenR16"
+		Me.mnuSeriesGenR16.Size = New System.Drawing.Size(152, 22)
+		Me.mnuSeriesGenR16.Text = "R16"
+		AddHandler Me.mnuSeriesGenR16.Click, AddressOf Me.MnuSeriesGenR16Click
 		'
 		'mnuBuildDouble
 		'
@@ -689,13 +712,6 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuCardsExtractDiff5
-		'
-		Me.mnuCardsExtractDiff5.Name = "mnuCardsExtractDiff5"
-		Me.mnuCardsExtractDiff5.Size = New System.Drawing.Size(406, 22)
-		Me.mnuCardsExtractDiff5.Text = "celles sans mise à jour de prix (qui a échoué)"
-		AddHandler Me.mnuCardsExtractDiff5.Click, AddressOf Me.MnuCardsExtractDiff5Click
-		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -723,6 +739,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuSeriesGenR16 As System.Windows.Forms.ToolStripMenuItem
+	Private mnuSeriesGenR14 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff5 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesUpdateListe As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesUpdateAll As System.Windows.Forms.ToolStripMenuItem

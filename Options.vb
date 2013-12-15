@@ -47,11 +47,15 @@ Public Partial Class Options
     Dim VpXmlSerializer As New XmlSerializer(GetType(clsSettings))
     Dim VpFile As FileStream
     Dim VpWriter As XmlTextWriter
-		VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Create)
-		VpWriter = New XmlTextWriter(VpFile, Nothing)
-        VpXmlSerializer.Serialize(VpWriter, VgSettings)
-        VpWriter.Close
-        VpFile.Close
+		Try
+			VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Create)
+			VpWriter = New XmlTextWriter(VpFile, Nothing)
+	        VpXmlSerializer.Serialize(VpWriter, VgSettings)
+	        VpWriter.Close
+	        VpFile.Close
+		Catch
+			Call clsModule.ShowWarning(clsModule.CgErr11)
+		End Try
 	End Sub
 	Public Sub LoadSettings
 	'----------------------------------------------------------------------------
@@ -80,7 +84,7 @@ Public Partial Class Options
 		Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
 		Private VmPlugins As String = Application.StartupPath
 		Private VmPreferredSellers As String = ""
-		Private VmDefaultActivatedCriteria As String = "1#6"
+		Private VmDefaultActivatedCriteria As String = "1#7"
 		Private VmDefaultCriteriaOrder As String = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
 		Private VmRestoreCriteria As Boolean = True
 		Private VmDefaultSearchCriterion As clsModule.eSearchCriterion = clsModule.eSearchCriterion.NomVF
@@ -230,7 +234,7 @@ Public Partial Class Options
 				If VmRestoreCriteria Then
 					Return VmDefaultActivatedCriteria
 				Else
-					Return "1#6"
+					Return "1#7"
 				End If
 			End Get
 			Set (VpDefaultActivatedCriteria As String)

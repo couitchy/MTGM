@@ -89,7 +89,7 @@ Partial Class frmExploSettings
 		Me.chklstClassement.CheckOnClick = true
 		Me.chklstClassement.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.chklstClassement.FormattingEnabled = true
-		Me.chklstClassement.Items.AddRange(New Object() {"Type", "Couleur", "Edition", "Coût d'invocation", "Rareté", "Prix", "Carte"})
+		Me.chklstClassement.Items.AddRange(New Object() {"Type", "Couleur", "Edition", "Coût d'invocation", "Rareté", "Prix", "Quantité", "Carte"})
 		Me.chklstClassement.Location = New System.Drawing.Point(0, 25)
 		Me.chklstClassement.Name = "chklstClassement"
 		Me.chklstClassement.Size = New System.Drawing.Size(116, 124)

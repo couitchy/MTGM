@@ -99,7 +99,7 @@ Public Partial Class frmXL
 			'Remplissage
 			With VpSheet
 				'Nom de la feuille
-				.Name = VmRestrictionTXT
+				.Name = VmRestrictionTXT.Replace("/", " ").Replace("\", " ").Replace("?", " ").Replace("*", " ").Replace("[", " ").Replace("]", " ")
 				'En-têtes
 				If Me.chkHeaders.Checked Then
 					VpX = 1
