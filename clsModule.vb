@@ -14,6 +14,7 @@
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
 '| Release 12     |                        01/10/2012 |
+'| Release 13     |                        09/05/2014 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -34,13 +35,13 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33453
+	Public Const CgCodeLines As Integer   			= 33577
 	Public Const CGNClasses As Integer   			= 69
-	Public Const CgLastUpdateAut As String			= "13/10/2012"
-	Public Const CgLastUpdateSimu As String			= "28/11/2012"
-	Public Const CgLastUpdateTxtVF As String		= "16/10/2012"
-	Public Const CgLastUpdateRulings As String		= "11/10/2012"
-	Public Const CgLastUpdateTradPatch As String	= "29/12/2012"
+	Public Const CgLastUpdateAut As String			= "04/05/2014"
+	Public Const CgLastUpdateSimu As String			= "05/05/2014"
+	Public Const CgLastUpdateTxtVF As String		= "03/05/2014"
+	Public Const CgLastUpdateRulings As String		= "03/05/2014"
+	Public Const CgLastUpdateTradPatch As String	= "04/05/2014"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8
@@ -111,7 +112,7 @@ Public Module clsModule
 	Public Const CgURL12 As String         			= "/Updates/Series r16.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
-	Public Const CgURL15 As String         			= "/Updates/Tournois r16.txt"
+	Public Const CgURL15 As String         			= "/Updates/Tournois r17.txt"
 	Public Const CgURL16 As String					= "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
 	Public Const CgURL17 As String					= "http://mtgm.free.fr"
 	Public Const CgURL18 As String					= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
@@ -265,22 +266,23 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque codes séries, infos Réserve, MyGamesID, SubTypes
-		BDD_v13		'manque codes séries, infos Réserve, MyGamesID
-		BDD_v14		'manque codes séries, infos Réserve
-		BDD_v15		'manque codes séries
-		BDD_v16		'à jour
+		BDD_v1		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID
+		BDD_v14		'manque tournois 1V1&Multi, codes séries, infos Réserve
+		BDD_v15		'manque tournois 1V1&Multi, codes séries
+		BDD_v16		'manque tournois 1V1&Multi
+		BDD_v17		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -412,7 +414,7 @@ Public Module clsModule
 					VpDBVersion = eDBVersion.BDD_v9
 				Else
 					VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
-					If VpSchemaTable.Rows.Count <> 8 Then
+					If VpSchemaTable.Rows.Count <> 8 And VpSchemaTable.Rows.Count <> 9 Then
 						'Si on est ici, BDD version 10
 						VpDBVersion = eDBVersion.BDD_v10
 					Else
@@ -438,8 +440,14 @@ Public Module clsModule
 										'Si on est ici, BDD version 15
 										VpDBVersion = eDBVersion.BDD_v15
 									Else
-										'Si on est ici, BDD version 16
-										VpDBVersion = eDBVersion.BDD_v16
+										VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
+										If VpSchemaTable.Rows.Count <> 9 Then
+											'Si on est ici, BDD version 16
+											VpDBVersion = eDBVersion.BDD_v16
+										Else
+											'Si on est ici, BDD version 17
+											VpDBVersion = eDBVersion.BDD_v17
+										End If
 									End If
 								End If
 							End If
@@ -454,10 +462,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v16 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v17 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v16)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v17)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -589,6 +597,15 @@ Public Module clsModule
 						VgDBCommand.CommandText = "Update Series Set SeriesCD_MW = SeriesCD;"
 						VgDBCommand.ExecuteNonQuery
 						Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des séries / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les autres formats de logiciels Magic...")
+					End If
+					'Passage version 16 à 17
+					If CInt(VpDBVersion) < 17 Then
+						VgDBCommand.CommandText = "Alter Table Autorisations Drop Column T1x;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table Autorisations Add [1V1] Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table Autorisations Add Multi Bit;"
+						VgDBCommand.ExecuteNonQuery
 					End If					
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
@@ -1572,7 +1589,9 @@ Public Module clsModule
 					VpLastName = VpCurName
 					VpHist.Add(VpLastName, VpCur)
 				End If
-				VpCur.Add(.GetDateTime(1), .GetFloat(2))
+				If Not VpCur.ContainsKey(.GetDateTime(1)) Then
+					VpCur.Add(.GetDateTime(1), .GetFloat(2))
+				End If
 			End While
 			.Close
 		End With

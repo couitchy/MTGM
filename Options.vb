@@ -14,6 +14,7 @@
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
 '| Release 12     |                        01/10/2012 |
+'| Release 13     |                        09/05/2014 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -85,7 +86,7 @@ Public Partial Class Options
 		Private VmPlugins As String = Application.StartupPath
 		Private VmPreferredSellers As String = ""
 		Private VmDefaultActivatedCriteria As String = "1#7"
-		Private VmDefaultCriteriaOrder As String = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Carte"
+		Private VmDefaultCriteriaOrder As String = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Quantité#Carte"
 		Private VmRestoreCriteria As Boolean = True
 		Private VmDefaultSearchCriterion As clsModule.eSearchCriterion = clsModule.eSearchCriterion.NomVF
 		Private VmCheckForUpdate As Boolean = True

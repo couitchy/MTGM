@@ -14,6 +14,7 @@
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
 '| Release 12     |                        01/10/2012 |
+'| Release 13     |                        09/05/2014 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -37,6 +38,7 @@
 '| - gestion des "Planes" et "Phenomenons" 22/06/2012 |
 '| - refonte affichage propriétés (grids)  23/08/2012 |
 '| - menu dédié 'Résultats de recherche'   02/11/2012 |
+'| - nouveaux formats tournois			   05/05/2014 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -261,6 +263,7 @@ Public Partial Class MainForm
 	Dim VpCardData() As String
 	Dim VpPrice As String
 	Dim VpEdition As String
+	Dim VpEditionsOK As New List(Of String)
 	Dim VpCardName As String
 	Dim VpDate As String
 		'Vérifie que le fichier contient des prix à jour
@@ -289,20 +292,24 @@ Public Partial Class MainForm
 			VpCardData = VpPrices.ReadLine.Split("#")
 			VpCardName = ""
 			VpEdition = ""
+			VpEditionsOK.Clear
 			VpPrice = ""
 			For Each VpStr As String In VpCardData
 				If VpStr.IndexOf("^") <> -1 Then
 					VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
-					VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
-					'Prix foil
-					If VpEdition.EndsWith(clsModule.CgFoil) Then
-						VpEdition = VpEdition.Replace(clsModule.CgFoil, "")
-						VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.FoilPrice = " + VpPrice + ", FoilDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
-						VgDBCommand.ExecuteNonQuery
-					'Prix standard
-					Else
-						VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.Price = " + VpPrice + ", Card.myPrice = " + clsModule.MyPrice(VpPrice).ToString + ", PriceDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
-						VgDBCommand.ExecuteNonQuery
+					If Not VpEditionsOK.Contains(VpEdition) Then	'fait en sorte de ne prendre que le premier prix par édition (correspondant à la qualité de carte NM/MT)
+						VpEditionsOK.Add(VpEdition)
+						VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
+						'Prix foil
+						If VpEdition.EndsWith(clsModule.CgFoil) Then
+							VpEdition = VpEdition.Replace(clsModule.CgFoil, "")
+							VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.FoilPrice = " + VpPrice + ", FoilDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
+							VgDBCommand.ExecuteNonQuery
+						'Prix standard
+						Else
+							VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.Price = " + VpPrice + ", Card.myPrice = " + clsModule.MyPrice(VpPrice).ToString + ", PriceDate = " + clsModule.GetDate(VpDate) + " Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
+							VgDBCommand.ExecuteNonQuery
+						End If
 					End If
 				Else
 					VpCardName = VpStr.Replace("'", "''")
@@ -331,15 +338,9 @@ Public Partial Class MainForm
 		Call Me.InitBars(File.ReadAllLines(VpFile).Length)
 		While Not VpTournois.EndOfStream
 			VpCardData = VpTournois.ReadLine.Split("#")
-			If VpCardData.Length = 7 Then
-				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ");"
-				VgDBCommand.ExecuteNonQuery
-			ElseIf VpCardData.Length = 6 AndAlso VpCardData(3).Contains("t1x") Then
-				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, T1x, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ");"
-				VgDBCommand.ExecuteNonQuery
-			ElseIf VpCardData.Length = 6 Then
-				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ");"
-				VgDBCommand.ExecuteNonQuery				
+			If VpCardData.Length = 8 Then
+				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, 1V1, Multi) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ");"
+				VgDBCommand.ExecuteNonQuery			
 			End If
 			Me.prgAvance.Increment(1)
 			Application.DoEvents
@@ -1776,54 +1777,62 @@ Public Partial Class MainForm
 	'-----------------------------------------------------------------------
 		If VpCard = "" Or Me.IsMainReaderBusy Then
 			'Autorisations vierges
-			Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(5)
-			Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(15)
-			Me.picAutM.Image = Me.imglstAutorisations.Images.Item(18)
-			Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(9)
-			Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(12)
-			Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(2)
+			Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(11)
+			Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(18)
+			Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(15)
+			Me.picAutM.Image = Me.imglstAutorisations.Images.Item(21)
+			Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(5)
+			Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(2)
+			Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(8)
 		Else
-			VgDBCommand.CommandText = "Select T1, T1r, T15, T1x, T2, Bloc, M From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
+			VgDBCommand.CommandText = "Select T1, T1r, T15, T2, M, Bloc, [1V1], Multi From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				If .Read Then
 					'Autorisations T1
 					If .GetBoolean(1) Then
-						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(6)		'Restriction à 1 item
+						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(12)		'Restriction à 1 item
 					ElseIf .GetBoolean(0) Then
-						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(3)
+						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(9)
 					Else
-						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(4)
+						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(10)
 					End If
 					'Autorisations T1.5
 					If .GetBoolean(2) Then
-						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(13)
+						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(16)
 					Else
-						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(14)
-					End If
-					'Autorisations M
-					If .GetBoolean(6) Then
-						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(16)
-					Else
-						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(17)
-					End If					'Autorisations T1x
-					If .GetBoolean(3) Then
-						Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(7)
-					Else
-						Me.picAutT1x.Image = Me.imglstAutorisations.Images.Item(8)
+						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(17)
 					End If
 					'Autorisations T2
-					If .GetBoolean(4) Then
-						Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(10)
+					If .GetBoolean(3) Then
+						Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(13)
 					Else
-						Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(11)
+						Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(14)
+					End If
+					'Autorisations M
+					If .GetBoolean(4) Then
+						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(19)
+					Else
+						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(20)
 					End If
 					'Autorisations Bloc
 					If .GetBoolean(5) Then
-						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(0)
+						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(3)
 					Else
-						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(1)
+						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(4)
 					End If
+					'Autorisations 1 vs 1
+					If .GetBoolean(6) Then
+						Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(0)
+					Else
+						Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(1)
+					End If
+					'Autorisations Multi
+					If .GetBoolean(7) Then
+						Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(6)
+					Else
+						Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(7)
+					End If					
 				Else
 					Call Me.LoadAutorisations("")
 				End If

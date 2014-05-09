@@ -14,6 +14,7 @@
 '| Release 10     |                        10/09/2011 |
 '| Release 11     |                        24/01/2012 |
 '| Release 12     |                        01/10/2012 |
+'| Release 13     |                        09/05/2014 |
 '| Auteur         |                       VadimBerman |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -43,7 +44,7 @@ Public Class UIFilenameEditor
     Public Overloads Overrides Function EditValue( _
                 ByVal context As ITypeDescriptorContext, _
                 ByVal provider As System.IServiceProvider, _
-                ByVal value As [Object]) As [Object]
+    ByVal value As [Object]) As [Object]
         If context Is Nothing OrElse provider Is Nothing _
                 OrElse context.Instance Is Nothing Then
             Return MyBase.EditValue(provider, value)

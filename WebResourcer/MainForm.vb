@@ -14,6 +14,7 @@
 '| Release 10     |                           		10/09/2011 |
 '| Release 11     |                        			24/01/2012 |
 '| Release 12     |                        			01/10/2012 |
+'| Release 13     |                        			09/05/2014 |
 '| Auteur         |      							  Couitchy |
 '|-------------------------------------------------------------|
 '| Modifications :               							   |
@@ -42,10 +43,10 @@ Public Partial Class MainForm
 	Private Const CmKey5 As String  		= "Texte Français"
 	Private Const CmFrench  As Integer 		= 2
 	Private Const CmMe As String			= "Moi"
-	Private Const CmStamp As String			= "ContenuStamp r13.txt"
+	Private Const CmStamp As String			= "ContenuStamp r14.txt"
 	Private Const CmCategory As String		= "Properties"
 	Private CmFields() As String 			= {"LastUpdateAut", "LastUpdateSimu", "LastUpdateTxtVF", "LastUpdateTradPatch"}
-	Private CmIndexes() As Integer 			= {2, 3, 4, 6}
+	Private CmIndexes() As Integer 			= {2, 3, 4, 7}
 	Private CmIgnoredEditions() As String	= {"Premium Deck Seri...", "Archenemy Decks", "Duels of the Plan...", "Battle Royale", "Anthologies", "Promotional Card", "Friday Night Magic", "Prerelease Cards", "Magic Player Rewards"}
 	Private VmDB As OleDbConnection
 	Private VmDBCommand As New OleDbCommand
@@ -328,6 +329,7 @@ Public Partial Class MainForm
 	Dim VpCardData() As String
 	Dim VpPrice As String
 	Dim VpEdition As String
+	Dim VpEditionsOK As New List(Of String)
 	Dim VpCardName As String
 	Dim VpDate As String
 	Dim VpEncNbr As Long
@@ -350,52 +352,56 @@ Public Partial Class MainForm
 				VpCardData = VpPrices.ReadLine.Split("#")
 				VpCardName = ""
 				VpEdition = ""
+				VpEditionsOK.Clear
 				VpPrice = ""
 				For Each VpStr As String In VpCardData
 					If VpStr.IndexOf("^") <> -1 Then
 						VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
-						VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
-						If VpEdition.EndsWith("PREMIUMFOILVO") Then
-							VpEdition = VpEdition.Replace("PREMIUMFOILVO", "")
-							VpFoilTarget = True
-						Else
-							VpFoilTarget = False
-						End If
-						VmDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
-						VpEncNbr = VmDBCommand.ExecuteScalar
-						If VpEncNbr <> 0 Then
-							If VpFoilTarget Then
-								VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = True Order By PriceDate Desc;"
-								VpO = VmDBCommand.ExecuteScalar
-								If Not VpO Is Nothing Then
-									If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
+						If Not VpEditionsOK.Contains(VpEdition) Then	'fait en sorte de ne prendre que le premier prix par édition (correspondant à la qualité de carte NM/MT)
+							VpEditionsOK.Add(VpEdition)						
+							VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
+							If VpEdition.EndsWith("PREMIUMFOILVO") Then
+								VpEdition = VpEdition.Replace("PREMIUMFOILVO", "")
+								VpFoilTarget = True
+							Else
+								VpFoilTarget = False
+							End If
+							VmDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
+							VpEncNbr = VmDBCommand.ExecuteScalar
+							If VpEncNbr <> 0 Then
+								If VpFoilTarget Then
+									VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = True Order By PriceDate Desc;"
+									VpO = VmDBCommand.ExecuteScalar
+									If Not VpO Is Nothing Then
+										If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
+											VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", True);"
+											VmDBCommand.ExecuteNonQuery
+											Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
+										End If
+									Else
 										VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", True);"
 										VmDBCommand.ExecuteNonQuery
-										Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
+										Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
 									End If
 								Else
-									VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", True);"
-									VmDBCommand.ExecuteNonQuery
-									Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
-								End If
-							Else
-								VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = False Order By PriceDate Desc;"
-								VpO = VmDBCommand.ExecuteScalar
-								If Not VpO Is Nothing Then
-									If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
+									VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = False Order By PriceDate Desc;"
+									VpO = VmDBCommand.ExecuteScalar
+									If Not VpO Is Nothing Then
+										If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
+											VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
+											VmDBCommand.ExecuteNonQuery
+											Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
+										End If
+									Else
 										VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
 										VmDBCommand.ExecuteNonQuery
-										Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
+										Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
 									End If
-								Else
-									VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
-									VmDBCommand.ExecuteNonQuery
-									Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
 								End If
-							End If
-						Else
-							If Array.IndexOf(CmIgnoredEditions, VpEdition) < 0 Then
-								Call Me.AddToLog("Pas de correspondance de prix trouvée pour la carte " + VpCardName + " - " + VpEdition, eLogType.Warning)
+							Else
+								If Array.IndexOf(CmIgnoredEditions, VpEdition) < 0 Then
+									Call Me.AddToLog("Pas de correspondance de prix trouvée pour la carte " + VpCardName + " - " + VpEdition, eLogType.Warning)
+								End If
 							End If
 						End If
 					Else
@@ -944,7 +950,7 @@ Public Partial Class MainForm
 	Private Function TournoiFormat(VpStr As String) As String
 	Dim VpStrs() As String
 	Dim VpAut As String = ""
-		VpStrs = VpStr.ToLower.Split(New String() {".gif"}, StringSplitOptions.None)
+		VpStrs = VpStr.ToLower.Split(New String() {".png"}, StringSplitOptions.None)
 		For Each VpA As String In VpStrs
 			If VpA.Contains("/") Then
 				VpAut = VpAut + VpA.Substring(VpA.LastIndexOf("/") + 1) + "#"
@@ -1184,6 +1190,10 @@ Public Partial Class MainForm
 				Return "theros#" + VpStr
 			Case "C3"
 				Return "commander2013#" + VpStr
+			Case "BG"
+				Return "bornofthegods#" + VpStr
+			Case "JN"
+				Return "journeyintonyx#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1336,6 +1346,10 @@ Public Partial Class MainForm
 				Return "TH"
 			Case "commander2013"
 				Return "C3"
+			Case "bornofthegods"
+				Return "BG"
+			Case "journeyintonyx"
+				Return "JN"
 			Case Else
 				Return ""
 		End Select
@@ -1415,7 +1429,7 @@ Public Partial Class MainForm
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4) + 5)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
 				Call VpClient.DownloadFile(VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
-			ElseIf VpStr.Contains(CmKey4b) Then	
+			ElseIf VpStr.Contains(CmKey4b) Then
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4b) + 6)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
 				Call VpClient.DownloadFile(CmURL4 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")

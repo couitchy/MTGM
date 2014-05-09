@@ -33,87 +33,88 @@ Partial Class frmStats
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
-		Me.components = New System.ComponentModel.Container
+		Me.components = New System.ComponentModel.Container()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmStats))
-		Me.splitH = New System.Windows.Forms.SplitContainer
-		Me.cbarChart = New TD.SandBar.ContainerBar
-		Me.pnlChart = New TD.SandBar.ContainerBarClientPanel
-		Me.chartManaCurve = New NPlot.Windows.PlotSurface2D
+		Me.splitH = New System.Windows.Forms.SplitContainer()
+		Me.cbarChart = New TD.SandBar.ContainerBar()
+		Me.pnlChart = New TD.SandBar.ContainerBarClientPanel()
+		Me.chartManaCurve = New NPlot.Windows.PlotSurface2D()
 		Me.cmnuChart = New System.Windows.Forms.ContextMenuStrip(Me.components)
-		Me.cmnuBreakDown = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuCurve = New System.Windows.Forms.ToolStripMenuItem
-		Me.chartBreakDown = New SoftwareFX.ChartFX.Lite.Chart
-		Me.cboCriterion = New TD.SandBar.ComboBoxItem
-		Me.cbarInfos = New TD.SandBar.ContainerBar
-		Me.pnlInfos = New TD.SandBar.ContainerBarClientPanel
-		Me.splitV = New System.Windows.Forms.SplitContainer
-		Me.tabInfos = New System.Windows.Forms.TabControl
-		Me.tabGeneral = New System.Windows.Forms.TabPage
-		Me.grpGeneral = New System.Windows.Forms.GroupBox
-		Me.txtOldest = New System.Windows.Forms.TextBox
-		Me.txtRarest = New System.Windows.Forms.TextBox
-		Me.txtTougher = New System.Windows.Forms.TextBox
-		Me.txtNCartes = New System.Windows.Forms.TextBox
-		Me.lblOldest = New System.Windows.Forms.Label
-		Me.lblRarest = New System.Windows.Forms.Label
-		Me.lblTougher = New System.Windows.Forms.Label
-		Me.lblNCartes = New System.Windows.Forms.Label
-		Me.tabPrix = New System.Windows.Forms.TabPage
-		Me.grpPrix = New System.Windows.Forms.GroupBox
-		Me.cmdHistPrices = New System.Windows.Forms.Button
-		Me.txtMeanPrice2 = New System.Windows.Forms.TextBox
-		Me.lblMeanPrice2 = New System.Windows.Forms.Label
-		Me.txtMostExpensive = New System.Windows.Forms.TextBox
-		Me.lblMostExpensive = New System.Windows.Forms.Label
-		Me.txtMeanPrice = New System.Windows.Forms.TextBox
-		Me.lblMeanPrice = New System.Windows.Forms.Label
-		Me.txtTotPrice = New System.Windows.Forms.TextBox
-		Me.lblTotPrice = New System.Windows.Forms.Label
-		Me.tabEfficacite = New System.Windows.Forms.TabPage
-		Me.grpInvocation = New System.Windows.Forms.GroupBox
-		Me.txtMeanCost2 = New System.Windows.Forms.TextBox
-		Me.lblMeanCost2 = New System.Windows.Forms.Label
-		Me.txtMaxCost = New System.Windows.Forms.TextBox
-		Me.lblMaxCost = New System.Windows.Forms.Label
-		Me.txtMinCost = New System.Windows.Forms.TextBox
-		Me.lblMinCost = New System.Windows.Forms.Label
-		Me.txtMeanCost = New System.Windows.Forms.TextBox
-		Me.lblMeanCost = New System.Windows.Forms.Label
-		Me.tabCreatures = New System.Windows.Forms.TabPage
-		Me.grpCreatures = New System.Windows.Forms.GroupBox
-		Me.txtMeanTough = New System.Windows.Forms.TextBox
-		Me.lblMeanTough = New System.Windows.Forms.Label
-		Me.txtRAC = New System.Windows.Forms.TextBox
-		Me.lblRAC = New System.Windows.Forms.Label
-		Me.txtRAD = New System.Windows.Forms.TextBox
-		Me.lblRAD = New System.Windows.Forms.Label
-		Me.txtMeanPower = New System.Windows.Forms.TextBox
-		Me.lblMeanPower = New System.Windows.Forms.Label
-		Me.tabAutorisations = New System.Windows.Forms.TabPage
-		Me.lstTournoiForbid = New System.Windows.Forms.ListBox
-		Me.grpAutorisations = New System.Windows.Forms.GroupBox
-		Me.picAutM = New System.Windows.Forms.PictureBox
-		Me.picAutT1 = New System.Windows.Forms.PictureBox
-		Me.picAutT15 = New System.Windows.Forms.PictureBox
-		Me.picAutT1x = New System.Windows.Forms.PictureBox
-		Me.picAutT2 = New System.Windows.Forms.PictureBox
-		Me.picAutBloc = New System.Windows.Forms.PictureBox
-		Me.lblAutorisations = New System.Windows.Forms.Label
-		Me.grdDetails = New SourceGrid2.Grid
-		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
+		Me.cmnuBreakDown = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuCurve = New System.Windows.Forms.ToolStripMenuItem()
+		Me.chartBreakDown = New SoftwareFX.ChartFX.Lite.Chart()
+		Me.cboCriterion = New TD.SandBar.ComboBoxItem()
+		Me.cbarInfos = New TD.SandBar.ContainerBar()
+		Me.pnlInfos = New TD.SandBar.ContainerBarClientPanel()
+		Me.splitV = New System.Windows.Forms.SplitContainer()
+		Me.tabInfos = New System.Windows.Forms.TabControl()
+		Me.tabGeneral = New System.Windows.Forms.TabPage()
+		Me.grpGeneral = New System.Windows.Forms.GroupBox()
+		Me.txtOldest = New System.Windows.Forms.TextBox()
+		Me.txtRarest = New System.Windows.Forms.TextBox()
+		Me.txtTougher = New System.Windows.Forms.TextBox()
+		Me.txtNCartes = New System.Windows.Forms.TextBox()
+		Me.lblOldest = New System.Windows.Forms.Label()
+		Me.lblRarest = New System.Windows.Forms.Label()
+		Me.lblTougher = New System.Windows.Forms.Label()
+		Me.lblNCartes = New System.Windows.Forms.Label()
+		Me.tabPrix = New System.Windows.Forms.TabPage()
+		Me.grpPrix = New System.Windows.Forms.GroupBox()
+		Me.cmdHistPrices = New System.Windows.Forms.Button()
+		Me.txtMeanPrice2 = New System.Windows.Forms.TextBox()
+		Me.lblMeanPrice2 = New System.Windows.Forms.Label()
+		Me.txtMostExpensive = New System.Windows.Forms.TextBox()
+		Me.lblMostExpensive = New System.Windows.Forms.Label()
+		Me.txtMeanPrice = New System.Windows.Forms.TextBox()
+		Me.lblMeanPrice = New System.Windows.Forms.Label()
+		Me.txtTotPrice = New System.Windows.Forms.TextBox()
+		Me.lblTotPrice = New System.Windows.Forms.Label()
+		Me.tabEfficacite = New System.Windows.Forms.TabPage()
+		Me.grpInvocation = New System.Windows.Forms.GroupBox()
+		Me.txtMeanCost2 = New System.Windows.Forms.TextBox()
+		Me.lblMeanCost2 = New System.Windows.Forms.Label()
+		Me.txtMaxCost = New System.Windows.Forms.TextBox()
+		Me.lblMaxCost = New System.Windows.Forms.Label()
+		Me.txtMinCost = New System.Windows.Forms.TextBox()
+		Me.lblMinCost = New System.Windows.Forms.Label()
+		Me.txtMeanCost = New System.Windows.Forms.TextBox()
+		Me.lblMeanCost = New System.Windows.Forms.Label()
+		Me.tabCreatures = New System.Windows.Forms.TabPage()
+		Me.grpCreatures = New System.Windows.Forms.GroupBox()
+		Me.txtMeanTough = New System.Windows.Forms.TextBox()
+		Me.lblMeanTough = New System.Windows.Forms.Label()
+		Me.txtRAC = New System.Windows.Forms.TextBox()
+		Me.lblRAC = New System.Windows.Forms.Label()
+		Me.txtRAD = New System.Windows.Forms.TextBox()
+		Me.lblRAD = New System.Windows.Forms.Label()
+		Me.txtMeanPower = New System.Windows.Forms.TextBox()
+		Me.lblMeanPower = New System.Windows.Forms.Label()
+		Me.tabAutorisations = New System.Windows.Forms.TabPage()
+		Me.lstTournoiForbid = New System.Windows.Forms.ListBox()
+		Me.grpAutorisations = New System.Windows.Forms.GroupBox()
+		Me.picAutMulti = New System.Windows.Forms.PictureBox()
+		Me.picAutM = New System.Windows.Forms.PictureBox()
+		Me.picAutT1 = New System.Windows.Forms.PictureBox()
+		Me.picAutT15 = New System.Windows.Forms.PictureBox()
+		Me.picAutT2 = New System.Windows.Forms.PictureBox()
+		Me.picAutBloc = New System.Windows.Forms.PictureBox()
+		Me.picAut1V1 = New System.Windows.Forms.PictureBox()
+		Me.lblAutorisations = New System.Windows.Forms.Label()
+		Me.grdDetails = New SourceGrid2.Grid()
 		Me.cmnuHisto = New System.Windows.Forms.ContextMenuStrip(Me.components)
-		Me.cmnuHistDeck = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCards = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistAllCards = New System.Windows.Forms.ToolStripMenuItem
-		Me.toolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator
-		Me.cmnuHistCardsPrice1 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice2 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice3 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice4 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice5 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice6 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice7 = New System.Windows.Forms.ToolStripMenuItem
-		Me.cmnuHistCardsPrice8 = New System.Windows.Forms.ToolStripMenuItem
+		Me.cmnuHistDeck = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCards = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistAllCards = New System.Windows.Forms.ToolStripMenuItem()
+		Me.toolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
+		Me.cmnuHistCardsPrice1 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice2 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice3 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice4 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice5 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice6 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice7 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.cmnuHistCardsPrice8 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.imglstAutorisations = New System.Windows.Forms.ImageList(Me.components)
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
 		Me.splitH.SuspendLayout
@@ -136,12 +137,13 @@ Partial Class frmStats
 		Me.grpCreatures.SuspendLayout
 		Me.tabAutorisations.SuspendLayout
 		Me.grpAutorisations.SuspendLayout
+		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
-		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).BeginInit
+		CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cmnuHisto.SuspendLayout
 		Me.SuspendLayout
 		'
@@ -159,7 +161,7 @@ Partial Class frmStats
 		'splitH.Panel2
 		'
 		Me.splitH.Panel2.Controls.Add(Me.cbarInfos)
-		Me.splitH.Size = New System.Drawing.Size(538, 415)
+		Me.splitH.Size = New System.Drawing.Size(579, 415)
 		Me.splitH.SplitterDistance = 220
 		Me.splitH.TabIndex = 0
 		'
@@ -175,7 +177,7 @@ Partial Class frmStats
 		Me.cbarChart.Location = New System.Drawing.Point(0, 0)
 		Me.cbarChart.Movable = false
 		Me.cbarChart.Name = "cbarChart"
-		Me.cbarChart.Size = New System.Drawing.Size(538, 220)
+		Me.cbarChart.Size = New System.Drawing.Size(579, 220)
 		Me.cbarChart.TabIndex = 2
 		Me.cbarChart.Text = "Répartitions"
 		'
@@ -185,7 +187,7 @@ Partial Class frmStats
 		Me.pnlChart.Controls.Add(Me.chartBreakDown)
 		Me.pnlChart.Location = New System.Drawing.Point(2, 49)
 		Me.pnlChart.Name = "pnlChart"
-		Me.pnlChart.Size = New System.Drawing.Size(534, 169)
+		Me.pnlChart.Size = New System.Drawing.Size(575, 169)
 		Me.pnlChart.TabIndex = 0
 		'
 		'chartManaCurve
@@ -202,7 +204,7 @@ Partial Class frmStats
 		Me.chartManaCurve.Name = "chartManaCurve"
 		Me.chartManaCurve.RightMenu = Nothing
 		Me.chartManaCurve.ShowCoordinates = false
-		Me.chartManaCurve.Size = New System.Drawing.Size(534, 169)
+		Me.chartManaCurve.Size = New System.Drawing.Size(575, 169)
 		Me.chartManaCurve.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None
 		Me.chartManaCurve.TabIndex = 2
 		Me.chartManaCurve.Title = ""
@@ -248,7 +250,7 @@ Partial Class frmStats
 		Me.chartBreakDown.Name = "chartBreakDown"
 		Me.chartBreakDown.NSeries = 1
 		Me.chartBreakDown.NValues = 1
-		Me.chartBreakDown.Size = New System.Drawing.Size(534, 169)
+		Me.chartBreakDown.Size = New System.Drawing.Size(575, 169)
 		Me.chartBreakDown.TabIndex = 1
 		'
 		'cboCriterion
@@ -269,7 +271,7 @@ Partial Class frmStats
 		Me.cbarInfos.Location = New System.Drawing.Point(0, 0)
 		Me.cbarInfos.Movable = false
 		Me.cbarInfos.Name = "cbarInfos"
-		Me.cbarInfos.Size = New System.Drawing.Size(538, 191)
+		Me.cbarInfos.Size = New System.Drawing.Size(579, 191)
 		Me.cbarInfos.TabIndex = 1
 		Me.cbarInfos.Text = "Informations"
 		'
@@ -278,7 +280,7 @@ Partial Class frmStats
 		Me.pnlInfos.Controls.Add(Me.splitV)
 		Me.pnlInfos.Location = New System.Drawing.Point(2, 27)
 		Me.pnlInfos.Name = "pnlInfos"
-		Me.pnlInfos.Size = New System.Drawing.Size(534, 162)
+		Me.pnlInfos.Size = New System.Drawing.Size(575, 162)
 		Me.pnlInfos.TabIndex = 0
 		'
 		'splitV
@@ -294,8 +296,8 @@ Partial Class frmStats
 		'splitV.Panel2
 		'
 		Me.splitV.Panel2.Controls.Add(Me.grdDetails)
-		Me.splitV.Size = New System.Drawing.Size(534, 162)
-		Me.splitV.SplitterDistance = 315
+		Me.splitV.Size = New System.Drawing.Size(575, 162)
+		Me.splitV.SplitterDistance = 356
 		Me.splitV.TabIndex = 0
 		'
 		'tabInfos
@@ -309,7 +311,7 @@ Partial Class frmStats
 		Me.tabInfos.Location = New System.Drawing.Point(0, 0)
 		Me.tabInfos.Name = "tabInfos"
 		Me.tabInfos.SelectedIndex = 0
-		Me.tabInfos.Size = New System.Drawing.Size(315, 162)
+		Me.tabInfos.Size = New System.Drawing.Size(356, 162)
 		Me.tabInfos.TabIndex = 25
 		'
 		'tabGeneral
@@ -318,7 +320,7 @@ Partial Class frmStats
 		Me.tabGeneral.Location = New System.Drawing.Point(4, 22)
 		Me.tabGeneral.Name = "tabGeneral"
 		Me.tabGeneral.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabGeneral.Size = New System.Drawing.Size(307, 136)
+		Me.tabGeneral.Size = New System.Drawing.Size(348, 136)
 		Me.tabGeneral.TabIndex = 0
 		Me.tabGeneral.Text = "Général"
 		Me.tabGeneral.UseVisualStyleBackColor = true
@@ -336,7 +338,7 @@ Partial Class frmStats
 		Me.grpGeneral.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpGeneral.Location = New System.Drawing.Point(3, 3)
 		Me.grpGeneral.Name = "grpGeneral"
-		Me.grpGeneral.Size = New System.Drawing.Size(301, 130)
+		Me.grpGeneral.Size = New System.Drawing.Size(342, 130)
 		Me.grpGeneral.TabIndex = 24
 		Me.grpGeneral.TabStop = false
 		'
@@ -426,7 +428,7 @@ Partial Class frmStats
 		Me.tabPrix.Location = New System.Drawing.Point(4, 22)
 		Me.tabPrix.Name = "tabPrix"
 		Me.tabPrix.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabPrix.Size = New System.Drawing.Size(307, 136)
+		Me.tabPrix.Size = New System.Drawing.Size(348, 136)
 		Me.tabPrix.TabIndex = 1
 		Me.tabPrix.Text = "Prix"
 		Me.tabPrix.UseVisualStyleBackColor = true
@@ -445,7 +447,7 @@ Partial Class frmStats
 		Me.grpPrix.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpPrix.Location = New System.Drawing.Point(3, 3)
 		Me.grpPrix.Name = "grpPrix"
-		Me.grpPrix.Size = New System.Drawing.Size(301, 130)
+		Me.grpPrix.Size = New System.Drawing.Size(342, 130)
 		Me.grpPrix.TabIndex = 0
 		Me.grpPrix.TabStop = false
 		'
@@ -545,7 +547,7 @@ Partial Class frmStats
 		Me.tabEfficacite.Location = New System.Drawing.Point(4, 22)
 		Me.tabEfficacite.Name = "tabEfficacite"
 		Me.tabEfficacite.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabEfficacite.Size = New System.Drawing.Size(307, 136)
+		Me.tabEfficacite.Size = New System.Drawing.Size(348, 136)
 		Me.tabEfficacite.TabIndex = 2
 		Me.tabEfficacite.Text = "Invocations"
 		Me.tabEfficacite.UseVisualStyleBackColor = true
@@ -563,7 +565,7 @@ Partial Class frmStats
 		Me.grpInvocation.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpInvocation.Location = New System.Drawing.Point(3, 3)
 		Me.grpInvocation.Name = "grpInvocation"
-		Me.grpInvocation.Size = New System.Drawing.Size(301, 130)
+		Me.grpInvocation.Size = New System.Drawing.Size(342, 130)
 		Me.grpInvocation.TabIndex = 0
 		Me.grpInvocation.TabStop = false
 		'
@@ -653,7 +655,7 @@ Partial Class frmStats
 		Me.tabCreatures.Location = New System.Drawing.Point(4, 22)
 		Me.tabCreatures.Name = "tabCreatures"
 		Me.tabCreatures.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabCreatures.Size = New System.Drawing.Size(307, 136)
+		Me.tabCreatures.Size = New System.Drawing.Size(348, 136)
 		Me.tabCreatures.TabIndex = 3
 		Me.tabCreatures.Text = "Créatures"
 		Me.tabCreatures.UseVisualStyleBackColor = true
@@ -671,7 +673,7 @@ Partial Class frmStats
 		Me.grpCreatures.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpCreatures.Location = New System.Drawing.Point(3, 3)
 		Me.grpCreatures.Name = "grpCreatures"
-		Me.grpCreatures.Size = New System.Drawing.Size(301, 130)
+		Me.grpCreatures.Size = New System.Drawing.Size(342, 130)
 		Me.grpCreatures.TabIndex = 2
 		Me.grpCreatures.TabStop = false
 		'
@@ -763,7 +765,7 @@ Partial Class frmStats
 		Me.tabAutorisations.Location = New System.Drawing.Point(4, 22)
 		Me.tabAutorisations.Name = "tabAutorisations"
 		Me.tabAutorisations.Padding = New System.Windows.Forms.Padding(3)
-		Me.tabAutorisations.Size = New System.Drawing.Size(307, 136)
+		Me.tabAutorisations.Size = New System.Drawing.Size(348, 136)
 		Me.tabAutorisations.TabIndex = 4
 		Me.tabAutorisations.Text = "Autorisations"
 		Me.tabAutorisations.UseVisualStyleBackColor = true
@@ -775,23 +777,34 @@ Partial Class frmStats
 		Me.lstTournoiForbid.Location = New System.Drawing.Point(3, 55)
 		Me.lstTournoiForbid.MultiColumn = true
 		Me.lstTournoiForbid.Name = "lstTournoiForbid"
-		Me.lstTournoiForbid.Size = New System.Drawing.Size(301, 69)
+		Me.lstTournoiForbid.Size = New System.Drawing.Size(342, 78)
 		Me.lstTournoiForbid.TabIndex = 16
 		'
 		'grpAutorisations
 		'
+		Me.grpAutorisations.Controls.Add(Me.picAutMulti)
 		Me.grpAutorisations.Controls.Add(Me.picAutM)
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
 		Me.grpAutorisations.Controls.Add(Me.picAutT15)
-		Me.grpAutorisations.Controls.Add(Me.picAutT1x)
 		Me.grpAutorisations.Controls.Add(Me.picAutT2)
 		Me.grpAutorisations.Controls.Add(Me.picAutBloc)
+		Me.grpAutorisations.Controls.Add(Me.picAut1V1)
 		Me.grpAutorisations.Dock = System.Windows.Forms.DockStyle.Top
 		Me.grpAutorisations.Location = New System.Drawing.Point(3, 16)
 		Me.grpAutorisations.Name = "grpAutorisations"
-		Me.grpAutorisations.Size = New System.Drawing.Size(301, 39)
+		Me.grpAutorisations.Size = New System.Drawing.Size(342, 39)
 		Me.grpAutorisations.TabIndex = 15
 		Me.grpAutorisations.TabStop = false
+		'
+		'picAutMulti
+		'
+		Me.picAutMulti.Location = New System.Drawing.Point(276, 10)
+		Me.picAutMulti.Name = "picAutMulti"
+		Me.picAutMulti.Size = New System.Drawing.Size(35, 25)
+		Me.picAutMulti.TabIndex = 6
+		Me.picAutMulti.TabStop = false
+		Me.picAutMulti.Tag = "Multi"
+		AddHandler Me.picAutMulti.Click, AddressOf Me.PicAutClick
 		'
 		'picAutM
 		'
@@ -823,35 +836,35 @@ Partial Class frmStats
 		Me.picAutT15.Tag = "T15"
 		AddHandler Me.picAutT15.Click, AddressOf Me.PicAutClick
 		'
-		'picAutT1x
-		'
-		Me.picAutT1x.Location = New System.Drawing.Point(153, 10)
-		Me.picAutT1x.Name = "picAutT1x"
-		Me.picAutT1x.Size = New System.Drawing.Size(35, 25)
-		Me.picAutT1x.TabIndex = 2
-		Me.picAutT1x.TabStop = false
-		Me.picAutT1x.Tag = "T1x"
-		AddHandler Me.picAutT1x.Click, AddressOf Me.PicAutClick
-		'
 		'picAutT2
 		'
-		Me.picAutT2.Location = New System.Drawing.Point(194, 10)
+		Me.picAutT2.Location = New System.Drawing.Point(153, 10)
 		Me.picAutT2.Name = "picAutT2"
 		Me.picAutT2.Size = New System.Drawing.Size(35, 25)
-		Me.picAutT2.TabIndex = 1
+		Me.picAutT2.TabIndex = 2
 		Me.picAutT2.TabStop = false
 		Me.picAutT2.Tag = "T2"
 		AddHandler Me.picAutT2.Click, AddressOf Me.PicAutClick
 		'
 		'picAutBloc
 		'
-		Me.picAutBloc.Location = New System.Drawing.Point(235, 10)
+		Me.picAutBloc.Location = New System.Drawing.Point(194, 10)
 		Me.picAutBloc.Name = "picAutBloc"
 		Me.picAutBloc.Size = New System.Drawing.Size(35, 25)
-		Me.picAutBloc.TabIndex = 0
+		Me.picAutBloc.TabIndex = 1
 		Me.picAutBloc.TabStop = false
 		Me.picAutBloc.Tag = "Bloc"
 		AddHandler Me.picAutBloc.Click, AddressOf Me.PicAutClick
+		'
+		'picAut1V1
+		'
+		Me.picAut1V1.Location = New System.Drawing.Point(235, 10)
+		Me.picAut1V1.Name = "picAut1V1"
+		Me.picAut1V1.Size = New System.Drawing.Size(35, 25)
+		Me.picAut1V1.TabIndex = 0
+		Me.picAut1V1.TabStop = false
+		Me.picAut1V1.Tag = "[1V1]"
+		AddHandler Me.picAut1V1.Click, AddressOf Me.PicAutClick
 		'
 		'lblAutorisations
 		'
@@ -887,24 +900,6 @@ Partial Class frmStats
 						Or SourceGrid2.GridSpecialKeys.Control)  _
 						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
 		Me.grdDetails.TabIndex = 0
-		'
-		'imglstAutorisations
-		'
-		Me.imglstAutorisations.ImageStream = CType(resources.GetObject("imglstAutorisations.ImageStream"),System.Windows.Forms.ImageListStreamer)
-		Me.imglstAutorisations.TransparentColor = System.Drawing.Color.Transparent
-		Me.imglstAutorisations.Images.SetKeyName(0, "_aBloc.gif")
-		Me.imglstAutorisations.Images.SetKeyName(1, "_aBlocno.gif")
-		Me.imglstAutorisations.Images.SetKeyName(2, "_aT1.gif")
-		Me.imglstAutorisations.Images.SetKeyName(3, "_aT1no.gif")
-		Me.imglstAutorisations.Images.SetKeyName(4, "_aT1r.gif")
-		Me.imglstAutorisations.Images.SetKeyName(5, "_aT1X.gif")
-		Me.imglstAutorisations.Images.SetKeyName(6, "_aT1Xno.gif")
-		Me.imglstAutorisations.Images.SetKeyName(7, "_aT2.gif")
-		Me.imglstAutorisations.Images.SetKeyName(8, "_aT2no.gif")
-		Me.imglstAutorisations.Images.SetKeyName(9, "_aT15.gif")
-		Me.imglstAutorisations.Images.SetKeyName(10, "_aT15no.gif")
-		Me.imglstAutorisations.Images.SetKeyName(11, "_aM.gif")
-		Me.imglstAutorisations.Images.SetKeyName(12, "_aMno.gif")
 		'
 		'cmnuHisto
 		'
@@ -1002,18 +997,38 @@ Partial Class frmStats
 		Me.cmnuHistCardsPrice8.Text = "Plus de 50 €"
 		AddHandler Me.cmnuHistCardsPrice8.Click, AddressOf Me.CmnuHistCardsPriceClick
 		'
+		'imglstAutorisations
+		'
+		Me.imglstAutorisations.ImageStream = CType(resources.GetObject("imglstAutorisations.ImageStream"),System.Windows.Forms.ImageListStreamer)
+		Me.imglstAutorisations.TransparentColor = System.Drawing.Color.Transparent
+		Me.imglstAutorisations.Images.SetKeyName(0, "_a1vs1.png")
+		Me.imglstAutorisations.Images.SetKeyName(1, "_a1vs1no.png")
+		Me.imglstAutorisations.Images.SetKeyName(2, "_aBloc.png")
+		Me.imglstAutorisations.Images.SetKeyName(3, "_aBlocno.png")
+		Me.imglstAutorisations.Images.SetKeyName(4, "_aMulti.png")
+		Me.imglstAutorisations.Images.SetKeyName(5, "_aMultino.png")
+		Me.imglstAutorisations.Images.SetKeyName(6, "_aT1.png")
+		Me.imglstAutorisations.Images.SetKeyName(7, "_aT1no.png")
+		Me.imglstAutorisations.Images.SetKeyName(8, "_aT1r.png")
+		Me.imglstAutorisations.Images.SetKeyName(9, "_aT2.png")
+		Me.imglstAutorisations.Images.SetKeyName(10, "_aT2no.png")
+		Me.imglstAutorisations.Images.SetKeyName(11, "_aT15.png")
+		Me.imglstAutorisations.Images.SetKeyName(12, "_aT15no.png")
+		Me.imglstAutorisations.Images.SetKeyName(13, "_aTM.png")
+		Me.imglstAutorisations.Images.SetKeyName(14, "_aTMno.png")
+		'
 		'frmStats
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(538, 415)
+		Me.ClientSize = New System.Drawing.Size(579, 415)
 		Me.Controls.Add(Me.splitH)
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmStats"
 		Me.Text = "Statistiques"
+		AddHandler Activated, AddressOf Me.FrmStatsActivated
 		AddHandler Load, AddressOf Me.FrmStatsLoad
 		AddHandler Paint, AddressOf Me.FrmStatsPaint
-		AddHandler Activated, AddressOf Me.FrmStatsActivated
 		Me.splitH.Panel1.ResumeLayout(false)
 		Me.splitH.Panel2.ResumeLayout(false)
 		Me.splitH.ResumeLayout(false)
@@ -1041,15 +1056,18 @@ Partial Class frmStats
 		Me.tabAutorisations.ResumeLayout(false)
 		Me.tabAutorisations.PerformLayout
 		Me.grpAutorisations.ResumeLayout(false)
+		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
-		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).EndInit
+		CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cmnuHisto.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private imglstAutorisations As System.Windows.Forms.ImageList
+	Private picAutMulti As System.Windows.Forms.PictureBox
 	Private picAutM As System.Windows.Forms.PictureBox
 	Private chartManaCurve As NPlot.Windows.PlotSurface2D
 	Private cmnuHistCardsPrice8 As System.Windows.Forms.ToolStripMenuItem
@@ -1068,10 +1086,9 @@ Partial Class frmStats
 	Private cmdHistPrices As System.Windows.Forms.Button
 	Private lstTournoiForbid As System.Windows.Forms.ListBox
 	Private lblAutorisations As System.Windows.Forms.Label
-	Private imglstAutorisations As System.Windows.Forms.ImageList
+	Private picAut1V1 As System.Windows.Forms.PictureBox
 	Private picAutBloc As System.Windows.Forms.PictureBox
 	Private picAutT2 As System.Windows.Forms.PictureBox
-	Private picAutT1x As System.Windows.Forms.PictureBox
 	Private picAutT15 As System.Windows.Forms.PictureBox
 	Private picAutT1 As System.Windows.Forms.PictureBox
 	Private grpAutorisations As System.Windows.Forms.GroupBox

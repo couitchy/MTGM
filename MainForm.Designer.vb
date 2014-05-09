@@ -126,6 +126,7 @@ Partial Class MainForm
 		Me.mnuMV = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPlugins = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPlugResourcer = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPlugHTML = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuInfo = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuApplicationUpdate = New System.Windows.Forms.ToolStripMenuItem()
@@ -183,9 +184,9 @@ Partial Class MainForm
 		Me.picAutT1 = New System.Windows.Forms.PictureBox()
 		Me.picAutT15 = New System.Windows.Forms.PictureBox()
 		Me.picAutM = New System.Windows.Forms.PictureBox()
-		Me.picAutT1x = New System.Windows.Forms.PictureBox()
 		Me.picAutT2 = New System.Windows.Forms.PictureBox()
 		Me.picAutBloc = New System.Windows.Forms.PictureBox()
+		Me.picAut1V1 = New System.Windows.Forms.PictureBox()
 		Me.btShowAll = New TD.SandBar.ButtonItem()
 		Me.btCardUse = New TD.SandBar.ButtonItem()
 		Me.btHistPrices = New TD.SandBar.ButtonItem()
@@ -199,7 +200,7 @@ Partial Class MainForm
 		Me.cmnuCbar = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem()
 		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem()
-		Me.mnuPlugHTML = New System.Windows.Forms.ToolStripMenuItem()
+		Me.picAutMulti = New System.Windows.Forms.PictureBox()
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -238,9 +239,9 @@ Partial Class MainForm
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).BeginInit
-		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).BeginInit
+		CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cbarImage.SuspendLayout
 		Me.pnlImage.SuspendLayout
 		Me.splitH4.Panel1.SuspendLayout
@@ -248,6 +249,7 @@ Partial Class MainForm
 		Me.splitH4.SuspendLayout
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cmnuCbar.SuspendLayout
+		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
 		'
 		'statusStrip
@@ -1052,6 +1054,14 @@ Partial Class MainForm
 		Me.mnuPlugResourcer.Text = "MTGM WebResourcer"
 		AddHandler Me.mnuPlugResourcer.Click, AddressOf Me.MnuPlugResourcerClick
 		'
+		'mnuPlugHTML
+		'
+		Me.mnuPlugHTML.Image = CType(resources.GetObject("mnuPlugHTML.Image"),System.Drawing.Image)
+		Me.mnuPlugHTML.Name = "mnuPlugHTML"
+		Me.mnuPlugHTML.Size = New System.Drawing.Size(199, 22)
+		Me.mnuPlugHTML.Text = "HTML CollectionViewer"
+		AddHandler Me.mnuPlugHTML.Click, AddressOf Me.MnuPlugHTMLClick
+		'
 		'mnuInfo
 		'
 		Me.mnuInfo.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCheckForUpdates, Me.mnuCheckForBetas, Me.mnuRestorePrev, Me.mnuSeparator9, Me.mnuWebsite, Me.mnuHelp, Me.mnuAbout})
@@ -1659,12 +1669,13 @@ Partial Class MainForm
 		'grpAutorisations
 		'
 		Me.grpAutorisations.BackColor = System.Drawing.Color.Transparent
+		Me.grpAutorisations.Controls.Add(Me.picAutMulti)
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
 		Me.grpAutorisations.Controls.Add(Me.picAutT15)
 		Me.grpAutorisations.Controls.Add(Me.picAutM)
-		Me.grpAutorisations.Controls.Add(Me.picAutT1x)
 		Me.grpAutorisations.Controls.Add(Me.picAutT2)
 		Me.grpAutorisations.Controls.Add(Me.picAutBloc)
+		Me.grpAutorisations.Controls.Add(Me.picAut1V1)
 		Me.grpAutorisations.Dock = System.Windows.Forms.DockStyle.Bottom
 		Me.grpAutorisations.Location = New System.Drawing.Point(0, 376)
 		Me.grpAutorisations.Name = "grpAutorisations"
@@ -1696,29 +1707,29 @@ Partial Class MainForm
 		Me.picAutM.TabIndex = 3
 		Me.picAutM.TabStop = false
 		'
-		'picAutT1x
-		'
-		Me.picAutT1x.Location = New System.Drawing.Point(126, 10)
-		Me.picAutT1x.Name = "picAutT1x"
-		Me.picAutT1x.Size = New System.Drawing.Size(35, 25)
-		Me.picAutT1x.TabIndex = 2
-		Me.picAutT1x.TabStop = false
-		'
 		'picAutT2
 		'
-		Me.picAutT2.Location = New System.Drawing.Point(167, 10)
+		Me.picAutT2.Location = New System.Drawing.Point(126, 10)
 		Me.picAutT2.Name = "picAutT2"
 		Me.picAutT2.Size = New System.Drawing.Size(35, 25)
-		Me.picAutT2.TabIndex = 1
+		Me.picAutT2.TabIndex = 2
 		Me.picAutT2.TabStop = false
 		'
 		'picAutBloc
 		'
-		Me.picAutBloc.Location = New System.Drawing.Point(208, 10)
+		Me.picAutBloc.Location = New System.Drawing.Point(167, 10)
 		Me.picAutBloc.Name = "picAutBloc"
 		Me.picAutBloc.Size = New System.Drawing.Size(35, 25)
-		Me.picAutBloc.TabIndex = 0
+		Me.picAutBloc.TabIndex = 1
 		Me.picAutBloc.TabStop = false
+		'
+		'picAut1V1
+		'
+		Me.picAut1V1.Location = New System.Drawing.Point(249, 10)
+		Me.picAut1V1.Name = "picAut1V1"
+		Me.picAut1V1.Size = New System.Drawing.Size(35, 25)
+		Me.picAut1V1.TabIndex = 0
+		Me.picAut1V1.TabStop = false
 		'
 		'btShowAll
 		'
@@ -1829,54 +1840,57 @@ Partial Class MainForm
 		'
 		Me.imglstAutorisations.ImageStream = CType(resources.GetObject("imglstAutorisations.ImageStream"),System.Windows.Forms.ImageListStreamer)
 		Me.imglstAutorisations.TransparentColor = System.Drawing.Color.Transparent
-		Me.imglstAutorisations.Images.SetKeyName(0, "_aBloc.gif")
-		Me.imglstAutorisations.Images.SetKeyName(1, "_aBlocno.gif")
-		Me.imglstAutorisations.Images.SetKeyName(2, "_aBlocoff.gif")
-		Me.imglstAutorisations.Images.SetKeyName(3, "_aT1.gif")
-		Me.imglstAutorisations.Images.SetKeyName(4, "_aT1no.gif")
-		Me.imglstAutorisations.Images.SetKeyName(5, "_aT1off.gif")
-		Me.imglstAutorisations.Images.SetKeyName(6, "_aT1r.gif")
-		Me.imglstAutorisations.Images.SetKeyName(7, "_aT1X.gif")
-		Me.imglstAutorisations.Images.SetKeyName(8, "_aT1Xno.gif")
-		Me.imglstAutorisations.Images.SetKeyName(9, "_aT1Xoff.gif")
-		Me.imglstAutorisations.Images.SetKeyName(10, "_aT2.gif")
-		Me.imglstAutorisations.Images.SetKeyName(11, "_aT2no.gif")
-		Me.imglstAutorisations.Images.SetKeyName(12, "_aT2off.gif")
-		Me.imglstAutorisations.Images.SetKeyName(13, "_aT15.gif")
-		Me.imglstAutorisations.Images.SetKeyName(14, "_aT15no.gif")
-		Me.imglstAutorisations.Images.SetKeyName(15, "_aT15off.gif")
-		Me.imglstAutorisations.Images.SetKeyName(16, "_aM.gif")
-		Me.imglstAutorisations.Images.SetKeyName(17, "_aMno.gif")
-		Me.imglstAutorisations.Images.SetKeyName(18, "_aMoff.gif")
+		Me.imglstAutorisations.Images.SetKeyName(0, "_a1vs1.png")
+		Me.imglstAutorisations.Images.SetKeyName(1, "_a1vs1no.png")
+		Me.imglstAutorisations.Images.SetKeyName(2, "_a1vs1off.png")
+		Me.imglstAutorisations.Images.SetKeyName(3, "_aBloc.png")
+		Me.imglstAutorisations.Images.SetKeyName(4, "_aBlocno.png")
+		Me.imglstAutorisations.Images.SetKeyName(5, "_aBlocoff.png")
+		Me.imglstAutorisations.Images.SetKeyName(6, "_aMulti.png")
+		Me.imglstAutorisations.Images.SetKeyName(7, "_aMultino.png")
+		Me.imglstAutorisations.Images.SetKeyName(8, "_aMultioff.png")
+		Me.imglstAutorisations.Images.SetKeyName(9, "_aT1.png")
+		Me.imglstAutorisations.Images.SetKeyName(10, "_aT1no.png")
+		Me.imglstAutorisations.Images.SetKeyName(11, "_aT1off.png")
+		Me.imglstAutorisations.Images.SetKeyName(12, "_aT1r.png")
+		Me.imglstAutorisations.Images.SetKeyName(13, "_aT2.png")
+		Me.imglstAutorisations.Images.SetKeyName(14, "_aT2no.png")
+		Me.imglstAutorisations.Images.SetKeyName(15, "_aT2off.png")
+		Me.imglstAutorisations.Images.SetKeyName(16, "_aT15.png")
+		Me.imglstAutorisations.Images.SetKeyName(17, "_aT15no.png")
+		Me.imglstAutorisations.Images.SetKeyName(18, "_aT15off.png")
+		Me.imglstAutorisations.Images.SetKeyName(19, "_aTM.png")
+		Me.imglstAutorisations.Images.SetKeyName(20, "_aTMno.png")
+		Me.imglstAutorisations.Images.SetKeyName(21, "_aTMoff.png")
 		'
 		'cmnuCbar
 		'
 		Me.cmnuCbar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btHistPricesSimple, Me.btHistPricesFoil})
 		Me.cmnuCbar.Name = "cmnuCbar"
-		Me.cmnuCbar.Size = New System.Drawing.Size(153, 70)
+		Me.cmnuCbar.Size = New System.Drawing.Size(114, 48)
 		AddHandler Me.cmnuCbar.Closed, AddressOf Me.CmnuCbarClosed
 		'
 		'btHistPricesSimple
 		'
 		Me.btHistPricesSimple.Name = "btHistPricesSimple"
-		Me.btHistPricesSimple.Size = New System.Drawing.Size(152, 22)
+		Me.btHistPricesSimple.Size = New System.Drawing.Size(113, 22)
 		Me.btHistPricesSimple.Text = "Prix"
 		AddHandler Me.btHistPricesSimple.Click, AddressOf Me.BtHistPricesSimpleClick
 		'
 		'btHistPricesFoil
 		'
 		Me.btHistPricesFoil.Name = "btHistPricesFoil"
-		Me.btHistPricesFoil.Size = New System.Drawing.Size(152, 22)
+		Me.btHistPricesFoil.Size = New System.Drawing.Size(113, 22)
 		Me.btHistPricesFoil.Text = "Prix foil"
 		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
-		'mnuPlugHTML
+		'picAutMulti
 		'
-		Me.mnuPlugHTML.Image = CType(resources.GetObject("mnuPlugHTML.Image"),System.Drawing.Image)
-		Me.mnuPlugHTML.Name = "mnuPlugHTML"
-		Me.mnuPlugHTML.Size = New System.Drawing.Size(199, 22)
-		Me.mnuPlugHTML.Text = "HTML CollectionViewer"
-		AddHandler Me.mnuPlugHTML.Click, AddressOf Me.MnuPlugHTMLClick
+		Me.picAutMulti.Location = New System.Drawing.Point(290, 10)
+		Me.picAutMulti.Name = "picAutMulti"
+		Me.picAutMulti.Size = New System.Drawing.Size(35, 25)
+		Me.picAutMulti.TabIndex = 5
+		Me.picAutMulti.TabStop = false
 		'
 		'MainForm
 		'
@@ -1939,9 +1953,9 @@ Partial Class MainForm
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).EndInit
-		CType(Me.picAutT1x,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).EndInit
+		CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cbarImage.ResumeLayout(false)
 		Me.pnlImage.ResumeLayout(false)
 		Me.splitH4.Panel1.ResumeLayout(false)
@@ -1949,9 +1963,11 @@ Partial Class MainForm
 		Me.splitH4.ResumeLayout(false)
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cmnuCbar.ResumeLayout(false)
+		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private picAutMulti As System.Windows.Forms.PictureBox
 	Private mnuPlugHTML As System.Windows.Forms.ToolStripMenuItem
 	Private btExpand As System.Windows.Forms.ToolStripButton
 	Private btCardUse As TD.SandBar.ButtonItem
@@ -2006,9 +2022,9 @@ Partial Class MainForm
 	Private mnuApplicationUpdate As System.Windows.Forms.ToolStripMenuItem
 	Private mnuUpdateAutorisations As System.Windows.Forms.ToolStripMenuItem
 	Private imglstAutorisations As System.Windows.Forms.ImageList
+	Private picAut1V1 As System.Windows.Forms.PictureBox
 	Private picAutBloc As System.Windows.Forms.PictureBox
 	Private picAutT2 As System.Windows.Forms.PictureBox
-	Private picAutT1x As System.Windows.Forms.PictureBox
 	Private picAutT15 As System.Windows.Forms.PictureBox
 	Private picAutM As System.Windows.Forms.PictureBox
 	Private picAutT1 As System.Windows.Forms.PictureBox
