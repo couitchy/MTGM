@@ -1194,6 +1194,8 @@ Public Partial Class MainForm
 				Return "bornofthegods#" + VpStr
 			Case "JN"
 				Return "journeyintonyx#" + VpStr
+			Case "DB"
+				Return "DuelDecksJacevsVraska#" + VpStr				
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1350,6 +1352,8 @@ Public Partial Class MainForm
 				Return "BG"
 			Case "journeyintonyx"
 				Return "JN"
+			Case "DuelDecksJacevsVraska"
+				Return "DB"				
 			Case Else
 				Return ""
 		End Select

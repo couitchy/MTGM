@@ -22,7 +22,7 @@ Public Partial Class MainForm
 	Private Sub LoadDecks
 		Me.chklstDecksDispos.Items.Clear
 		Me.chklstDecksDispos.Items.Add(CmCollection)
-		VmDBCommand.CommandText = "Select GameName From MyGamesID;"
+		VmDBCommand.CommandText = "Select GameName From MyGamesID Where IsFolder = False;"
 		VmDBReader = VmDBCommand.ExecuteReader
 		With VmDBReader
 			While .Read

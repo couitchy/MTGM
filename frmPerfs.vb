@@ -36,7 +36,7 @@ Public Partial Class frmPerfs
 		Me.InitializeComponent()
 		VmOwner = VpOwner
 		For VpI As Integer = 1 To clsModule.GetDeckCount
-			Me.dropAddGame.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf AddGameClick)
+			Me.dropAddGame.DropDownItems.Add(clsModule.GetDeckNameFromIndex(VpI), Nothing, AddressOf AddGameClick)
 		Next VpI
 		Call AddKnownGames("JeuLocal", Me.cboJeuLocal)
 		Call AddKnownGames("JeuAdverse", Me.cboJeuAdv)
@@ -568,7 +568,7 @@ Public Partial Class frmPerfs
 		Call Me.GetAllPlayed
 	End Sub
 	Sub DropAddGameOtherClick(ByVal sender As Object, ByVal e As EventArgs)
-	Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", clsModule.CgDefaultName)
+	Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", clsModule.CgDefaultDeckName)
 		If VpGameName.Trim <> "" Then
 			If Not Me.cboJeuLocal.Items.Contains(VpGameName) Then
 				Me.cboJeuLocal.Items.Add(VpGameName)
@@ -755,7 +755,7 @@ Public Class clsPerformances
 	'Retourne le nom de tous les jeux effectivement saisis dans la base
 	'------------------------------------------------------------------
 	Dim VpGames As New List(Of String)
-		VgDBCommand.CommandText = "Select GameName From MyGamesID;"
+		VgDBCommand.CommandText = "Select GameName From MyGamesID Where IsFolder = False;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -770,7 +770,7 @@ Public Class clsPerformances
 	'Retourne le nom des decks du joueur spécifié en paramètre
 	'---------------------------------------------------------
 	Dim VpGames As New List(Of String)
-		VgDBCommand.CommandText = "Select GameName From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpAdvName.Replace("'", "''") + "';"
+		VgDBCommand.CommandText = "Select GameName From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpAdvName.Replace("'", "''") + "' And IsFolder = False;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -887,7 +887,7 @@ Public Class clsPerformances
 	'Retourne le prix du jeu passé en paramètre
 	'------------------------------------------
 	Dim VpId As String
-		VpId = clsModule.GetDeckIndex(VpGame)
+		VpId = clsModule.GetDeckIdFromName(VpGame)
 		If VpId <> "" Then
 			Try
 				VgDBCommand.CommandText = "Select Sum(Price * Items) From Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where GameID = " + VpId + ";"

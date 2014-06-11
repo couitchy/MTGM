@@ -55,6 +55,7 @@ Public Partial Class frmPlateau
 	'-------------------------------
 	Dim VpToRemove As New List(Of PictureBox)
 	Dim VpCard As clsPlateauCard
+		If VmPlateauPartie Is Nothing Then Exit Sub
 		With VmPlateauPartie
 			'Efface les anciennes images (celles à redessiner)
 			For Each VpPictureBox As PictureBox In VmPlateau.Pictures

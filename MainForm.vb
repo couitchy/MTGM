@@ -988,13 +988,11 @@ Public Partial Class MainForm
 			Me.mnuCopyACard.DropDownItems.RemoveAt(Me.mnuCopyACard.DropDownItems.Count - 1)
 		Next VpI
 		'Reconstruction
-		For VpI = 1 To clsModule.GetDeckCount
-			Me.mnuRemGames.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf MnuRemSubGamesActivate)
-			Me.mnuFixGames.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf MnuFixSubGamesActivate)
-			Me.mnuDisp.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf MnuDispCollectionActivate)
-			Me.mnuMoveACard.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf mnuMoveACardActivate)
-			Me.mnuCopyACard.DropDownItems.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf mnuCopyACardActivate)
-		Next VpI
+		Call Me.RecurLoadMnu(Me.mnuDisp, "Is Null", AddressOf MnuDispCollectionActivate)
+		Call Me.RecurLoadMnu(Me.mnuFixGames, "Is Null", AddressOf MnuFixSubGamesActivate)
+		Call Me.RecurLoadMnu(Me.mnuRemGames, "Is Null", AddressOf MnuRemSubGamesActivate)
+		Call Me.RecurLoadMnu(Me.mnuMoveACard, "Is Null", AddressOf mnuMoveACardActivate)
+		Call Me.RecurLoadMnu(Me.mnuCopyACard, "Is Null", AddressOf mnuCopyACardActivate)
 		'Pour les éditions
 		Me.mnuFixSerie.DropDownItems.Clear
 		VgDBCommand.CommandText = "Select SeriesNM From Series Order By Release Desc;"
@@ -1008,6 +1006,11 @@ Public Partial Class MainForm
 		Me.mnuDispAdvSearch.Checked = False
 		Me.mnuDispCollection.Checked = True
 		VmDeckMode = False
+	End Sub
+	Public Sub RecurLoadMnu(VpCur As ToolStripMenuItem, VpParent As String, VpHandler As EventHandler)
+		For Each VpChild As Integer In clsModule.GetChildrenDecksIds(VpParent)
+			Call Me.RecurLoadMnu(VpCur.DropDownItems.Add(clsModule.GetDeckNameFromId(VpChild), Nothing, If(clsModule.IsDeckFolder(VpChild), Nothing, VpHandler)), " = " + VpChild.ToString, VpHandler)
+		Next VpChild
 	End Sub
 	Private Sub SortTvw
 	'-----------------------------------------
@@ -1208,15 +1211,7 @@ Public Partial Class MainForm
 		If Not VmDeckMode Or Me.IsInAdvSearch Then
 			Return If(VpTextMode, clsModule.CgCollection, "")
 		End If
-		For Each VpItem As Object In Me.mnuDisp.DropDownItems
-			If clsModule.SafeGetChecked(VpItem) Then
-				If VpTextMode Then
-					VpStr = VpStr + VpItem.Text + " "
-				Else
-					VpStr = VpStr + "GameID = " + clsModule.GetDeckIndex(VpItem.Text) + " Or "
-				End If
-			End If
-		Next VpItem
+		Call Me.RecurRestriction(Me.mnuDisp, VpStr, VpTextMode)
 		'Retourne la restriction de manière textuelle (non pour une utilisation dans une requête)
 		If VpTextMode Then
 			Return VpStr
@@ -1228,6 +1223,20 @@ Public Partial Class MainForm
 			Return "GameID = -1"
 		End If
 	End Function
+	Public Sub RecurRestriction(VpToolStripMenuItem As ToolStripMenuItem, ByRef VpStr As String, VpTextMode As Boolean)
+		For Each VpItem As ToolStripItem In VpToolStripMenuItem.DropDownItems
+			If TypeOf VpItem Is ToolStripMenuItem Then
+				If CType(VpItem, ToolStripMenuItem).Checked Then
+					If VpTextMode Then
+						VpStr = VpStr + VpItem.Text + " "
+					Else
+						VpStr = VpStr + "GameID = " + clsModule.GetDeckIdFromName(VpItem.Text) + " Or "
+					End If
+				End If
+				Call Me.RecurRestriction(VpItem, VpStr, VpTextMode)
+			End If
+		Next VpItem
+	End Sub
 	Private Function QueryInfo(VpQuery As String, VpElderCriteria As String, Optional VpAddendum As String = "") As String
 	'------------------
 	'Requête ponctuelle
@@ -1317,19 +1326,23 @@ Public Partial Class MainForm
 			End If
 		End With
 	End Sub
-	Public Sub ManageDispMenu(VpMenuTitle As String, VpDeckMode As Boolean)
-	Dim VpStr As String
-		For Each VpItem As Object In Me.mnuDisp.DropDownItems
-			VpStr = clsModule.SafeGetText(VpItem)
-			'On sélectionne les résultats de recherche
-			If VpStr = VpMenuTitle Then
-				VpItem.Checked = True
-			ElseIf VpStr = clsModule.CgRefresh Or VpStr = clsModule.CgPanel Or VpStr = "" Then
-			'mais on déselectionne tous les decks ainsi que la collection
-			Else
-				VpItem.Checked = False
+	Public Sub ManageDispMenu(VpToolStripMenuItem As ToolStripMenuItem, VpMenuTitle As String)
+		For Each VpItem As ToolStripItem In VpToolStripMenuItem.DropDownItems
+			If TypeOf VpItem Is ToolStripMenuItem Then
+				'On sélectionne les résultats de recherche
+				If VpItem.Text = VpMenuTitle Then
+					CType(VpItem, ToolStripMenuItem).Checked = True
+				ElseIf VpItem.Text = clsModule.CgRefresh Or VpItem.Text = clsModule.CgPanel Or VpItem.Text = "" Then
+				'mais on déselectionne tous les decks ainsi que la collection
+				Else
+					CType(VpItem, ToolStripMenuItem).Checked = False
+				End If
+				Call Me.ManageDispMenu(VpItem, VpMenuTitle)
 			End If
 		Next VpItem
+	End Sub
+	Public Sub ManageDispMenu(VpMenuTitle As String, VpDeckMode As Boolean)
+		Call Me.ManageDispMenu(Me.mnuDisp, VpMenuTitle)
 		VmDeckMode = VpDeckMode
 	End Sub
 	Private Function ShowCard(VpTitle As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean) As Boolean
@@ -1415,7 +1428,7 @@ Public Partial Class MainForm
 	Private Function CalcUse(VpCard As String, VpSource As String, VpSource2 As String, VpDeckMode As Boolean) As Hashtable
 	Dim VpUsage As New Hashtable
 		'Sélectionne le stock par édition pour la source passée en paramètre
-		VgDBCommand.CommandText = "Select Card.Series, Sum(" + VpSource + ".Items) From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + If(VpDeckMode, " And GameID = " + clsModule.GetDeckIndex(VpSource2), "") + " Group By Card.Series;"
+		VgDBCommand.CommandText = "Select Card.Series, Sum(" + VpSource + ".Items) From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCard.Replace("'", "''") + "'" + If(VpDeckMode, " And GameID = " + clsModule.GetDeckIdFromName(VpSource2), "") + " Group By Card.Series;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -1914,23 +1927,40 @@ Public Partial Class MainForm
 		End If
 		Return VpNames
 	End Function
-	Public Function GetSelectedSource As String
+	Public Function GetSelectedSource(VpToolStripMenuItem As ToolStripMenuItem) As String
 	'--------------------------------------
 	'Retourne le nom de source sélectionnée
 	'--------------------------------------
-		For Each VpItem As Object In Me.mnuDisp.DropDownItems
-			If clsModule.SafeGetChecked(VpItem) Then
-				Return VpItem.Text
+	Dim VpStr As String
+		For Each VpItem As ToolStripItem In VpToolStripMenuItem.DropDownItems
+			If TypeOf VpItem Is ToolStripMenuItem Then
+				If CType(VpItem, ToolStripMenuItem).Checked Then
+					Return VpItem.Text
+				Else
+					VpStr = Me.GetSelectedSource(VpItem)
+					If VpStr <> "" Then
+						Return VpStr
+					End If
+				End If
 			End If
 		Next VpItem
 		Return ""
 	End Function
+	Public Function GetSelectedSource() As String
+		Return Me.GetSelectedSource(Me.mnuDisp)
+	End Function
+	Public Function IsSourcePresent As Boolean
+	'--------------------------------------------------------------
+	'Vérifie qu'il y a bien au moins une source de cartes à traiter
+	'--------------------------------------------------------------
+		Return ( Me.GetSelectedSource <> "" )
+	End Function	
 	Private Function GetAllSources As List(Of String)
 	'---------------------------------------
 	'Retourne toutes les sources disponibles
 	'---------------------------------------
 	Dim VpSources As New List(Of String)
-		VgDBCommand.CommandText = "Select GameName From MyGamesID;"
+		VgDBCommand.CommandText = "Select GameName From MyGamesID Where IsFolder = False;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -2307,19 +2337,6 @@ Public Partial Class MainForm
 			Return If(VmDeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
 		End Get
 	End Property
-	Public ReadOnly Property IsSourcePresent As Boolean
-	'--------------------------------------------------------------
-	'Vérifie qu'il y a bien au moins une source de cartes à traiter
-	'--------------------------------------------------------------
-		Get
-			For Each VpItem As Object In Me.mnuDisp.DropDownItems
-				If clsModule.SafeGetChecked(VpItem) Then
-					Return True
-				End If
-			Next VpItem
-			Return False
-		End Get
-	End Property
 	Public Property MyChildren As clsChildren
 	'----------------------
 	'Collection des enfants
@@ -2531,7 +2548,7 @@ Public Partial Class MainForm
 		Call Me.ManageDelete(sender, "Delete * From MyCollection")
 	End Sub
 	Sub MnuRemSubGamesActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.ManageDelete(sender, "Delete * From MyGames Where GameID = " + clsModule.GetDeckIndex(sender.Text))
+		Call Me.ManageDelete(sender, "Delete * From MyGames Where GameID = " + clsModule.GetDeckIdFromName(sender.Text))
 	End Sub
 	Sub MnuRemScoresActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.ManageDelete(sender, "Delete * From MyScores", "Êtes-vous sûr de vouloir supprimer de manière permanente l'ensemble des scores comptés jusqu'à présent ?")
@@ -2550,7 +2567,7 @@ Public Partial Class MainForm
 		End Try
 	End Sub
 	Sub MnuFixSubGamesActivate(ByVal sender As Object, ByVal e As EventArgs)
-		VgDBCommand.CommandText = "Delete * From MyGames Where Items = 0 And GameID = " + clsModule.GetDeckIndex(sender.Text)
+		VgDBCommand.CommandText = "Delete * From MyGames Where Items = 0 And GameID = " + clsModule.GetDeckIdFromName(sender.Text)
 		VgDBCommand.ExecuteNonQuery
 		Call Me.LoadTvw
 		Call clsModule.ShowInformation("Terminé !")
@@ -2686,7 +2703,7 @@ Public Partial Class MainForm
 		Else
 			Call Me.ClearCarac
 			If VmDeckMode Then
-				Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIndex(Me.GetSelectedSource)), "")
+				Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIdFromName(Me.GetSelectedSource)), "")
 			End If
 			Call Me.ManageMode(False)
 		End If
@@ -3223,18 +3240,18 @@ Public Partial Class MainForm
 		'Cas 1 : si la valeur est nulle, il s'agit d'une suppression
 		With VgDBCommand
 			If VpCell.Value = 0 Then
-				.CommandText = "Delete * From " + VpSource + " Where Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
+				.CommandText = "Delete * From " + VpSource + " Where Foil = " + VpFoil.ToString + " And EncNbr = " + VpEncNbr.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIdFromName(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
 				.ExecuteNonQuery
 			Else
-				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
+				.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIdFromName(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
 				VpItems = .ExecuteScalar
 				'Cas 2 : il s'agit d'une mise à jour du stock
 				If VpItems > 0 Then
-					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIndex(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
+					.CommandText = "Update " + VpSource + " Set Items = " + VpCell.Value.ToString + " Where EncNbr = " + VpEncNbr.ToString + " And Foil = " + VpFoil.ToString + If(VmDeckMode, " And GameID = " + clsModule.GetDeckIdFromName(Me.GetSelectedSource) + " And Reserve = " + VpReserve.ToString + ";", ";")
 					.ExecuteNonQuery
 				'Cas 3 : il s'agit d'une insertion
 				Else
-					.CommandText = "Insert Into " + VpSource + " Values (" + If(VmDeckMode, clsModule.GetDeckIndex(Me.GetSelectedSource).ToString + ", ", "") + VpEncNbr.ToString + ", " + VpCell.Value.ToString + ", " + VpFoil.ToString + If(VmDeckMode, ", " + VpReserve.ToString, "") + ");"
+					.CommandText = "Insert Into " + VpSource + " Values (" + If(VmDeckMode, clsModule.GetDeckIdFromName(Me.GetSelectedSource).ToString + ", ", "") + VpEncNbr.ToString + ", " + VpCell.Value.ToString + ", " + VpFoil.ToString + If(VmDeckMode, ", " + VpReserve.ToString, "") + ");"
 					.ExecuteNonQuery
 				End If
 			End If

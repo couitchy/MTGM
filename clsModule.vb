@@ -35,7 +35,8 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
-	Public Const CgCodeLines As Integer   			= 33577
+	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
+	Public Const CgCodeLines As Integer   			= 33849
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
@@ -149,7 +150,8 @@ Public Module clsModule
 	Public Const CgPicLogExt As String				= ".log"
 	Public Const CgImgSeries As String				= "_series_"
 	Public Const CgImgColors As String				= "_colors_"
-	Public Const CgDefaultName As String			= "(Deck)"
+	Public Const CgDefaultDeckName As String		= "(Deck)"
+	Public Const CgDefaultFolderName As String		= "(Dossier)"
 	Public Const CgDefaultFormat As String			= "Classique"
 	Public Const CgRulings As String				= "Règles spécifiques"
 	Public Const CgPlateau As String				= "Plateau de jeu : "
@@ -266,23 +268,24 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes
-		BDD_v13		'manque tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID
-		BDD_v14		'manque tournois 1V1&Multi, codes séries, infos Réserve
-		BDD_v15		'manque tournois 1V1&Multi, codes séries
-		BDD_v16		'manque tournois 1V1&Multi
-		BDD_v17		'à jour
+		BDD_v1		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID
+		BDD_v14		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve
+		BDD_v15		'manque dossiers decks, tournois 1V1&Multi, codes séries
+		BDD_v16		'manque dossiers decks, tournois 1V1&Multi
+		BDD_v17		'manque dossiers decks
+		BDD_v18		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -426,7 +429,7 @@ Public Module clsModule
 							VpDBVersion = eDBVersion.BDD_v12
 						Else
 							VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyGamesID", Nothing})
-							If VpSchemaTable.Rows.Count <> 6 Then
+							If VpSchemaTable.Rows.Count <> 6 And VpSchemaTable.Rows.Count <> 8 Then
 								'Si on est ici, BDD version 13
 								VpDBVersion = eDBVersion.BDD_v13
 							Else
@@ -445,8 +448,14 @@ Public Module clsModule
 											'Si on est ici, BDD version 16
 											VpDBVersion = eDBVersion.BDD_v16
 										Else
-											'Si on est ici, BDD version 17
-											VpDBVersion = eDBVersion.BDD_v17
+											VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyGamesID", Nothing})
+											If VpSchemaTable.Rows.Count <> 8 Then
+												'Si on est ici, BDD version 17
+												VpDBVersion = eDBVersion.BDD_v17
+											Else
+												'Si on est ici, BDD version 18
+												VpDBVersion = eDBVersion.BDD_v18
+											End If
 										End If
 									End If
 								End If
@@ -462,10 +471,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v17 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v18 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v17)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v18)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -606,7 +615,15 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Alter Table Autorisations Add Multi Bit;"
 						VgDBCommand.ExecuteNonQuery
-					End If					
+					End If
+					'Passage version 17 à 18
+					If CInt(VpDBVersion) < 18 Then
+						VgDBCommand.CommandText = "Alter Table MyGamesID Add Parent Long;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table MyGamesID Add IsFolder Bit;"
+						VgDBCommand.ExecuteNonQuery
+						Call ShowInformation("Vous pouvez maintenant classer vos decks dans des dossiers !")
+					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
 					Return False
@@ -1200,13 +1217,6 @@ Public Module clsModule
 			Return FindIndex(CgNumbers, VpStr) + 1
 		End If
 	End Function
-	Public Function SafeGetChecked(VpObj As Object) As Boolean
-		Try
-			Return VpObj.Checked
-		Catch
-			Return False
-		End Try
-	End Function
 	Public Function AvoidForbiddenChr(ByVal VpIn As String, Optional VpChrSet As eForbiddenCharset = eForbiddenCharset.Standard) As String
 		Select Case VpChrSet
 			Case eForbiddenCharset.Standard
@@ -1218,13 +1228,6 @@ Public Module clsModule
 			Case Else
 				Return VpIn
 		End Select
-	End Function
-	Public Function SafeGetText(VpObj As Object) As String
-		Try
-			Return VpObj.Text
-		Catch
-			Return ""
-		End Try
 	End Function
 	Public Function SafeGetNonZeroVal(VpColumn As String) As Single
 		With VgDBReader
@@ -1742,11 +1745,11 @@ Public Module clsModule
 	'--------------------------------------------------------------------------------------
 	'Retourne le nombre de decks possédés par le propriétaire d'index spécifié en paramètre
 	'--------------------------------------------------------------------------------------
-		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where AdvID = " + VpI.ToString + ";"
+		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where AdvID = " + VpI.ToString + " And IsFolder = False;"
 		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Function GetAdvDecksCount(VpName As String) As Integer
-		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpName.Replace("'", "''") + "';"
+		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpName.Replace("'", "''") + "' And IsFolder = False;"
 		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Function GetAdvId(VpName As String) As Integer
@@ -1766,7 +1769,7 @@ Public Module clsModule
 	Public Function GetAdvName(VpI As Integer) As String
 	'-------------------------------------------------------------
 	'Retourne le nom de l'adversaire d'index spécifié en paramètre
-	'N.B. : 0 = Moi
+	'NB. : 0 = Moi
 	'-------------------------------------------------------------
 		VgDBCommand.CommandText = "Select Last(AdvName) From (Select Top " + VpI.ToString + " AdvName From MyAdversairesID Order By AdvID);"
 		Return VgDBCommand.ExecuteScalar
@@ -1778,22 +1781,22 @@ Public Module clsModule
 		VgDBCommand.CommandText = "Select Max(AdvID) From MyAdversairesID;"
 		Return (CInt(VgDBCommand.ExecuteScalar) + 1)
 	End Function
-	Public Function GetDeckName(VpI As Integer) As String
+	Public Function GetDeckNameFromIndex(VpI As Integer) As String
 	'---------------------------------------------------------------------
 	'Retourne le nom du deck d'index spécifié en paramètre
 	'/!\ retourne le nom du VpI ème deck, et pas le deck dont l'id est VpI
 	'---------------------------------------------------------------------
-		VgDBCommand.CommandText = "Select Last(GameName) From (Select Top " + VpI.ToString + " GameName From MyGamesID Order By GameID);"
+		VgDBCommand.CommandText = "Select Last(GameName) From (Select Top " + VpI.ToString + " GameName From MyGamesID Where IsFolder = False Order By GameID);"
 		Try
 			Return VgDBCommand.ExecuteScalar
 		Catch
 			Return "Jeu n°" + VpI.ToString
 		End Try
 	End Function
-	Public Function GetDeckIndex(VpStr As String) As String
-	'-----------------------------------------------------
-	'Retourne l'index du deck de nom spécifié en paramètre
-	'-----------------------------------------------------
+	Public Function GetDeckIdFromName(VpStr As String) As String
+	'--------------------------------------------------
+	'Retourne l'id du deck de nom spécifié en paramètre
+	'--------------------------------------------------
 	Dim VpO As Object
 		VgDBCommand.CommandText = "Select GameID From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
 		VpO = VgDBCommand.ExecuteScalar
@@ -1802,6 +1805,35 @@ Public Module clsModule
 		Else
 			Return ""
 		End If
+	End Function
+	Public Function GetDeckNameFromId(VpId As Long) As String
+	'--------------------------------------------------
+	'Retourne le nom du deck d'id spécifié en paramètre
+	'--------------------------------------------------
+		VgDBCommand.CommandText = "Select GameName From MyGamesID Where GameID = " + VpId.ToString + ";"
+		Return VgDBCommand.ExecuteScalar.ToString
+	End Function
+	Public Function IsDeckFolder(VpId As Long) As Boolean
+	'---------------------------------------------------
+	'Retourne si le deck n'est qu'un alias de répertoire
+	'---------------------------------------------------
+		VgDBCommand.CommandText = "Select IsFolder From MyGamesID Where GameID = " + VpId.ToString + ";"
+		Return VgDBCommand.ExecuteScalar.ToString
+	End Function
+	Public Function GetChildrenDecksIds(VpParent As String) As List(Of Integer)
+	'---------------------------------------------------------------
+	'Retourne les decks dont le nom du parent est passé en paramètre
+	'---------------------------------------------------------------
+	Dim VpChildren As New List(Of Integer)
+		VgDBCommand.CommandText = "Select GameID From MyGamesID Where Parent " + VpParent + " Order By GameID;"
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpChildren.Add(CInt(.GetValue(0)))
+			End While
+			.Close
+		End With
+		Return VpChildren
 	End Function
 	Public Function GetDeckFormat(VpStr As String) As String
 	'--------------------------------------------------------------
@@ -1829,7 +1861,7 @@ Public Module clsModule
 	'----------------------------------------------
 	'Retourne le nombre de decks en base de données
 	'----------------------------------------------
-		VgDBCommand.CommandText = "Select Count(*) From MyGamesID;"
+		VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where IsFolder = False;"
 		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Function GetNewDeckId As Integer

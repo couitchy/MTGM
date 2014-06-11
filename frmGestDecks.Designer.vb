@@ -33,22 +33,25 @@ Partial Class frmGestDecks
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
+		Me.components = New System.ComponentModel.Container()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmGestDecks))
-		Me.cbarDecksManager = New TD.SandBar.ContainerBar
-		Me.pnlDecksManager = New TD.SandBar.ContainerBarClientPanel
-		Me.splitV = New System.Windows.Forms.SplitContainer
-		Me.lstDecks = New System.Windows.Forms.ListBox
-		Me.txtMemo = New System.Windows.Forms.TextBox
-		Me.lblMemo = New System.Windows.Forms.Label
-		Me.lblFormat = New System.Windows.Forms.Label
-		Me.cboFormat = New System.Windows.Forms.ComboBox
-		Me.pickDate = New System.Windows.Forms.DateTimePicker
-		Me.lblDate = New System.Windows.Forms.Label
-		Me.btAdd = New TD.SandBar.ButtonItem
-		Me.btRemove = New TD.SandBar.ButtonItem
-		Me.btRename = New TD.SandBar.ButtonItem
-		Me.btUp = New TD.SandBar.ButtonItem
-		Me.btDown = New TD.SandBar.ButtonItem
+		Me.cbarDecksManager = New TD.SandBar.ContainerBar()
+		Me.pnlDecksManager = New TD.SandBar.ContainerBarClientPanel()
+		Me.splitV = New System.Windows.Forms.SplitContainer()
+		Me.tvwDecks = New System.Windows.Forms.TreeView()
+		Me.imgLstTvw = New System.Windows.Forms.ImageList(Me.components)
+		Me.txtMemo = New System.Windows.Forms.TextBox()
+		Me.lblMemo = New System.Windows.Forms.Label()
+		Me.lblFormat = New System.Windows.Forms.Label()
+		Me.cboFormat = New System.Windows.Forms.ComboBox()
+		Me.pickDate = New System.Windows.Forms.DateTimePicker()
+		Me.lblDate = New System.Windows.Forms.Label()
+		Me.btAdd = New TD.SandBar.ButtonItem()
+		Me.btAddFolder = New TD.SandBar.ButtonItem()
+		Me.btRemove = New TD.SandBar.ButtonItem()
+		Me.btRename = New TD.SandBar.ButtonItem()
+		Me.btUp = New TD.SandBar.ButtonItem()
+		Me.btDown = New TD.SandBar.ButtonItem()
 		Me.cbarDecksManager.SuspendLayout
 		Me.pnlDecksManager.SuspendLayout
 		Me.splitV.Panel1.SuspendLayout
@@ -64,16 +67,16 @@ Partial Class frmGestDecks
 		Me.cbarDecksManager.DrawActionsButton = false
 		Me.cbarDecksManager.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarDecksManager.Guid = New System.Guid("091e31c8-a054-4ec4-a212-c0bc96ca3063")
-		Me.cbarDecksManager.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btAdd, Me.btRemove, Me.btRename, Me.btUp, Me.btDown})
+		Me.cbarDecksManager.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btAdd, Me.btAddFolder, Me.btRemove, Me.btRename, Me.btUp, Me.btDown})
 		Me.cbarDecksManager.Location = New System.Drawing.Point(0, 0)
 		Me.cbarDecksManager.Movable = false
 		Me.cbarDecksManager.Name = "cbarDecksManager"
-		Me.cbarDecksManager.Size = New System.Drawing.Size(508, 278)
+		Me.cbarDecksManager.Size = New System.Drawing.Size(646, 278)
 		Me.cbarDecksManager.TabIndex = 0
 		Me.cbarDecksManager.Text = "Gestion des decks"
 		AddHandler Me.cbarDecksManager.VisibleChanged, AddressOf Me.CbarDecksManagerVisibleChanged
-		AddHandler Me.cbarDecksManager.MouseMove, AddressOf Me.CbarDecksManagerMouseMove
 		AddHandler Me.cbarDecksManager.MouseDown, AddressOf Me.CbarDecksManagerMouseDown
+		AddHandler Me.cbarDecksManager.MouseMove, AddressOf Me.CbarDecksManagerMouseMove
 		AddHandler Me.cbarDecksManager.MouseUp, AddressOf Me.CbarDecksManagerMouseUp
 		'
 		'pnlDecksManager
@@ -81,18 +84,19 @@ Partial Class frmGestDecks
 		Me.pnlDecksManager.Controls.Add(Me.splitV)
 		Me.pnlDecksManager.Location = New System.Drawing.Point(2, 49)
 		Me.pnlDecksManager.Name = "pnlDecksManager"
-		Me.pnlDecksManager.Size = New System.Drawing.Size(504, 227)
+		Me.pnlDecksManager.Size = New System.Drawing.Size(642, 227)
 		Me.pnlDecksManager.TabIndex = 0
 		'
 		'splitV
 		'
 		Me.splitV.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitV.IsSplitterFixed = true
 		Me.splitV.Location = New System.Drawing.Point(0, 0)
 		Me.splitV.Name = "splitV"
 		'
 		'splitV.Panel1
 		'
-		Me.splitV.Panel1.Controls.Add(Me.lstDecks)
+		Me.splitV.Panel1.Controls.Add(Me.tvwDecks)
 		'
 		'splitV.Panel2
 		'
@@ -102,21 +106,37 @@ Partial Class frmGestDecks
 		Me.splitV.Panel2.Controls.Add(Me.cboFormat)
 		Me.splitV.Panel2.Controls.Add(Me.pickDate)
 		Me.splitV.Panel2.Controls.Add(Me.lblDate)
-		Me.splitV.Size = New System.Drawing.Size(504, 227)
-		Me.splitV.SplitterDistance = 200
+		Me.splitV.Size = New System.Drawing.Size(642, 227)
+		Me.splitV.SplitterDistance = 330
 		Me.splitV.TabIndex = 2
 		'
-		'lstDecks
+		'tvwDecks
 		'
-		Me.lstDecks.Dock = System.Windows.Forms.DockStyle.Fill
-		Me.lstDecks.FormattingEnabled = true
-		Me.lstDecks.HorizontalScrollbar = true
-		Me.lstDecks.Location = New System.Drawing.Point(0, 0)
-		Me.lstDecks.Name = "lstDecks"
-		Me.lstDecks.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-		Me.lstDecks.Size = New System.Drawing.Size(200, 225)
-		Me.lstDecks.TabIndex = 0
-		AddHandler Me.lstDecks.SelectedIndexChanged, AddressOf Me.LstDecksSelectedIndexChanged
+		Me.tvwDecks.AllowDrop = true
+		Me.tvwDecks.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.tvwDecks.HideSelection = false
+		Me.tvwDecks.ImageIndex = 0
+		Me.tvwDecks.ImageList = Me.imgLstTvw
+		Me.tvwDecks.Location = New System.Drawing.Point(0, 0)
+		Me.tvwDecks.Name = "tvwDecks"
+		Me.tvwDecks.SelectedImageIndex = 0
+		Me.tvwDecks.ShowLines = false
+		Me.tvwDecks.ShowRootLines = false
+		Me.tvwDecks.Size = New System.Drawing.Size(330, 227)
+		Me.tvwDecks.TabIndex = 0
+		AddHandler Me.tvwDecks.ItemDrag, AddressOf Me.TvwDecksItemDrag
+		AddHandler Me.tvwDecks.AfterSelect, AddressOf Me.TvwDecksAfterSelect
+		AddHandler Me.tvwDecks.DragDrop, AddressOf Me.TvwDecksDragDrop
+		AddHandler Me.tvwDecks.DragEnter, AddressOf Me.TvwDecksDragEnter
+		AddHandler Me.tvwDecks.DragOver, AddressOf Me.TvwDecksDragOver
+		'
+		'imgLstTvw
+		'
+		Me.imgLstTvw.ImageStream = CType(resources.GetObject("imgLstTvw.ImageStream"),System.Windows.Forms.ImageListStreamer)
+		Me.imgLstTvw.TransparentColor = System.Drawing.Color.Transparent
+		Me.imgLstTvw.Images.SetKeyName(0, "Deck.ico")
+		Me.imgLstTvw.Images.SetKeyName(1, "Folder.ico")
+		Me.imgLstTvw.Images.SetKeyName(2, "_tartifact.ico")
 		'
 		'txtMemo
 		'
@@ -176,8 +196,14 @@ Partial Class frmGestDecks
 		'btAdd
 		'
 		Me.btAdd.Icon = CType(resources.GetObject("btAdd.Icon"),System.Drawing.Icon)
-		Me.btAdd.Text = "Ajouter"
+		Me.btAdd.Text = "Nouveau deck"
 		AddHandler Me.btAdd.Activate, AddressOf Me.BtAddActivate
+		'
+		'btAddFolder
+		'
+		Me.btAddFolder.Image = CType(resources.GetObject("btAddFolder.Image"),System.Drawing.Image)
+		Me.btAddFolder.Text = "Nouveau dossier"
+		AddHandler Me.btAddFolder.Activate, AddressOf Me.BtAddFolderActivate
 		'
 		'btRemove
 		'
@@ -188,7 +214,6 @@ Partial Class frmGestDecks
 		'
 		'btRename
 		'
-		Me.btRename.Enabled = false
 		Me.btRename.Icon = CType(resources.GetObject("btRename.Icon"),System.Drawing.Icon)
 		Me.btRename.Text = "Renommer"
 		AddHandler Me.btRename.Activate, AddressOf Me.BtRenameActivate
@@ -212,15 +237,15 @@ Partial Class frmGestDecks
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(508, 278)
+		Me.ClientSize = New System.Drawing.Size(646, 278)
 		Me.Controls.Add(Me.cbarDecksManager)
 		Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmGestDecks"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Gestion des decks"
-		AddHandler Load, AddressOf Me.FrmGestDecksLoad
 		AddHandler FormClosing, AddressOf Me.FrmGestDecksFormClosing
+		AddHandler Load, AddressOf Me.FrmGestDecksLoad
 		Me.cbarDecksManager.ResumeLayout(false)
 		Me.pnlDecksManager.ResumeLayout(false)
 		Me.splitV.Panel1.ResumeLayout(false)
@@ -229,6 +254,9 @@ Partial Class frmGestDecks
 		Me.splitV.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
+	Private btAddFolder As TD.SandBar.ButtonItem
+	Private imgLstTvw As System.Windows.Forms.ImageList
+	Private tvwDecks As System.Windows.Forms.TreeView
 	Private lblDate As System.Windows.Forms.Label
 	Private pickDate As System.Windows.Forms.DateTimePicker
 	Private cboFormat As System.Windows.Forms.ComboBox
@@ -241,7 +269,6 @@ Partial Class frmGestDecks
 	Private btRename As TD.SandBar.ButtonItem
 	Private btRemove As TD.SandBar.ButtonItem
 	Private btAdd As TD.SandBar.ButtonItem
-	Private lstDecks As System.Windows.Forms.ListBox
 	Private pnlDecksManager As TD.SandBar.ContainerBarClientPanel
 	Private cbarDecksManager As TD.SandBar.ContainerBar
 End Class

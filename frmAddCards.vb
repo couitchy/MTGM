@@ -149,7 +149,7 @@ Public Partial Class frmAddCards
 		End Try
 	End Function
 	Public Sub New(VpOwner As MainForm)
-	Dim VpFound As Boolean = False
+	Dim VpSource As String
 		Me.InitializeComponent()
 		VmOwner = VpOwner
 		Me.cboSerie.Tag = ""
@@ -160,25 +160,21 @@ Public Partial Class frmAddCards
 		Else
 			'Destinations possibles
 			For VpI As Integer = 1 To clsModule.GetDeckCount
-				Me.cmnuDestination.Items.Add(clsModule.GetDeckName(VpI), Nothing, AddressOf DropTo)
+				Me.cmnuDestination.Items.Add(clsModule.GetDeckNameFromIndex(VpI), Nothing, AddressOf DropTo)
 			Next VpI
 		End If
 		'Destination par défaut
-		For Each VpItem1 As Object In VpOwner.mnuDisp.DropDownItems
-			If clsModule.SafeGetChecked(VpItem1) Then
-				For Each VpItem2 As ToolStripMenuItem In Me.cmnuDestination.Items
-					If VpItem1.Text = VpItem2.Text Then
-						VpFound = True
-						VpItem2.Checked = True
-						Me.cmdDestination.Tag = clsModule.GetDeckIndex(VpItem2.Text)
-						Me.lblDest.Text = VpItem2.Text
-						Exit For
-					End If
-				Next VpItem2
-				Exit For
-			End If
-		Next VpItem1
-		If Not VpFound Then
+		VpSource = VmOwner.GetSelectedSource
+		If VpSource <> "" Then
+			For Each VpItem As ToolStripMenuItem In Me.cmnuDestination.Items
+				If VpItem.Text = VpSource Then
+					VpItem.Checked = True
+					Me.cmdDestination.Tag = clsModule.GetDeckIdFromName(VpSource)
+					Me.lblDest.Text = VpSource
+					Exit For
+				End If				
+			Next VpItem
+		Else
 			CType(Me.cmnuDestination.Items.Item(0), ToolStripMenuItem).Checked = True
 		End If
 		Me.chkReserve.Visible = Not Me.mnuDropToCollection.Checked
@@ -190,7 +186,7 @@ Public Partial Class frmAddCards
 			VpItem.Checked = ( VpItem Is sender )
 		Next VpItem
 		Me.chkReserve.Visible = Not Me.mnuDropToCollection.Checked
-		Me.cmdDestination.Tag = clsModule.GetDeckIndex(sender.Text)
+		Me.cmdDestination.Tag = clsModule.GetDeckIdFromName(sender.Text)
 		Me.lblDest.Text = sender.Text
 		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked, Me.chkReserve.Checked)
 	End Sub

@@ -149,28 +149,28 @@ Public Partial Class frmTransfert
 			'Dans le cas d'un déplacement ou d'une suppression ou d'un swap : suppression à la source
 			If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Deletion Or .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
 				'Nombre d'items déjà présents à la source
-				VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
+				VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
 				VpNItemsAtSource = VgDBCommand.ExecuteScalar
 				'-NCartes à la source
 				If VpNItemsAtSource - .NCartes > 0 Then
-					VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
+					VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
 					VgDBCommand.ExecuteNonQuery
 				Else
-					VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
+					VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
 					VgDBCommand.ExecuteNonQuery
 				End If
 			End If
 			'Dans le cas d'un déplacement ou d'une copie ou d'un swap : ajout à destination
 			If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Or .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
 				'Nombre d'items déjà présents à la destination
-				VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
+				VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
 				VpNItemsAtDest = VgDBCommand.ExecuteScalar
 				'+NCartes à la destination
 				If VpNItemsAtDest > 0 Then
-					VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIndex(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
+					VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
 					VgDBCommand.ExecuteNonQuery
 				Else
-					VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + If(.STo = clsModule.CgSDecks, clsModule.GetDeckIndex(.TTo) + ", ", "") + .EncNbrTo.ToString + ", " + .NCartes.ToString + ", " + .FoilTo.ToString + If(.STo = clsModule.CgSDecks, ", " + .ReserveTo.ToString, "") + ");"
+					VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + If(.STo = clsModule.CgSDecks, clsModule.GetDeckIdFromName(.TTo) + ", ", "") + .EncNbrTo.ToString + ", " + .NCartes.ToString + ", " + .FoilTo.ToString + If(.STo = clsModule.CgSDecks, ", " + .ReserveTo.ToString, "") + ");"
 					VgDBCommand.ExecuteNonQuery
 				End If
 			End If

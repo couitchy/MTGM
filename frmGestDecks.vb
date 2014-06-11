@@ -22,6 +22,7 @@
 '| - renvoi cartes vers collection		   29/08/2010 |
 '| - gestion suppressions multiples		   09/05/2011 |
 '| - gestion d'infos personnalisées		   08/04/2012 |
+'| - gestion d'une arborescence de decks   06/06/2014 |
 '------------------------------------------------------
 Imports System.Collections.Generic
 Public Partial Class frmGestDecks
@@ -34,20 +35,14 @@ Public Partial Class frmGestDecks
 		Me.InitializeComponent()
 		VmOwner = VpOwner
 	End Sub
-	Private Sub LoadDecks(Optional VpDirection As Integer = 0)
+	Private Sub LoadDecks
 	'--------------------------------------------
 	'Chargement de la liste des decks disponibles
 	'--------------------------------------------
-	Dim VpOldSelect As Integer = -1
-		If Me.lstDecks.SelectedIndex >= 0 Then
-			VpOldSelect = Me.lstDecks.SelectedIndex
-		End If
-		Me.lstDecks.Items.Clear
+	Dim VpRoot As New TreeNode("Liste des decks", 0, 0)	
+		Me.tvwDecks.Nodes.Clear
 		Me.cboFormat.Items.Clear
-		For VpI As Integer = 1 To clsModule.GetDeckCount
-			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpI))
-		Next VpI
-		VgDBCommand.CommandText = "Select Distinct GameFormat From MyGamesID;"
+		VgDBCommand.CommandText = "Select Distinct GameFormat From MyGamesID Where IsFolder = False;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read
@@ -59,16 +54,31 @@ Public Partial Class frmGestDecks
 		Me.btUp.Enabled = False
 		Me.btRename.Enabled = False
 		Me.btRemove.Enabled = False
-		If VpOldSelect <> -1 Then
-			Me.lstDecks.SelectedIndex = VpOldSelect + VpDirection
+		VpRoot.Tag = New clsInfoNode(-1, True)
+		Call Me.RecurLoadDecks(VpRoot, "Is Null")
+		Me.tvwDecks.Nodes.Add(VpRoot)
+		VpRoot.Expand
+		If VpRoot.FirstNode IsNot Nothing Then
+			Me.tvwDecks.SelectedNode = VpRoot.FirstNode
 		End If
+	End Sub
+	Private Sub RecurLoadDecks(VpNode As TreeNode, VpParent As String)
+	Dim VpCur As TreeNode
+		For Each VpChild As Integer In clsModule.GetChildrenDecksIds(VpParent)
+			VpCur = New TreeNode(clsModule.GetDeckNameFromId(VpChild))
+			VpCur.Tag = New clsInfoNode(VpChild, clsModule.IsDeckFolder(VpChild))
+			VpCur.ImageIndex = If(CType(VpCur.Tag, clsInfoNode).IsFolder, 1, 2)
+			VpCur.SelectedImageIndex = VpCur.ImageIndex
+			VpNode.Nodes.Add(VpCur)
+			Call Me.RecurLoadDecks(VpCur, " = " + VpChild.ToString)
+		Next VpChild		
 	End Sub
 	Private Sub LoadDeckInfos
 	'----------------------------------------------------------------
 	'Charge les infos (date, format, description) du deck sélectionné
 	'----------------------------------------------------------------
-		If Me.lstDecks.SelectedIndices.Count > 0 Then
-			VgDBCommand.CommandText = "Select GameDate, GameFormat, GameDescription From MyGamesID Where GameName = '" + Me.lstDecks.SelectedItem.ToString.Replace("'", "''") + "';"
+		If Me.IsDeckNode Then
+			VgDBCommand.CommandText = "Select GameDate, GameFormat, GameDescription From MyGamesID Where GameName = '" + Me.tvwDecks.SelectedNode.Text.Replace("'", "''") + "' And IsFolder = False;"
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				If .Read Then
@@ -88,35 +98,125 @@ Public Partial Class frmGestDecks
 	'--------------------------------------------------------------------
 	'Sauvegarde les infos (date, format, description) du deck sélectionné
 	'--------------------------------------------------------------------
-		If Me.lstDecks.SelectedIndices.Count > 0 Then
-			VgDBCommand.CommandText = "Update MyGamesID Set GameDate = '" + Me.pickDate.Value.ToShortDateString + "', GameFormat = '" + Me.cboFormat.Text.Replace("'", "''") + "', GameDescription = '" + Me.txtMemo.Text.Replace("'", "''") + "' Where GameName = '" + Me.lstDecks.SelectedItem.ToString.Replace("'", "''") + "';"
+		If Me.IsDeckNode Then
+			VgDBCommand.CommandText = "Update MyGamesID Set GameDate = '" + Me.pickDate.Value.ToShortDateString + "', GameFormat = '" + Me.cboFormat.Text.Replace("'", "''") + "', GameDescription = '" + Me.txtMemo.Text.Replace("'", "''") + "' Where GameName = '" + Me.tvwDecks.SelectedNode.Text.Replace("'", "''") + "';"
 			VgDBCommand.ExecuteNonQuery
 		End If
 	End Sub
-	Private Sub SwapDeckId(VpTable As String, VpId1 As Integer, VpId2 As Integer)
+	Private Function DeckExists(VpName As String, VpNode As TreeNode) As Boolean
+	'---------------------------------------------------------------------------------------
+	'Parcourt récursif de l'arborescence pour savoir si un nom identique de deck existe déjà
+	'---------------------------------------------------------------------------------------
+		If VpNode.Text.ToLower = VpName.ToLower Then
+			Return True
+		Else
+			For Each VpChild As TreeNode In VpNode.Nodes
+				If Me.DeckExists(VpName, VpChild) Then
+					Return True
+				End If
+			Next VpChild
+			Return False
+		End If
+	End Function
+	Private Function FolderExists(VpName As String, VpNode As TreeNode) As Boolean
+	'--------------------------------------------------------------------------------------------------
+	'Parcourt du niveau actuel de l'arborescence pour savoir si un nom identique de dossier existe déjà
+	'--------------------------------------------------------------------------------------------------
+		For Each VpChild As TreeNode In VpNode.Nodes
+			If VpChild.Text.ToLower = VpName.ToLower Then
+				Return True
+			End If
+		Next VpChild
+		Return False
+	End Function
+	Private Function DeckOrFolderExists(VpName As String, VpNode As TreeNode, VpFolder As Boolean) As Boolean
+		If VpFolder Then
+			Return FolderExists(VpName, VpNode)
+		Else
+			Return DeckExists(VpName, VpNode)
+		End If
+	End Function
+	Private Sub SwapDeckId2(VpTable As String, VpId1 As String, VpId2 As String)
 	'----------------------------------------------------------------
 	'Intervertit les identifiants des deux decks passés en paramètres
 	'----------------------------------------------------------------
-		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = -1 Where GameID = " + VpId1.ToString + ";"
+		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = -1 Where GameID = " + VpId1 + ";"
 		VgDBCommand.ExecuteNonQuery
-		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId1.ToString + " Where GameID = " + VpId2.ToString + ";"
+		VgDBCommand.CommandText = "Update " + VpTable + " Set Parent = -1 Where Parent = " + VpId1 + ";"
+		VgDBCommand.ExecuteNonQuery		
+		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId1 + " Where GameID = " + VpId2 + ";"
 		VgDBCommand.ExecuteNonQuery
-		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId2.ToString + " Where GameID = -1;"
+		VgDBCommand.CommandText = "Update " + VpTable + " Set Parent = " + VpId1 + " Where Parent = " + VpId2 + ";"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId2 + " Where GameID = -1;"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update " + VpTable + " Set Parent = " + VpId2 + " Where Parent = -1;"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
-	Private Sub ManageSwap(VpDirection As Integer)
-	Dim VpId1 As Integer = clsModule.GetDeckIndex(Me.lstDecks.SelectedItem)
-	Dim VpId2 As Integer = clsModule.GetDeckIndex(Me.lstDecks.Items(Me.lstDecks.SelectedIndex + VpDirection))
-		Call Me.SwapDeckId("MyGamesID", VpId1, VpId2)
-		Call Me.SwapDeckId("MyGames", VpId1, VpId2)
-		Call Me.LoadDecks(VpDirection)
+	Private Sub SwapDeckId1(VpTable As String, VpId1 As String, VpId2 As String)
+		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = -1 Where GameID = " + VpId1 + ";"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId1 + " Where GameID = " + VpId2 + ";"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId2 + " Where GameID = -1;"
+		VgDBCommand.ExecuteNonQuery
+	End Sub	
+	Private Sub ManageSwap(VpNode1 As TreeNode, VpNode2 As TreeNode)
+	Dim VpId1 As Integer = CType(VpNode1.Tag, clsInfoNode).Id
+	Dim VpId2 As Integer = CType(VpNode2.Tag, clsInfoNode).Id		
+	Dim VpIdString1 As String = CType(VpNode1.Tag, clsInfoNode).IdString
+	Dim VpIdString2 As String = CType(VpNode2.Tag, clsInfoNode).IdString
+	Dim VpSelected As TreeNode = Me.tvwDecks.SelectedNode
+	Dim VpParent As TreeNode = VpSelected.Parent
+		Call Me.SwapDeckId2("MyGamesID", VpIdString1, VpIdString2)
+		Call Me.SwapDeckId1("MyGames", VpIdString1, VpIdString2)
+		Me.tvwDecks.BeginUpdate
+		VpNode1.Tag = New clsInfoNode(VpId2, CType(VpNode1.Tag, clsInfoNode).IsFolder)
+		VpNode2.Tag = New clsInfoNode(VpId1, CType(VpNode2.Tag, clsInfoNode).IsFolder)
+		VpParent.Nodes.RemoveAt(VpNode2.Index)		
+		VpParent.Nodes.RemoveAt(VpNode1.Index)	
+		VpParent.Nodes.Insert(VpNode2.Index - 1, VpNode1)		
+		VpParent.Nodes.Insert(VpNode1.Index, VpNode2)
+		Me.tvwDecks.EndUpdate
+		VpSelected.EnsureVisible
+		Me.tvwDecks.SelectedNode = VpSelected
 		VmMustReload = True
+	End Sub
+	Private Sub AddDeckOrFolder(VpFolder As Boolean)
+	Dim VpName As String
+	Dim VpId As Integer
+	Dim VpParent As TreeNode
+	Dim VpNew As TreeNode
+		If Me.tvwDecks.SelectedNode Is Nothing Then Exit Sub
+		VpName = InputBox("Entrer le nom de l'élément :", "Nouvel élément", If(VpFolder, clsModule.CgDefaultFolderName, clsModule.CgDefaultDeckName))
+		If VpName <> "" Then
+			VpParent = Me.SelectedParent
+			If Me.DeckOrFolderExists(VpName, If(VpFolder, VpParent, Me.RootNode), VpFolder) Then
+				Call clsModule.ShowWarning("Un élément portant ce nom existe déjà...")
+			Else
+				VpId = clsModule.GetNewDeckId
+				If VpFolder Then
+					VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpName.Replace("'", "''") + "', 0, " + CType(VpParent.Tag, clsInfoNode).IdString + ", True);"
+				Else
+					VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpName.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '', " + CType(VpParent.Tag, clsInfoNode).IdString + ", False);"
+				End If
+				VgDBCommand.ExecuteNonQuery
+				VpNew = New TreeNode(VpName)
+				VpNew.Tag = New clsInfoNode(VpId, VpFolder)
+				VpNew.ImageIndex = If(VpFolder, 1, 2)
+				VpNew.SelectedImageIndex = VpNew.ImageIndex
+				VpParent.Nodes.Add(VpNew)
+				VpNew.EnsureVisible
+				Me.tvwDecks.SelectedNode = VpNew
+				VmMustReload = True
+			End If
+		End If		
 	End Sub
 	Private Function RemoveDeck(VpDeckName As String) As Boolean
 	'-----------------------------------
 	'Gestion de la suppression d'un deck
 	'-----------------------------------
-	Dim VpDeckId As Integer = clsModule.GetDeckIndex(VpDeckName)
+	Dim VpDeckId As Integer = clsModule.GetDeckIdFromName(VpDeckName)
 	Dim VpQuestion As DialogResult = clsModule.ShowQuestion("Le deck " + VpDeckName + " va être supprimé." + vbCrLf + "Souhaitez-vous déplacer les cartes qu'il contenait vers la collection ?", MessageBoxButtons.YesNoCancel)
 	Dim VpContenu As List(Of clsItemRecup)
 	Dim VpO As Object
@@ -153,6 +253,13 @@ Public Partial Class frmGestDecks
 		VgDBCommand.ExecuteNonQuery
 		Return True
 	End Function
+	Private Sub RemoveFolder(VpFolderId As String)
+	'--------------------------------------
+	'Gestion de la suppression d'un dossier
+	'--------------------------------------
+		VgDBCommand.CommandText = "Delete * From MyGamesId Where GameID = " + VpFolderId + ";"
+		VgDBCommand.ExecuteNonQuery	
+	End Sub
 	Sub CbarDecksManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
 		VmCanClose = True
@@ -174,19 +281,20 @@ Public Partial Class frmGestDecks
 	Sub FrmGestDecksLoad(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.LoadDecks
 	End Sub
-	Sub LstDecksSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
-		Me.btRemove.Enabled = True
-		If Me.lstDecks.SelectedIndices.Count > 1 Then
+	Sub TvwDecksAfterSelect(sender As Object, e As TreeViewEventArgs)
+		If e.Node Is Me.RootNode Then
+			Me.btRemove.Enabled = False
 			Me.btRename.Enabled = False
 			Me.btUp.Enabled = False
 			Me.btDown.Enabled = False
 		Else
-			Me.btRename.Enabled = ( Me.lstDecks.SelectedIndices.Count = 1 )
-			Me.btUp.Enabled = ( Me.lstDecks.SelectedIndex > 0 )
-			Me.btDown.Enabled = ( Me.lstDecks.SelectedIndex < Me.lstDecks.Items.Count - 1 )
+			Me.btRemove.Enabled = True
+			Me.btRename.Enabled = True
+			Me.btUp.Enabled = e.Node IsNot e.Node.Parent.FirstNode
+			Me.btDown.Enabled = e.Node IsNot e.Node.Parent.LastNode
 		End If
 		Call Me.LoadDeckInfos
-	End Sub
+	End Sub	
 	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
 		If e.CloseReason = CloseReason.UserClosing Then
 			Me.Visible = False
@@ -196,87 +304,76 @@ Public Partial Class frmGestDecks
 			End If
 		End If
 	End Sub
+	Sub BtAddFolderActivate(sender As Object, e As EventArgs)
+		Call Me.AddDeckOrFolder(True)
+	End Sub	
 	Sub BtAddActivate(sender As Object, e As EventArgs)
-	Dim VpDeckName As String
-	Dim VpId As Integer
-		VpDeckName = InputBox("Entrer le nom du deck :", "Nouveau deck", clsModule.CgDefaultName)
-		If VpDeckName <> "" Then
-			For Each VpD As String In Me.lstDecks.Items
-				If VpD.ToLower = VpDeckName.ToLower Then
-					Call clsModule.ShowWarning("Un deck portant ce nom existe déjà...")
-					Exit Sub
-				End If
-			Next VpD
-			VpId = clsModule.GetNewDeckId
-			VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription) Values (" + VpId.ToString + ", '" + VpDeckName.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '');"
-			VgDBCommand.ExecuteNonQuery
-			Me.lstDecks.Items.Add(clsModule.GetDeckName(VpId + 1))
-			VmMustReload = True
-		End If
+		Call Me.AddDeckOrFolder(False)
 	End Sub
 	Sub BtRemoveActivate(sender As Object, e As EventArgs)
-	Dim VpDecksToRemove As New Hashtable
-	Dim VpToRemove As New List(Of String)
-		'Informations sur les decks à supprimer (indice, nom) à mémoriser avant car en cours de suppression les indices se trouveraient décalés
-		For Each VpI As Integer In Me.lstDecks.SelectedIndices
-			VpDecksToRemove.Add(VpI, clsModule.GetDeckName(VpI + 1))
-		Next VpI
-		'Suppression unitaire en base de données
-		For Each VpKey As Integer In VpDecksToRemove.Keys
-			If Me.RemoveDeck(VpDecksToRemove.Item(VpKey)) Then
-				VpToRemove.Add(Me.lstDecks.Items.Item(VpKey))		'liste temporaire car on ne peut pas toucher à la collection qu'on est en train d'énumérer
+	Dim VpParent As TreeNode = Me.tvwDecks.SelectedNode.Parent
+	Dim VpFolder As Boolean = CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IsFolder
+	Dim VpDeleted As Boolean = False
+		If VpFolder Then
+			If Me.tvwDecks.SelectedNode.Nodes.Count = 0 Then
+				Call Me.RemoveFolder(CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IdString)
+				VpDeleted = True
+			Else
+				Call clsModule.ShowWarning("Ce dossier n'est pas vide...")
 			End If
-		Next VpKey
-		'Suppression dans la listbox
-		For Each VpItem As String In VpToRemove
-			Me.lstDecks.Items.Remove(VpItem)
-		Next VpItem
-		Me.btRemove.Enabled = False
-		Me.btRename.Enabled = False
-		Me.btUp.Enabled = False
-		Me.btDown.Enabled = False
-		VmMustReload = True
-		Call VmOwner.LoadMnu
+		Else
+			If Me.RemoveDeck(Me.tvwDecks.SelectedNode.Text) Then
+				VpDeleted = True
+			End If
+		End If
+		If VpDeleted Then
+			Me.tvwDecks.SelectedNode.Remove
+			VpParent.EnsureVisible
+			Me.tvwDecks.SelectedNode = VpParent
+			VmMustReload = True
+			Call VmOwner.LoadMnu			
+		End If
 	End Sub
 	Sub BtRenameActivate(sender As Object, e As EventArgs)
-	Dim VpDeckName As String
-	Dim VpOldName As String = Me.lstDecks.SelectedItem 'clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
-		VpDeckName = InputBox("Entrer le nom du deck :", "Renommer un deck", VpOldName)
-		VpDeckName = VpDeckName.Replace("'", "''")
-		VpOldName = VpOldName.Replace("'", "''")
-		If VpDeckName <> "" Then
-			For Each VpD As String In Me.lstDecks.Items
-				If VpD.ToLower = VpDeckName.ToLower Then
-					Call clsModule.ShowWarning("Un deck portant ce nom existe déjà...")
-					Exit Sub
-				End If
-			Next VpD
-			VgDBCommand.CommandText = "Select * From MyScores Where JeuLocal = '" + VpOldName + "' Or JeuAdverse = '" + VpOldName + "';"
-			VgDBReader = VgDBCommand.ExecuteReader
-			VgDBReader.Read
-			If VgDBReader.HasRows Then
-				VgDBReader.Close
-				If clsModule.ShowQuestion("Ce deck est lié à des parties saisies dans le comptage Victoires / Défaites." + vbCrlf + "Renommer également le label des parties en question ?") = System.Windows.Forms.DialogResult.Yes Then
-					VgDBCommand.CommandText = "Update MyScores Set JeuLocal = '" + VpDeckName + "' Where JeuLocal = '" + VpOldName + "';"
-					VgDBCommand.ExecuteNonQuery
-					VgDBCommand.CommandText = "Update MyScores Set JeuAdverse = '" + VpDeckName + "' Where JeuAdverse = '" + VpOldName + "';"
-					VgDBCommand.ExecuteNonQuery
-				End If
+	Dim VpName As String
+	Dim VpOldName As String = Me.tvwDecks.SelectedNode.Text
+	Dim VpFolder As Boolean = CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IsFolder
+		VpName = InputBox("Entrer le nouveau nom de l'élément :", "Renommer un élément", VpOldName)
+		If VpName <> "" Then
+			VpName = VpName.Replace("'", "''")
+			VpOldName = VpOldName.Replace("'", "''")			
+			If Me.DeckOrFolderExists(VpName, If(VpFolder, Me.tvwDecks.SelectedNode.Parent, Me.RootNode), VpFolder) Then
+				Call clsModule.ShowWarning("Un élément portant ce nom existe déjà...")
 			Else
-				VgDBReader.Close
+				If Not VpFolder Then
+					VgDBCommand.CommandText = "Select * From MyScores Where JeuLocal = '" + VpOldName + "' Or JeuAdverse = '" + VpOldName + "';"
+					VgDBReader = VgDBCommand.ExecuteReader
+					VgDBReader.Read
+					If VgDBReader.HasRows Then
+						VgDBReader.Close
+						If clsModule.ShowQuestion("Ce deck est lié à des parties saisies dans le comptage Victoires / Défaites." + vbCrlf + "Renommer également le label des parties en question ?") = System.Windows.Forms.DialogResult.Yes Then
+							VgDBCommand.CommandText = "Update MyScores Set JeuLocal = '" + VpName + "' Where JeuLocal = '" + VpOldName + "';"
+							VgDBCommand.ExecuteNonQuery
+							VgDBCommand.CommandText = "Update MyScores Set JeuAdverse = '" + VpName + "' Where JeuAdverse = '" + VpOldName + "';"
+							VgDBCommand.ExecuteNonQuery
+						End If
+					Else
+						VgDBReader.Close
+					End If
+				End If
+				VgDBCommand.CommandText = "Update MyGamesID Set GameName = '" + VpName + "' Where GameID = " + CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IdString + ";"
+				VgDBCommand.ExecuteNonQuery
+				Me.tvwDecks.SelectedNode.Text = VpName.Replace("''", "'")
+				VmMustReload = True
+				Call VmOwner.LoadMnu
 			End If
-			VgDBCommand.CommandText = "Update MyGamesID Set GameName = '" + VpDeckName + "' Where GameName = '" + VpOldName + "';"
-			VgDBCommand.ExecuteNonQuery
-			Me.lstDecks.Items(Me.lstDecks.SelectedIndex) = clsModule.GetDeckName(Me.lstDecks.SelectedIndex + 1)
-			VmMustReload = True
-			Call VmOwner.LoadMnu
 		End If
 	End Sub
 	Sub BtDownActivate(sender As Object, e As EventArgs)
-		Call Me.ManageSwap(1)
+		Call Me.ManageSwap(Me.tvwDecks.SelectedNode, Me.tvwDecks.SelectedNode.NextNode)
 	End Sub
 	Sub BtUpActivate(sender As Object, e As EventArgs)
-		Call Me.ManageSwap(-1)
+		Call Me.ManageSwap(Me.tvwDecks.SelectedNode.PrevNode, Me.tvwDecks.SelectedNode)
 	End Sub	
 	Sub PickDateLeave(sender As Object, e As EventArgs)
 		Call Me.SaveDeckInfos
@@ -287,6 +384,81 @@ Public Partial Class frmGestDecks
 	Sub TxtMemoLeave(sender As Object, e As EventArgs)
 		Call Me.SaveDeckInfos
 	End Sub
+	Sub TvwDecksDragDrop(sender As Object, e As DragEventArgs)
+	Dim VpSource As TreeNode
+	Dim VpSourceInfo As clsInfoNode
+	Dim VpDest As TreeNode
+	Dim VpDestInfo As clsInfoNode
+	Dim VpPos As Integer
+	Dim VpNode As TreeNode
+		If e.Data.GetDataPresent("System.Windows.Forms.TreeNode", False) Then
+			VpSource = CType(e.Data.GetData("System.Windows.Forms.TreeNode"), TreeNode)
+			VpSourceInfo = CType(VpSource.Tag, clsInfoNode)
+			VpDest = Me.tvwDecks.GetNodeAt(Me.tvwDecks.PointToClient(New Point(e.X, e.Y)))
+			VpDestInfo = CType(VpDest.Tag, clsInfoNode)
+			If VpDestInfo.IsFolder Then
+				VgDBCommand.CommandText = "Update MyGamesID Set Parent = " + VpDestInfo.IdString + " Where GameID = " + VpSourceInfo.IdString + ";"
+				VgDBCommand.ExecuteNonQuery
+				'Détermine l'endroit où il faut insérer le noeud
+				VpPos = 0
+				VpNode = VpDest.FirstNode
+				While VpNode IsNot Nothing
+					If VpSourceInfo.Id > CType(VpNode.Tag, clsInfoNode).Id Then
+						VpPos += 1
+					Else
+						Exit While
+					End If
+					VpNode = VpNode.NextNode
+				End While
+				VpNode = VpSource.Clone
+				VpDest.Nodes.Insert(VpPos, VpNode)
+				VpSource.Remove
+				Me.tvwDecks.SelectedNode = VpNode
+				VpNode.EnsureVisible
+				VmMustReload = True
+			End If
+		End If
+	End Sub
+	Sub TvwDecksDragEnter(sender As Object, e As DragEventArgs)
+		If e.Data.GetDataPresent("System.Windows.Forms.TreeNode", False) Then
+			e.Effect = DragDropEffects.Move
+		Else
+			e.Effect = DragDropEffects.None
+		End If
+	End Sub
+	Sub TvwDecksItemDrag(sender As Object, e As ItemDragEventArgs)
+		If e.Item IsNot Me.RootNode Then
+			Me.tvwDecks.SelectedNode = e.Item
+			Me.tvwDecks.DoDragDrop(e.Item, DragDropEffects.Move)
+		End If
+	End Sub
+	Sub TvwDecksDragOver(sender As Object, e As DragEventArgs)
+	Dim VpPoint As Point = Me.tvwDecks.PointToClient(Cursor.Position)
+		If VpPoint.Y + 20 > Me.tvwDecks.Height Then
+			Call clsModule.SendMessageA(Me.tvwDecks.Handle, 277, CType(1, IntPtr), IntPtr.Zero)
+		ElseIf VpPoint.Y < 20 Then
+			Call clsModule.SendMessageA(Me.tvwDecks.Handle, 277, CType(0, IntPtr), IntPtr.Zero)
+		End If
+    End Sub
+	Private ReadOnly Property IsDeckNode As Boolean
+		Get
+			Return ( Me.tvwDecks.SelectedNode IsNot Nothing And Not CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IsFolder )
+		End Get
+	End Property
+	Private ReadOnly Property SelectedParent As TreeNode
+		Get
+			If CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IsFolder Then
+				Return Me.tvwDecks.SelectedNode
+			Else
+				Return Me.tvwDecks.SelectedNode.Parent
+			End If			
+		End Get
+	End Property
+	Private ReadOnly Property RootNode As TreeNode
+		Get
+			Return tvwDecks.Nodes(0)
+		End Get
+	End Property
 End Class
 Public Class clsItemRecup
 	Private VmEncNbr As Long
@@ -310,6 +482,29 @@ Public Class clsItemRecup
 	Public ReadOnly Property Foil As Boolean
 		Get
 			Return VmFoil
+		End Get
+	End Property
+End Class
+Public Class clsInfoNode
+	Private VmId As Integer
+	Private VmFolder As Boolean
+	Public Sub New(VpId As Integer, VpFolder As Boolean)
+		VmId = VpId
+		VmFolder = VpFolder
+	End Sub
+	Public ReadOnly Property Id As Integer
+		Get
+			Return VmId
+		End Get
+	End Property
+	Public ReadOnly Property IdString As String
+		Get
+			Return If(VmId = -1, "Null", VmId.ToString)
+		End Get
+	End Property
+	Public ReadOnly Property IsFolder As Boolean
+		Get
+			Return VmFolder
 		End Get
 	End Property
 End Class
