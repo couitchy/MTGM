@@ -36,7 +36,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 33849
+	Public Const CgCodeLines As Integer   			= 33995
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
@@ -110,7 +110,7 @@ Public Module clsModule
 	Public Const CgURL9 As String         			= "/Updates/LastPrices.txt"
 	Public Const CgURL10 As String					= "/Images%20des%20cartes/"
 	Public Const CgURL11 As String         			= "/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         			= "/Updates/Series r16.txt"
+	Public Const CgURL12 As String         			= "/Updates/Series r17.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
 	Public Const CgURL15 As String         			= "/Updates/Tournois r17.txt"
@@ -939,6 +939,8 @@ Public Module clsModule
 						Return "Plans"
 					Case "H"
 						Return "Phénomènes"
+					Case "Y"
+						Return "Conspirations"
 					Case "K"
 						Return "Jetons"
 					Case Else

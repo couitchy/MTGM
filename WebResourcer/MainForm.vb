@@ -27,20 +27,35 @@ Imports System.Text
 Public Partial Class MainForm
 	Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
 	Private Const CmStrConn As String		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
-	Private Const CmURL As String  			= "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
+	Private Const CmURL0 As String 			= "http://magic-ville.fr/fr/"
+	Private Const CmURL1 As String 			= "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
 	Private Const CmURL2 As String  		= "http://www.magiccorporation.com/gathering-cartes-view"
 	Private Const CmURL3 As String  		= "http://www.magiccorporation.com/scan/"
 	Private Const CmURL4 As String  		= "http://www.magiccorporation.com"
+	Private Const CmURL5 As String  		= "http://magiccards.info/###/^^.html"
+	Private Const CmURL6 As String  		= "http://magiccards.info/query?q=%2B%2Be%3A###%2Fen&v=spoiler&s=issue"
 	Private Const CmId As String  			= "#cardname#"
-	Private Const CmKey As String  			= "gathering-cartes-view"
+	Private Const CmKey0 As String 			= "recherche_titre"
+	Private Const CmKey1 As String 			= "gathering-cartes-view"
 	Private Const CmKey2 As String  		= "NM/MT"
 	Private Const CmKey2A As String  		= "Nm</td><td>VF"
 	Private Const CmKey2B As String  		= "Premium"
 	Private Const CmKey2C As String  		= ">VO<"
 	Private Const CmKey3 As String  		= "src=""/scan/"
 	Private Const CmKey4 As String  		= "src=""http://www.wizards.com/global/images/magic"
-	Private Const CmKey4b As String			= "href=""/images/cartes/illustrations"
+	Private Const CmKey4B As String			= "href=""/images/cartes/illustrations"
 	Private Const CmKey5 As String  		= "Texte Français"
+	Private Const CmKey6 As String  		= "/###/^^/"
+	Private Const CmKey6B As String  		= ".html"">"
+	Private Const CmKey7 As String  		= "<td>"
+	Private Const CmKey7B As String  		= "</td>"
+	Private Const CmKey7C As String  		= "<img src=""http://magiccards.info/images/en.gif"" alt=""English"" width=""16"" height=""11"" class=""flag2""> "
+	Private Const CmKey8 As String  		= "<p"
+	Private Const CmKey8B As String  		= "<b>"
+	Private Const CmKey8C As String  		= "</b></p>"
+	Private Const CmKey8D As String  		= "<br><br>"
+	Private Const CmKey8E As String  		= ", <i>"
+	Private Const CmKey8F As String  		= "</i></p>"
 	Private Const CmFrench  As Integer 		= 2
 	Private Const CmMe As String			= "Moi"
 	Private Const CmStamp As String			= "ContenuStamp r14.txt"
@@ -92,17 +107,32 @@ Public Partial Class MainForm
 			Me.txtETA.Text = Format(VpETA.Hours, "00") + ":" + Format(VpETA.Minutes, "00") + ":" + Format(VpETA.Seconds, "00")
 		End If
 	End Sub
+	Private Function HTMLfromRequest(VpURL As String) As String
+	'------------------------------------------------------------------
+	'Récupère le code HTML en réponse de la requête passée en paramètre
+	'------------------------------------------------------------------
+	Dim VpRequest As HttpWebRequest
+	Dim VpAnswer As Stream
+	Dim VpCurByte As Integer
+	Dim VpStr As String = ""
+		VpRequest = WebRequest.Create(VpURL)
+		VpAnswer = VpRequest.GetResponse().GetResponseStream()
+		VpCurByte = VpAnswer.ReadByte
+		While VpCurByte <> -1
+			VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
+			VpCurByte = VpAnswer.ReadByte
+			Application.DoEvents
+		End While
+		Return VpStr
+	End Function
 	Private Function GetPrice(VpIn As String) As String
 	'---------------------------------------------------
 	'Retourne les prix pour la carte passée en paramètre
 	'---------------------------------------------------
-	Dim VpRequest As HttpWebRequest
-	Dim VpAnswer As Stream
 	Dim VpStr As String = ""
 	Dim VpStrFoil As String
 	Dim VpStrPlane As String
 	Dim VpStrs() As String
-	Dim VpCurByte As Integer
 	Dim VpPrices As String = ""
 	Dim VpIr As Integer
 	Dim VpVoid As String
@@ -110,31 +140,15 @@ Public Partial Class MainForm
 		Try
 			If VpIn2.StartsWith("Æ") Then
 				VpIn2 = VpIn2.Substring(1)
-				VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn2))
 			ElseIf VpIn2.Contains("Æ") Then
 				VpVoid = VpIn2.Substring(0, VpIn2.IndexOf("Æ") + 1)
 				VpIn2 = VpIn2.Replace(VpVoid, "")
-				VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn2))
-			Else
-				VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn2))
 			End If
-			VpAnswer = VpRequest.GetResponse().GetResponseStream()
-			VpCurByte = VpAnswer.ReadByte
-			While VpCurByte <> -1
-				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
-				VpCurByte = VpAnswer.ReadByte
-				Application.DoEvents
-			End While
-			VpStrs = VpStr.Split(New String() {CmKey}, StringSplitOptions.None)
+			VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId, VpIn2))
+			VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
 			VpIr = Me.FindRightIndex(VpStrs, VpIn.Replace("û", "u"))
 			VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
-			VpRequest = WebRequest.Create(VpStr)
-			VpAnswer = VpRequest.GetResponse().GetResponseStream()
-			VpCurByte = VpAnswer.ReadByte
-			While VpCurByte <> -1
-				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
-				VpCurByte = VpAnswer.ReadByte
-			End While
+			VpStr = Me.HTMLfromRequest(VpStr)
 			VpStrFoil = VpStr
 			VpStrPlane = VpStr
 			VpStrs = VpStr.Split(New String() {CmKey2}, StringSplitOptions.None)
@@ -358,7 +372,7 @@ Public Partial Class MainForm
 					If VpStr.IndexOf("^") <> -1 Then
 						VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
 						If Not VpEditionsOK.Contains(VpEdition) Then	'fait en sorte de ne prendre que le premier prix par édition (correspondant à la qualité de carte NM/MT)
-							VpEditionsOK.Add(VpEdition)						
+							VpEditionsOK.Add(VpEdition)
 							VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
 							If VpEdition.EndsWith("PREMIUMFOILVO") Then
 								VpEdition = VpEdition.Replace("PREMIUMFOILVO", "")
@@ -783,33 +797,16 @@ Public Partial Class MainForm
 	'------------------------------------------------------------
 	'Retourne le texte français pour la carte passée en paramètre
 	'------------------------------------------------------------
-	Dim VpRequest As HttpWebRequest
 	Dim VpClient As New WebClient
-	Dim VpAnswer As Stream
 	Dim VpStr As String = ""
 	Dim VpStrs() As String
-	Dim VpCurByte As Integer
 	Dim VpIr As Integer
 		Try
-			VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn.Replace(" ", "+")))
-			VpAnswer = VpRequest.GetResponse().GetResponseStream()
-			VpCurByte = VpAnswer.ReadByte
-			While VpCurByte <> -1
-				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
-				VpCurByte = VpAnswer.ReadByte
-				Application.DoEvents
-			End While
-			VpStrs = VpStr.Split(New String() {CmKey}, StringSplitOptions.None)
+			VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId, VpIn.Replace(" ", "+")))
+			VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
 			VpIr = Me.FindRightIndex(VpStrs, VpIn)
 			VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
-			VpRequest = WebRequest.Create(VpStr)
-			VpAnswer = VpRequest.GetResponse().GetResponseStream()
-			VpCurByte = VpAnswer.ReadByte
-			While VpCurByte <> -1
-				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
-				VpCurByte = VpAnswer.ReadByte
-				Application.DoEvents
-			End While
+			VpStr = Me.HTMLfromRequest(VpStr)
 			If VpStr.Contains(CmKey5) Then
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey5))
 				VpStr = VpStr.Substring(VpStr.IndexOf("<br /><br />") + 12)
@@ -917,9 +914,9 @@ Public Partial Class MainForm
 	Dim VpElement As HtmlElement
 	Dim VpLastId As Integer = 0
 		'Site de Magic-Ville
-		Call Me.BrowseAndWait("http://magic-ville.fr/fr/", "recherche_titre")
+		Call Me.BrowseAndWait(CmURL0, CmKey0)
 		'Saisie de la carte dans la zone de recherche
-		VpElement = Me.wbMV.Document.All.GetElementsByName("recherche_titre").Item(0)
+		VpElement = Me.wbMV.Document.All.GetElementsByName(CmKey0).Item(0)
 		VpElement.SetAttribute("value", VpCard)
 		For Each VpElement In Me.wbMV.Document.All
 			If VpElement.GetAttribute("src").ToLower.Contains("/go.gif") Then
@@ -1195,7 +1192,9 @@ Public Partial Class MainForm
 			Case "JN"
 				Return "journeyintonyx#" + VpStr
 			Case "DB"
-				Return "DuelDecksJacevsVraska#" + VpStr				
+				Return "DuelDecksJacevsVraska#" + VpStr
+			Case "CY"
+				Return "conspiracy#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1353,7 +1352,9 @@ Public Partial Class MainForm
 			Case "journeyintonyx"
 				Return "JN"
 			Case "DuelDecksJacevsVraska"
-				Return "DB"				
+				Return "DB"
+			Case "conspiracy"
+				Return "CY"
 			Case Else
 				Return ""
 		End Select
@@ -1397,33 +1398,16 @@ Public Partial Class MainForm
 	'----------------------------------------------------------
 	'Télécharge l'image associée à la carte passée en paramètre
 	'----------------------------------------------------------
-	Dim VpRequest As HttpWebRequest
 	Dim VpClient As New WebClient
-	Dim VpAnswer As Stream
 	Dim VpStr As String = ""
 	Dim VpStrs() As String
-	Dim VpCurByte As Integer
 	Dim VpIr As Integer
 		Try
-			VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn.Replace(" ", "+")))
-			VpAnswer = VpRequest.GetResponse().GetResponseStream()
-			VpCurByte = VpAnswer.ReadByte
-			While VpCurByte <> -1
-				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
-				VpCurByte = VpAnswer.ReadByte
-				Application.DoEvents
-			End While
-			VpStrs = VpStr.Split(New String() {CmKey}, StringSplitOptions.None)
+			VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId, VpIn.Replace(" ", "+")))
+			VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
 			VpIr = Me.FindRightIndex(VpStrs, VpIn)
 			VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
-			VpRequest = WebRequest.Create(VpStr)
-			VpAnswer = VpRequest.GetResponse().GetResponseStream()
-			VpCurByte = VpAnswer.ReadByte
-			While VpCurByte <> -1
-				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
-				VpCurByte = VpAnswer.ReadByte
-				Application.DoEvents
-			End While
+			VpStr = Me.HTMLfromRequest(VpStr)
 			If VpStr.Contains(CmKey3) Then
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey3))
 				VpStr = VpStr.Substring(CmKey3.Length)
@@ -1433,8 +1417,8 @@ Public Partial Class MainForm
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4) + 5)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
 				Call VpClient.DownloadFile(VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
-			ElseIf VpStr.Contains(CmKey4b) Then
-				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4b) + 6)
+			ElseIf VpStr.Contains(CmKey4B) Then
+				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4B) + 6)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
 				Call VpClient.DownloadFile(CmURL4 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
 			End If
@@ -1479,6 +1463,143 @@ Public Partial Class MainForm
 				End If
 			End If
 		End If
+	End Sub
+	Private Function GetListing(VpCode As String, VpLanguage As String) As List(Of String)
+	'----------------------------------------------------------------------------
+	'Récupère la liste des cartes dans la langue demandée pour l'édition demandée
+	'----------------------------------------------------------------------------
+	Dim VpStr As String = ""
+	Dim VpKey As String
+	Dim VpItem As String
+	Dim VpListe As New List(Of String)
+		VpStr = Me.HTMLfromRequest(CmURL5.Replace("###", VpCode).Replace("^^", VpLanguage))
+		VpKey = CmKey6.Replace("###", VpCode).Replace("^^", VpLanguage)
+		If VpStr.Contains(VpKey) Then
+			VpStr = VpStr.Substring(VpStr.IndexOf(VpKey))
+			While VpStr.Contains(CmKey6B)
+				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey6B) + CmKey6B.Length)
+				VpItem = VpStr.Substring(0, VpStr.IndexOf("</"))
+				VpListe.Add(VpItem)
+			End While
+		End If
+		Return VpListe
+	End Function
+	Private Sub DownloadSpoilers(VpCode As String)
+	'----------------------------------------------------------------------------------------------------------
+	'Récupère les fichiers (listing avec traduction, checklist, spoilerlist) nécessaires à l'ajout de l'édition
+	'----------------------------------------------------------------------------------------------------------
+	Dim VpStr As String = ""
+	Dim VpStrs() As String
+	Dim VpListeEN As List(Of String)
+	Dim VpListeFR As List(Of String)
+	Dim VpOut As StreamWriter
+	Dim VpCount As Integer
+	Dim VpItem As String
+	Dim VpNewItem As String
+		'Récupération des traductions
+		Call Me.AddToLog("Récupération du listing VO/VF...", eLogType.Information)
+		VpListeEN = Me.GetListing(VpCode, "en")
+		VpListeFR = Me.GetListing(VpCode, "fr")
+		If VpListeFR.Count > 0 Then
+			VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_titles_fr.txt", False, Encoding.Default)
+			For VpI As Integer = 0 To VpListeEN.Count - 1
+				VpOut.WriteLine(VpListeEN.Item(VpI) + "#" + VpListeFR.Item(VpI))
+			Next VpI
+			VpOut.Flush
+			VpOut.Close
+		Else
+			Call Me.AddToLog("Traduction VF indisponible.", eLogType.Warning)
+		End If
+		'Récupération de la checklist
+		Call Me.AddToLog("Récupération de la checklist...", eLogType.Information)
+		VpStr = Me.HTMLfromRequest(CmURL5.Replace("###", VpCode).Replace("^^", "en"))
+		VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_checklist_en.txt", False, Encoding.Default)
+		VpOut.WriteLine("# 	Name 	Artist 	Color 	Rarity 	Set")
+		VpCount = 0
+		For Each VpCard As String In VpListeEN
+			VpStr = VpStr.Substring(VpStr.IndexOf(VpCard))
+			VpStrs = VpStr.Split(New String() {CmKey7}, StringSplitOptions.None)
+			For VpI As Integer = 1 To 5
+				While VpStrs(VpI).LastIndexOf(CmKey7B) >= 0
+					VpStrs(VpI) = VpStrs(VpI).Substring(0, VpStrs(VpI).LastIndexOf(CmKey7B))
+				End While
+			Next VpI
+			VpItem = ""
+			For VpI As Integer = 0 To VpStrs(2).Length - 1
+				Select Case VpStrs(2).Substring(VpI, 1)
+					Case "W"
+						VpNewItem = "White"
+					Case "B"
+						VpNewItem = "Black"
+					Case "U"
+						VpNewItem = "Blue"
+					Case "R"
+						VpNewItem = "Red"
+					Case "G"
+						VpNewItem = "Green"
+					Case Else
+						VpNewItem = ""
+				End Select
+				If VpNewItem <> "" AndAlso Not VpItem.Contains(VpNewItem) Then
+					VpItem += If(VpItem <> "", "/", "") + VpNewItem
+				End If
+			Next VpI
+			Select Case VpStrs(3)
+				Case "Mythic Rare"
+					VpStrs(3) = "M"
+				Case "Rare"
+					VpStrs(3) = "R"
+				Case "Uncommon"
+					VpStrs(3) = "U"
+				Case "Common"
+					VpStrs(3) = "C"
+				Case Else
+					VpStrs(3) = ""
+			End Select
+			VpStrs(5) = VpStrs(5).Replace(CmKey7C, "")
+			VpCount += 1
+			VpOut.WriteLine(VpCount.ToString + vbTab + VpCard + vbTab + VpStrs(4) + vbTab + VpItem + vbTab + VpStrs(3) + vbTab + VpStrs(5))
+		Next VpCard
+		VpOut.Flush
+		VpOut.Close
+		'Récupération de la spoilerlist
+		Call Me.AddToLog("Récupération de la spoilerlist...", eLogType.Information)
+		VpStr = Me.HTMLfromRequest(CmURL6.Replace("###", VpCode))
+		VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_spoiler_en.txt", False, Encoding.Default)
+		For Each VpCard As String In VpListeEN
+			VpStr = VpStr.Substring(VpStr.IndexOf(VpCard))
+			VpStrs = VpStr.Split(New String() {CmKey8}, StringSplitOptions.None)
+			VpOut.WriteLine("Name: " + vbTab + VpCard)
+			VpItem = VpStrs(2).Substring(VpStrs(2).IndexOf(vbLf) + 1)
+			If VpItem.Contains("(") Then
+				VpItem = VpItem.Substring(0, VpItem.LastIndexOf("("))
+			Else
+				VpItem = ""
+			End If
+			VpOut.WriteLine("Cost: " + vbTab + VpItem.Trim)
+			VpItem = VpStrs(2).Substring(1)
+			VpItem = VpItem.Substring(0, VpItem.IndexOf(","))
+			If VpItem.Contains("Loyalty:") Then
+				VpNewItem = "(0/" + VpItem.Substring(VpItem.IndexOf("Loyalty:") + 9)
+				VpItem = VpItem.Substring(0, VpItem.IndexOf("Loyalty:") - 2)
+			ElseIf VpItem.Contains(" ") And VpItem.Contains("/") Then
+				VpNewItem = "(" + VpItem.Substring(VpItem.LastIndexOf(" ") + 1) + ")"
+				VpItem = VpItem.Substring(0, VpItem.LastIndexOf(" "))
+			Else
+				VpNewItem = ""
+			End If
+			VpOut.WriteLine("Type: " + vbTab + VpItem)
+			VpOut.WriteLine("Pow/Tgh: " + vbTab + VpNewItem)
+			VpItem = VpStrs(3).Substring(VpStrs(3).IndexOf(CmKey8B) + 3)
+			VpItem = VpItem.Replace(CmKey8C, "").Replace(CmKey8D, vbCrLf)
+			VpOut.WriteLine("Rules Text: " + vbTab + VpItem.Trim)
+			VpItem = VpStrs(1).Substring(1).Replace(CmKey7C, "").Replace(CmKey8E, " ").Replace(CmKey8F, "").Trim
+			VpOut.WriteLine("Set/Rarity: " + vbTab + VpItem)
+			VpOut.WriteLine("")
+		Next VpCard
+		VpOut.Flush
+		VpOut.Close
+		Call Me.AddToLog("La récupération des fichiers spoilers est terminée.", eLogType.Information)
 	End Sub
 	Private Sub ExtractTexts
 	'-----------------------------------------
@@ -2069,6 +2190,17 @@ Public Partial Class MainForm
 	Sub MnuCardReplaceTitleClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.ReplaceTitle
+		End If
+	End Sub
+	Sub MnuSeriesSpoilersClick(sender As Object, e As EventArgs)
+	Dim VpCode As String
+		VpCode = InputBox("Quel est le code de la nouvelle série à ajouter ?", "Récupération des spoilers", "(code)")
+		If VpCode <> "" Then
+			Me.dlgBrowse.SelectedPath = ""
+			Me.dlgBrowse.ShowDialog
+			If Me.dlgBrowse.SelectedPath <> "" Then
+				Call Me.DownloadSpoilers(VpCode)
+			End If
 		End If
 	End Sub
 End Class

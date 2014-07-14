@@ -181,6 +181,7 @@ Partial Class MainForm
 		Me.propAlternate = New System.Windows.Forms.PropertyGrid()
 		Me.txtRichOther = New Magic_The_Gathering_Manager.ExRichTextBox()
 		Me.grpAutorisations = New System.Windows.Forms.GroupBox()
+		Me.picAutMulti = New System.Windows.Forms.PictureBox()
 		Me.picAutT1 = New System.Windows.Forms.PictureBox()
 		Me.picAutT15 = New System.Windows.Forms.PictureBox()
 		Me.picAutM = New System.Windows.Forms.PictureBox()
@@ -200,7 +201,6 @@ Partial Class MainForm
 		Me.cmnuCbar = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem()
 		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem()
-		Me.picAutMulti = New System.Windows.Forms.PictureBox()
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -236,6 +236,7 @@ Partial Class MainForm
 		CType(Me.picPowerTough,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.pnlAlternate.SuspendLayout
 		Me.grpAutorisations.SuspendLayout
+		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).BeginInit
@@ -249,7 +250,6 @@ Partial Class MainForm
 		Me.splitH4.SuspendLayout
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cmnuCbar.SuspendLayout
-		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.SuspendLayout
 		'
 		'statusStrip
@@ -364,6 +364,7 @@ Partial Class MainForm
 		Me.imglstTvw.Images.SetKeyName(48, "_stsorcery.png")
 		Me.imglstTvw.Images.SetKeyName(49, "_stphenomenon.png")
 		Me.imglstTvw.Images.SetKeyName(50, "_stplane.png")
+		Me.imglstTvw.Images.SetKeyName(51, "_stconspiracy.png")
 		'
 		'imglstCarac
 		'
@@ -1683,6 +1684,14 @@ Partial Class MainForm
 		Me.grpAutorisations.TabIndex = 18
 		Me.grpAutorisations.TabStop = false
 		'
+		'picAutMulti
+		'
+		Me.picAutMulti.Location = New System.Drawing.Point(290, 10)
+		Me.picAutMulti.Name = "picAutMulti"
+		Me.picAutMulti.Size = New System.Drawing.Size(35, 25)
+		Me.picAutMulti.TabIndex = 5
+		Me.picAutMulti.TabStop = false
+		'
 		'picAutT1
 		'
 		Me.picAutT1.Location = New System.Drawing.Point(3, 10)
@@ -1884,14 +1893,6 @@ Partial Class MainForm
 		Me.btHistPricesFoil.Text = "Prix foil"
 		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
-		'picAutMulti
-		'
-		Me.picAutMulti.Location = New System.Drawing.Point(290, 10)
-		Me.picAutMulti.Name = "picAutMulti"
-		Me.picAutMulti.Size = New System.Drawing.Size(35, 25)
-		Me.picAutMulti.TabIndex = 5
-		Me.picAutMulti.TabStop = false
-		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -1950,6 +1951,7 @@ Partial Class MainForm
 		CType(Me.picPowerTough,System.ComponentModel.ISupportInitialize).EndInit
 		Me.pnlAlternate.ResumeLayout(false)
 		Me.grpAutorisations.ResumeLayout(false)
+		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutM,System.ComponentModel.ISupportInitialize).EndInit
@@ -1963,7 +1965,6 @@ Partial Class MainForm
 		Me.splitH4.ResumeLayout(false)
 		CType(Me.picScanCard,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cmnuCbar.ResumeLayout(false)
-		CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).EndInit
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub

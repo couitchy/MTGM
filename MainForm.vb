@@ -340,7 +340,7 @@ Public Partial Class MainForm
 			VpCardData = VpTournois.ReadLine.Split("#")
 			If VpCardData.Length = 8 Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, 1V1, Multi) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ");"
-				VgDBCommand.ExecuteNonQuery			
+				VgDBCommand.ExecuteNonQuery
 			End If
 			Me.prgAvance.Increment(1)
 			Application.DoEvents
@@ -832,7 +832,7 @@ Public Partial Class MainForm
 	Dim VpSQL As String = ""
 		Try
 			Select Case VpCountMode
-				Case clsModule.eCountMode.All			
+				Case clsModule.eCountMode.All
 					VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction
 				Case clsModule.eCountMode.Distinct
 					VpSQL = "Select Count(*) From " + VpSource + " Where " + Me.Restriction
@@ -840,7 +840,7 @@ Public Partial Class MainForm
 					VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction + "Reserve = False"
 				Case clsModule.eCountMode.OnlyReserve
 					VpSQL = "Select Sum(Items) From " + VpSource + " Where " + Me.Restriction + "Reserve = True"
-				Case Else					
+				Case Else
 			End Select
 			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 			Return VgDBCommand.ExecuteScalar
@@ -971,7 +971,7 @@ Public Partial Class MainForm
 		If VpBusy Then
 			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
 			Application.DoEvents
-		End If		
+		End If
 	End Sub
 	Public Sub LoadMnu
 	'------------------------------
@@ -1845,7 +1845,7 @@ Public Partial Class MainForm
 						Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(6)
 					Else
 						Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(7)
-					End If					
+					End If
 				Else
 					Call Me.LoadAutorisations("")
 				End If
@@ -1954,7 +1954,7 @@ Public Partial Class MainForm
 	'Vérifie qu'il y a bien au moins une source de cartes à traiter
 	'--------------------------------------------------------------
 		Return ( Me.GetSelectedSource <> "" )
-	End Function	
+	End Function
 	Private Function GetAllSources As List(Of String)
 	'---------------------------------------
 	'Retourne toutes les sources disponibles
@@ -1967,7 +1967,7 @@ Public Partial Class MainForm
 				VpSources.Add(.GetString(0))
 			End While
 			.Close
-		End With		
+		End With
 		Return VpSources
 	End Function
 	Private Sub ChangeLanguage(VpNode As TreeNode, VpSeriesAldreadyDone As Boolean)
@@ -2086,6 +2086,8 @@ Public Partial Class MainForm
 				Return 49
 			Case "Q"
 				Return 50
+			Case "Y"
+				Return 51
 			Case Else
 				Return 0
 		End Select
@@ -2618,7 +2620,7 @@ Public Partial Class MainForm
 	Sub BtExpandClick(sender As Object, e As EventArgs)
 		Me.btExpand.Checked = Not Me.btExpand.Checked
 		Call Me.MyRefresh
-	End Sub	
+	End Sub
 	Sub TvwExploreMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
 	'---------------------------------------------------------------
 	'Gère l'état du menu contextuel (éléments grisés, cochés, etc...
@@ -3277,7 +3279,7 @@ Public Partial Class MainForm
 			Me.cmnuCbar.Show(Me.cbarProperties, New Point(.Left, .Bottom))
 		End With
 	End Sub
-	Sub BtShowAllActivate(sender As Object, e As EventArgs)		
+	Sub BtShowAllActivate(sender As Object, e As EventArgs)
 		Me.btShowAll.Checked = Not Me.btShowAll.Checked
 		Call Me.CheckGridBusy
 		Call Me.ReloadCarac
@@ -3323,8 +3325,8 @@ Public Partial Class MainForm
 			Process.Start(VgOptions.VgSettings.Plugins + clsModule.CgHTMLCollectionViewer)
 		Else
 			Call clsModule.ShowWarning(clsModule.CgErr6)
-		End If		
-	End Sub	
+		End If
+	End Sub
 	Sub MnuCollapseRareteClick(sender As Object, e As EventArgs)
 		Call Me.FixRarete
 		Call clsModule.ShowInformation("Terminé !")

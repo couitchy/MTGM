@@ -246,7 +246,7 @@ Public Partial Class frmNewEdition
 				VpFound = False
 			End If
 			If VpFound Then
-				'à la recherche du nom de l'auteur, de la couleur et de la rareté de la carte (attention, remplacement des tabulations
+				'à la recherche du nom de l'auteur, de la couleur et de la rareté de la carte (attention, remplacement des tabulations)
 				VpLine = VpLine.Substring(VpIndex + VpLen).Replace("	", "  ").Trim
 				While VpLine.Contains("  ")
 					VpComplement.Add(VpLine.Substring(0, VpLine.IndexOf("  ")))
@@ -577,7 +577,7 @@ Public Class clsMyCard
 		Return clsModule.MyCost(VmCost).ToString
 	End Function
 	Public Function MyType As String
-		'(C = creature, I = instant, A = artefact, E = enchant-creature, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker)
+		'(C = creature, I = instant, A = artefact, E = enchant-creature, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)
 		If VmType.Contains("Artifact") Then
 			Return "A"
 		ElseIf VmType.Contains("Instant") Then
@@ -606,6 +606,8 @@ Public Class clsMyCard
 			Return "Q"
 		ElseIf VmType.Contains("Phenomenon") Then
 			Return "H"
+		ElseIf VmType.Contains("Conspiracy") Then
+			Return "Y"
 		Else
 			Return ""
 		End If
@@ -645,7 +647,7 @@ Public Class clsMyCard
 		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact ou d'un terrain (ou d'un jeton ou d'un arpenteur incolore ?!)
 			VpMyType = Me.MyType
 			Select Case VpMyType
-				Case "H", "Q"
+				Case "H", "Q", "Y"
 					Return "A"
 				Case Else
 					Return VpMyType

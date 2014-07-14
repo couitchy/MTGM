@@ -111,6 +111,7 @@ Partial Class MainForm
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
+		Me.mnuSeriesSpoilers = New System.Windows.Forms.ToolStripMenuItem
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -311,7 +312,7 @@ Partial Class MainForm
 		'
 		'mnuSeries
 		'
-		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO})
+		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO})
 		Me.mnuSeries.Name = "mnuSeries"
 		Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
 		Me.mnuSeries.Text = "Séries"
@@ -712,6 +713,13 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
+		'mnuSeriesSpoilers
+		'
+		Me.mnuSeriesSpoilers.Name = "mnuSeriesSpoilers"
+		Me.mnuSeriesSpoilers.Size = New System.Drawing.Size(432, 22)
+		Me.mnuSeriesSpoilers.Text = "Récupérer les spoilers"
+		AddHandler Me.mnuSeriesSpoilers.Click, AddressOf Me.MnuSeriesSpoilersClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -739,6 +747,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuSeriesSpoilers As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesGenR16 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesGenR14 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff5 As System.Windows.Forms.ToolStripMenuItem
