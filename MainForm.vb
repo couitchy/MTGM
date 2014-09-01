@@ -967,11 +967,15 @@ Public Partial Class MainForm
 			Else
 				VpBusy = .Selection.GetCells(0).DataModel.IsEditing
 			End If
+			If VpBusy Then
+				If IsNumeric(.Selection.GetCells(0)) Then
+					SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille si elle est cohérente...
+				Else
+					SendKeys.Send("{ESC}")			'...ou à l'annuler si elle ne l'est pas
+				End If
+				Application.DoEvents
+			End If
 		End With
-		If VpBusy Then
-			SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille
-			Application.DoEvents
-		End If
 	End Sub
 	Public Sub LoadMnu
 	'------------------------------
@@ -2666,6 +2670,7 @@ Public Partial Class MainForm
 	Dim VpParent As TreeNode
 	Dim VpElderCriteria As String
 	Dim VpTransformed As Boolean
+		Call Me.CheckGridBusy
 		If Not e.Node.Parent Is Nothing Then
 			'Sélection d'un élément de type 'carte'
 			If e.Node.Parent.Tag.Key = "Card.Title" Then

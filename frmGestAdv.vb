@@ -46,6 +46,7 @@ Public Partial Class frmGestAdv
 		For VpI As Integer = 1 To clsModule.GetDeckCount
 			Me.cboDeck.Items.Add(clsModule.GetDeckNameFromIndex(VpI))
 		Next VpI
+		Me.cboDeck.Sorted = True
 	End Sub
 	Private Sub CbarAdvManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True

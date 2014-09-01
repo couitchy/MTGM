@@ -1195,6 +1195,24 @@ Public Partial Class MainForm
 				Return "DuelDecksJacevsVraska#" + VpStr
 			Case "CY"
 				Return "conspiracy#" + VpStr
+			Case "M6"
+				Return "magic2015#" + VpStr
+			Case "DP"
+				Return "duelsoftheplansewalkers#" + VpStr				
+			Case "FM"
+				Return "fridaynightmagic#" + VpStr				
+			Case "IS"
+				Return "introductory2pset#" + VpStr				
+			Case "MP"
+				Return "magicplayerrewards#" + VpStr				
+			Case "ME"
+				Return "mastersedition#" + VpStr				
+			Case "MV"
+				Return "moderneventdeck2014#" + VpStr				
+			Case "PR"
+				Return "prereleaseevents#" + VpStr				
+			Case "RT"
+				Return "releaseevents#" + VpStr				
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1355,6 +1373,24 @@ Public Partial Class MainForm
 				Return "DB"
 			Case "conspiracy"
 				Return "CY"
+			Case "magic2015"
+				Return "M6"
+			Case "duelsoftheplansewalkers"
+				Return "DP"
+			Case "fridaynightmagic"
+				Return "FM"
+			Case "introductory2pset"
+				Return "IS"
+			Case "magicplayerrewards"
+				Return "MP"
+			Case "mastersedition"
+				Return "ME"
+			Case "moderneventdeck2014"
+				Return "MV"
+			Case "prereleaseevents"
+				Return "PR"
+			Case "releaseevents"
+				Return "RT"
 			Case Else
 				Return ""
 		End Select
@@ -1500,7 +1536,7 @@ Public Partial Class MainForm
 		Call Me.AddToLog("Récupération du listing VO/VF...", eLogType.Information)
 		VpListeEN = Me.GetListing(VpCode, "en")
 		VpListeFR = Me.GetListing(VpCode, "fr")
-		If VpListeFR.Count > 0 Then
+		If VpListeFR.Count > 0 AndAlso VpListeFR.Count = VpListeEN.Count Then
 			VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_titles_fr.txt", False, Encoding.Default)
 			For VpI As Integer = 0 To VpListeEN.Count - 1
 				VpOut.WriteLine(VpListeEN.Item(VpI) + "#" + VpListeFR.Item(VpI))
@@ -1553,6 +1589,8 @@ Public Partial Class MainForm
 					VpStrs(3) = "U"
 				Case "Common"
 					VpStrs(3) = "C"
+				Case "Special"
+					VpStrs(3) = "X"
 				Case Else
 					VpStrs(3) = ""
 			End Select
@@ -1567,7 +1605,7 @@ Public Partial Class MainForm
 		VpStr = Me.HTMLfromRequest(CmURL6.Replace("###", VpCode))
 		VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_spoiler_en.txt", False, Encoding.Default)
 		For Each VpCard As String In VpListeEN
-			VpStr = VpStr.Substring(VpStr.IndexOf(VpCard))
+			VpStr = VpStr.Substring(VpStr.IndexOf(">" + VpCard))
 			VpStrs = VpStr.Split(New String() {CmKey8}, StringSplitOptions.None)
 			VpOut.WriteLine("Name: " + vbTab + VpCard)
 			VpItem = VpStrs(2).Substring(VpStrs(2).IndexOf(vbLf) + 1)

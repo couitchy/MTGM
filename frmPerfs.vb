@@ -376,6 +376,10 @@ Public Partial Class frmPerfs
 		End Try
 		With VpExcelApp
 			.Workbooks.Add
+			If .Sheets.Count < 3 Then
+				.Sheets.Add
+				.Sheets.Add
+			End If
 			'Partie 1 : efficacité dans l'absolu
 			With .Sheets(1)
 				.Name = "Efficience"

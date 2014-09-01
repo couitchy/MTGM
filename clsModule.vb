@@ -36,7 +36,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 33995
+	Public Const CgCodeLines As Integer   			= 34047
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
@@ -1021,6 +1021,8 @@ Public Module clsModule
 						Return "Communes"
 					Case "D", "L", "S"
 						Return "Sans valeur"
+					Case "X"
+						Return "Spéciales"
 					Case Else
 						Return VpStr
 				End Select
