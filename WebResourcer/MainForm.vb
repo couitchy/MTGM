@@ -75,6 +75,7 @@ Public Partial Class MainForm
 	End Enum
 	Public Sub New()
 		Me.InitializeComponent()
+		Me.wbMV.ScriptErrorsSuppressed = True
 	End Sub
 	Private Sub AddToLog(VpText As String, VpType As eLogType, Optional VpNewOp As Boolean = False, Optional VpEndOp As Boolean = False)
 	'-----------------------------
@@ -947,13 +948,19 @@ Public Partial Class MainForm
 	Private Function TournoiFormat(VpStr As String) As String
 	Dim VpStrs() As String
 	Dim VpAut As String = ""
-		VpStrs = VpStr.ToLower.Split(New String() {".png"}, StringSplitOptions.None)
-		For Each VpA As String In VpStrs
-			If VpA.Contains("/") Then
-				VpAut = VpAut + VpA.Substring(VpA.LastIndexOf("/") + 1) + "#"
+		Try
+			If VpStr.Contains(".png") Then
+				VpStrs = VpStr.ToLower.Split(New String() {".png"}, StringSplitOptions.None)
+				For Each VpA As String In VpStrs
+					If VpA.Contains("/") Then
+						VpAut = VpAut + VpA.Substring(VpA.LastIndexOf("/") + 1) + "#"
+					End If
+				Next VpA
+				Return VpAut.Substring(0, VpAut.Length - 1)
 			End If
-		Next VpA
-		Return VpAut.Substring(0, VpAut.Length - 1)
+		Catch
+		End Try
+		Return ""
 	End Function
 	Private Sub UpdateAutorisations(VpAll As Boolean)
 	'----------------------------------------------------
@@ -1198,21 +1205,25 @@ Public Partial Class MainForm
 			Case "M6"
 				Return "magic2015#" + VpStr
 			Case "DP"
-				Return "duelsoftheplansewalkers#" + VpStr				
+				Return "duelsoftheplansewalkers#" + VpStr
 			Case "FM"
-				Return "fridaynightmagic#" + VpStr				
+				Return "fridaynightmagic#" + VpStr
 			Case "IS"
-				Return "introductory2pset#" + VpStr				
+				Return "introductory2pset#" + VpStr
 			Case "MP"
-				Return "magicplayerrewards#" + VpStr				
+				Return "magicplayerrewards#" + VpStr
 			Case "ME"
-				Return "mastersedition#" + VpStr				
+				Return "mastersedition#" + VpStr
 			Case "MV"
-				Return "moderneventdeck2014#" + VpStr				
+				Return "moderneventdeck2014#" + VpStr
 			Case "PR"
-				Return "prereleaseevents#" + VpStr				
+				Return "prereleaseevents#" + VpStr
 			Case "RT"
-				Return "releaseevents#" + VpStr				
+				Return "releaseevents#" + VpStr
+			Case "GX"
+				Return "grandprix#" + VpStr
+			Case "KT"
+				Return "khansoftarkir#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1391,6 +1402,10 @@ Public Partial Class MainForm
 				Return "PR"
 			Case "releaseevents"
 				Return "RT"
+			Case "grandprix"
+				Return "GX"
+			Case "khansoftarkir"
+				Return "KT"
 			Case Else
 				Return ""
 		End Select

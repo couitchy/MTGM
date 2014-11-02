@@ -86,6 +86,9 @@ Public Partial Class MainForm
 				.Close
 			End With
 			VpJSON = VmSerializer.Serialize(VpContent)
+			If Not Directory.Exists(Me.dlgBrowser.SelectedPath + "\data") Then
+				Directory.CreateDirectory(Me.dlgBrowser.SelectedPath + "\data")
+			End If
 			VpOut = New StreamWriter(Me.dlgBrowser.SelectedPath + "\data\collection.json")
 			VpOut.Write(VpJSON)
 			VpOut.Flush

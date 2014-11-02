@@ -2074,7 +2074,7 @@ Public Partial Class MainForm
 	End Function
 	Private Function FindImageIndexType(VpType As String) As Integer
 		Select Case VpType.Substring(0, 1).ToUpper
-			Case "C", "U", "P"
+			Case "C", "U"
 				Return 45
 			Case "I", "N"
 				Return 46
@@ -2092,6 +2092,8 @@ Public Partial Class MainForm
 				Return 50
 			Case "Y"
 				Return 51
+			Case "P"
+				Return 52
 			Case Else
 				Return 0
 		End Select
@@ -2288,6 +2290,13 @@ Public Partial Class MainForm
 	End Sub
 	#End Region
 	#Region "Propriétés"
+	Protected Overrides ReadOnly Property CreateParams As CreateParams
+		Get
+		Dim VpCP As CreateParams = MyBase.CreateParams
+			VpCP.ExStyle = VpCP.ExStyle Or &H2000000
+			Return VpCP
+		End Get
+	End Property
 	Public WriteOnly Property Suggestions As List(Of clsCorrelation)
 		Set (VpSuggestions As List(Of clsCorrelation))
 			VmSuggestions = VpSuggestions
