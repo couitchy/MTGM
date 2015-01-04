@@ -19,10 +19,12 @@
 '|----------------------------------------------------|
 '| Modifications :                                    |
 '| - gestion des règles spécifiques		   18/02/2012 |
+'| - gestion formats dates internationaux  04/01/2015 |
 '------------------------------------------------------
 Imports System.Text
 Imports System.Net
 Imports System.IO
+imports System.Globalization
 Public Partial Class frmUpdateContenu
 	Private VmFormMove As Boolean = False			'Formulaire en déplacement
 	Private VmMousePos As Point						'Position initiale de la souris sur la barre de titre
@@ -395,9 +397,23 @@ Public Class clsMAJContenu
 		NewTrad
 	End Enum
 	Public Sub New(VpType As EgMAJContenu, VpLocale As String, VpServeur As String, VpSize As Integer)
+	Dim VpLocaleDate As Date
+	Dim VpServeurDate As Date
 		VmType = VpType
-		VmLocale = VpLocale
-		VmServeur = VpServeur
+		'Si on reconnait une date, il faut passer par une double conversion pour s'affranchir des problèmes de format
+		If Date.TryParseExact(VpLocale, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpLocaleDate) AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
+			VmLocale = VpLocaleDate.ToShortDateString
+			VmServeur = VpServeurDate.ToShortDateString
+		ElseIf Date.TryParse(VpLocale, VpLocaleDate) AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
+			VmLocale = VpLocaleDate.ToShortDateString
+			VmServeur = VpServeurDate.ToShortDateString
+		ElseIf VpLocale = "" AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
+			VmLocale = VpLocale
+			VmServeur = VpServeurDate.ToShortDateString			
+		Else
+			VmLocale = VpLocale
+			VmServeur = VpServeur
+		End If
 		VmSize = VpSize
 	End Sub
 	Public ReadOnly Property TypeContenu As EgMAJContenu

@@ -165,7 +165,7 @@ Public Partial Class frmAddCards
 		End If
 		'Destination par défaut
 		VpSource = VmOwner.GetSelectedSource
-		If VpSource <> "" Then
+		If VpSource <> "" And VpSource <> clsModule.CgAdvSearch Then
 			For Each VpItem As ToolStripMenuItem In Me.cmnuDestination.Items
 				If VpItem.Text = VpSource Then
 					VpItem.Checked = True
@@ -175,7 +175,8 @@ Public Partial Class frmAddCards
 				End If				
 			Next VpItem
 		Else
-			CType(Me.cmnuDestination.Items.Item(0), ToolStripMenuItem).Checked = True
+			Me.mnuDropToCollection.Checked = True
+			Me.lblDest.Text = clsModule.CgCollection
 		End If
 		Me.chkReserve.Visible = Not Me.mnuDropToCollection.Checked
 	End Sub

@@ -1224,6 +1224,10 @@ Public Partial Class MainForm
 				Return "grandprix#" + VpStr
 			Case "KT"
 				Return "khansoftarkir#" + VpStr
+			Case "DH"
+				Return "DuelDecksSpeedvsCunning#" + VpStr
+			Case "C4"
+				Return "commander2014#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1406,6 +1410,10 @@ Public Partial Class MainForm
 				Return "GX"
 			Case "khansoftarkir"
 				Return "KT"
+			Case "DuelDecksSpeedvsCunning"
+				Return "DH"
+			Case "commander2014"
+				Return "C4"
 			Case Else
 				Return ""
 		End Select

@@ -32,11 +32,12 @@ Imports System.IO
 Imports System.ComponentModel
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
+Imports System.Globalization
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34047
+	Public Const CgCodeLines As Integer   			= 34109
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
@@ -1344,7 +1345,7 @@ Public Module clsModule
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			'Lecture du fichier horodaté sur Internet
 			VpAnswer.Read(VpBuf, 0, 19)
-			VgRemoteDate = CDate(New ASCIIEncoding().GetString(VpBuf))
+			Call Date.TryParseExact(New ASCIIEncoding().GetString(VpBuf), "dd/MM/yyyy hh:mm:ss", New CultureInfo("fr-FR"), DateTimeStyles.None, VgRemoteDate)
 			'Si version plus récente
 			If DateTime.Compare(File.GetLastWriteTimeUtc(Application.ExecutablePath), VgRemoteDate) < 0 Then
 				VgTray.Visible = True

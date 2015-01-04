@@ -189,6 +189,7 @@ Partial Class frmExport
 		Me.txtSourceImp.Name = "txtSourceImp"
 		Me.txtSourceImp.Size = New System.Drawing.Size(100, 20)
 		Me.txtSourceImp.TabIndex = 12
+		Me.txtSourceImp.MaxLength = 50
 		'
 		'optImpNew
 		'

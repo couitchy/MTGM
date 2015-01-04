@@ -190,6 +190,7 @@ Public Partial Class frmGestDecks
 		If Me.tvwDecks.SelectedNode Is Nothing Then Exit Sub
 		VpName = InputBox("Entrer le nom de l'élément :", "Nouvel élément", If(VpFolder, clsModule.CgDefaultFolderName, clsModule.CgDefaultDeckName))
 		If VpName <> "" Then
+			If VpName.Length > 50 Then VpName = VpName.Substring(0, 50)
 			VpParent = Me.SelectedParent
 			If Me.DeckOrFolderExists(VpName, If(VpFolder, VpParent, Me.RootNode), VpFolder) Then
 				Call clsModule.ShowWarning("Un élément portant ce nom existe déjà...")
@@ -340,6 +341,7 @@ Public Partial Class frmGestDecks
 	Dim VpFolder As Boolean = CType(Me.tvwDecks.SelectedNode.Tag, clsInfoNode).IsFolder
 		VpName = InputBox("Entrer le nouveau nom de l'élément :", "Renommer un élément", VpOldName)
 		If VpName <> "" Then
+			If VpName.Length > 50 Then VpName = VpName.Substring(0, 50)
 			VpName = VpName.Replace("'", "''")
 			VpOldName = VpOldName.Replace("'", "''")			
 			If Me.DeckOrFolderExists(VpName, If(VpFolder, Me.tvwDecks.SelectedNode.Parent, Me.RootNode), VpFolder) Then

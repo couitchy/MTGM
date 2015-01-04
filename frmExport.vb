@@ -246,6 +246,8 @@ Public Partial Class frmExport
 				While Not VpIn.EndOfStream
 					VpStr = VpIn.ReadLine
 					If VpStr.Contains("[") Then
+						VpReserve = VpStr.Contains("SB:")
+						VpStr = VpStr.Replace("SB:", "")
 						VpQte = CInt(Val(VpStr.Substring(0, VpStr.IndexOf("["))))
 						VpEdition = VpStr.Substring(VpStr.IndexOf("[") + 1)
 						VpEdition = VpEdition.Substring(0, VpEdition.IndexOf("]"))
@@ -254,7 +256,7 @@ Public Partial Class frmExport
 						VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MW = '" + VpEdition + "';"
 						VpO = VgDBCommand.ExecuteScalar
 						If Not VpO Is Nothing Then
-							VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+							VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False" + "#" + VpReserve.ToString)
 						Else
 							VpNeedLog = True
 							'Partial match
@@ -262,7 +264,7 @@ Public Partial Class frmExport
 							VpO = VgDBCommand.ExecuteScalar
 							If Not VpO Is Nothing Then
 								VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
-								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False" + "#" + VpReserve.ToString)
 							Else
 								VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
 							End If
@@ -346,6 +348,7 @@ Public Partial Class frmExport
 		Me.txtFileImp.Text = VpFile
 		Me.txtSourceImp.Text = Me.txtFileImp.Text.Substring(Me.txtFileImp.Text.LastIndexOf("\") + 1)
 		Me.txtSourceImp.Text = Me.txtSourceImp.Text.Replace(clsModule.CgFExtN, "").Replace(clsModule.CgFExtO, "").Replace(clsModule.CgFExtM, "").Replace(clsModule.CgFExtW, "").Replace(clsModule.CgFExtL, "")
+		If Me.txtSourceImp.Text.Length > 50 Then Me.txtSourceImp.Text = Me.txtSourceImp.Text.Substring(0, 50)
 	End Sub
 	Sub CmdExportClick(ByVal sender As Object, ByVal e As EventArgs)
 		If Me.lstchkSources.CheckedItems.Count > 0 Then

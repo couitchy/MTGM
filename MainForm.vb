@@ -2293,7 +2293,9 @@ Public Partial Class MainForm
 	Protected Overrides ReadOnly Property CreateParams As CreateParams
 		Get
 		Dim VpCP As CreateParams = MyBase.CreateParams
-			VpCP.ExStyle = VpCP.ExStyle Or &H2000000
+			If Environment.OSVersion.Version.Major >= 6 Then
+				VpCP.ExStyle = VpCP.ExStyle Or &H2000000
+			End If
 			Return VpCP
 		End Get
 	End Property
