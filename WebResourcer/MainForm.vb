@@ -1228,6 +1228,10 @@ Public Partial Class MainForm
 				Return "DuelDecksSpeedvsCunning#" + VpStr
 			Case "C4"
 				Return "commander2014#" + VpStr
+			Case "V7"
+				Return "FromtheVaultAnnihilation#" + VpStr
+			Case "FR"
+				Return "fatereforged#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1414,6 +1418,10 @@ Public Partial Class MainForm
 				Return "DH"
 			Case "commander2014"
 				Return "C4"
+			Case "FromtheVaultAnnihilation"
+				Return "V7"
+			Case "fatereforged"
+				Return "FR"
 			Case Else
 				Return ""
 		End Select

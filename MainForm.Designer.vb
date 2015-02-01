@@ -1906,7 +1906,7 @@ Partial Class MainForm
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.MainMenuStrip = Me.mnu
 		Me.Name = "MainForm"
-		Me.Text = "agic The Gathering Manager"
+		Me.Text = "Magic The Gathering Manager"
 		AddHandler Load, AddressOf Me.MainFormLoad
 		AddHandler FormClosing, AddressOf Me.MainFormFormClosing
 		AddHandler Resize, AddressOf Me.MainFormResize

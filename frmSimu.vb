@@ -35,12 +35,14 @@ Public Partial Class frmSimu
 	Private VmSource As String
 	Private VmRestrictionSQL As String
 	Private VmRestrictionTXT As String
+	Private VmRestrictionReserve As String
 	Private VmSimuOut As StreamWriter
 	Private VmExpr As List(Of clsCorrelation)
 	#Region "Méthodes"
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmSource = VpOwner.MySource
+		VmRestrictionReserve = If(VpOwner.IsInDeckMode, " Reserve = False And ", " ")
 		VmRestrictionSQL = VpOwner.Restriction
 		VmRestrictionTXT = VpOwner.Restriction(True)
 		Me.Text = clsModule.CgSimus + VmRestrictionTXT
@@ -49,7 +51,7 @@ Public Partial Class frmSimu
 	'----------------------------------------------------------------------
 	'Charge la liste des cartes possédant une utilisation spéciale associée
 	'----------------------------------------------------------------------
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL)
+	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve)
 		Me.lstUserCombos.Items.Clear
 		VgDBCommand.CommandText = "Select Card From MySpecialUses;"
 		VgDBReader = VgDBCommand.ExecuteReader
@@ -130,17 +132,17 @@ Public Partial Class frmSimu
 		End With
 	End Sub
 	Private Sub LoadForGrids
-		Call Me.LoadForGrid(Me.grdCardsDispos, "Select Card.Title, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where ", "Card.Title", " Group By Card.Title")
-		Call Me.LoadForGrid(Me.grdTypesDispos, "Select Card.Type, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where ", "Card.Type", " Group By Card.Type")
-		Call Me.LoadForGrid(Me.grdSubTypesDispos, "Select Card.SubType, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where ", "Card.SubType", " Group By Card.SubType")
-		Call Me.LoadForGrid(Me.grdCostsDispos, "Select Spell.myCost, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where Card.Type <> 'L' And ", "Spell.myCost", " Group By Spell.myCost")
-		Call Me.LoadForGrid(Me.grdColorsDispos, "Select Spell.Color, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", "Spell.Color", " Group By Spell.Color")
+		Call Me.LoadForGrid(Me.grdCardsDispos, "Select Card.Title, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where" + VmRestrictionReserve, "Card.Title", " Group By Card.Title")
+		Call Me.LoadForGrid(Me.grdTypesDispos, "Select Card.Type, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where" + VmRestrictionReserve, "Card.Type", " Group By Card.Type")
+		Call Me.LoadForGrid(Me.grdSubTypesDispos, "Select Card.SubType, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Where" + VmRestrictionReserve, "Card.SubType", " Group By Card.SubType")
+		Call Me.LoadForGrid(Me.grdCostsDispos, "Select Spell.myCost, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where Card.Type <> 'L' And" + VmRestrictionReserve, "Spell.myCost", " Group By Spell.myCost")
+		Call Me.LoadForGrid(Me.grdColorsDispos, "Select Spell.Color, Sum(" + VmSource + ".Items) From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where" + VmRestrictionReserve, "Spell.Color", " Group By Spell.Color")
 	End Sub
 	Private Sub CombosSimu
 	'----------------------------------------------------------------------------------------------
 	'Estime les probabilités simple et combinée d'apparition des cartes sélectionnées au nième tour
 	'----------------------------------------------------------------------------------------------
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL, True)
+	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)
 	Dim VpEspCumul As New clsEsperance(Me.txtN.Text)
 		Me.prgSimu.Maximum = CInt(Me.txtN.Text)
 		Me.prgSimu.Value = 0
@@ -182,7 +184,7 @@ Public Partial Class frmSimu
 	'Estime l'espérance du nombre de manas disponibles au nième tour
 	'---------------------------------------------------------------
 	Dim VpVerbose As Boolean = Me.chkVerbosity.Checked
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL, True, VpVerbose, VmSimuOut)	'Partie en simulation
+	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True, VpVerbose, VmSimuOut)	'Partie en simulation
 	Dim VpEspDeploy As New clsEsperance(Me.txtN2.Text)										'Résultats
 	Dim VpEspInvoc As New clsEsperance(Me.txtN2.Text)										'Références
 	Dim VpTmpInPlay As New List(Of clsCard)													'Support liste temporaire 1
@@ -308,7 +310,7 @@ Public Partial Class frmSimu
 	'------------------------------------------
 	'Essaie d'analyser le thème du jeu en cours
 	'------------------------------------------
-	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL, True)
+	Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)
 	Dim VpCards As List(Of clsCard)
 	Dim VpX() As String
 	Dim VpY() As String
@@ -437,7 +439,7 @@ Public Partial Class frmSimu
 			.Close
 		End With
 		'Supprime les cartes déjà présentes dans le jeu
-		For Each VpCard As clsCard In (New clsPartie(VmSource, VmRestrictionSQL, True)).GetDistinctCards
+		For Each VpCard As clsCard In (New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)).GetDistinctCards
 			For Each VpSuggested As clsCorrelation In VpSuggest
 				If VpCard.CardName = VpSuggested.Card1 Then
 					VpAlready.Add(VpSuggested)
@@ -706,9 +708,9 @@ Public Class clsPartie
 	'-------------------
 	Dim VpSQL As String
 		If Not VpGestDeploy Then
-			VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
+			VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where"
 		Else
-			VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items, CardFR.TitleFR, Card.SubType, Spell.Color, Spell.myCost From ((Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
+			VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items, CardFR.TitleFR, Card.SubType, Spell.Color, Spell.myCost From ((Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where"
 		End If
 		VpSQL = VpSQL + VpRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL)

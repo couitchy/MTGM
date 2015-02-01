@@ -120,8 +120,8 @@ Public Partial Class frmWord
 	 					VpPicture.Left = VpLeft
 	 					VpCount = VpCount + 1
 	 					If VpCount Mod CmImgPerPage = 0 Then		'9 vignettes par page
+						 	VpWordApp.Selection.GoTo(What := 0, Which := 1)
 	 						VpWordApp.Selection.InsertBreak
-	 						VpWordApp.Selection.MoveUp
 	 						VpLeft = 0
 	 						VpTop = 0
 	 					ElseIf VpCount Mod CmImgPerRow = 0 Then		'3 vignettes par ligne
@@ -202,6 +202,12 @@ Public Partial Class frmWord
 			End While
 			.Close
 		End With
+		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+		If Me.CreateGraphics().DpiX <> 96 Then
+			Me.grpVignettes.Dock = DockStyle.None
+			Me.grpOptions.Dock = DockStyle.None
+			Me.cmdWord.Dock = DockStyle.None
+		End If		
 	End Sub
 	Private Sub CbarWordMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True

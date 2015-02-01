@@ -315,6 +315,14 @@ Public Partial Class frmXL
 	Sub ChklstXLSelectedValueChanged(sender As Object, e As EventArgs)
 		Call Me.SetCheckState
 	End Sub
+	Sub FrmExcelLoad(sender As Object, e As EventArgs)
+		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+		If Me.CreateGraphics().DpiX <> 96 Then
+			Me.grpColumns.Dock = DockStyle.None
+			Me.grpOptions.Dock = DockStyle.None
+			Me.cmdXL.Dock = DockStyle.None
+		End If
+	End Sub
 End Class
 Public Class clsXLItem
 	Private VmTitle As String

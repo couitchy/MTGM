@@ -644,10 +644,10 @@ Public Class clsMyCard
 	End Function
 	Public Function MyColor As String
 	Dim VpMyType As String
-		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact ou d'un terrain (ou d'un jeton ou d'un arpenteur incolore ?!)
+		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'un jeton ou d'un arpenteur incolore
 			VpMyType = Me.MyType
 			Select Case VpMyType
-				Case "H", "Q", "Y"
+				Case "H", "Q", "Y", "P"
 					Return "A"
 				Case Else
 					Return VpMyType

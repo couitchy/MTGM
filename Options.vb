@@ -104,6 +104,8 @@ Public Partial Class Options
 		Private VmLastUpdateRulings As String = clsModule.CgLastUpdateRulings
 		Private VmLastUpdatePictPatch As String = ""
 		Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
+		Private VmLastUpdateSubTypesPatch As String = clsModule.CgLastUpdateSubsPatch
+		Private VmLastUpdateSubTypesVFPatch As String = clsModule.CgLastUpdateSubsVFPatch
 		Private VmShowUpdateMenus As Boolean = False
 		Private VmPrevSearches As String = ""
 		Private VmVFDefault As Boolean = True
@@ -393,6 +395,24 @@ Public Partial Class Options
 			End Get
 			Set (VpLastUpdateTradPatch As String)
 				VmLastUpdateTradPatch = VpLastUpdateTradPatch
+			End Set
+		End Property
+		<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour du correctif des sous-types des cartes")> _
+		Public Property LastUpdateSubTypesPatch As String
+			Get
+				Return VmLastUpdateSubTypesPatch
+			End Get
+			Set (VpLastUpdateSubTypesPatch As String)
+				VmLastUpdateSubTypesPatch = VpLastUpdateSubTypesPatch
+			End Set
+		End Property
+		<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour du correctif des traductions des sous-types")> _
+		Public Property LastUpdateSubTypesVFPatch As String
+			Get
+				Return VmLastUpdateSubTypesVFPatch
+			End Get
+			Set (VpLastUpdateSubTypesVFPatch As String)
+				VmLastUpdateSubTypesVFPatch = VpLastUpdateSubTypesVFPatch
 			End Set
 		End Property
 		<Browsable(False), Category("Général"), Description("Liste des dernières recherches effectuées")> _

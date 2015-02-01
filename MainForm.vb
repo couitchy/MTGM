@@ -53,6 +53,7 @@ Imports System.Data.OleDb
 Imports System.Xml
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
+Imports System.Text
 #End Region
 Public Partial Class MainForm
 	#Region "Sous-classes"
@@ -623,6 +624,8 @@ Public Partial Class MainForm
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set FoilPrice = 0 Where Card.FoilPrice Is Null;"
 		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Card Set PriceDate = #01/01/01# Where PriceDate > Date();"
+		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Private Sub FixFR
 	'--------------------------------------------------------------------------------------------
@@ -664,6 +667,53 @@ Public Partial Class MainForm
 	    	End While
 			VpLog.Close
 			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgMdTrad)
+		Else
+			Return False
+		End If
+		Return True
+	End Function
+	Public Function FixSubTypes As Boolean
+	'-----------------------------------------------------------------
+	'Télécharge et installe un correctif pour les sous-types en défaut
+	'-----------------------------------------------------------------
+	Dim VpLog As StreamReader
+	Dim VpStrs() As String
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL20), clsModule.CgMdSubTypes)
+		If File.Exists(Application.StartupPath + clsModule.CgMdSubTypes) Then
+	    	VpLog = New StreamReader(Application.StartupPath + clsModule.CgMdSubTypes, Encoding.Default)
+			While Not VpLog.EndOfStream
+				VpStrs = VpLog.ReadLine.Split("#")
+				VgDBCommand.CommandText = "Update Card Set SubType = '" + VpStrs(2).Replace("'", "''") + "' Where Title = '" + VpStrs(1).Replace("'", "''") + "' And Series = '" + VpStrs(0) + "';"
+				VgDBCommand.ExecuteNonQuery
+	    	End While
+			VpLog.Close
+			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgMdSubTypes)
+		Else
+			Return False
+		End If
+		Return True
+	End Function
+	Public Function FixSubTypesVF As Boolean
+	'----------------------------------------------------------------------------------
+	'Télécharge et installe un correctif pour les traductions des sous-types manquantes
+	'----------------------------------------------------------------------------------
+	Dim VpLog As StreamReader
+	Dim VpStrs() As String
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL21), clsModule.CgMdSubTypesVF)
+		If File.Exists(Application.StartupPath + clsModule.CgMdSubTypesVF) Then
+	    	VpLog = New StreamReader(Application.StartupPath + clsModule.CgMdSubTypesVF, Encoding.Default)
+			While Not VpLog.EndOfStream
+				VpStrs = VpLog.ReadLine.Split("#")
+				VgDBCommand.CommandText = "Select Count(*) From SubTypes Where SubTypeVO = '" + VpStrs(0).Replace("'", "''") + "';"
+				If CInt(VgDBCommand.ExecuteScalar) > 0 Then
+					VgDBCommand.CommandText = "Update SubTypes Set SubTypeVF = '" + VpStrs(1).Replace("'", "''") + "' Where SubTypeVO = '" + VpStrs(0).Replace("'", "''") + "';"
+				Else
+					VgDBCommand.CommandText = "Insert Into SubTypes(SubTypeVO, SubTypeVF) Values ('" + VpStrs(0).Replace("'", "''") + "', '" + VpStrs(1).Replace("'", "''") + "');"
+				End If
+				VgDBCommand.ExecuteNonQuery
+	    	End While
+			VpLog.Close
+			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgMdSubTypesVF)
 		Else
 			Return False
 		End If
@@ -2352,6 +2402,11 @@ Public Partial Class MainForm
 	'----------------------------------------------------------------------------------------
 		Get
 			Return If(VmDeckMode, clsModule.CgSDecks, clsModule.CgSCollection)
+		End Get
+	End Property
+	Public ReadOnly Property IsInDeckMode As Boolean
+		Get
+			Return VmDeckMode
 		End Get
 	End Property
 	Public Property MyChildren As clsChildren

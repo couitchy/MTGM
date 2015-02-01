@@ -267,6 +267,7 @@ Partial Class frmXL
 		Me.ShowInTaskbar = false
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "Génération Excel"
+		AddHandler Load, AddressOf Me.FrmExcelLoad
 		Me.cbarXL.ResumeLayout(false)
 		Me.pnlXL.ResumeLayout(false)
 		Me.grpColumns.ResumeLayout(false)

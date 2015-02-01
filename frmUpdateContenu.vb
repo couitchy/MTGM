@@ -20,6 +20,7 @@
 '| Modifications :                                    |
 '| - gestion des règles spécifiques		   18/02/2012 |
 '| - gestion formats dates internationaux  04/01/2015 |
+'| - gestion mise à jour des sous-types    16/01/2015 |
 '------------------------------------------------------
 Imports System.Text
 Imports System.Net
@@ -47,25 +48,25 @@ Public Partial Class frmUpdateContenu
 	'----------------------------
 	'Récupération des horodatages
 	'----------------------------
-	Dim VpStamps(0 To 9) As String		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = series, 9 = trad
+	Dim VpStamps(0 To 11) As String		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = series, 11 = trad
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
-	Dim VpBuf(0 To 81) As Byte
+	Dim VpBuf(0 To 105) As Byte
 	DIm VpLength As Integer
 		Try
 			'Gestion cas 0
 			VpStamps(0) = clsModule.GetPictSP
-			'Gestion cas 1 à 7
+			'Gestion cas 1 à 9
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1D)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
-			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)
-			For VpI As Integer = 0 To 6
+			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)	'gestion cr ou cr+lf
+			For VpI As Integer = 0 To 8
 				VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 10)
 			Next VpI
-			'Gestion cas 8
+			'Gestion cas 10
 
-			'Gestion cas 9
+			'Gestion cas 11
 			
 			Return VpStamps
 		Catch
@@ -77,23 +78,23 @@ Public Partial Class frmUpdateContenu
 	'------------------------------------
 	'Récupération des tailles des patches
 	'------------------------------------
-	Dim VpSizes(0 To 9) As Integer		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = series, 9 = trad
+	Dim VpSizes(0 To 11) As Integer		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = series, 11 = trad
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
-	Dim VpBuf(0 To 53) As Byte
+	Dim VpBuf(0 To 67) As Byte
 	DIm VpLength As Integer
 		Try
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1E)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
 			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
-			'Gestion cas 0 à 7
-			For VpI As Integer = 0 To 7
+			'Gestion cas 0 à 9
+			For VpI As Integer = 0 To 9
 				VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 5))
 			Next VpI
-			'Gestion cas 8
+			'Gestion cas 10
 
-			'Gestion cas 9
+			'Gestion cas 11
 			
 			Return VpSizes
 		Catch
@@ -119,6 +120,10 @@ Public Partial Class frmUpdateContenu
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSimu, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.PatchTrad
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTradPatch, VpStamp, VpSize)
+			Case clsMAJContenu.EgMAJContenu.PatchSubTypes
+				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSubTypesPatch, VpStamp, VpSize)
+			Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
+				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSubTypesVFPatch, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewTxtVF
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTxtVF, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewRulings
@@ -194,6 +199,20 @@ Public Partial Class frmUpdateContenu
 				Else
 					Return False
 				End If
+			Case clsMAJContenu.EgMAJContenu.PatchSubTypes
+				'Appel silencieux pour correctif des sous-types de cartes
+				If MainForm.VgMe.FixSubTypes Then
+					VgOptions.VgSettings.LastUpdateSubTypesPatch = VpElement.Serveur
+				Else
+					Return False
+				End If
+			Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
+				'Appel silencieux pour correctif des traductions des sous-types de cartes
+				If MainForm.VgMe.FixSubTypesVF Then
+					VgOptions.VgSettings.LastUpdateSubTypesVFPatch = VpElement.Serveur
+				Else
+					Return False
+				End If
 			Case clsMAJContenu.EgMAJContenu.NewTxtVF
 				'Appel silencieux pour mise à jour texte des cartes en français
 				Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL11), clsModule.CgUpTXTFR)
@@ -252,7 +271,7 @@ Public Partial Class frmUpdateContenu
 		Return True
 	End Function
 	Public Function CheckForContenu(ByRef VpNewContenu As List(Of clsMAJContenu)) As Boolean
-	'-------------------------------------------------------
+	'----------------------------------------------------------------------
 	'Regarde s'il existe des mises à jour disponibles pour :
 	'- les prix (bdd)
 	'- les images (taille fichier)
@@ -264,7 +283,9 @@ Public Partial Class frmUpdateContenu
 	'- le titre des cartes en vf (.xml)
 	'- les corrections sur les images (.xml)
 	'- les corrections sur les titres des cartes (.xml)
-	'-------------------------------------------------------
+	'- les corrections sur les sous-types des cartes (.xml)
+	'- les corrections sur les traductions des sous-types des cartes (.xml)
+	'----------------------------------------------------------------------
 	Dim VpStamps() As String = Me.GetStamps
 	Dim VpSizes() As Integer = Me.GetSizes
 		If (Not VpStamps Is Nothing) And (Not VpSizes Is Nothing) Then
@@ -359,6 +380,13 @@ Public Partial Class frmUpdateContenu
 				Me.chklstContenus.Items.Clear
 			End If
 			VmNewContenu = VpNewContenu
+			'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+			If Me.CreateGraphics().DpiX <> 96 Then
+				Me.grpUpdate.Dock = DockStyle.None
+				For Each VpColumn As ColumnHeader In Me.chklstContenus.Columns
+					VpColumn.Width = -1
+				Next VpColumn
+			End If
 		End If
 	End Sub
 	Public Property PassiveUpdate As EgPassiveUpdate
@@ -393,6 +421,8 @@ Public Class clsMAJContenu
 		NewRulings
 		PatchPict
 		PatchTrad
+		PatchSubTypes
+		PatchSubTypesVF
 		NewSerie
 		NewTrad
 	End Enum
@@ -438,6 +468,10 @@ Public Class clsMAJContenu
 					Return "Correctif d'images de cartes"
 				Case clsMAJContenu.EgMAJContenu.PatchTrad
 					Return "Correctif des libellés de cartes en français"
+				Case clsMAJContenu.EgMAJContenu.PatchSubTypes
+					Return "Correctif des sous-types de cartes"
+				Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
+					Return "Correctif des traductions des sous-types"
 				Case clsMAJContenu.EgMAJContenu.NewPict
 					Return "Service pack d'images de cartes"
 				Case clsMAJContenu.EgMAJContenu.NewSerie

@@ -37,13 +37,15 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34109
+	Public Const CgCodeLines As Integer   			= 34259
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
 	Public Const CgLastUpdateTxtVF As String		= "03/05/2014"
 	Public Const CgLastUpdateRulings As String		= "03/05/2014"
 	Public Const CgLastUpdateTradPatch As String	= "04/05/2014"
+	Public Const CgLastUpdateSubsPatch As String	= "04/05/2014"
+	Public Const CgLastUpdateSubsVFPatch As String	= "04/05/2014"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8
@@ -92,13 +94,15 @@ Public Module clsModule
 	Public Const CgUpPic As String					= "\SP_Pict"
 	Public Const CgMdPic As String					= "MD_Pict"
 	Public Const CgMdTrad As String					= "\MD_Trad.log"
+	Public Const CgMdSubTypes As String				= "\MD_SubTypes.log"
+	Public Const CgMdSubTypesVF As String			= "\MD_SubTypesVF.log"
 	Public Const CgShell As String					= "explorer.exe"
 	Public Const CgDefaultServer As String			= "http://couitchy.free.fr/upload/MTGM"
 	Public Const CgURL1 As String         			= "/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         			= "/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         			= "/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r14.txt"
-	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r14.txt"
+	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r18.txt"
+	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r18.txt"
 	Public Const CgURL2 As String         			= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         			= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         			= "/Updates/Images DB.mdb"
@@ -119,6 +123,8 @@ Public Module clsModule
 	Public Const CgURL17 As String					= "http://mtgm.free.fr"
 	Public Const CgURL18 As String					= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
 	Public Const CgURL19 As String         			= "/Updates/Rulings.xml"
+	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes.log"
+	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF.log"
 	Public Const CgDL1 As String         			= "Vérification des mises à jour..."
 	Public Const CgDL2 As String         			= "Téléchargement en cours"
 	Public Const CgDL2b As String         			= "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
@@ -1147,7 +1153,7 @@ Public Module clsModule
 		Return VpB
 	End Function
 	Public Function GetDate(VpDate As Date) As String
-		Return "'" + VpDate.Day.ToString + "/" + VpDate.Month.ToString + "/" + VpDate.Year.ToString.Substring(2, 2) + "'"
+		Return "'" + VpDate.ToString + "'"
 	End Function
 	Public Function StrCount(VpStr As String, VpChar As String) As Integer
 	'----------------------------------------------------------------------------------------
@@ -1606,8 +1612,18 @@ Public Module clsModule
 		Return VpHist
 	End Function
 	Public Function GetLastPricesDate As Date
+	'-------------------------------------------------
+	'Retourne la dernière date de mise à jour des prix
+	'-------------------------------------------------
+	Dim VpDate As Date
 		VgDBCommand.CommandText = "Select Top 1 PriceDate From Card Order By PriceDate Desc;"
-		Return VgDBCommand.ExecuteScalar
+		VpDate = VgDBCommand.ExecuteScalar
+		If VpDate.Subtract(Date.Now).Days > 0 Then
+			'Si on est là c'est que la date n'est pas valide (on ne peut pas avoir des prix dans le futur !) => on force la mise à jour en retournant une date d'il y a un an
+			Return New DateTime(Date.Now.Year - 1, Date.Now.Month, Date.Now.Day)
+		Else
+			Return VpDate
+		End If
 	End Function
 	Public Sub LoadEditions(VpCbo As ComboBox)
 	'--------------------------------------------------------------
