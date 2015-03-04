@@ -699,6 +699,7 @@ Public Partial Class MainForm
 	'----------------------------------------------------------------------------------
 	Dim VpLog As StreamReader
 	Dim VpStrs() As String
+	Dim VpSQL As String
 		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL21), clsModule.CgMdSubTypesVF)
 		If File.Exists(Application.StartupPath + clsModule.CgMdSubTypesVF) Then
 	    	VpLog = New StreamReader(Application.StartupPath + clsModule.CgMdSubTypesVF, Encoding.Default)
@@ -710,7 +711,15 @@ Public Partial Class MainForm
 				Else
 					VgDBCommand.CommandText = "Insert Into SubTypes(SubTypeVO, SubTypeVF) Values ('" + VpStrs(0).Replace("'", "''") + "', '" + VpStrs(1).Replace("'", "''") + "');"
 				End If
-				VgDBCommand.ExecuteNonQuery
+				Try
+					VgDBCommand.ExecuteNonQuery
+				Catch
+					VpSQL = VgDBCommand.CommandText
+					VgDBCommand.CommandText = "Alter Table SubTypes Alter Column SubTypeVF Text(64) With Compression;"
+					VgDBCommand.ExecuteNonQuery
+					VgDBCommand.CommandText = VpSQL
+					VgDBCommand.ExecuteNonQuery
+				End Try
 	    	End While
 			VpLog.Close
 			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgMdSubTypesVF)
@@ -1340,6 +1349,10 @@ Public Partial Class MainForm
 				.TotalPricing = "N/A"
 			End If
 		End With
+		If Me.propAlternate.PropertySort <> PropertySort.NoSort Then
+			Me.propAlternate.PropertySort = PropertySort.NoSort
+			Me.tvwExplore.Focus
+		End If
 		'Cas particuliers
 		Select Case VpModeCarac
 			Case clsModule.eModeCarac.Serie
@@ -1492,6 +1505,45 @@ Public Partial Class MainForm
 		End With
 		Return VpUsage
 	End Function
+	Private Sub LoadCaracDeck(VpDeck As String)
+	'------------------------------------------
+	'Chargement des détails du deck sélectionné
+	'------------------------------------------
+	Dim VpProps As CustomClass
+	Dim VpOK As Integer = 0
+	Dim VpMissing As Integer = 0
+		'Texte descriptif associé au deck
+		Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIdFromName(Me.GetSelectedSource)), "")
+		'Création dynamique d'un property grid pour voir si les cartes du deck sont aussi en collection
+		VpProps = New CustomClass
+		VgDBCommand.CommandText = "Select Card.Title, Sum(IIf(IsNull(MyCollection.Items), 0, MyCollection.Items)), Sum(MyGames.Items) From (Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr) Left Join MyCollection On Card.EncNbr = MyCollection.EncNbr Where MyGames.GameID = " + clsModule.GetDeckIdFromName(VpDeck) + " Group By Card.Title"
+		VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				If CInt(.GetValue(1)) >= CInt(.GetValue(2)) Then
+					VpOK += CInt(.GetValue(2))
+					VpProps.Add(New CustomProperty(.GetString(0), "Cartes possédées", CInt(.GetValue(2)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
+				Else
+					VpMissing += CInt(.GetValue(2))
+					VpProps.Add(New CustomProperty(.GetString(0), "Cartes manquantes", CInt(.GetValue(1)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
+				End If
+			End While
+			.Close
+		End With
+		'Synthèse en %
+		For Each VpProp As CustomProperty In VpProps
+			If VpProp.Category = "Cartes possédées" Then
+				VpProp.Category += " (" + Format(100 * VpOK / (VpOK + VpMissing), "0") + " %)"
+			Else
+				VpProp.Category += " (" + Format(100 * VpMissing / (VpOK + VpMissing), "0") + " %)"
+			End If
+		Next VpProp
+		Me.propAlternate.PropertySort = PropertySort.CategorizedAlphabetical
+		Me.propAlternate.SelectedObject = VpProps
+		If VpProps.Count > 0 AndAlso Me.propAlternate.SelectedGridItem.Parent.Parent IsNot Nothing Then
+			Me.propAlternate.SelectedGridItem.Parent.Parent.GridItems(0).Select
+		End If
+	End Sub
 	Private Sub LoadCaracDetails(VpCard As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean, VpSkipGrid As Boolean)
 	'-----------------------------------------------
 	'Chargement des détails de la carte sélectionnée
@@ -2776,7 +2828,8 @@ Public Partial Class MainForm
 		Else
 			Call Me.ClearCarac
 			If VmDeckMode Then
-				Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIdFromName(Me.GetSelectedSource)), "")
+				Call Me.LoadCaracDeck(Me.GetSelectedSource)
+				Me.tvwExplore.Focus
 			End If
 			Call Me.ManageMode(False)
 		End If

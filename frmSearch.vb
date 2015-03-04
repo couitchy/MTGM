@@ -351,10 +351,10 @@ Public Partial Class frmSearch
 		Me.optMergeAnd.Enabled = Me.chkMerge.Enabled And Me.chkMerge.Checked		
 		If Me.chkShowExternal.Checked Then
 			Me.picScanCard.Visible = False
-			Me.Width = 390
+			Me.Width = 390 * Me.CreateGraphics().DpiX / 96	'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 		Else
 			Me.picScanCard.Visible = True
-			Me.Width = 618
+			Me.Width = 618 * Me.CreateGraphics().DpiX / 96	'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 		End If
 	End Sub
 	Sub CmdClearSearchesClick(sender As Object, e As EventArgs)
@@ -378,7 +378,7 @@ Public Partial Class frmSearch
 				Me.cboFind.Items.Insert(0, VpSearch)
 			End If
 		Next VpSearch
-		Me.Width = 390
+		Me.Width = 390 * Me.CreateGraphics().DpiX / 96	'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 	End Sub
 	Function GetRefText(sender As Object) As String
 		If sender.SelectionLength > 0 Then

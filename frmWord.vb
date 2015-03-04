@@ -207,7 +207,7 @@ Public Partial Class frmWord
 			Me.grpVignettes.Dock = DockStyle.None
 			Me.grpOptions.Dock = DockStyle.None
 			Me.cmdWord.Dock = DockStyle.None
-		End If		
+		End If
 	End Sub
 	Private Sub CbarWordMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True

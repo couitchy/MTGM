@@ -37,7 +37,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34259
+	Public Const CgCodeLines As Integer   			= 34603
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
@@ -101,8 +101,8 @@ Public Module clsModule
 	Public Const CgURL1 As String         			= "/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         			= "/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         			= "/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r18.txt"
-	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r18.txt"
+	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r19.txt"
+	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r19.txt"
 	Public Const CgURL2 As String         			= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         			= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         			= "/Updates/Images DB.mdb"
@@ -123,8 +123,8 @@ Public Module clsModule
 	Public Const CgURL17 As String					= "http://mtgm.free.fr"
 	Public Const CgURL18 As String					= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
 	Public Const CgURL19 As String         			= "/Updates/Rulings.xml"
-	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes.log"
-	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF.log"
+	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes r19.log"
+	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF r19.log"
 	Public Const CgDL1 As String         			= "Vérification des mises à jour..."
 	Public Const CgDL2 As String         			= "Téléchargement en cours"
 	Public Const CgDL2b As String         			= "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
@@ -1351,7 +1351,7 @@ Public Module clsModule
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			'Lecture du fichier horodaté sur Internet
 			VpAnswer.Read(VpBuf, 0, 19)
-			Call Date.TryParseExact(New ASCIIEncoding().GetString(VpBuf), "dd/MM/yyyy hh:mm:ss", New CultureInfo("fr-FR"), DateTimeStyles.None, VgRemoteDate)
+			Call Date.TryParseExact(New ASCIIEncoding().GetString(VpBuf), "dd/MM/yyyy HH:mm:ss", New CultureInfo("fr-FR"), DateTimeStyles.None, VgRemoteDate)
 			'Si version plus récente
 			If DateTime.Compare(File.GetLastWriteTimeUtc(Application.ExecutablePath), VgRemoteDate) < 0 Then
 				VgTray.Visible = True

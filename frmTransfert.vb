@@ -232,7 +232,7 @@ Public Partial Class frmTransfert
 		Me.Close
 	End Sub
 	Sub CmdOKClick(ByVal sender As Object, ByVal e As EventArgs)
-		If Me.cboSerie.Items.Contains(Me.cboSerie.Text) Then
+		If Me.cboSerie.Items.Contains(Me.cboSerie.Text) AndAlso (Me.cboSerie2.Items.Contains(Me.cboSerie2.Text) OrElse Me.cboSerie2.Text.Trim = "") Then
 			With VmTransfertResult
 				.NCartes = Me.sldQuant.Value
 				If Me.cboSerie.Text.EndsWith(clsModule.CgFoil2) Then
