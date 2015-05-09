@@ -366,6 +366,11 @@ Public Partial Class frmExport
 	Sub FrmExportLoad(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.SourcesLoad
 		Me.TopMost = True
+		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+		If Me.CreateGraphics().DpiX <> 96 Then
+			Me.grpExport.Dock = DockStyle.None
+			Me.grpImport.Dock = DockStyle.None
+		End If
 	End Sub
 	Sub BtExportActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Me.grpExport.Visible = True

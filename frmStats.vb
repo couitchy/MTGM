@@ -227,7 +227,7 @@ Public Partial Class frmStats
 					Exit While
 				End If
 				'Vérification pour les cartes restreintes à un exemplaire
-				If .GetBoolean(1) Then
+				If VpTournoiType = "T1" AndAlso .GetBoolean(1) Then
 					VpHas1ItemRestr = True
 					If .GetInt32(2) > 1 Or VpControl1Item.Contains(.GetString(3)) Then
 						VpGranted = False

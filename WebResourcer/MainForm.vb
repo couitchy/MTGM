@@ -336,7 +336,7 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
-	Private Sub FillPricesHistory
+	Private Sub FillPricesHistory(VpPath As String)
 	'----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	'Actualisation de la table de l'historique des prix : si un prix a changé depuis son dernier enregistrement, ajoute une entrée avec la nouvelle date et le nouveau prix
 	'----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -350,88 +350,89 @@ Public Partial Class MainForm
 	Dim VpEncNbr As Long
 	Dim VpO As Object
 	Dim VpFoilTarget As Boolean = False
-	 	Me.dlgOpen2.FileName = ""
-		Me.dlgOpen2.ShowDialog
-		If Me.dlgOpen2.FileName <> "" Then
-	    	VpPrices = New StreamReader(Me.dlgOpen2.FileName)
-	    	Call Me.AddToLog("La mise à jour de l'historique des prix a commencé...", eLogType.Information, True)
-	    	Me.prgAvance.Style = ProgressBarStyle.Marquee
-			VpDate = VpPrices.ReadLine
-			If Not IsDate(VpDate) Then
-				VpDate = File.GetLastWriteTimeUtc(Me.dlgOpen2.FileName).ToShortDateString
-				VpPrices.BaseStream.Seek(0, SeekOrigin.Begin)
-			End If
-			VpDate = "'" + CDate(VpDate).Day.ToString + "/" + CDate(VpDate).Month.ToString + "/" + CDate(VpDate).Year.ToString.Substring(2, 2) + "'"
-	    	While Not VpPrices.EndOfStream
-	    		Application.DoEvents
-				VpCardData = VpPrices.ReadLine.Split("#")
-				VpCardName = ""
-				VpEdition = ""
-				VpEditionsOK.Clear
-				VpPrice = ""
-				For Each VpStr As String In VpCardData
-					If VpStr.IndexOf("^") <> -1 Then
-						VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
-						If Not VpEditionsOK.Contains(VpEdition) Then	'fait en sorte de ne prendre que le premier prix par édition (correspondant à la qualité de carte NM/MT)
-							VpEditionsOK.Add(VpEdition)
-							VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
-							If VpEdition.EndsWith("PREMIUMFOILVO") Then
-								VpEdition = VpEdition.Replace("PREMIUMFOILVO", "")
-								VpFoilTarget = True
-							Else
-								VpFoilTarget = False
-							End If
+    	VpPrices = New StreamReader(VpPath)
+    	Call Me.AddToLog("La mise à jour de l'historique des prix a commencé...", eLogType.Information, True)
+    	Me.prgAvance.Style = ProgressBarStyle.Marquee
+		VpDate = VpPrices.ReadLine
+		If Not IsDate(VpDate) Then
+			VpDate = File.GetLastWriteTimeUtc(VpPath).ToShortDateString
+			VpPrices.BaseStream.Seek(0, SeekOrigin.Begin)
+		End If
+		VpDate = "'" + CDate(VpDate).Day.ToString + "/" + CDate(VpDate).Month.ToString + "/" + CDate(VpDate).Year.ToString.Substring(2, 2) + "'"
+    	While Not VpPrices.EndOfStream
+    		Application.DoEvents
+			VpCardData = VpPrices.ReadLine.Split("#")
+			VpCardName = ""
+			VpEdition = ""
+			VpEditionsOK.Clear
+			VpPrice = ""
+			For Each VpStr As String In VpCardData
+				If VpStr.IndexOf("^") <> -1 Then
+					VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
+					If Not VpEditionsOK.Contains(VpEdition) Then	'fait en sorte de ne prendre que le premier prix par édition (correspondant à la qualité de carte NM/MT)
+						VpEditionsOK.Add(VpEdition)
+						VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
+						If VpEdition.EndsWith("PREMIUMFOILVO") Then
+							VpEdition = VpEdition.Replace("PREMIUMFOILVO", "")
+							VpFoilTarget = True
+						Else
+							VpFoilTarget = False
+						End If
+						If VpEdition.Contains("...") Then
+							VpEdition = VpEdition.Replace("...", "")
+							VmDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where InStr(Series.SeriesNM_MtG, '" + VpEdition + "') > 0 And Card.Title = '" + VpCardName + "';"
+						Else
 							VmDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
-							VpEncNbr = VmDBCommand.ExecuteScalar
-							If VpEncNbr <> 0 Then
-								If VpFoilTarget Then
-									VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = True Order By PriceDate Desc;"
-									VpO = VmDBCommand.ExecuteScalar
-									If Not VpO Is Nothing Then
-										If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
-											VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", True);"
-											VmDBCommand.ExecuteNonQuery
-											Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
-										End If
-									Else
+						End If	
+						VpEncNbr = VmDBCommand.ExecuteScalar
+						If VpEncNbr <> 0 Then
+							If VpFoilTarget Then
+								VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = True Order By PriceDate Desc;"
+								VpO = VmDBCommand.ExecuteScalar
+								If Not VpO Is Nothing Then
+									If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
 										VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", True);"
 										VmDBCommand.ExecuteNonQuery
-										Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
+										Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
 									End If
 								Else
-									VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = False Order By PriceDate Desc;"
-									VpO = VmDBCommand.ExecuteScalar
-									If Not VpO Is Nothing Then
-										If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
-											VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
-											VmDBCommand.ExecuteNonQuery
-											Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
-										End If
-									Else
-										VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
-										VmDBCommand.ExecuteNonQuery
-										Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
-									End If
+									VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", True);"
+									VmDBCommand.ExecuteNonQuery
+									Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " (foil) : " + VpPrice + "€" , eLogType.Information)
 								End If
 							Else
-								If Array.IndexOf(CmIgnoredEditions, VpEdition) < 0 Then
-									Call Me.AddToLog("Pas de correspondance de prix trouvée pour la carte " + VpCardName + " - " + VpEdition, eLogType.Warning)
+								VmDBCommand.CommandText = "Select Price From PricesHistory Where EncNbr = " + VpEncNbr.ToString + " And Foil = False Order By PriceDate Desc;"
+								VpO = VmDBCommand.ExecuteScalar
+								If Not VpO Is Nothing Then
+									If Format(VpO, "0.00").Replace(",", ".") <> VpPrice Then
+										VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
+										VmDBCommand.ExecuteNonQuery
+										Call Me.AddToLog("Changement de prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
+									End If
+								Else
+									VmDBCommand.CommandText = "Insert Into PricesHistory(EncNbr, PriceDate, Price, Foil) Values (" + VpEncNbr.ToString + ", " + VpDate + ", " + VpPrice + ", False);"
+									VmDBCommand.ExecuteNonQuery
+									Call Me.AddToLog("Nouveau prix pour la carte " + VpCardName + " - " + VpEdition + " : " + VpPrice + "€" , eLogType.Information)
 								End If
 							End If
+						Else
+							If Array.IndexOf(CmIgnoredEditions, VpEdition) < 0 Then
+								Call Me.AddToLog("Pas de correspondance de prix trouvée pour la carte " + VpCardName + " - " + VpEdition, eLogType.Warning)
+							End If
 						End If
-					Else
-						VpCardName = VpStr.Replace("'", "''")
-						Me.txtCur.Text = VpStr
 					End If
-				Next VpStr
-				If Me.btCancel.Tag Then Exit While
-			End While
-			VpPrices.Close
-			If Me.btCancel.Tag Then
-				Call Me.AddToLog("La mise à jour de l'historique des prix a été annulée.", eLogType.Warning, , True)
-			Else
-				Call Me.AddToLog("La mise à jour de l'historique des prix est terminée.", eLogType.Information, , True)
-			End If
+				Else
+					VpCardName = VpStr.Replace("'", "''")
+					Me.txtCur.Text = VpStr
+				End If
+			Next VpStr
+			If Me.btCancel.Tag Then Exit While
+		End While
+		VpPrices.Close
+		If Me.btCancel.Tag Then
+			Call Me.AddToLog("La mise à jour de l'historique des prix a été annulée.", eLogType.Warning, , True)
+		Else
+			Call Me.AddToLog("La mise à jour de l'historique des prix est terminée.", eLogType.Information, , True)
 		End If
 	End Sub
 	Private Sub FixTxtVO
@@ -887,7 +888,7 @@ Public Partial Class MainForm
 			Me.wbMV.Navigate(VpURL)
 		End If
 		While Not VmIsComplete
-			If Now.Subtract(VpStart).TotalSeconds > 5 Then
+			If Now.Subtract(VpStart).TotalSeconds > 10 Then
 				If VpExplicitWaitFor <> "" Then
 					Try
 						If Not Me.wbMV.Document.All Is Nothing Then
@@ -920,7 +921,7 @@ Public Partial Class MainForm
 		VpElement = Me.wbMV.Document.All.GetElementsByName(CmKey0).Item(0)
 		VpElement.SetAttribute("value", VpCard)
 		For Each VpElement In Me.wbMV.Document.All
-			If VpElement.GetAttribute("src").ToLower.Contains("/go.gif") Then
+			If VpElement.GetAttribute("src").ToLower.Contains("/go.png") Then
 				'Validation
 				VpElement.InvokeMember("click")
 				Call Me.BrowseAndWait
@@ -1232,6 +1233,8 @@ Public Partial Class MainForm
 				Return "FromtheVaultAnnihilation#" + VpStr
 			Case "FR"
 				Return "fatereforged#" + VpStr
+			Case "DT"
+				Return "dragonsoftarkir#" + VpStr				
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1422,6 +1425,8 @@ Public Partial Class MainForm
 				Return "V7"
 			Case "fatereforged"
 				Return "FR"
+			Case "dragonsoftarkir"
+				Return "DT"
 			Case Else
 				Return ""
 		End Select
@@ -2131,7 +2136,29 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuPricesHistoryAddClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.FillPricesHistory
+		 	Me.dlgOpen2.FileName = ""
+			Me.dlgOpen2.ShowDialog
+			If Me.dlgOpen2.FileName <> "" Then
+				Call Me.FillPricesHistory(Me.dlgOpen2.FileName)
+			End If
+		End If
+	End Sub
+	Sub MnuPricesHistoryRebuildClick(sender As Object, e As EventArgs)
+	Dim VpDir As DirectoryInfo
+	Dim VpFiles As FileSystemInfo()
+		If Not VmDB Is Nothing Then
+			Me.dlgBrowse.SelectedPath = ""
+			Me.dlgBrowse.ShowDialog
+			If Me.dlgBrowse.SelectedPath <> "" Then
+				VmDBCommand.CommandText = "Delete * From PricesHistory;"
+				VmDBCommand.ExecuteNonQuery
+				VpDir = New DirectoryInfo(Me.dlgBrowse.SelectedPath)
+				VpFiles = VpDir.GetFileSystemInfos("Prices (*.txt")
+				Array.Sort(VpFiles, New clsPriceFilesComparer)
+				For Each VpFile As FileSystemInfo In VpFiles
+					Call Me.FillPricesHistory(VpFile.FullName)
+				Next VpFile
+			End If
 		End If
 	End Sub
 	Sub MnuPicturesFixClick(sender As Object, e As EventArgs)
@@ -2272,4 +2299,10 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Public Class clsPriceFilesComparer
+		Implements IComparer(Of FileSystemInfo)
+		Public Function Compare(ByVal x As FileSystemInfo, ByVal y As FileSystemInfo) As Integer Implements IComparer(Of FileSystemInfo).Compare
+			Return x.LastWriteTime.CompareTo(y.LastWriteTime)
+		End Function
+	End Class
 End Class

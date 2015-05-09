@@ -37,7 +37,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34603
+	Public Const CgCodeLines As Integer   			= 34662
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "04/05/2014"
 	Public Const CgLastUpdateSimu As String			= "05/05/2014"
@@ -248,9 +248,11 @@ Public Module clsModule
 		Force
 		Endurance
 		Prix
-		Edition
+		EditionVO
+		EditionVF
 		Cout
-		Type
+		TypeVO
+		TypeVF
 	End Enum
 	Public Enum eSortCriteria
 		Price
@@ -1936,6 +1938,8 @@ Public Module clsModule
 		Call SecureDelete(Application.StartupPath + CgUpSeries)
 		Call SecureDelete(Application.StartupPath + CgUpPic + CgPicLogExt)
 		Call SecureDelete(Application.StartupPath + CgUpPic + CgPicUpExt)
+		Call SecureDelete(Application.StartupPath + CgMdSubTypes)
+		Call SecureDelete(Application.StartupPath + CgMdSubTypesVF)
 		For Each VpFile As FileInfo In (New DirectoryInfo(Application.StartupPath)).GetFiles("*_en.txt")
 			Call SecureDelete(VpFile.FullName)
 		Next VpFile

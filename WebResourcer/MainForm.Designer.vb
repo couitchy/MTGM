@@ -33,85 +33,86 @@ Partial Class MainForm
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
-		Me.components = New System.ComponentModel.Container
+		Me.components = New System.ComponentModel.Container()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-		Me.menuStrip = New System.Windows.Forms.MenuStrip
-		Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuDBReady = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuINIReady = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeparator = New System.Windows.Forms.ToolStripSeparator
-		Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCards = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtract = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtractAll = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtractDiff = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtractDiff3 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtractDiff4 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtractDiff2 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsExtractDiff5 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuTrad = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsTradTxt = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuExtractTexts = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuCardReplaceTitle = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeriesGenR14 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuSeriesGenR16 = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPricesUpdate = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPricesUpdateAll = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPricesUpdateListe = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuBuildPatch = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPictures = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPicturesUpdate = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPicturesFix = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPicturesDelta = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPicturesNewSP = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuPicturesRevertSP = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
-		Me.toolStrip = New System.Windows.Forms.ToolStrip
-		Me.btDBOpen = New System.Windows.Forms.ToolStripButton
-		Me.btPricesUpdate = New System.Windows.Forms.ToolStripButton
-		Me.btPricesHistoryAdd = New System.Windows.Forms.ToolStripButton
-		Me.btPicturesFix = New System.Windows.Forms.ToolStripButton
-		Me.btCancel = New System.Windows.Forms.ToolStripButton
-		Me.btReplaceTitle = New System.Windows.Forms.ToolStripButton
-		Me.statusStrip = New System.Windows.Forms.StatusStrip
-		Me.prgAvance = New System.Windows.Forms.ProgressBar
-		Me.tabMain = New System.Windows.Forms.TabControl
-		Me.tabStatus = New System.Windows.Forms.TabPage
-		Me.lvwLog = New System.Windows.Forms.ListView
-		Me.colDate = New System.Windows.Forms.ColumnHeader
-		Me.colEvent = New System.Windows.Forms.ColumnHeader
+		Me.menuStrip = New System.Windows.Forms.MenuStrip()
+		Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuDBReady = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuINIReady = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeparator = New System.Windows.Forms.ToolStripSeparator()
+		Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCards = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtract = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractAll = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractDiff = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractDiff3 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractDiff4 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractDiff2 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractDiff5 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuTrad = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsTradTxt = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuExtractTexts = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardReplaceTitle = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeriesSpoilers = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeriesGenR14 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuSeriesGenR16 = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPricesUpdate = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPricesUpdateAll = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPricesUpdateListe = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuBuildPatch = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPictures = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesUpdate = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesFix = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesDelta = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesNewSP = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesRevertSP = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
+		Me.toolStrip = New System.Windows.Forms.ToolStrip()
+		Me.btDBOpen = New System.Windows.Forms.ToolStripButton()
+		Me.btPricesUpdate = New System.Windows.Forms.ToolStripButton()
+		Me.btPricesHistoryAdd = New System.Windows.Forms.ToolStripButton()
+		Me.btPicturesFix = New System.Windows.Forms.ToolStripButton()
+		Me.btCancel = New System.Windows.Forms.ToolStripButton()
+		Me.btReplaceTitle = New System.Windows.Forms.ToolStripButton()
+		Me.statusStrip = New System.Windows.Forms.StatusStrip()
+		Me.prgAvance = New System.Windows.Forms.ProgressBar()
+		Me.tabMain = New System.Windows.Forms.TabControl()
+		Me.tabStatus = New System.Windows.Forms.TabPage()
+		Me.lvwLog = New System.Windows.Forms.ListView()
+		Me.colDate = New System.Windows.Forms.ColumnHeader()
+		Me.colEvent = New System.Windows.Forms.ColumnHeader()
 		Me.imgLst = New System.Windows.Forms.ImageList(Me.components)
-		Me.tabBrowser = New System.Windows.Forms.TabPage
-		Me.wbMV = New System.Windows.Forms.WebBrowser
-		Me.tabInfo = New System.Windows.Forms.TabPage
-		Me.txtETA = New System.Windows.Forms.TextBox
-		Me.lbl2 = New System.Windows.Forms.Label
-		Me.txtCur = New System.Windows.Forms.TextBox
-		Me.lbl1 = New System.Windows.Forms.Label
-		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
-		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
-		Me.dlgOpen2 = New System.Windows.Forms.OpenFileDialog
-		Me.dlgOpen3 = New System.Windows.Forms.OpenFileDialog
-		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog
-		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog
-		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog
-		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog
-		Me.mnuSeriesSpoilers = New System.Windows.Forms.ToolStripMenuItem
+		Me.tabBrowser = New System.Windows.Forms.TabPage()
+		Me.wbMV = New System.Windows.Forms.WebBrowser()
+		Me.tabInfo = New System.Windows.Forms.TabPage()
+		Me.txtETA = New System.Windows.Forms.TextBox()
+		Me.lbl2 = New System.Windows.Forms.Label()
+		Me.txtCur = New System.Windows.Forms.TextBox()
+		Me.lbl1 = New System.Windows.Forms.Label()
+		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgSave = New System.Windows.Forms.SaveFileDialog()
+		Me.dlgOpen2 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgOpen3 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog()
+		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog()
+		Me.mnuPricesHistoryRebuild = New System.Windows.Forms.ToolStripMenuItem()
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -317,6 +318,13 @@ Partial Class MainForm
 		Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
 		Me.mnuSeries.Text = "Séries"
 		'
+		'mnuSeriesSpoilers
+		'
+		Me.mnuSeriesSpoilers.Name = "mnuSeriesSpoilers"
+		Me.mnuSeriesSpoilers.Size = New System.Drawing.Size(432, 22)
+		Me.mnuSeriesSpoilers.Text = "Récupérer les spoilers"
+		AddHandler Me.mnuSeriesSpoilers.Click, AddressOf Me.MnuSeriesSpoilersClick
+		'
 		'mnuSeriesGen
 		'
 		Me.mnuSeriesGen.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGenR14, Me.mnuSeriesGenR16})
@@ -328,14 +336,14 @@ Partial Class MainForm
 		'mnuSeriesGenR14
 		'
 		Me.mnuSeriesGenR14.Name = "mnuSeriesGenR14"
-		Me.mnuSeriesGenR14.Size = New System.Drawing.Size(152, 22)
+		Me.mnuSeriesGenR14.Size = New System.Drawing.Size(93, 22)
 		Me.mnuSeriesGenR14.Text = "R14"
 		AddHandler Me.mnuSeriesGenR14.Click, AddressOf Me.MnuSeriesGenR14Click
 		'
 		'mnuSeriesGenR16
 		'
 		Me.mnuSeriesGenR16.Name = "mnuSeriesGenR16"
-		Me.mnuSeriesGenR16.Size = New System.Drawing.Size(152, 22)
+		Me.mnuSeriesGenR16.Size = New System.Drawing.Size(93, 22)
 		Me.mnuSeriesGenR16.Text = "R17"
 		AddHandler Me.mnuSeriesGenR16.Click, AddressOf Me.MnuSeriesGenR16Click
 		'
@@ -355,7 +363,7 @@ Partial Class MainForm
 		'
 		'mnuPrices
 		'
-		Me.mnuPrices.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPricesUpdate, Me.mnuPricesHistoryAdd, Me.mnuBuildPatch})
+		Me.mnuPrices.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPricesUpdate, Me.mnuPricesHistoryAdd, Me.mnuPricesHistoryRebuild, Me.mnuBuildPatch})
 		Me.mnuPrices.Name = "mnuPrices"
 		Me.mnuPrices.Size = New System.Drawing.Size(152, 22)
 		Me.mnuPrices.Text = "Prix"
@@ -365,7 +373,7 @@ Partial Class MainForm
 		Me.mnuPricesUpdate.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPricesUpdateAll, Me.mnuPricesUpdateListe})
 		Me.mnuPricesUpdate.Image = CType(resources.GetObject("mnuPricesUpdate.Image"),System.Drawing.Image)
 		Me.mnuPricesUpdate.Name = "mnuPricesUpdate"
-		Me.mnuPricesUpdate.Size = New System.Drawing.Size(259, 22)
+		Me.mnuPricesUpdate.Size = New System.Drawing.Size(283, 22)
 		Me.mnuPricesUpdate.Text = "Récupérer les prix"
 		'
 		'mnuPricesUpdateAll
@@ -386,7 +394,7 @@ Partial Class MainForm
 		'
 		Me.mnuPricesHistoryAdd.Image = CType(resources.GetObject("mnuPricesHistoryAdd.Image"),System.Drawing.Image)
 		Me.mnuPricesHistoryAdd.Name = "mnuPricesHistoryAdd"
-		Me.mnuPricesHistoryAdd.Size = New System.Drawing.Size(259, 22)
+		Me.mnuPricesHistoryAdd.Size = New System.Drawing.Size(283, 22)
 		Me.mnuPricesHistoryAdd.Text = "Mettre à jour l'historique de la base"
 		AddHandler Me.mnuPricesHistoryAdd.Click, AddressOf Me.MnuPricesHistoryAddClick
 		'
@@ -394,7 +402,7 @@ Partial Class MainForm
 		'
 		Me.mnuBuildPatch.Image = CType(resources.GetObject("mnuBuildPatch.Image"),System.Drawing.Image)
 		Me.mnuBuildPatch.Name = "mnuBuildPatch"
-		Me.mnuBuildPatch.Size = New System.Drawing.Size(259, 22)
+		Me.mnuBuildPatch.Size = New System.Drawing.Size(283, 22)
 		Me.mnuBuildPatch.Text = "Construction du patch r13"
 		AddHandler Me.mnuBuildPatch.Click, AddressOf Me.MnuBuildPatchClick
 		'
@@ -713,12 +721,12 @@ Partial Class MainForm
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
 		'
-		'mnuSeriesSpoilers
+		'mnuPricesHistoryRebuild
 		'
-		Me.mnuSeriesSpoilers.Name = "mnuSeriesSpoilers"
-		Me.mnuSeriesSpoilers.Size = New System.Drawing.Size(432, 22)
-		Me.mnuSeriesSpoilers.Text = "Récupérer les spoilers"
-		AddHandler Me.mnuSeriesSpoilers.Click, AddressOf Me.MnuSeriesSpoilersClick
+		Me.mnuPricesHistoryRebuild.Name = "mnuPricesHistoryRebuild"
+		Me.mnuPricesHistoryRebuild.Size = New System.Drawing.Size(283, 22)
+		Me.mnuPricesHistoryRebuild.Text = "Reconstruire complètement l'historique"
+		AddHandler Me.mnuPricesHistoryRebuild.Click, AddressOf Me.MnuPricesHistoryRebuildClick
 		'
 		'MainForm
 		'
@@ -747,6 +755,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuPricesHistoryRebuild As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesSpoilers As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesGenR16 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesGenR14 As System.Windows.Forms.ToolStripMenuItem

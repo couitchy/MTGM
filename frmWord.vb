@@ -206,7 +206,11 @@ Public Partial Class frmWord
 		If Me.CreateGraphics().DpiX <> 96 Then
 			Me.grpVignettes.Dock = DockStyle.None
 			Me.grpOptions.Dock = DockStyle.None
+			Me.chklstWord.Dock = DockStyle.None
+			Me.chkAllNone.Dock = DockStyle.None
+			Me.chkAllNone.BringToFront
 			Me.cmdWord.Dock = DockStyle.None
+			Me.cmdWord.BringToFront
 		End If
 	End Sub
 	Private Sub CbarWordMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)

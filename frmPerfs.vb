@@ -644,6 +644,10 @@ Public Partial Class frmPerfs
 	End Sub
 	Sub FrmPerfsLoad(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.GetAllPlayed
+		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+		Me.Width = 448 * Me.CreateGraphics().DpiX / 96
+		Me.cboJeuAdv.MinimumControlWidth = 130 * Me.CreateGraphics().DpiX / 96
+		Me.cboJeuLocal.MinimumControlWidth = 130 * Me.CreateGraphics().DpiX / 96
 	End Sub
 	Sub BtEfficiencyActivate(ByVal sender As Object, ByVal e As EventArgs)
 		If clsModule.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Ceci peut prendre plusieurs secondes...")= System.Windows.Forms.DialogResult.Yes Then
@@ -767,7 +771,7 @@ Public Class clsPerformances
 			End While
 			.Close
 		End With
-		Return VpGames.ToArray	
+		Return VpGames.ToArray
 	End Function	
 	Public Shared Function GetAdvDecks(VpAdvName As String) As String()
 	'---------------------------------------------------------
