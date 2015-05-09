@@ -15,6 +15,7 @@
 '| Release 11     |                        24/01/2012 |
 '| Release 12     |                        01/10/2012 |
 '| Release 13     |                        09/05/2014 |
+'| Release 14     |                        09/05/2015 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -37,15 +38,15 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34662
+	Public Const CgCodeLines As Integer   			= 34695
 	Public Const CGNClasses As Integer   			= 69
-	Public Const CgLastUpdateAut As String			= "04/05/2014"
-	Public Const CgLastUpdateSimu As String			= "05/05/2014"
-	Public Const CgLastUpdateTxtVF As String		= "03/05/2014"
-	Public Const CgLastUpdateRulings As String		= "03/05/2014"
-	Public Const CgLastUpdateTradPatch As String	= "04/05/2014"
-	Public Const CgLastUpdateSubsPatch As String	= "04/05/2014"
-	Public Const CgLastUpdateSubsVFPatch As String	= "04/05/2014"
+	Public Const CgLastUpdateAut As String			= "13/04/2015"
+	Public Const CgLastUpdateSimu As String			= "12/04/2015"
+	Public Const CgLastUpdateTxtVF As String		= "06/04/2015"
+	Public Const CgLastUpdateRulings As String		= "06/04/2015"
+	Public Const CgLastUpdateTradPatch As String	= "24/12/2014"
+	Public Const CgLastUpdateSubsPatch As String	= "04/04/2015"
+	Public Const CgLastUpdateSubsVFPatch As String	= "03/04/2015"
 	Public Const CgProject As String				= "Magic_The_Gathering_Manager.MainForm"
 	Public Const CgMe As String						= "Moi"
 	Public Const CgNCriterions As Integer 			= 8
