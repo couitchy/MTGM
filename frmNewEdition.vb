@@ -589,6 +589,8 @@ Public Class clsMyCard
 			Else
 				Return "T"
 			End If
+		ElseIf VmType.Contains("Token") Then
+			Return "K"
 		ElseIf VmType.Contains("Creature") Or VmType.Contains("Summon") Then
 			If VmCardText.Trim = "" Then
 				Return "C"		'pas de texte : créature "classique"
@@ -650,6 +652,8 @@ Public Class clsMyCard
 			Select Case VpMyType
 				Case "H", "Q", "Y", "P"
 					Return "A"
+				Case "K"
+					Return "T"
 				Case Else
 					Return VpMyType
 			End Select

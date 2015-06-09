@@ -738,7 +738,7 @@ Public Partial Class MainForm
 	Dim VpCheckCard As clsMyCard
 	Dim VpCounter As Integer = 0
 		'Cherche dans la base tous les artefacts de la série concernée
-		VgDBCommand.CommandText = "Select Title From Card Inner Join Series On Card.Series = Series.SeriesCD Where SeriesNM = '" + VpSerie + "' And Type = 'A';"
+		VgDBCommand.CommandText = "Select Title From Card Inner Join Series On Card.Series = Series.SeriesCD Where SeriesNM = '" + VpSerie.Replace("'", "''") + "' And Type = 'A';"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
 			While .Read

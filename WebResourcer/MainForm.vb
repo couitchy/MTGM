@@ -1235,7 +1235,11 @@ Public Partial Class MainForm
 			Case "FR"
 				Return "fatereforged#" + VpStr
 			Case "DT"
-				Return "dragonsoftarkir#" + VpStr				
+				Return "dragonsoftarkir#" + VpStr
+			Case "DJ"
+				Return "DuelDecksKioravsElspeth#" + VpStr
+			Case "MU"
+				Return "modernmasters2015#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1428,6 +1432,10 @@ Public Partial Class MainForm
 				Return "FR"
 			Case "dragonsoftarkir"
 				Return "DT"
+			Case "DuelDecksKioravsElspeth"
+				Return "DJ"
+			Case "modernmasters2015"
+				Return "MU"
 			Case Else
 				Return ""
 		End Select
