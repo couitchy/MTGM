@@ -25,6 +25,7 @@ Imports System.Data.OleDb
 Imports System.Net
 Imports System.IO
 Imports System.Text
+Imports System.Threading
 Public Partial Class MainForm
 	Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
 	Private Const CmStrConn As String		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
@@ -57,6 +58,9 @@ Public Partial Class MainForm
 	Private Const CmKey8D As String  		= "<br><br>"
 	Private Const CmKey8E As String  		= ", <i>"
 	Private Const CmKey8F As String  		= "</i></p>"
+	Private Const CmKey9 As String			= "location=""carte.php"
+	Private Const CmKey9B As String			= "sultats de la recherche"
+	Private Const CmKey9C As String			= "0 cartes trouv"
 	Private Const CmFrench  As Integer 		= 2
 	Private Const CmMe As String			= "Moi"
 	Private Const CmStamp As String			= "ContenuStamp r14.txt"
@@ -945,7 +949,12 @@ Public Partial Class MainForm
 				Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml)
 			End If
 		Next VpElement
-		Return ""
+		If Me.wbMV.DocumentText.Contains(CmKey9) OrElse (Me.wbMV.DocumentText.Contains(CmKey9B) And Not Me.wbMV.DocumentText.Contains(CmKey9C)) Then
+			Thread.Sleep(1000)
+			Return "Retry"
+		Else
+			Return ""
+		End If
 	End Function
 	Private Function TournoiFormat(VpStr As String) As String
 	Dim VpStrs() As String
@@ -974,6 +983,7 @@ Public Partial Class MainForm
 	Dim VpAppend As Boolean
 	Dim VpAlready() As String
 	Dim VpLast As String = ""
+	Dim VpCount As Integer
 		Me.dlgSave.FileName = ""
 		Me.dlgSave.ShowDialog
 		If Me.dlgSave.FileName <> "" Then
@@ -1019,8 +1029,13 @@ Public Partial Class MainForm
 			For Each VpCard As String In VpCards
 				Me.txtCur.Text = VpCard
 				Application.DoEvents
-				VpAut = Me.GetAutorisations(VpCard)
-				If VpAut <> "" Then
+				VpAut = "Retry"
+				VpCount = 0
+				While VpAut = "Retry" Or VpCount = 3
+					VpAut = Me.GetAutorisations(VpCard)
+					VpCount += 1
+				End While
+				If VpAut <> "" And VpAut <> "Retry" Then
 					VpOut.WriteLine(VpCard + "#" + VpAut)
 				Else
 					Call Me.AddToLog("Impossible de récupérer les autorisations de tournois pour la carte : " + VpCard, eLogType.Warning)
@@ -1240,6 +1255,8 @@ Public Partial Class MainForm
 				Return "DuelDecksKioravsElspeth#" + VpStr
 			Case "MU"
 				Return "modernmasters2015#" + VpStr
+			Case "OR"
+				Return "origins#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1436,6 +1453,8 @@ Public Partial Class MainForm
 				Return "DJ"
 			Case "modernmasters2015"
 				Return "MU"
+			Case "origins"
+				Return "OR"
 			Case Else
 				Return ""
 		End Select

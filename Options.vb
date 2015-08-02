@@ -66,13 +66,17 @@ Public Partial Class Options
     Dim VpXmlSerializer As XmlSerializer
     Dim VpFile As FileStream
     Dim VpReader As XmlTextReader
-		If File.Exists(Application.StartupPath + clsModule.CgXMLFile) Then
-		    VpXmlSerializer = New XmlSerializer(GetType(clsSettings))
-		    VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Open)
-		    VpReader = New XmlTextReader(VpFile)
-	   		VgSettings = CType(VpXmlSerializer.Deserialize(VpReader), clsSettings)
-	        VpReader.Close
-	   	    VpFile.Close
+	    If File.Exists(Application.StartupPath + clsModule.CgXMLFile) Then
+	    	Try
+			    VpXmlSerializer = New XmlSerializer(GetType(clsSettings))
+			    VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Open)
+			    VpReader = New XmlTextReader(VpFile)
+		   		VgSettings = CType(VpXmlSerializer.Deserialize(VpReader), clsSettings)
+		        VpReader.Close
+		        VpFile.Close
+	    	Catch
+	    		Call clsModule.ShowWarning(clsModule.CgErr11)
+	    	End Try
 		ElseIf File.Exists(Application.StartupPath + clsModule.CgINIFile) Then
 			Call clsModule.ShowInformation(clsModule.CgErr8)
 		End If

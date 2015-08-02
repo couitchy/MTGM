@@ -38,7 +38,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34707
+	Public Const CgCodeLines As Integer   			= 34730
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -145,7 +145,7 @@ Public Module clsModule
 	Public Const CgErr8 As String					= "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
 	Public Const CgErr9 As String					= "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."
 	Public Const CgErr10 As String					= "La zone 'Regard' doit être vide pour pouvoir afficher la Réserve..."
-	Public Const CgErr11 As String					= "Impossible de sauvegarder les préférences..."
+	Public Const CgErr11 As String					= "Impossible de modifier les préférences..."
 	Public Const CgFExtO As String					= ".dck"
 	Public Const CgFExtN As String					= ".dk2"
 	Public Const CgFExtA As String					= ".dec"
