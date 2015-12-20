@@ -98,7 +98,7 @@ Public Partial Class frmExport
 	'--------------------------------------------------------------------------------------------------
 	'Importe le fichier spécifié à la destination spécifiée (collection ou nouveau deck ou ancien deck)
 	'--------------------------------------------------------------------------------------------------
-	Dim VpIn As New StreamReader(VpPath)
+	Dim VpIn As StreamReader
 	Dim VpReader As XmlTextReader
 	Dim VpLog As StreamWriter
 	Dim VpConverted As StreamWriter
@@ -115,18 +115,25 @@ Public Partial Class frmExport
 	Dim VpQteFoil As Integer
 	Dim VpNeedLog As Boolean = False
 		Cursor.Current = Cursors.WaitCursor
+		VpIn = New StreamReader(VpPath.ToLower.Replace(clsModule.CgFExtX, clsModule.CgFExtO))
 		'S'il s'agit d'un nouveau deck, l'inscrit en BDD
 		If VpIsNew Then
 			VpId = clsModule.GetNewDeckId
 			VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpSource.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '', Null, False);"
 			VgDBCommand.ExecuteNonQuery
-		End If
-		'** Gestion format MTGM **
+		End If 
+		'** Gestion formats MTGM **
 		Select Case VpPath.Substring(VpPath.LastIndexOf(".")).ToLower
 			Case clsModule.CgFExtO, clsModule.CgFExtN
+				VpStrs = VpIn.ReadLine.Split("#")
+				'Vérifie qu'il n'y a pas une confusion avec le format XMage
+				If VpStrs.Length < 2 AndAlso VpStrs(0).Contains(":") Then
+					VpIn.Close
+					Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtO, clsModule.CgFExtX), VpSource, False)
+					Exit Sub
+				End If
 				'Lecture du fichier d'entrée et ajout dans la base de données
-				While Not VpIn.EndOfStream
-					VpStrs = VpIn.ReadLine.Split("#")
+				While True
 					VpName = VpStrs(0)
 					VpEdition = VpStrs(1)
 					'Pré-traitement 1 : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et sa série
@@ -180,6 +187,8 @@ Public Partial Class frmExport
 					Else
 						Call clsModule.ShowWarning("Impossible d'importer : " + VpName + " (" + VpEdition.ToUpper + ")")
 					End If
+					If VpIn.EndOfStream Then Exit While
+					VpStrs = VpIn.ReadLine.Split("#")
 				End While
 				VpIn.Close
 			'** Gestion format Magic Master **
@@ -240,10 +249,10 @@ Public Partial Class frmExport
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
 				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtM, clsModule.CgFExtO), VpSource, False)
-			'** Gestion format Magic Workstation **
-			Case clsModule.CgFExtW.ToLower
-				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgPicLogExt))
-				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgFExtO))
+			'** Gestion formats Magic Workstation ou XMage **
+			Case clsModule.CgFExtW.ToLower, clsModule.CgFExtX
+				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgPicLogExt).Replace(clsModule.CgFExtX, clsModule.CgPicLogExt))
+				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, ".2" + clsModule.CgFExtO).Replace(clsModule.CgFExtX, ".2" + clsModule.CgFExtO))
 				While Not VpIn.EndOfStream
 					VpStr = VpIn.ReadLine
 					If VpStr.Contains("[") Then
@@ -253,6 +262,10 @@ Public Partial Class frmExport
 						VpEdition = VpStr.Substring(VpStr.IndexOf("[") + 1)
 						VpEdition = VpEdition.Substring(0, VpEdition.IndexOf("]"))
 						VpName = VpStr.Substring(VpStr.IndexOf("]") + 1).Trim
+						'Particularité XMage
+						If VpEdition.Contains(":") Then
+							VpEdition = VpEdition.Substring(0, VpEdition.IndexOf(":"))
+						End If
 						'Exact match
 						VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MW = '" + VpEdition + "';"
 						VpO = VgDBCommand.ExecuteScalar
@@ -272,16 +285,17 @@ Public Partial Class frmExport
 						End If
 					End If
 				End While
+				VpStr = CType(VpConverted.BaseStream, FileStream).Name
 				VpConverted.Close
 				VpLog.Close
 				VpIn.Close
 				If VpNeedLog Then
 					If clsModule.ShowQuestion("Certaines cartes n'ont pas été trouvées..." + vbCrLf + "Voulez-vous afficher le journal ?") = System.Windows.Forms.DialogResult.Yes Then
-						Process.Start(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgPicLogExt))
+						Process.Start(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgPicLogExt).Replace(clsModule.CgFExtX, clsModule.CgPicLogExt))
 					End If
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
-				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtW.ToLower, clsModule.CgFExtO), VpSource, False)
+				Call Me.GoImport(VpStr, VpSource, False)
 			'** Gestion format Magic Online **
 			Case clsModule.CgFExtL
 				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgPicLogExt))

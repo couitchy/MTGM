@@ -98,6 +98,8 @@ Partial Class MainForm
 		Me.mnuRemCollec = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuRemGames = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixTable = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFixTxtVF = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFixSubTypes = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixPrices = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixFR = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixCreatures = New System.Windows.Forms.ToolStripMenuItem
@@ -838,11 +840,25 @@ Partial Class MainForm
 		'
 		'mnuFixTable
 		'
-		Me.mnuFixTable.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixPrices, Me.mnuFixFR, Me.mnuFixCreatures, Me.mnuFixSerie, Me.mnuFixSerie2, Me.mnuSeparator10, Me.mnuFixCollec, Me.mnuFixGames})
+		Me.mnuFixTable.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixTxtVF, Me.mnuFixSubTypes, Me.mnuFixPrices, Me.mnuFixFR, Me.mnuFixCreatures, Me.mnuFixSerie, Me.mnuFixSerie2, Me.mnuSeparator10, Me.mnuFixCollec, Me.mnuFixGames})
 		Me.mnuFixTable.Image = CType(resources.GetObject("mnuFixTable.Image"),System.Drawing.Image)
 		Me.mnuFixTable.Name = "mnuFixTable"
 		Me.mnuFixTable.Size = New System.Drawing.Size(277, 22)
 		Me.mnuFixTable.Text = "Réparer la table..."
+		'
+		'mnuFixTxtVF
+		'
+		Me.mnuFixTxtVF.Name = "mnuFixTxtVF"
+		Me.mnuFixTxtVF.Size = New System.Drawing.Size(206, 22)
+		Me.mnuFixTxtVF.Text = "Textes VF"
+		AddHandler Me.mnuFixTxtVF.Click, AddressOf Me.MnuFixTxtVFActivate
+		'
+		'mnuFixSubTypes
+		'
+		Me.mnuFixSubTypes.Name = "mnuFixSubTypes"
+		Me.mnuFixSubTypes.Size = New System.Drawing.Size(206, 22)
+		Me.mnuFixSubTypes.Text = "Sous-types"
+		AddHandler Me.mnuFixSubTypes.Click, AddressOf Me.MnuFixSubTypesActivate
 		'
 		'mnuFixPrices
 		'
@@ -2095,6 +2111,8 @@ Partial Class MainForm
 	Private mnuFixFR As System.Windows.Forms.ToolStripMenuItem
 	Private mnuDBSelect As System.Windows.Forms.ToolStripMenuItem
 	Private mnuTranslate As System.Windows.Forms.ToolStripMenuItem
+	Private mnuFixTxtVF As System.Windows.Forms.ToolStripMenuItem
+	Private mnuFixSubTypes As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFixPrices As System.Windows.Forms.ToolStripMenuItem
 	Private mnuNewEdition As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFixGames As System.Windows.Forms.ToolStripMenuItem

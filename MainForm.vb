@@ -362,7 +362,7 @@ Public Partial Class MainForm
 		With VgDBReader
 			While .Read
 				For Each VpTxtFR As clsTxtFR In VpTrad
-					If VpTxtFR.CardName = .GetString(0) Then
+					If VpTxtFR.CardName = .GetString(0) AndAlso VpTxtFR.Already = clsTxtFR.eTxtState.Neww Then
 						VpTxtFR.Already = VpState
 						Me.prgAvance.Increment(1)
 '						VgBar.Increment(1)
@@ -445,11 +445,11 @@ Public Partial Class MainForm
 '		VgBar.ShowInTaskbar = True
 		'Par défaut on considère qu'on a rien
 		'Regarde celles qu'on a déjà et qu'il faut mettre à jour
-		VgDBCommand.CommandText = "Select TextesFR.CardName From (TextesFR Inner Join Card On Card.Title = TextesFR.CardName) Where TextesFR.TexteFR = Card.CardText Or Trim(TextesFR.TexteFR) = '';"
+		VgDBCommand.CommandText = "Select TextesFR.CardName From (TextesFR Inner Join Card On Card.Title = TextesFR.CardName) Where TextesFR.TexteFR = Card.CardText Or Trim(TextesFR.TexteFR) = '' Or TextesFR.TexteFR Is Null;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		Call Me.MarkAs(VpTrad, clsTxtFR.eTxtState.Update)
 		'Regarde celles qu'on a déjà et qui sont déjà traduites
-		VgDBCommand.CommandText = "Select TextesFR.CardName From (TextesFR Inner Join Card On Card.Title = TextesFR.CardName) Where TextesFR.TexteFR <> Card.CardText And Trim(TextesFR.TexteFR) <> '';"
+		VgDBCommand.CommandText = "Select TextesFR.CardName From (TextesFR Inner Join Card On Card.Title = TextesFR.CardName) Where TextesFR.TexteFR <> Card.CardText And Trim(TextesFR.TexteFR) <> '' And Not TextesFR.TexteFR Is Null;"
 		VgDBReader = VgDBCommand.ExecuteReader
 		Call Me.MarkAs(VpTrad, clsTxtFR.eTxtState.Ok)
 		Call Me.InitBars(VpTrad.Count)
@@ -461,8 +461,8 @@ Public Partial Class MainForm
 						VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpTxtFR.CardName.Replace("'", "''") + "', '" + VpTxtFR.Texte.Replace("'", "''") + "');"
 						VgDBCommand.ExecuteNonQuery
 						VpCountN = VpCountN + 1
-					Catch
-						'Call clsModule.ShowWarning("Erreur lors de la mise à jour de la carte " + VpTxtFR.CardName + "...")
+			    	Catch VpErr As Exception
+			    		'Call clsModule.ShowWarning("Erreur lors de l'insertion de la traduction de " + VpTxtFR.CardName + "..." + vbCrLf + vbCrLf + "Détails : " + VpErr.Message)
 					End Try
 				ElseIf VpTxtFR.Already = clsTxtFR.eTxtState.Update Then
 					VgDBCommand.CommandText = "Update TextesFR Set TexteFR = '" + VpTxtFR.Texte.Replace("'", "''") + "' Where CardName = '" + VpTxtFR.CardName.Replace("'", "''") + "';"
@@ -476,7 +476,7 @@ Public Partial Class MainForm
 		Next VpTxtFR
 		Me.IsMainReaderBusy = False
 		If Not VpSilent Then
-			Call clsModule.ShowInformation("Mise à jour des textes terminée !" + vbCrLf + VpCountN.ToString + " nouvelle(s) traduction(s)" + vbCrLf + VpCountU.ToString + " mise(s) à jour")
+			Call clsModule.ShowInformation("Mise à jour des textes terminée !" + vbCrLf + VpCountN.ToString + " nouvelle(s) insertion(s)" + vbCrLf + VpCountU.ToString + " nouvelle(s) traduction(s)" + vbCrLf + (VpTrad.Count - VpCountN - VpCountU).ToString + " traduction(s) déjà à jour")
 		End If
 		Me.prgAvance.Visible = False
 '		VgBar.ShowInTaskbar = False
@@ -628,6 +628,13 @@ Public Partial Class MainForm
 		VgDBCommand.CommandText = "Update Card Set PriceDate = #01/01/01# Where PriceDate > Date();"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
+	Private Sub FixSubTypesDB
+	'-------------------------------------------------------------
+	'Remplace la majorité des sous-types d'enchantement par 'Aura'
+	'-------------------------------------------------------------
+		VgDBCommand.CommandText = "Update Card Set SubType = 'Aura' Where Type = 'E' And (SubType = 'Artifact' Or SubType = 'Artifact Creature' Or SubType = 'Creature' Or SubType = 'Dead Creature' Or SubType = 'Equipment' Or SubType = 'Land' Or SubType = 'Leg.Land' Or SubType = 'Mountain'  Or SubType = 'Permanent' Or SubType = 'Player' Or SubType = 'Wall');"
+		VgDBCommand.ExecuteNonQuery
+	End Sub
 	Private Sub FixFR
 	'--------------------------------------------------------------------------------------------
 	'Remplace une traduction vide par son original anglais
@@ -673,6 +680,16 @@ Public Partial Class MainForm
 		End If
 		Return True
 	End Function
+	Private Sub FixFR3
+	'------------------------------------------
+	'Remplace les textes VF par leur version VO
+	'------------------------------------------
+		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText;"
+		VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'C4' Or Card.Series = 'DH' Or Card.Series = 'V7' Or Card.Series = 'FR' Or Card.Series = 'DT' Or Card.Series = 'MU' Or Card.Series = 'DJ' Or Card.Series = 'OR' Or Card.Series = 'V8' Or Card.Series = 'BZ' Or Card.Series = 'DC' Or Card.Series = 'C5';"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"
+		VgDBCommand.ExecuteNonQuery
+	End Sub
 	Public Function FixSubTypes As Boolean
 	'-----------------------------------------------------------------
 	'Télécharge et installe un correctif pour les sous-types en défaut
@@ -3026,6 +3043,20 @@ Public Partial Class MainForm
 			VpNewEdition = New frmNewEdition
 			VpNewEdition.ShowDialog
 			Call clsModule.LoadIcons(Me.imglstTvw)		'Recharge les icônes au cas où de nouveaux logos auraient été ajoutés lors de la procédure
+		End If
+	End Sub
+	Sub MnuFixTxtVFActivate(ByVal sender As Object, ByVal e As EventArgs)
+		If clsModule.DBOK Then
+			If MessageBox.Show("Cette opération peut prendre beaucoup de temps..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+				Call Me.FixFR3
+				Call clsModule.ShowInformation("Les textes des cartes en français ont été réinitialisés..." + vbCrLf + "Relancer la mise à jour des textes des cartes en VF pour terminer.")
+			End If
+		End If
+	End Sub
+	Sub MnuFixSubTypesActivate(ByVal sender As Object, ByVal e As EventArgs)
+		If clsModule.DBOK Then
+			Call Me.FixSubTypesDB
+			Call clsModule.ShowInformation("Terminé !")
 		End If
 	End Sub
 	Sub MnuFixPricesActivate(ByVal sender As Object, ByVal e As EventArgs)

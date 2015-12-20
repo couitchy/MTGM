@@ -56,6 +56,8 @@ Partial Class MainForm
 		Me.mnuExtractTexts = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCheckTrad = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCompareTrad = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem()
@@ -240,7 +242,7 @@ Partial Class MainForm
 		'
 		'mnuTrad
 		'
-		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles})
+		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad})
 		Me.mnuTrad.Image = CType(resources.GetObject("mnuTrad.Image"),System.Drawing.Image)
 		Me.mnuTrad.Name = "mnuTrad"
 		Me.mnuTrad.Size = New System.Drawing.Size(278, 22)
@@ -273,6 +275,20 @@ Partial Class MainForm
 		Me.mnuBuildTitles.Size = New System.Drawing.Size(398, 22)
 		Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une série depuis la base"
 		AddHandler Me.mnuBuildTitles.Click, AddressOf Me.MnuBuildTitlesClick
+		'
+		'mnuCheckTrad
+		'
+		Me.mnuCheckTrad.Name = "mnuCheckTrad"
+		Me.mnuCheckTrad.Size = New System.Drawing.Size(398, 22)
+		Me.mnuCheckTrad.Text = "Vérifier la cohérence d'un fichier de traduction"
+		AddHandler Me.mnuCheckTrad.Click, AddressOf Me.MnuCheckTradClick
+		'
+		'mnuCompareTrad
+		'
+		Me.mnuCompareTrad.Name = "mnuCompareTrad"
+		Me.mnuCompareTrad.Size = New System.Drawing.Size(398, 22)
+		Me.mnuCompareTrad.Text = "Comparaison interactive de traductions"
+		AddHandler Me.mnuCompareTrad.Click, AddressOf Me.MnuCompareTradClick
 		'
 		'mnuCardsAut
 		'
@@ -771,6 +787,8 @@ Partial Class MainForm
 	Private mnuFindHoles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCheckTrad As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCompareTrad As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff4 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff3 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff As System.Windows.Forms.ToolStripMenuItem

@@ -58,9 +58,6 @@ Public Partial Class MainForm
 	Private Const CmKey8D As String  		= "<br><br>"
 	Private Const CmKey8E As String  		= ", <i>"
 	Private Const CmKey8F As String  		= "</i></p>"
-	Private Const CmKey9 As String			= "location=""carte.php"
-	Private Const CmKey9B As String			= "sultats de la recherche"
-	Private Const CmKey9C As String			= "0 cartes trouv"
 	Private Const CmFrench  As Integer 		= 2
 	Private Const CmMe As String			= "Moi"
 	Private Const CmStamp As String			= "ContenuStamp r14.txt"
@@ -579,7 +576,11 @@ Public Partial Class MainForm
 				    	'Card
 				    	VmDBCommand.CommandText = "Update Card Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
 				    	VmDBCommand.ExecuteNonQuery
-						Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Card", eLogType.Information)
+				    	Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Card", eLogType.Information)
+				    	'CardFR (pour le cas où la carte n'a pas de traduction VF)
+				    	VmDBCommand.CommandText = "Update CardFR Set TitleFR = '" + VpNewTitle + "' Where TitleFR = '" + VpOldTitle + "';"
+				    	VmDBCommand.ExecuteNonQuery
+						Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table CardFR", eLogType.Information)
 				    	'CardPictures
 				    	Try
 					    	VmDBCommand.CommandText = "Update CardPictures Set Title = '" + VpNewTitle + "' Where Title = '" + VpOldTitle + "';"
@@ -596,9 +597,7 @@ Public Partial Class MainForm
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Creature", eLogType.Information)
 						Catch
-					    	VmDBCommand.CommandText = "Delete * From Creature Where Title = '" + VpOldTitle + "';"
-					    	VmDBCommand.ExecuteNonQuery
-							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Creature afin d'éviter un doublon", eLogType.Information)
+							Call Me.AddToLog("Impossible de mettre à jour dans la table Creature : il faut supprimer temporairement l'intégrité référentielle", eLogType.Warning)
 						End Try
 				    	'Spell
 				    	Try
@@ -606,9 +605,7 @@ Public Partial Class MainForm
 					    	VmDBCommand.ExecuteNonQuery
 							Call Me.AddToLog(VpOldTitle + " remplacée par " + VpNewTitle + " dans la table Spell", eLogType.Information)
 						Catch
-					    	VmDBCommand.CommandText = "Delete * From Spell Where Title = '" + VpOldTitle + "';"
-					    	VmDBCommand.ExecuteNonQuery
-							Call Me.AddToLog(VpOldTitle + " supprimée dans la table Spell afin d'éviter un doublon", eLogType.Information)
+							Call Me.AddToLog("Impossible de mettre à jour dans la table Spell : il faut supprimer temporairement l'intégrité référentielle", eLogType.Warning)
 						End Try
 				    	'TextesFR
 				    	Try
@@ -830,6 +827,8 @@ Public Partial Class MainForm
 				VpStr = VpStr.Replace("<img src=""images/smileys/", "!")
 				VpStr = VpStr.Replace("<img src=""/images/smileys/", "!")
 				VpStr = VpStr.Replace(".gif""  border=""0"" style=""vertical-align: text-bottom;"" alt="""" />", "!")
+				VpStr = VpStr.Replace("<br />" + vbCrLf, vbCrLf)
+				VpStr = VpStr.Replace(vbCrLf + "<br />", vbCrLf)
 				VpStr = VpStr.Replace("<br />", vbCrLf)
 				Return VpStr
 			End If
@@ -920,41 +919,40 @@ Public Partial Class MainForm
 	'------------------------------------------------------------
 	Dim VpElement As HtmlElement
 	Dim VpLastId As Integer = 0
-		'Site de Magic-Ville
-		Call Me.BrowseAndWait(CmURL0, CmKey0)
-		'Saisie de la carte dans la zone de recherche
-		VpElement = Me.wbMV.Document.All.GetElementsByName(CmKey0).Item(0)
-		VpElement.SetAttribute("value", VpCard)
-		For Each VpElement In Me.wbMV.Document.All
-			If VpElement.GetAttribute("src").ToLower.Contains("/go.png") Then
-				'Validation
-				VpElement.InvokeMember("click")
-				Call Me.BrowseAndWait
-				Exit For
-			End If
-		Next VpElement
-		'Page intermédiaire (ne s'affiche qu'en cas d'ambiguité)
-		For Each VpElement In Me.wbMV.Document.All
-			If VpElement.GetAttribute("href") <> "" AndAlso Not VpElement.InnerText Is Nothing Then
-				If VpElement.InnerText.ToLower.Trim = VpCard.ToLower Then
+		Try
+			'Site de Magic-Ville
+			Call Me.BrowseAndWait(CmURL0, CmKey0)
+			'Saisie de la carte dans la zone de recherche
+			VpElement = Me.wbMV.Document.All.GetElementsByName(CmKey0).Item(0)
+			VpElement.SetAttribute("value", VpCard)
+			For Each VpElement In Me.wbMV.Document.All
+				If VpElement.GetAttribute("src").ToLower.Contains("/go.png") Then
 					'Validation
 					VpElement.InvokeMember("click")
 					Call Me.BrowseAndWait
 					Exit For
 				End If
-			End If
-		Next VpElement
-		For Each VpElement In Me.wbMV.Document.All
-			If VpElement.InnerText = "Autorisations en Tournois" Then
-				Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml)
-			End If
-		Next VpElement
-		If Me.wbMV.DocumentText.Contains(CmKey9) OrElse (Me.wbMV.DocumentText.Contains(CmKey9B) And Not Me.wbMV.DocumentText.Contains(CmKey9C)) Then
-			Thread.Sleep(1000)
-			Return "Retry"
-		Else
-			Return ""
-		End If
+			Next VpElement
+			'Page intermédiaire (ne s'affiche qu'en cas d'ambiguité)
+			For Each VpElement In Me.wbMV.Document.All
+				If VpElement.GetAttribute("href") <> "" AndAlso Not VpElement.InnerText Is Nothing Then
+					If VpElement.InnerText.ToLower.Trim = VpCard.ToLower Then
+						'Validation
+						VpElement.InvokeMember("click")
+						Call Me.BrowseAndWait
+						Exit For
+					End If
+				End If
+			Next VpElement
+			For Each VpElement In Me.wbMV.Document.All
+				If VpElement.InnerText = "Autorisations en Tournois" Then
+					Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml)
+				End If
+			Next VpElement
+		Catch
+		End Try
+		Thread.Sleep(2000)
+		Return ""
 	End Function
 	Private Function TournoiFormat(VpStr As String) As String
 	Dim VpStrs() As String
@@ -1029,13 +1027,13 @@ Public Partial Class MainForm
 			For Each VpCard As String In VpCards
 				Me.txtCur.Text = VpCard
 				Application.DoEvents
-				VpAut = "Retry"
+				VpAut = ""
 				VpCount = 0
-				While VpAut = "Retry" Or VpCount = 3
+				While VpAut = "" And VpCount < 10
 					VpAut = Me.GetAutorisations(VpCard)
 					VpCount += 1
 				End While
-				If VpAut <> "" And VpAut <> "Retry" Then
+				If VpAut <> "" Then
 					VpOut.WriteLine(VpCard + "#" + VpAut)
 				Else
 					Call Me.AddToLog("Impossible de récupérer les autorisations de tournois pour la carte : " + VpCard, eLogType.Warning)
@@ -1257,6 +1255,14 @@ Public Partial Class MainForm
 				Return "modernmasters2015#" + VpStr
 			Case "OR"
 				Return "origins#" + VpStr
+			Case "DC"
+				Return "DuelDecksZendikarvsEldrazi#" + VpStr
+			Case "V8"
+				Return "FromtheVaultAngels#" + VpStr
+			Case "BZ"
+				Return "battleforzendikar#" + VpStr
+			Case "C5"
+				Return "commander2015#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1455,6 +1461,14 @@ Public Partial Class MainForm
 				Return "MU"
 			Case "origins"
 				Return "OR"
+			Case "DuelDecksZendikarvsEldrazi"
+				Return "DC"
+			Case "FromtheVaultAngels"
+				Return "V8"
+			Case "battleforzendikar"
+				Return "BZ"
+			Case "commander2015"
+				Return "C5"
 			Case Else
 				Return ""
 		End Select
@@ -1737,6 +1751,132 @@ Public Partial Class MainForm
 				Call Me.AddToLog("L'extraction des textes des cartes en français a été annulée.", eLogType.Warning, , True)
 			Else
 				Call Me.AddToLog("L'extraction des textes des cartes en français est terminée.", eLogType.Information, , True)
+			End If
+		End If
+	End Sub
+	Private Sub CompareTexts
+	'------------------------------------------------------------------------------------------------------------------------
+	'Comparaison interactive d'un fichier de textes des cartes en français avec leur version courante dans la base de données
+	'------------------------------------------------------------------------------------------------------------------------
+	Dim VpTxt As StreamReader
+	Dim VpStrs() As String
+	Dim VpItem() As String
+	Dim VpTrad As New Hashtable
+	Dim VpTradDB As New Hashtable
+	Dim VpTitle As String
+	Dim VpO As Object
+		Me.dlgOpen2.FileName = ""
+		Me.dlgOpen2.ShowDialog
+		If Me.dlgOpen2.FileName <> "" Then
+			VpTxt = New StreamReader(Me.dlgOpen2.FileName)
+			VpStrs = VpTxt.ReadToEnd.Split(New String() {"##"}, StringSplitOptions.None)
+			'Parse le contenu du fichier
+			For VpI As Integer = 1 To VpStrs.Length - 1
+				VpItem = VpStrs(VpI).Split(New String() {"^^"}, StringSplitOptions.None)
+				VpTrad.Add(VpItem(0), VpItem(1))
+			Next VpI
+			VpTxt.Close
+			'Pareil pour la base de données
+	    	VmDBCommand.CommandText = "Select Card.Title, TextesFR.TexteFR From Card Inner Join TextesFR On Card.Title = TextesFR.CardName"
+	    	VmDBReader = VmDBCommand.ExecuteReader
+			With VmDBReader
+				While .Read
+					If Not VpTradDB.ContainsKey(.GetString(0)) And Not .IsDBNull(1) Then
+						VpTradDB.Add(.GetString(0), .GetString(1))
+					End If
+				End While
+				.Close
+			End With
+			'Changement interactif
+			Call Me.AddToLog("La modification interactive des traductions a commencé...", eLogType.Information, True)
+			While MessageBox.Show("Voulez-vous changer une traduction ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes
+				VpTitle = InputBox("Quel est le nom de la carte dont la traduction à remplacer ?", "Mise à jour de texte", "(carte)")
+				If VpTitle <> "" Then
+					VmDBCommand.CommandText = "Select Title From Card Where InStr(UCase(Title), '" + VpTitle.Replace("'", "''").ToUpper + "') > 0;"
+					VpO = VmDBCommand.ExecuteScalar
+					If Not VpO Is Nothing
+						VpTitle = VpO.ToString
+						If MessageBox.Show("Carte correspondante trouvée : " + VpTitle + vbCrLf + "Voulez-vous changer son texte traduit VF ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+							If VpTrad.ContainsKey(VpTitle) Then
+								VmDBCommand.CommandText = "Update TextesFR Set TexteFR = '" + VpTrad.Item(VpTitle).Replace("'", "''")  + "' Where CardName = '" + VpTitle.Replace("'", "''") + "';"
+								VmDBCommand.ExecuteNonQuery
+								Call Me.AddToLog("Texte VF mis à jour pour la carte : " + VpTitle, eLogType.Information)
+							Else
+								Call Me.AddToLog("Texte VF non trouvé dans le fichier pour la carte : " + VpTitle, eLogType.Warning)
+							End If
+						End If
+					End If
+				End If						
+			End While
+			Call Me.AddToLog("La modification interactive des traductions est terminée.", eLogType.Information, , True)
+		End If
+	End Sub
+	Private Sub CheckTexts
+	'------------------------------------------------------------------
+	'Vérifie la cohérence d'un fichier de textes des cartes en français
+	'------------------------------------------------------------------
+	Dim VpTxt As StreamReader
+	Dim VpStrs() As String
+	Dim VpItem() As String
+	Dim VpTrad As New SortedList(Of String, String)
+	Dim VpFR As String
+	Dim VpToRemove As New List(Of String)
+	Dim VpOut As StreamWriter
+		Me.dlgOpen2.FileName = ""
+		Me.dlgOpen2.ShowDialog
+		If Me.dlgOpen2.FileName <> "" Then
+			Me.dlgSave.FileName = ""
+			Me.dlgSave.ShowDialog
+			If Me.dlgSave.FileName <> "" Then
+				Call Me.AddToLog("La vérification du fichier des traductions a commencé...", eLogType.Information, True)
+				VpTxt = New StreamReader(Me.dlgOpen2.FileName)
+				VpStrs = VpTxt.ReadToEnd.Split(New String() {"##"}, StringSplitOptions.None)
+				'Parse le contenu du fichier
+				For VpI As Integer = 1 To VpStrs.Length - 1
+					VpItem = VpStrs(VpI).Split(New String() {"^^"}, StringSplitOptions.None)
+					VpTrad.Add(VpItem(0), VpItem(1))
+				Next VpI
+				VpTxt.Close
+				'Regarde s'il existe des traductions identiques correspondant à des noms similaires de cartes différentes
+				For Each VpFR1 As String In VpTrad.Keys
+					For Each VpFR2 As String In VpTrad.Keys
+						Application.DoEvents
+						VpFR = ""
+						If VpTrad.Item(VpFR1) = VpTrad.Item(VpFR2) Then
+							If VpFR1 <> VpFR2 Then
+								If VpFR1.Contains(VpFR2) Then
+									VpFR = VpFR2
+								ElseIf VpFR2.Contains(VpFR1) Then
+									VpFR = VpFR1
+								End If
+								If VpFR <> "" Then
+									If Not VpToRemove.Contains(VpFR) Then
+										Call Me.AddToLog("Suppression de la traduction pour la carte : " + VpFR, eLogType.Warning)
+										VpToRemove.Add(VpFR)
+									End If
+								End If
+							End If
+						End If
+						If Me.btCancel.Tag Then Exit For
+					Next VpFR2
+					If Me.btCancel.Tag Then Exit For
+				Next VpFR1
+				'Supprime les traductions erronées
+				For Each VpFR In VpToRemove
+					VpTrad.Remove(VpFR)
+				Next VpFR
+				'Reconstruit le fichier corrigé
+				VpOut = New StreamWriter(Me.dlgSave.FileName)
+				For Each VpFR In VpTrad.Keys
+					VpOut.Write("##" + VpFR + "^^" + VpTrad.Item(VpFR))
+				Next VpFR
+				VpOut.Flush
+				VpOut.Close
+				If Me.btCancel.Tag Then
+					Call Me.AddToLog("La vérification du fichier des traductions a été annulée.", eLogType.Warning, , True)
+				Else
+					Call Me.AddToLog("La vérification du fichier des traductions est terminée.", eLogType.Information, , True)
+				End If				
 			End If
 		End If
 	End Sub
@@ -2294,6 +2434,14 @@ Public Partial Class MainForm
 	Sub MnuBuildTitlesClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.BuildTitles
+		End If
+	End Sub
+	Sub MnuCheckTradClick(sender As Object, e As EventArgs)
+		Call Me.CheckTexts
+	End Sub
+	Sub MnuCompareTradClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.CompareTexts
 		End If
 	End Sub
 	Sub MnuBuildDoubleClick(sender As Object, e As EventArgs)

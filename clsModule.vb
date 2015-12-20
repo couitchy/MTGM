@@ -38,7 +38,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34730
+	Public Const CgCodeLines As Integer   			= 34753
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -150,6 +150,7 @@ Public Module clsModule
 	Public Const CgFExtN As String					= ".dk2"
 	Public Const CgFExtA As String					= ".dec"
 	Public Const CgFExtW As String					= ".mwDeck"
+	Public Const CgFExtX As String					= ".xmg"
 	Public Const CgFExtM As String					= ".xml"
 	Public Const CgFExtL As String					= ".csv"
 	Public Const CgFExtD As String					= ".mdb"
@@ -384,7 +385,7 @@ Public Module clsModule
 		    		Return True
 		    	End If
 	    	Catch VpErr As Exception
-	    		Call ShowWarning("Impossible d'ouvrir la base de données sélectionnée..." + vbCrLf + "Détails : " + VpErr.Message)
+	    		Call ShowWarning("Impossible d'ouvrir la base de données sélectionnée..." + vbCrLf + vbCrLf + "Détails : " + VpErr.Message)
 	    	End Try
 	    End If
 	    Return False
