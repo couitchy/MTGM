@@ -38,7 +38,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34753
+	Public Const CgCodeLines As Integer   			= 34989
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -116,7 +116,7 @@ Public Module clsModule
 	Public Const CgURL9 As String         			= "/Updates/LastPrices.txt"
 	Public Const CgURL10 As String					= "/Images%20des%20cartes/"
 	Public Const CgURL11 As String         			= "/Updates/TextesVF.txt"
-	Public Const CgURL12 As String         			= "/Updates/Series r17.txt"
+	Public Const CgURL12 As String         			= "/Updates/Series r18.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
 	Public Const CgURL15 As String         			= "/Updates/Tournois r17.txt"
@@ -2066,6 +2066,7 @@ Public Class clsManas
 	Private VmX As Short = 0						'Mana variable
 	Private VmM As Short = 0						'Mana de n'importe quelle couleur
 	Private VmA As Short = 0						'Mana sans couleur
+	Private VmC As Short = 0						'Mana seulement sans couleur
 	Private VmB As Short = 0						'Mana noir
 	Private VmG As Short = 0						'Mana vert
 	Private VmU As Short = 0						'Mana bleu
@@ -2092,7 +2093,7 @@ Public Class clsManas
 	Private VmWB As Short = 0						'Mana blanc ou noir
 	Private VmWU As Short = 0						'Mana blanc ou bleu
 	Private VmEffectiveLength As Short = 0			'Longueur effective (~coût converti)
-	Private VmImgIndexes As New List(Of Integer)	'Repères icônes (1=BG,2=BR,3=G,4=GU,5=GW,6=R,7=RG,8=RW,9=U,10=UB,11=UR,12=W,13=WB,14=WU,15=X,16=)
+	Private VmImgIndexes As New List(Of Integer)	'Repères icônes (1=BG,2=BR,3=G,4=GU,5=GW,6=R,7=RG,8=RW,9=U,10=UB,11=UR,12=W,13=WB,14=WU,15=X,16=....)
 	Public Sub New(Optional VpCostDB As String = "")
 	'----------------------------------------------
 	'Effectue un parsing du coût passé en paramètre
@@ -2293,6 +2294,9 @@ Public Class clsManas
 					Case "A"
 						VmImgIndexes.Add(1)
 						VmA = VmA + 1
+					Case "C"
+						VmImgIndexes.Add(56)
+						VmC = VmC + 1
 					Case Else
 						VmImgIndexes.Add(1)
 				End Select
@@ -2311,6 +2315,7 @@ Public Class clsManas
 	'----------------------------------------------------------------------------------
 		VmM = VmM + VpManas.cM * VpSub
 		VmA = VmA + VpManas.cA * VpSub
+		VmC = VmC + VpManas.cC * VpSub
 		VmB = VmB + VpManas.cB * VpSub
 		VmG = VmG + VpManas.cG * VpSub
 		VmU = VmU + VpManas.cU * VpSub
@@ -2348,6 +2353,7 @@ Public Class clsManas
 							VmU >= VpManas.cU And _
 							VmR >= VpManas.cR And _
 							VmW >= VpManas.cW And _
+							VmC >= VpManas.cC And _
 							VmBG >= VpManas.cBG And _
 							VmBR >= VpManas.cBR And _
 							VmGU >= VpManas.cGU And _
@@ -2401,7 +2407,7 @@ Public Class clsManas
 	End Property
 	Public ReadOnly Property Potentiel As Integer
 		Get
-			Return ( VmX + VmM + VmA + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB + Vm2R + Vm2G + Vm2U + Vm2W + Vm2B)
+			Return ( VmX + VmM + VmA + VmC + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB + Vm2R + Vm2G + Vm2U + Vm2W + Vm2B)
 		End Get
 	End Property
 	Public ReadOnly Property HasBlack As Boolean
@@ -2443,6 +2449,14 @@ Public Class clsManas
 		End Get
 		Set (VpA As Short)
 			VmA = VpA
+		End Set
+	End Property
+	Public Property cC As Short
+		Get
+			Return VmC
+		End Get
+		Set (VpC As Short)
+			VmC = VpC
 		End Set
 	End Property
 	Public ReadOnly Property cB As Short

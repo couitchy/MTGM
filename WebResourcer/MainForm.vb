@@ -1263,6 +1263,8 @@ Public Partial Class MainForm
 				Return "battleforzendikar#" + VpStr
 			Case "C5"
 				Return "commander2015#" + VpStr
+			Case "OG"
+				Return "oathofthegatewatch#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1469,6 +1471,8 @@ Public Partial Class MainForm
 				Return "BZ"
 			Case "commander2015"
 				Return "C5"
+			Case "oathofthegatewatch"
+				Return "OG"
 			Case Else
 				Return ""
 		End Select
@@ -1610,6 +1614,7 @@ Public Partial Class MainForm
 	Dim VpCount As Integer
 	Dim VpItem As String
 	Dim VpNewItem As String
+	Dim VpItemColorlessOnly As Boolean
 		'Récupération des traductions
 		Call Me.AddToLog("Récupération du listing VO/VF...", eLogType.Information)
 		VpListeEN = Me.GetListing(VpCode, "en")
@@ -1639,6 +1644,7 @@ Public Partial Class MainForm
 				End While
 			Next VpI
 			VpItem = ""
+			VpItemColorlessOnly = False
 			For VpI As Integer = 0 To VpStrs(2).Length - 1
 				Select Case VpStrs(2).Substring(VpI, 1)
 					Case "W"
@@ -1651,6 +1657,9 @@ Public Partial Class MainForm
 						VpNewItem = "Red"
 					Case "G"
 						VpNewItem = "Green"
+					Case "C"
+						VpItemColorlessOnly = True
+						VpNewItem = ""
 					Case Else
 						VpNewItem = ""
 				End Select
@@ -1658,6 +1667,9 @@ Public Partial Class MainForm
 					VpItem += If(VpItem <> "", "/", "") + VpNewItem
 				End If
 			Next VpI
+			If VpItem = "" And VpItemColorlessOnly Then
+				VpItem = "Colorless"
+			End If
 			Select Case VpStrs(3)
 				Case "Mythic Rare"
 					VpStrs(3) = "M"

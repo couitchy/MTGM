@@ -1892,6 +1892,8 @@ Public Partial Class MainForm
 						VpImgIndex = 1
 					Case "s"
 						VpImgIndex = 55
+					Case "c"
+						VpImgIndex = 56
 					Case Else
 						VpImgIndex = -1
 				End Select
