@@ -78,6 +78,7 @@ Partial Class MainForm
 		Me.mnuBuildPatch = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPictures = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesUpdate = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesRemove = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesFix = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesDelta = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesNewSP = New System.Windows.Forms.ToolStripMenuItem()
@@ -424,7 +425,7 @@ Partial Class MainForm
 		'
 		'mnuPictures
 		'
-		Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesUpdate, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP})
+		Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesUpdate, Me.mnuPicturesRemove, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP})
 		Me.mnuPictures.Name = "mnuPictures"
 		Me.mnuPictures.Size = New System.Drawing.Size(152, 22)
 		Me.mnuPictures.Text = "Images"
@@ -436,6 +437,13 @@ Partial Class MainForm
 		Me.mnuPicturesUpdate.Size = New System.Drawing.Size(316, 22)
 		Me.mnuPicturesUpdate.Text = "Récupérer les images"
 		AddHandler Me.mnuPicturesUpdate.Click, AddressOf Me.MnuPicturesUpdateClick
+		'
+		'mnuPicturesRemove
+		'
+		Me.mnuPicturesRemove.Name = "mnuPicturesRemove"
+		Me.mnuPicturesRemove.Size = New System.Drawing.Size(316, 22)
+		Me.mnuPicturesRemove.Text = "Supprimer les images doublons"
+		AddHandler Me.mnuPicturesRemove.Click, AddressOf Me.MnuPicturesRemoveClick
 		'
 		'mnuPicturesFix
 		'
@@ -823,6 +831,7 @@ Partial Class MainForm
 	Private mnuPicturesDelta As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPicturesFix As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPicturesUpdate As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPicturesRemove As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPictures As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesHistoryAdd As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesUpdate As System.Windows.Forms.ToolStripMenuItem

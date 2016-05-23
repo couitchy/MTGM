@@ -119,13 +119,22 @@ Public Partial Class MainForm
 	Dim VpCurByte As Integer
 	Dim VpStr As String = ""
 		VpRequest = WebRequest.Create(VpURL)
-		VpAnswer = VpRequest.GetResponse().GetResponseStream()
-		VpCurByte = VpAnswer.ReadByte
-		While VpCurByte <> -1
-			VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
+		Try
+			VpAnswer = VpRequest.GetResponse().GetResponseStream()
 			VpCurByte = VpAnswer.ReadByte
-			Application.DoEvents
-		End While
+			While VpCurByte <> -1
+				VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
+				VpCurByte = VpAnswer.ReadByte
+				Application.DoEvents
+			End While
+		Catch
+			Call Me.AddToLog("Erreur de connexion. Recherche du HTML source pour " + VpURL + "...", eLogType.Warning)
+			Me.dlgOpen4.FileName = ""
+			Me.dlgOpen4.ShowDialog
+			If Me.dlgOpen4.FileName <> "" Then
+				VpStr = (New StreamReader(Me.dlgOpen4.FileName)).ReadToEnd
+			End If
+		End Try
 		Return VpStr
 	End Function
 	Private Function GetPrice(VpIn As String) As String
@@ -544,6 +553,50 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Private Sub RemoveDoublePictures
+	'---------------------------------------------------------------------------
+	'Supprime du dossier des nouvelles images celles déjà présentes dans la base
+	'---------------------------------------------------------------------------
+	Dim VpMissingPicts As StreamReader
+	Dim VpNewPicts As DirectoryInfo
+	Dim VpTagger As Hashtable
+	Dim VpMissing As String
+		Me.dlgBrowse.SelectedPath = ""
+		Me.dlgBrowse.ShowDialog
+		If Me.dlgBrowse.SelectedPath <> "" Then
+			VpNewPicts = New DirectoryInfo(Me.dlgBrowse.SelectedPath)
+			Me.dlgOpen4.FileName = ""
+			Me.dlgOpen4.ShowDialog
+			If Me.dlgOpen4.FileName <> "" Then
+				Call Me.AddToLog("La suppression des images doublons a commencé...", eLogType.Information, True)
+				VpTagger = New Hashtable
+	    		For Each VpNew As FileInfo In VpNewPicts.GetFiles("*.jpg")
+	    			VpTagger.Add(VpNew.Name.Replace(".jpg", ""), False)
+	    		Next VpNew
+				VpMissingPicts = New StreamReader(Me.dlgOpen4.FileName)
+		    	While Not VpMissingPicts.EndOfStream
+		    		Application.DoEvents
+		    		VpMissing = VpMissingPicts.ReadLine
+		    		If VpTagger.Contains(VpMissing) Then
+		    			VpTagger.Item(VpMissing) = True
+		    		End If
+		    	End While
+		    	For Each VpChecker As String In VpTagger.Keys
+		    		If Not VpTagger.Item(VpChecker) Then
+		    			If Me.btCancel.Tag Then Exit For
+		    			File.Delete(Me.dlgBrowse.SelectedPath + "\" + VpChecker + ".jpg")
+		    			Call Me.AddToLog("Doublon supprimé : " + VpChecker + ".jpg", eLogType.Warning)
+		    			Application.DoEvents
+		    		End If
+		    	Next VpChecker
+		    End If
+			If Me.btCancel.Tag Then
+				Call Me.AddToLog("La suppression des images doublons a été annulée.", eLogType.Warning, , True)
+			Else
+				Call Me.AddToLog("La suppression des images doublons est terminée.", eLogType.Information, , True)
+			End If
+		End If
+	End Sub
 	Private Sub ReplaceTitle
 	'--------------------------------------------------------------------------------------------------------------------
 	'Correction d'un titre de carte erroné dans les tables Autorisations, Card, CardPictures, Creature, Spell et TextesFR
@@ -823,6 +876,7 @@ Public Partial Class MainForm
 				VpStr = VpStr.Replace("&#8212;", "-")
 				VpStr = VpStr.Replace("&#8217;", "'")
 				VpStr = VpStr.Replace("&quot;", """")
+				VpStr = VpStr.Replace("&lt;&gt;","!c!")
 				VpStr = VpStr.Replace("<img src=""/images/magic/manas/micro/", "!")
 				VpStr = VpStr.Replace("<img src=""images/smileys/", "!")
 				VpStr = VpStr.Replace("<img src=""/images/smileys/", "!")
@@ -1265,6 +1319,14 @@ Public Partial Class MainForm
 				Return "commander2015#" + VpStr
 			Case "OG"
 				Return "oathofthegatewatch#" + VpStr
+			Case "SI"
+				Return "shadowsoverinnistrad#" + VpStr
+			Case "DQ"
+				Return "DuelDecksBlessedvsCursed#" + VpStr
+			Case "MG"
+				Return "magicgamedaycards#" + VpStr
+			Case "ZX"
+				Return "zendikarexpeditions#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1473,6 +1535,14 @@ Public Partial Class MainForm
 				Return "C5"
 			Case "oathofthegatewatch"
 				Return "OG"
+			Case "shadowsoverinnistrad"
+				Return "SI"
+			Case "DuelDecksBlessedvsCursed"
+				Return "DQ"
+			Case "magicgamedaycards"
+				Return "MG"
+			Case "zendikarexpeditions"
+				Return "ZX"
 			Case Else
 				Return ""
 		End Select
@@ -2411,6 +2481,9 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuPicturesUpdateClick(sender As Object, e As EventArgs)
 		Call Me.DownloadPictures
+	End Sub
+	Sub MnuPicturesRemoveClick(sender As Object, e As EventArgs)
+		Call Me.RemoveDoublePictures
 	End Sub
 	Sub MnuExtractTextsClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then

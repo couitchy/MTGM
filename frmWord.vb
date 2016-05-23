@@ -88,11 +88,14 @@ Public Partial Class frmWord
 		With VgDBReader
 			VpTotal = 0
 			While .Read
-				If Me.chklstWord.CheckedItems.Contains(.GetString(2)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
-					VpCount = If(Me.chkSingle.Checked, 1, .GetValue(1))
-					VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), .GetValue(3).ToString, .GetValue(4).ToString, .GetValue(5).ToString, .GetString(6), VpCount))
-					VpTotal = VpTotal + VpCount
-				End If
+				Try
+					If Me.chklstWord.CheckedItems.Contains(.GetString(2)) Then	'Vérifie que la carte courante fait partie de celles à ajouter
+						VpCount = If(Me.chkSingle.Checked, 1, .GetValue(1))
+						VpItems.Add(New clsWordItem(.GetString(0), .GetString(2), .GetValue(3).ToString, .GetValue(4).ToString, .GetValue(5).ToString, .GetString(6), VpCount))
+						VpTotal = VpTotal + VpCount
+					End If
+				Catch
+				End Try
 			End While
 			.Close
 		End With

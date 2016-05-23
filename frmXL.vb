@@ -72,7 +72,7 @@ Public Partial Class frmXL
 		VgDBReader = VgDBcommand.ExecuteReader
 		With VgDBReader
 			While .Read
-				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), CBool(.GetValue(.GetOrdinal("Foil"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Power")).ToString, .GetValue(.GetOrdinal("Tough")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "SeriesNM_FR", "SeriesNM"))).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "TexteFR", "CardText"))).ToString.Trim))
+				VpElements.Add(New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), CBool(.GetValue(.GetOrdinal("Foil"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Power")).ToString, .GetValue(.GetOrdinal("Tough")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "SeriesNM_FR", "SeriesNM"))).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("FoilPrice")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "TexteFR", "CardText"))).ToString.Trim))
 			End While
 			.Close
 		End With
@@ -338,7 +338,7 @@ Public Class clsXLItem
 	Private VmSubType As String = ""
 	Private VmType As String = ""
 	Private VmCardText As String = ""
-	Public Sub New(VpChk As CheckedListBox, VpTitle As String, VpQuant As Integer, VpFoil As Boolean, VpColor As String, VpForce As String, VpEndurance As String, VpInvoc As String, VpSerie As String, VpPrice As String, VpRarity As String, VpSubType As String, VpType As String, VpCardText As String)
+	Public Sub New(VpChk As CheckedListBox, VpTitle As String, VpQuant As Integer, VpFoil As Boolean, VpColor As String, VpForce As String, VpEndurance As String, VpInvoc As String, VpSerie As String, VpPrice As String, VpFoilPrice As String, VpRarity As String, VpSubType As String, VpType As String, VpCardText As String)
 		VmTitle = VpTitle
 		VmQuant = VpQuant
 		'Foil ou pas
@@ -371,7 +371,7 @@ Public Class clsXLItem
 		End If
 		'Prix
 		If VpChk.GetItemChecked(5) Then
-			VmPrice = VpPrice
+			VmPrice = If(VpFoil, VpFoilPrice, VpPrice)
 		End If
 		'Rareté
 		If VpChk.GetItemChecked(6) Then

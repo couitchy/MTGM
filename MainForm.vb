@@ -1359,7 +1359,7 @@ Public Partial Class MainForm
 			.MyTotalDistinctCards = Me.QueryInfo("Select Count(*) From (Select Distinct " + VpSource + ".EncNbr From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where ", VpElderCriteria, ")")
 			.MyTotalDistinctCards += " (" + Format(100 * CInt(.MyTotalDistinctCards) / CInt(.TotalCards), "0") + "%)"
 			'Cote de toutes les cartes répondant aux critères
-			VgDBCommand.CommandText = "Select Sum(Price * Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + Me.Restriction + clsModule.TrimQuery(VpElderCriteria)
+			VgDBCommand.CommandText = "Select Sum(IIf(Foil, FoilPrice, Price) * Items) From (" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + Me.Restriction + clsModule.TrimQuery(VpElderCriteria)
 			VpO = VgDBCommand.ExecuteScalar
 			If Not VpO Is Nothing AndAlso IsNumeric(VpO) Then
 				.TotalPricing = Format(VpO, "0.00") + " €"
