@@ -38,7 +38,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34989
+	Public Const CgCodeLines As Integer   			= 35205
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -279,24 +279,25 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes
-		BDD_v13		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID
-		BDD_v14		'manque dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve
-		BDD_v15		'manque dossiers decks, tournois 1V1&Multi, codes séries
-		BDD_v16		'manque dossiers decks, tournois 1V1&Multi
-		BDD_v17		'manque dossiers decks
-		BDD_v18		'à jour
+		BDD_v1		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID
+		BDD_v14		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve
+		BDD_v15		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries
+		BDD_v16		'manque MultiverseId, dossiers decks, tournois 1V1&Multi
+		BDD_v17		'manque MultiverseId, dossiers decks
+		BDD_v18		'manque MultiverseId
+		BDD_v19		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -423,7 +424,7 @@ Public Module clsModule
 				VpDBVersion = eDBVersion.BDD_v8
 			Else
 				VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Card", Nothing})
-				If CInt(VpSchemaTable.Rows(11)!DATA_TYPE) <> 4 Then
+				If VpSchemaTable.Rows.Count <> 22 And CInt(VpSchemaTable.Rows(11)!DATA_TYPE) <> 4 Then
 					'Si on est ici, BDD version 9
 					VpDBVersion = eDBVersion.BDD_v9
 				Else
@@ -464,8 +465,14 @@ Public Module clsModule
 												'Si on est ici, BDD version 17
 												VpDBVersion = eDBVersion.BDD_v17
 											Else
-												'Si on est ici, BDD version 18
-												VpDBVersion = eDBVersion.BDD_v18
+												VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Card", Nothing})
+												If VpSchemaTable.Rows.Count <> 22 Then
+													'Si on est ici, BDD version 18
+													VpDBVersion = eDBVersion.BDD_v18
+												Else
+													'Si on est ici, BDD version 19
+													VpDBVersion = eDBVersion.BDD_v19
+												End If
 											End If
 										End If
 									End If
@@ -482,10 +489,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v18 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v19 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v18)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v19)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -634,6 +641,11 @@ Public Module clsModule
 						VgDBCommand.CommandText = "Alter Table MyGamesID Add IsFolder Bit;"
 						VgDBCommand.ExecuteNonQuery
 						Call ShowInformation("Vous pouvez maintenant classer vos decks dans des dossiers !")
+					End If
+					'Passage version 18 à 19
+					If CInt(VpDBVersion) < 19 Then
+						VgDBCommand.CommandText = "Alter Table Card Add MultiverseId Long;"
+						VgDBCommand.ExecuteNonQuery
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
@@ -2642,4 +2654,70 @@ Public Class clsTxtFR
 			VmAlready = VpAlready
 		End Set
 	End Property
+End Class
+<Serializable> _
+Public Class clsFullInfos	
+	Public name As String
+	Public code As String
+	Public gathererCode As String
+	Public oldCode As String
+	Public magicCardsInfoCode As String
+	Public releaseDate As String
+	Public border As String
+	Public type As String
+	Public block As String
+	Public onlineOnly As Boolean
+	Public cards As List(Of clsFullCardInfos)
+	Public Class clsFullCardInfos
+		Public id As String
+		Public layout As String
+		Public name As String
+		Public names As List(Of String)
+		Public manaCost As String
+		Public cmc As Single
+		Public colors As List(Of String)
+		Public colorIdentity As List(Of String)
+		Public type As String
+		Public supertypes As List(Of String)
+		Public types As List(Of String)
+		Public subtypes As List(Of String)
+		Public rarity As String
+		Public [text] As String
+		Public artist As String
+		Public number As String
+		Public power As String
+		Public toughness As String
+		Public loyalty As Integer
+		Public multiverseid As Long
+		Public variations As List(Of Long)
+		Public imageName As String
+		Public watermark As String
+		Public border As String
+		Public timeshifted As Boolean
+		Public hand As Integer
+		Public life As Integer
+		Public reserved As Boolean
+		Public releaseDate As String
+		Public starter As Boolean
+		Public rulings As List(Of clsRulingsInfos)
+		Public foreignNames As List(Of clsForeignInfos)
+		Public printings As List(Of String)
+		Public originalText As String
+		Public originalType As String
+		Public legalities As List(Of clsLegalityInfos)
+		Public source As String
+		Public Class clsRulingsInfos
+			Public [date] As String
+			Public [text] As String
+		End Class
+		Public Class clsForeignInfos
+			Public language As String
+			Public name As String
+			Public multiverseid As Long
+		End Class
+		Public Class clsLegalityInfos
+			Public format As String
+			Public legality As String
+		End Class
+	End Class
 End Class

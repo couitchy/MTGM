@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>17, 17</value>
+  </data>
   <data name="btNewPartie.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -546,9 +546,9 @@
         WdGEXmTacX/ajRWPpGHPS/EL6Hulv3/H/hMg5E8e6m0IrtU0dwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="toolStripBibli.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripBibli.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>252, 17</value>
-  </metadata>
+  </data>
   <data name="btBibliShuffle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -586,9 +586,9 @@
         gAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="toolStripGraveyard.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripGraveyard.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>496, 17</value>
-  </metadata>
+  </data>
   <data name="btGraveyardSearch.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -601,9 +601,9 @@
         gAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="toolStripExil.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripExil.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>877, 17</value>
-  </metadata>
+  </data>
   <data name="btExilSearch.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -616,9 +616,9 @@
         gAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="toolStripRegard.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripRegard.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>366, 17</value>
-  </metadata>
+  </data>
   <data name="btRegardShuffle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -634,9 +634,9 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="toolStripMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripMain.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>642, 17</value>
-  </metadata>
+  </data>
   <data name="btMainShuffle.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -652,9 +652,9 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="toolStripField.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripField.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>759, 17</value>
-  </metadata>
+  </data>
   <data name="btFieldUntapAll.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -671,9 +671,9 @@
         vD3PyeIfgepMr4BEHBwAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="cmnuCardContext.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="cmnuCardContext.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>110, 17</value>
-  </metadata>
+  </data>
   <data name="cmnuTapUntap.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         /9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAAB

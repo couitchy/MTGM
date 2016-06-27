@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -18,10 +19,11 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <BaseAddress>4194304</BaseAddress>
     <PlatformTarget>x86</PlatformTarget>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SourceAnalysisOverrideSettingsFile>C:\Users\Couitchy\AppData\Roaming\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <OptionInfer>Off</OptionInfer>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>..\bin\Debug-x86\</OutputPath>
@@ -47,8 +49,17 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.Targets" />
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />

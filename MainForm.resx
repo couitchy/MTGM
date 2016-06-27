@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>119, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>119, 17</value>
+  </data>
   <data name="btDownload.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -137,12 +137,12 @@
         LhDYO3nnM52VwMHyckKy56BYpLNzz8Rf3tCJY6xnbhIAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="dlgOpen.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="dlgOpen.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>224, 17</value>
-  </metadata>
-  <metadata name="imglstTvw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="imglstTvw.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
+  </data>
   <data name="imglstTvw.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
@@ -964,9 +964,9 @@
         Cw==
 </value>
   </data>
-  <metadata name="imglstCarac.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="imglstCarac.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>318, 17</value>
-  </metadata>
+  </data>
   <data name="imglstCarac.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
@@ -2550,9 +2550,9 @@
         AQABPwHAAQ8DAAs=
 </value>
   </data>
-  <metadata name="cmnuTvw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="cmnuTvw.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>429, 17</value>
-  </metadata>
+  </data>
   <data name="mnuCardsFR.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -2677,18 +2677,18 @@
         /8YUz+UTSMdvFD5lfhgRdb+828WktLPIJAICY6f0oIhzAyp+AejmoORxB260AAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="dlgOpen2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="dlgOpen2.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>529, 17</value>
-  </metadata>
-  <metadata name="dlgOpen3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="dlgOpen3.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>629, 17</value>
-  </metadata>
-  <metadata name="dlgOpen4.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="dlgOpen4.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>729, 17</value>
-  </metadata>
-  <metadata name="mnu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="mnu.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>829, 17</value>
-  </metadata>
+  </data>
   <data name="mnuDBOpen.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -3291,9 +3291,9 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>1001, 17</value>
-  </metadata>
+  </data>
   <data name="btExport.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -3758,9 +3758,9 @@
         bXMFX3NpemUIX3ZlcnNpb24FAAAICAkCAAAAAAAAAAAAAAAQAgAAAAAAAAAL
 </value>
   </data>
-  <metadata name="toolSubStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolSubStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>256, 54</value>
-  </metadata>
+  </data>
   <data name="btCriteria.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -3944,12 +3944,12 @@
         AADAAQAAAAcAAMAHAADADwAAwA8AAMAPAADADwAAwA8AAOAPAADg/wAA4f8AAOP/AADj/wAA
 </value>
   </data>
-  <metadata name="dlgSave.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="dlgSave.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>164, 54</value>
-  </metadata>
-  <metadata name="imglstAutorisations.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="imglstAutorisations.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 54</value>
-  </metadata>
+  </data>
   <data name="imglstAutorisations.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
@@ -5105,9 +5105,9 @@
         AgABBwHwAgAL
 </value>
   </data>
-  <metadata name="cmnuCbar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="cmnuCbar.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>369, 54</value>
-  </metadata>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAIAEBAAAAEACABoBQAAJgAAACAgAAABAAgAqAgAAI4FAAAoAAAAEAAAACAAAAABAAgAAAAAAAAB

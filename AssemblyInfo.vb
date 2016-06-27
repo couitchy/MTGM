@@ -10,10 +10,10 @@ Imports System.Runtime.InteropServices
 
 <assembly: AssemblyTitle("Magic The Gathering Manager")>
 <assembly: AssemblyDescription("Manage your Magic The Gathering cards the easy way.")>
-<assembly: AssemblyConfiguration(".NET Framework 2.0")>
+<assembly: AssemblyConfiguration(".NET Framework 3.5")>
 <assembly: AssemblyCompany("Couitchy Corp.")>
 <assembly: AssemblyProduct("Magic The Gathering Manager")>
-<assembly: AssemblyCopyright("Copyright (c) 2008-2015 Couitchy Corp.")>
+<assembly: AssemblyCopyright("Copyright (c) 2008-2016 Couitchy Corp.")>
 <assembly: AssemblyTrademark("MTGM")>
 <assembly: AssemblyCulture("")>
 

@@ -81,6 +81,7 @@ Public Partial Class MainForm
 					VpCur.Title = .GetString(.GetOrdinal("Card.Title"))
 					VpCur.TitleFR = .GetString(.GetOrdinal("TitleFR"))
 					VpCur.Tough = .GetValue(.GetOrdinal("Tough")).ToString
+					VpCur.MultiverseId = CLng(.GetValue(.GetOrdinal("MultiverseId")))
 					VpContent.Add(VpCur)
 				End While
 				.Close
@@ -194,6 +195,7 @@ Public Partial Class MainForm
 End Class
 <Serializable> _
 Public Class clsCardInfos
+	Public MultiverseId As Long	
 	Public EncNbr As Long
 	Public Title As String
 	Public TitleFR As String

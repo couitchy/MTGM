@@ -40,6 +40,7 @@
 '| - refonte affichage propriétés (grids)  23/08/2012 |
 '| - menu dédié 'Résultats de recherche'   02/11/2012 |
 '| - nouveaux formats tournois			   05/05/2014 |
+'| - gestion du Multiverse Id			   23/06/2016 |
 '------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
@@ -55,6 +56,7 @@ Imports System.Xml
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports System.Text
+Imports System.Web.Script.Serialization
 #End Region
 Public Partial Class MainForm
 	#Region "Sous-classes"
@@ -684,8 +686,8 @@ Public Partial Class MainForm
 	'------------------------------------------
 	'Remplace les textes VF par leur version VO
 	'------------------------------------------
-		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText;"
-		VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'C4' Or Card.Series = 'DH' Or Card.Series = 'V7' Or Card.Series = 'FR' Or Card.Series = 'DT' Or Card.Series = 'MU' Or Card.Series = 'DJ' Or Card.Series = 'OR' Or Card.Series = 'V8' Or Card.Series = 'BZ' Or Card.Series = 'DC' Or Card.Series = 'C5';"
+		VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText;"
+		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'C4' Or Card.Series = 'DH' Or Card.Series = 'V7' Or Card.Series = 'FR' Or Card.Series = 'DT' Or Card.Series = 'MU' Or Card.Series = 'DJ' Or Card.Series = 'OR' Or Card.Series = 'V8' Or Card.Series = 'BZ' Or Card.Series = 'DC' Or Card.Series = 'C5';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"
 		VgDBCommand.ExecuteNonQuery
@@ -822,6 +824,32 @@ Public Partial Class MainForm
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update Card Set Rarity = 'D' Where Rarity = 'L' Or Rarity = 'S';"
 		VgDBCommand.ExecuteNonQuery
+	End Sub
+	Private Sub FixMultiverse
+	'---------------------------------------
+	'Mise à jour des identifiants Multiverse
+	'---------------------------------------
+	Dim VpSerializer As New JavaScriptSerializer
+	Dim VpJSONFullDB As String
+	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
+		VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
+		VgDBCommand.ExecuteNonQuery
+		If File.Exists("AllSets-x.json") Then
+			VpSerializer.MaxJsonLength = Integer.MaxValue
+			VpJSONFullDB = (New StreamReader("AllSets-x.json")).ReadToEnd
+			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))(VpJSONFullDB)
+			For Each VpSerie As String In VpJSONInfos.Keys
+				For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
+					Try
+						VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.MultiverseId = " + VpCard.multiverseid.ToString + " Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+						VgDBCommand.ExecuteNonQuery
+					Catch
+					End Try
+				Next VpCard
+			Next VpSerie
+		Else
+			Call clsModule.ShowWarning("Impossible de trouver le fichier 'AllSets-x.json'") 
+		End If
 	End Sub
 	Private Sub GoFind
 	'------------------------------------------
@@ -2019,8 +2047,13 @@ Public Partial Class MainForm
 	'--------------------------------------
 	'Renvoie si la carte est face retournée
 	'--------------------------------------
-		VgDBCommand.CommandText = "Select Count(*) From CardDouble Inner Join Card On CardDouble.EncNbrDownFace = Card.EncNbr Where Card.Title = '" + VpNode.Tag.Value.Replace("'", "''") + "';"
-		Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
+		If MainForm.VgMe.IsMainReaderBusy Then
+			Call ShowWarning(CgErr3)
+			Return False
+		Else
+			VgDBCommand.CommandText = "Select Count(*) From CardDouble Inner Join Card On CardDouble.EncNbrDownFace = Card.EncNbr Where Card.Title = '" + VpNode.Tag.Value.Replace("'", "''") + "';"
+			Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
+		End If
 	End Function
 	Private Function GetTransformedNames(VpTitle As String, VpReverse As Boolean, VpDownFace As Boolean) As clsTag
 	'----------------------------------------------------------
@@ -3093,6 +3126,14 @@ Public Partial Class MainForm
 		If clsModule.DBOK Then
 			Call Me.FixFR
 			Call clsModule.ShowInformation("Terminé !")
+		End If
+	End Sub
+	Sub MnuFixMultiverseIdActivate(ByVal sender As Object, ByVal e As EventArgs)
+		If clsModule.DBOK Then
+			If MessageBox.Show("Cette opération peut prendre beaucoup de temps..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+				Call Me.FixMultiverse
+				Call clsModule.ShowInformation("Terminé !")
+			End If
 		End If
 	End Sub
 	Sub MnuFixPicClick(sender As Object, e As EventArgs)

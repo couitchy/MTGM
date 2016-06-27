@@ -127,10 +127,10 @@ Tous les textes et les visuels des cartes, les logos des éditions et des symbol
   <data name="label5.Text" xml:space="preserve">
     <value>Le développeur ne saurait être tenu responsable de problèmes sur la configuration des utilisateurs survenus après l'installation du logiciel et dont la coïncidence serait vraisemblablement fortuite.
 
-Compilation : Microsoft .NET Framework 2.0
+Compilation : Microsoft .NET Framework 3.5
 http://www.microsoft.com
 
-Environnement de développement : SharpDevelop 3.2 @ic#code
+Environnement de développement : SharpDevelop 4.4 @ic#code
 http://www.icsharpcode.net
 
 Développement réalisé par Couitchy.

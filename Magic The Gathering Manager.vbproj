@@ -20,10 +20,11 @@
     <BaseAddress>4194304</BaseAddress>
     <PlatformTarget>x86</PlatformTarget>
     <SourceAnalysisOverrideSettingsFile>C:\Users\Couitchy\AppData\Roaming\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <NoWin32Manifest>True</NoWin32Manifest>
     <OptionInfer>Off</OptionInfer>
     <ApplicationIcon>Ressources\MTGM_bleu_hd.ico</ApplicationIcon>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug-x86\</OutputPath>
@@ -62,11 +63,23 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="TreeViewMS">
       <HintPath>..\__LIBRAIRIES\TreeViewMS.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>

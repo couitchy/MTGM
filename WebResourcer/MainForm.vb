@@ -120,6 +120,7 @@ Public Partial Class MainForm
 	Dim VpStr As String = ""
 		VpRequest = WebRequest.Create(VpURL)
 		Try
+			VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0"
 			VpAnswer = VpRequest.GetResponse().GetResponseStream()
 			VpCurByte = VpAnswer.ReadByte
 			While VpCurByte <> -1

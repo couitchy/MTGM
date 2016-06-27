@@ -69,20 +69,20 @@ function isxdl_IsConnected: Integer;
 external 'isxdl_IsConnected@files:isxdl.dll stdcall';
 
 const
-dotnetRedistURL = 'http://couitchy.free.fr/upload/fmk/dotnetfx20.exe';
+dotnetRedistURL = 'http://couitchy.free.fr/upload/fmk/dotnetfx35sp1.exe';
 
 function InitializeSetup(): Boolean;
 begin
   Result := true;
   dotNetNeeded := false;
   // Check for required netfx installation
-  if (not RegKeyExists(HKLM, 'Software\Microsoft\.NETFramework\policy\v2.0')) then begin
+  if (not RegKeyExists(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5')) then begin
     dotNetNeeded := true;
     if (not IsAdminLoggedOn()) then begin
-      MsgBox('Magic The Gathering Manager nécessite l''installation du Microsoft .NET Framework 2.0 sur cet ordinateur en tant qu''Administrateur.', mbInformation, MB_OK);
+      MsgBox('Magic The Gathering Manager nécessite l''installation du Microsoft .NET Framework 3.5 sur cet ordinateur en tant qu''Administrateur.', mbInformation, MB_OK);
       Result := false;
     end else begin
-      memoDependenciesNeeded := memoDependenciesNeeded + '  Microsoft .NET Framework 2.0' #13;
+      memoDependenciesNeeded := memoDependenciesNeeded + '  Microsoft .NET Framework 3.5' #13;
       dotnetRedistPath := ExpandConstant('{src}\dotnetfx.exe');
       if not FileExists(dotnetRedistPath) then begin
         dotnetRedistPath := ExpandConstant('{tmp}\dotnetfx.exe');
@@ -107,14 +107,14 @@ begin
     // don't try to init isxdl if it's not needed because it will error on < ie 3
     if downloadNeeded then begin
       if isxdl_IsConnected = 1 then begin
-        isxdl_SetOption('label', 'Téléchargement du Microsoft .NET Framework 2.0');
+        isxdl_SetOption('label', 'Téléchargement du Microsoft .NET Framework 3.5');
         isxdl_SetOption('description', 'Merci de patienter pendant que l''installeur télécharge des fichiers supplémentaires nécessaires.');
         if isxdl_DownloadFiles(hWnd) = 0 then begin
-          MsgBox('Magic The Gathering Manager nécessite la présence du Microsoft .NET Framework 2.0.' + Chr(13) + 'Si votre ordinateur est connecté à Internet, vous pouvez essayer de désactiver temporairement votre pare-feu afin de débuter automatiquement le téléchargement.' + Chr(13) + 'Vous pouvez sinon installer manuellement le fichier requis, disponible à l''adresse : ' + dotnetRedistURL + '.' , mbError, MB_OK);
+          MsgBox('Magic The Gathering Manager nécessite la présence du Microsoft .NET Framework 3.5.' + Chr(13) + 'Si votre ordinateur est connecté à Internet, vous pouvez essayer de désactiver temporairement votre pare-feu afin de débuter automatiquement le téléchargement.' + Chr(13) + 'Vous pouvez sinon installer manuellement le fichier requis, disponible à l''adresse : ' + dotnetRedistURL + '.' , mbError, MB_OK);
           Result := false;
         end;
       end else begin
-        MsgBox('Magic The Gathering Manager nécessite la présence du Microsoft .NET Framework 2.0.' + Chr(13) + 'Si votre ordinateur est connecté à Internet, vous pouvez essayer de désactiver temporairement votre pare-feu afin de débuter automatiquement le téléchargement.' + Chr(13) + 'Vous pouvez sinon installer manuellement le fichier requis, disponible à l''adresse : ' + dotnetRedistURL + '.' , mbError, MB_OK);
+        MsgBox('Magic The Gathering Manager nécessite la présence du Microsoft .NET Framework 3.5.' + Chr(13) + 'Si votre ordinateur est connecté à Internet, vous pouvez essayer de désactiver temporairement votre pare-feu afin de débuter automatiquement le téléchargement.' + Chr(13) + 'Vous pouvez sinon installer manuellement le fichier requis, disponible à l''adresse : ' + dotnetRedistURL + '.' , mbError, MB_OK);
         Result := false;
       end;
     end;

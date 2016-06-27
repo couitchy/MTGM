@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolStripCombos.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolStripCombos.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>17, 17</value>
+  </data>
   <data name="btAddSequence.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -163,9 +163,9 @@
         el/GZJcAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="toolStripCombos2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolStripCombos2.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>406, 17</value>
-  </metadata>
+  </data>
   <data name="btSimu.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -721,9 +721,9 @@
         AACYGQAAyBMAAPAHAADwDwAA4AcAACAEAAAgBAAA4AcAAPAPAADoFwAAznMAAN5/AAD+fwAA
 </value>
   </data>
-  <metadata name="cmnuUserCombos.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="cmnuUserCombos.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>152, 17</value>
-  </metadata>
+  </data>
   <data name="cmnuAddNew.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -757,15 +757,15 @@
         AElFTkSuQmCC
 </value>
   </data>
-  <metadata name="dlgVerbose.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="dlgVerbose.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>297, 17</value>
-  </metadata>
-  <metadata name="dlgSave.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="dlgSave.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>547, 17</value>
-  </metadata>
-  <metadata name="dlgOpen.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="dlgOpen.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>639, 17</value>
-  </metadata>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAIAEBAAAAEACABoBQAAJgAAACAgAAABAAgAqAgAAI4FAAAoAAAAEAAAACAAAAABAAgAAAAAAAAB
