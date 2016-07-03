@@ -112,50 +112,52 @@ Public Partial Class frmXL
 					.Cells(VpY, VpX) = "Nom"
 					VpX = VpX + 1
 					'Foil ou pas
-					.Cells(VpY, VpX) = "Foil"
-					VpX = VpX + 1					
+					If Me.chklstXL.GetItemChecked(0) Then
+						.Cells(VpY, VpX) = "Foil"
+						VpX = VpX + 1
+					End If
 					'Type
-					If Me.chklstXL.GetItemChecked(7) Then
+					If Me.chklstXL.GetItemChecked(8) Then
 						.Cells(VpY, VpX) = "Type"
 						VpX = VpX + 1
 					End If
 					'Sous-type
-					If Me.chklstXL.GetItemChecked(6) Then
+					If Me.chklstXL.GetItemChecked(7) Then
 						.Cells(VpY, VpX) = "Sous-type"
 						VpX = VpX + 1
 					End If
 					'Couleur
-					If Me.chklstXL.GetItemChecked(0) Then
+					If Me.chklstXL.GetItemChecked(1) Then
 						.Cells(VpY, VpX) = "Couleur"
 						VpX = VpX + 1
 					End If
 					'Force / Endurance
-					If Me.chklstXL.GetItemChecked(1) Then
+					If Me.chklstXL.GetItemChecked(2) Then
 						.Cells(VpY, VpX) = "Force / Endurance"
 						VpX = VpX + 1
 					End If
 					'Coût d'invocation
-					If Me.chklstXL.GetItemChecked(2) Then
+					If Me.chklstXL.GetItemChecked(3) Then
 						.Cells(VpY, VpX) = "Coût d'invocation"
 						VpX = VpX + 1
 					End If
 					'Edition
-					If Me.chklstXL.GetItemChecked(3) Then
+					If Me.chklstXL.GetItemChecked(4) Then
 						.Cells(VpY, VpX) = "Edition"
 						VpX = VpX + 1
 					End If
 					'Prix
-					If Me.chklstXL.GetItemChecked(4) Then
+					If Me.chklstXL.GetItemChecked(5) Then
 						.Cells(VpY, VpX) = "Prix unitaire"
 						VpX = VpX + 1
 					End If
 					'Rareté
-					If Me.chklstXL.GetItemChecked(5) Then
+					If Me.chklstXL.GetItemChecked(6) Then
 						.Cells(VpY, VpX) = "Rareté"
 						VpX = VpX + 1
 					End If
 					'Texte
-					If Me.chklstXL.GetItemChecked(8) Then
+					If Me.chklstXL.GetItemChecked(9) Then
 						.Cells(VpY, VpX) = "Texte descriptif"
 						VpX = VpX + 1
 					End If
@@ -172,52 +174,54 @@ Public Partial Class frmXL
 					.Cells(VpY, VpX) = VpCur.Title
 					VpX = VpX + 1
 					'Foil ou pas
-					.Cells(VpY, VpX) = If(VpCur.Foil, "Premium", "")
-					VpX = VpX + 1					
+					If Me.chklstXL.GetItemChecked(0) Then
+						.Cells(VpY, VpX) = If(VpCur.Foil, "Premium", "")
+						VpX = VpX + 1
+					End If
 					'Type
-					If Me.chklstXL.GetItemChecked(7) Then
+					If Me.chklstXL.GetItemChecked(8) Then
 						.Cells(VpY, VpX) = VpCur.Type
 						VpX = VpX + 1
 					End If
 					'Sous-type
-					If Me.chklstXL.GetItemChecked(6) Then
+					If Me.chklstXL.GetItemChecked(7) Then
 						.Cells(VpY, VpX) = VpCur.SubType
 						VpX = VpX + 1
 					End If
 					'Couleur
-					If Me.chklstXL.GetItemChecked(0) Then
+					If Me.chklstXL.GetItemChecked(1) Then
 						.Cells(VpY, VpX) = VpCur.Color
 						VpX = VpX + 1
 					End If
 					'Force / Endurance
-					If Me.chklstXL.GetItemChecked(1) Then
+					If Me.chklstXL.GetItemChecked(2) Then
 						.Cells(VpY, VpX) = VpCur.ForceEndurance
 						VpX = VpX + 1
 					End If
 					'Coût d'invocation
-					If Me.chklstXL.GetItemChecked(2) Then
+					If Me.chklstXL.GetItemChecked(3) Then
 						.Cells(VpY, VpX) = VpCur.Invoc
 						VpForceText = VpX
 						VpX = VpX + 1
 					End If
 					'Edition
-					If Me.chklstXL.GetItemChecked(3) Then
+					If Me.chklstXL.GetItemChecked(4) Then
 						.Cells(VpY, VpX) = VpCur.Serie
 						VpX = VpX + 1
 					End If
 					'Prix
-					If Me.chklstXL.GetItemChecked(4) Then
+					If Me.chklstXL.GetItemChecked(5) Then
 						.Cells(VpY, VpX) = VpCur.Price
 						VpForceCurrency = VpX
 						VpX = VpX + 1
 					End If
 					'Rareté
-					If Me.chklstXL.GetItemChecked(5) Then
+					If Me.chklstXL.GetItemChecked(6) Then
 						.Cells(VpY, VpX) = VpCur.Rarity
 						VpX = VpX + 1
 					End If
 					'Texte
-					If Me.chklstXL.GetItemChecked(8) Then
+					If Me.chklstXL.GetItemChecked(9) Then
 						.Cells(VpY, VpX) = VpCur.CardText
 						VpX = VpX + 1
 					End If
