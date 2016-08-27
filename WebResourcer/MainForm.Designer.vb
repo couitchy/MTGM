@@ -116,6 +116,7 @@ Partial Class MainForm
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog()
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog()
 		Me.mnuPricesHistoryRebuild = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsExtractMultiverseId = New System.Windows.Forms.ToolStripMenuItem()
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
 		Me.tabMain.SuspendLayout
@@ -186,7 +187,7 @@ Partial Class MainForm
 		'
 		'mnuCards
 		'
-		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuCardReplaceTitle, Me.mnuFindHoles})
+		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuCardReplaceTitle, Me.mnuCardsExtractMultiverseId})
 		Me.mnuCards.Name = "mnuCards"
 		Me.mnuCards.Size = New System.Drawing.Size(152, 22)
 		Me.mnuCards.Text = "Cartes"
@@ -330,7 +331,7 @@ Partial Class MainForm
 		'
 		'mnuSeries
 		'
-		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO})
+		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
 		Me.mnuSeries.Name = "mnuSeries"
 		Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
 		Me.mnuSeries.Text = "Séries"
@@ -752,6 +753,14 @@ Partial Class MainForm
 		Me.mnuPricesHistoryRebuild.Text = "Reconstruire complètement l'historique"
 		AddHandler Me.mnuPricesHistoryRebuild.Click, AddressOf Me.MnuPricesHistoryRebuildClick
 		'
+		'mnuCardsExtractMultiverseId
+		'
+		Me.mnuCardsExtractMultiverseId.Image = CType(resources.GetObject("mnuCardsExtractMultiverseId.Image"),System.Drawing.Image)
+		Me.mnuCardsExtractMultiverseId.Name = "mnuCardsExtractMultiverseId"
+		Me.mnuCardsExtractMultiverseId.Size = New System.Drawing.Size(278, 22)
+		Me.mnuCardsExtractMultiverseId.Text = "Extraire les identifiants Multiverse"
+		AddHandler Me.mnuCardsExtractMultiverseId.Click, AddressOf Me.MnuCardsExtractMultiverseIdClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -779,6 +788,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuCardsExtractMultiverseId As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesHistoryRebuild As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesSpoilers As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesGenR16 As System.Windows.Forms.ToolStripMenuItem

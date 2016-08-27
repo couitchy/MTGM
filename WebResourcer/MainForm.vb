@@ -774,6 +774,37 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Sub ExtractCardsMultiverseId
+	'-----------------------------------
+	'Listing des identifiants Multiverse
+	'-----------------------------------
+	Dim VpOut As StreamWriter
+		Me.dlgSave.FileName = ""
+		Me.dlgSave.ShowDialog
+		If Me.dlgSave.FileName <> "" Then
+			VpOut = New StreamWriter(Me.dlgSave.FileName)
+	    	Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes a commencé...", eLogType.Information, True)
+	    	Me.prgAvance.Style = ProgressBarStyle.Marquee
+	    	VmDBCommand.CommandText = "Select Title, Series, MultiverseId From Card Order By Title;"
+	    	VmDBReader = VmDBCommand.ExecuteReader
+			With VmDBReader
+				While .Read
+					Application.DoEvents
+					VpOut.WriteLine(.GetString(0) + "#" + .GetString(1) + "#" + CLng(.GetValue(2)).ToString)
+					Me.txtCur.Text = .GetString(0)
+					If Me.btCancel.Tag Then Exit While
+				End While
+				.Close
+			End With
+			VpOut.Flush
+			VpOut.Close
+			If Me.btCancel.Tag Then
+				Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes a été annulée.", eLogType.Warning, , True)
+			Else
+				Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes est terminée.", eLogType.Information, , True)
+			End If
+		End If
+	End Sub
 	Private Sub ExtractCards(VpReq As String)
 	'--------------------------------------------------
 	'Listing des titres distincts des cartes de la base
@@ -2455,6 +2486,11 @@ Public Partial Class MainForm
 	Sub MnuCardsExtractDiff5Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.ExtractCardsPricesAborted
+		End If
+	End Sub
+	Sub MnuCardsExtractMultiverseIdClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.ExtractCardsMultiverseId
 		End If
 	End Sub
 	Sub MnuCardsAutClick(sender As Object, e As EventArgs)

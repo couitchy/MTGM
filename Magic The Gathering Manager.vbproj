@@ -46,6 +46,9 @@
       <HintPath>..\__LIBRAIRIES\ChartFX.Lite.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\__LIBRAIRIES\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="NPlot">
       <HintPath>..\__LIBRAIRIES\NPlot.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -288,5 +291,11 @@
       <DependentUpon>Options.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Licenses.licx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CollectionViewer\CollectionViewer.zip">
+      <Link>CollectionViewer.zip</Link>
+      <LogicalName>MyHTML</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

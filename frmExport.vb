@@ -21,11 +21,15 @@
 '| Modifications :                                    |
 '| - support passif depuis drag&drop	   27/09/2010 |
 '| - format v2 avec ref. éditions		   01/10/2010 |
-'| - formats MMaster, MWS, MagicOnline	   08/09/2013 |
 '| - gestion cartes foils				   19/12/2010 |
+'| - formats MMaster, MWS, MagicOnline	   08/09/2013 |
+'| - format Web HTML (ex CollectionViewer) 23/07/2016 |
 '------------------------------------------------------
 Imports System.IO
 Imports System.Xml
+Imports System.Reflection
+Imports ICSharpCode.SharpZipLib.Zip
+Imports System.Web.Script.Serialization
 Public Partial Class frmExport
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
@@ -56,9 +60,9 @@ Public Partial Class frmExport
 		End With
 	End Sub
 	Private Sub GoExport(VpPath As String, VpSource As String)
-	'-------------------------------------------------------
-	'Exporte la table spécifiée dans le répertoire spécifiée
-	'-------------------------------------------------------
+	'------------------------------------------------------
+	'Exporte la table spécifiée dans le répertoire spécifié
+	'------------------------------------------------------
 	Dim VpOut As New StreamWriter(VpPath + "\" + clsModule.AvoidForbiddenChr(VpSource, clsModule.eForbiddenCharset.Full) + Me.GetExtension)
 	Dim VpIsCollection As Boolean = ( VpSource = clsModule.CgCollection )
 		'En-tête
@@ -93,6 +97,90 @@ Public Partial Class frmExport
 		End With
 		VpOut.Flush
 		VpOut.Close
+	End Sub
+	Private Sub GoExportWeb(VpPath As String, VpSources As List(Of String))
+	Dim VpMyHTML As Stream = Assembly.GetExecutingAssembly.GetManifestResourceStream("MyHTML")
+	Dim VpZipStream As ZipInputStream	
+	Dim VpZipEntry As ZipEntry
+		If Not Directory.Exists(Path.GetTempPath + clsModule.CgTemp) Then
+			Directory.CreateDirectory(Path.GetTempPath + clsModule.CgTemp)
+		End If
+		'Extrait le fichier ZIP des ressources dans le répertoire temporaire
+		Using VpFile As Stream = File.OpenWrite(Path.GetTempPath + clsModule.CgTemp + clsModule.CgColViewerZipRes)
+			Call clsModule.CopyStream(VpMyHTML, VpFile)
+		End Using
+		'Puis le décompresse dans le répertoire final
+		VpZipStream = New ZipInputStream(File.OpenRead(Path.GetTempPath + clsModule.CgTemp + clsModule.CgColViewerZipRes))
+		Do
+			VpZipEntry = VpZipStream.GetNextEntry
+			If VpZipEntry IsNot Nothing Then
+				If VpZipEntry.IsFile Then
+					If VpZipEntry.Name <> "" Then
+						Using VpFile As Stream = File.OpenWrite(VpPath + "\" + VpZipEntry.Name)
+							Call clsModule.CopyStream(VpZipStream, VpFile)
+						End Using
+					End If
+				ElseIf VpZipEntry.IsDirectory Then
+					If Not Directory.Exists(VpPath + "\" + VpZipEntry.Name) Then
+						Directory.CreateDirectory(VpPath + "\" + VpZipEntry.Name)
+					End If
+				End If
+			Else
+				Exit Do
+			End If
+		Loop
+		VpZipStream.Close
+		'Génère pour finir le fichier de contenu
+		Cursor.Current = Cursors.WaitCursor
+		Call Me.JSONExport(VpSources)
+		'Affichage de la page HTML
+		Process.Start(VpPath + "\index.html")
+	End Sub
+	Private Sub JSONExport(VpSources As List(Of String))
+	Dim VpContent As New List(Of clsCardInfos)
+	Dim VpCur As clsCardInfos
+	Dim VpJSON As String
+	Dim VpOut As StreamWriter
+	Dim VpSerializer As New JavaScriptSerializer
+		For Each VpDeck As String In VpSources
+			If VpDeck = clsModule.CgCollection Then
+				VgDBCommand.CommandText = "Select * From ((((((MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO;"
+			Else
+				VgDBCommand.CommandText = "Select * From (((((((MyGames Inner Join MyGamesID On MyGames.GameID = MyGamesID.GameID) Inner Join Card On MyGames.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where MyGamesID.GameName = '" + VpDeck.Replace("'", "''") + "';"				
+			End If
+			VgDBReader = VgDBCommand.ExecuteReader
+			With VgDBReader
+				While .Read
+					VpCur = New clsCardInfos
+					VpCur.Color = clsModule.MatchColor(.GetValue(.GetOrdinal("Color")).ToString)
+					VpCur.Cost = .GetValue(.GetOrdinal("Cost")).ToString
+					VpCur.EncNbr = CLng(.GetValue(.GetOrdinal("Card.EncNbr")))
+					VpCur.Items = CInt(.GetValue(.GetOrdinal("Items")))
+					VpCur.Power = .GetValue(.GetOrdinal("Power")).ToString
+					VpCur.Price = .GetValue(.GetOrdinal("Price"))
+					VpCur.Rarity = .GetValue(.GetOrdinal("Rarity")).ToString
+					VpCur.Series = .GetValue(.GetOrdinal("SeriesCD")).ToString
+					VpCur.SeriesNM_FR = .GetValue(.GetOrdinal("SeriesNM_FR")).ToString
+					VpCur.SeriesNM_MtG = .GetValue(.GetOrdinal("SeriesNM_MtG")).ToString
+					VpCur.SubTypeVF =.GetValue(.GetOrdinal("SubTypeVF")).ToString
+					VpCur.TexteFR = .GetValue(.GetOrdinal("TexteFR")).ToString.Trim
+					VpCur.Title = .GetString(.GetOrdinal("Card.Title"))
+					VpCur.TitleFR = .GetString(.GetOrdinal("TitleFR"))
+					VpCur.Tough = .GetValue(.GetOrdinal("Tough")).ToString
+					VpCur.MultiverseId = CLng(.GetValue(.GetOrdinal("MultiverseId")))
+					VpContent.Add(VpCur)
+				End While
+				.Close
+			End With
+			VpJSON = VpSerializer.Serialize(VpContent)
+			If Not Directory.Exists(Me.dlgBrowser.SelectedPath + "\data") Then
+				Directory.CreateDirectory(Me.dlgBrowser.SelectedPath + "\data")
+			End If
+			VpOut = New StreamWriter(Me.dlgBrowser.SelectedPath + "\data\collection.json")
+			VpOut.Write(VpJSON)
+			VpOut.Flush
+			VpOut.Close
+		Next VpDeck	
 	End Sub
 	Private Sub GoImport(VpPath As String, VpSource As String, VpIsNew As Boolean)
 	'--------------------------------------------------------------------------------------------------
@@ -353,6 +441,8 @@ Public Partial Class frmExport
 				Return clsModule.CgFExtN
 			Case clsModule.eFormat.MWS
 				Return clsModule.CgFExtW
+			Case clsModule.eFormat.Web
+				Return clsModule.CgFExtH
 			Case Else
 				Return ""
 		End Select
@@ -366,13 +456,22 @@ Public Partial Class frmExport
 		If Me.txtSourceImp.Text.Length > 50 Then Me.txtSourceImp.Text = Me.txtSourceImp.Text.Substring(0, 50)
 	End Sub
 	Sub CmdExportClick(ByVal sender As Object, ByVal e As EventArgs)
+	Dim VpSources As List(Of String)
 		If Me.lstchkSources.CheckedItems.Count > 0 Then
 			Me.dlgBrowser.ShowDialog
 			If Me.dlgBrowser.SelectedPath <> "" Then
 				VmFormat = CType(Me.cboFormat.SelectedIndex, clsModule.eFormat)
-				For Each VpSource As String In Me.lstchkSources.CheckedItems
-					Call Me.GoExport(Me.dlgBrowser.SelectedPath, VpSource)
-				Next VpSource
+				If VmFormat = clsModule.eFormat.Web Then
+					VpSources = New List(Of String)
+					For Each VpSource As String In Me.lstchkSources.CheckedItems
+						VpSources.Add(VpSource)
+					Next VpSource
+					Call Me.GoExportWeb(Me.dlgBrowser.SelectedPath, VpSources)
+				Else
+					For Each VpSource As String In Me.lstchkSources.CheckedItems
+						Call Me.GoExport(Me.dlgBrowser.SelectedPath, VpSource)
+					Next VpSource
+				End If
 				Call clsModule.ShowInformation("Exportation terminée.")
 				Me.Close
 			End If

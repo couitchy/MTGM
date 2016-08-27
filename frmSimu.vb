@@ -510,7 +510,7 @@ Public Partial Class frmSimu
 		End If
 	End Sub
 	Sub CellMouseClick(sender As Object, e As PositionEventArgs)
-		Call clsModule.LoadScanCard(e.Cell.GetValue(e.Position), Me.picScanCard2)
+		Call clsModule.LoadScanCard(e.Cell.GetValue(e.Position), 0, Me.picScanCard2)
 	End Sub
 	Sub ChklstSequencesDisposSelectedIndexChanged(sender As Object, e As EventArgs)
 	Dim VpSequence As clsComboSequence

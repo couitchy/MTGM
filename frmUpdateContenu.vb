@@ -22,6 +22,7 @@
 '| - gestion des règles spécifiques		   18/02/2012 |
 '| - gestion formats dates internationaux  04/01/2015 |
 '| - gestion mise à jour des sous-types    16/01/2015 |
+'| - gestion mise à jour des multiverse id 10/07/2016 |
 '------------------------------------------------------
 Imports System.Text
 Imports System.Net
@@ -49,25 +50,25 @@ Public Partial Class frmUpdateContenu
 	'----------------------------
 	'Récupération des horodatages
 	'----------------------------
-	Dim VpStamps(0 To 11) As String		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = series, 11 = trad
+	Dim VpStamps(0 To 12) As String		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = patch multiverse id, 11 = series, 12 = trad
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
-	Dim VpBuf(0 To 105) As Byte
+	Dim VpBuf(0 To 117) As Byte
 	DIm VpLength As Integer
 		Try
 			'Gestion cas 0
 			VpStamps(0) = clsModule.GetPictSP
-			'Gestion cas 1 à 9
+			'Gestion cas 1 à 10
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1D)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
 			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)	'gestion cr ou cr+lf
-			For VpI As Integer = 0 To 8
+			For VpI As Integer = 0 To 9
 				VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 10)
 			Next VpI
-			'Gestion cas 10
-
 			'Gestion cas 11
+
+			'Gestion cas 12
 			
 			Return VpStamps
 		Catch
@@ -79,23 +80,23 @@ Public Partial Class frmUpdateContenu
 	'------------------------------------
 	'Récupération des tailles des patches
 	'------------------------------------
-	Dim VpSizes(0 To 11) As Integer		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = series, 11 = trad
+	Dim VpSizes(0 To 12) As Integer		'0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = patch multiverse id, 11 = series, 12 = trad
 	Dim VpRequest As HttpWebRequest
 	Dim VpAnswer As Stream
-	Dim VpBuf(0 To 67) As Byte
+	Dim VpBuf(0 To 74) As Byte
 	DIm VpLength As Integer
 		Try
 			VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1E)
 			VpAnswer = VpRequest.GetResponse.GetResponseStream
 			VpAnswer.Read(VpBuf, 0, VpBuf.Length)
 			VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
-			'Gestion cas 0 à 9
-			For VpI As Integer = 0 To 9
+			'Gestion cas 0 à 10
+			For VpI As Integer = 0 To 10
 				VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 5))
 			Next VpI
-			'Gestion cas 10
-
 			'Gestion cas 11
+
+			'Gestion cas 12
 			
 			Return VpSizes
 		Catch
@@ -125,6 +126,8 @@ Public Partial Class frmUpdateContenu
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSubTypesPatch, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSubTypesVFPatch, VpStamp, VpSize)
+			Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
+				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateMultiverseIdPatch, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewTxtVF
 				VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTxtVF, VpStamp, VpSize)
 			Case clsMAJContenu.EgMAJContenu.NewRulings
@@ -211,6 +214,13 @@ Public Partial Class frmUpdateContenu
 				'Appel silencieux pour correctif des traductions des sous-types de cartes
 				If MainForm.VgMe.FixSubTypesVF Then
 					VgOptions.VgSettings.LastUpdateSubTypesVFPatch = VpElement.Serveur
+				Else
+					Return False
+				End If
+			Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
+				'Appel silencieux pour mise à jour des identifiants Multiverse des cartes
+				If MainForm.VgMe.FixMultiverse2 Then
+					VgOptions.VgSettings.LastUpdateMultiverseIdPatch = VpElement.Serveur
 				Else
 					Return False
 				End If
@@ -424,6 +434,7 @@ Public Class clsMAJContenu
 		PatchTrad
 		PatchSubTypes
 		PatchSubTypesVF
+		PatchMultiverseId
 		NewSerie
 		NewTrad
 	End Enum
@@ -473,6 +484,8 @@ Public Class clsMAJContenu
 					Return "Correctif des sous-types de cartes"
 				Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
 					Return "Correctif des traductions des sous-types"
+				Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
+					Return "Mise à jour des identifiants Multiverse"
 				Case clsMAJContenu.EgMAJContenu.NewPict
 					Return "Service pack d'images de cartes"
 				Case clsMAJContenu.EgMAJContenu.NewSerie

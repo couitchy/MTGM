@@ -65,6 +65,14 @@ Public Partial Class frmExploSettings
 			Me.Hide
 		End If
 	End Sub
+	Sub FrmExploSettingsLoad(sender As Object, e As EventArgs)
+		Me.chklstClassement.SetItemCheckState(Me.chklstClassement.Items.Count - 1, CheckState.Indeterminate)
+	End Sub
+	Sub ChklstClassementItemCheck(sender As Object, e As ItemCheckEventArgs)
+		If e.CurrentValue = CheckState.Indeterminate Then
+			e.NewValue = CheckState.Indeterminate
+		End If
+	End Sub
 	Sub BtUpClick(sender As Object, e As EventArgs)
 		Call Me.ManageOrder(1, 0, -1)
 	End Sub

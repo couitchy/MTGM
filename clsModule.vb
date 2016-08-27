@@ -23,6 +23,7 @@
 '| - prévention des exécutions multiples   31/01/2010 |
 '| - gestion cartes foils				   19/12/2010 |
 '| - gestion des coûts partiels en PV	   02/05/2011 |
+'| - téléchargement images avec Multi. Id  10/07/2016 |
 '------------------------------------------------------
 Imports System.Data
 Imports System.Data.OleDb
@@ -38,7 +39,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 35205
+	Public Const CgCodeLines As Integer   			= 34688
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -82,6 +83,7 @@ Public Module clsModule
 	Public Const CgUpdater As String      			= "\Updater.exe"
 	Public Const CgMTGMWebResourcer As String		= "\WebResourcer.exe"
 	Public Const CgHTMLCollectionViewer As String	= "\CollectionViewer.exe"
+	Public Const CgColViewerZipRes As String		= "\CollectionViewer.zip"	
 	Public Const CgUpDFile As String      			= "\Magic The Gathering Manager.new"
 	Public Const CgDownDFile As String     			= "\Magic The Gathering Manager.bak"
 	Public Const CgUpDDB As String      			= "\Images DB.mdb"
@@ -97,13 +99,15 @@ Public Module clsModule
 	Public Const CgMdTrad As String					= "\MD_Trad.log"
 	Public Const CgMdSubTypes As String				= "\MD_SubTypes.log"
 	Public Const CgMdSubTypesVF As String			= "\MD_SubTypesVF.log"
+	Public Const CgMdMultiverse As String			= "\MD_Multiverse.log"
 	Public Const CgShell As String					= "explorer.exe"
 	Public Const CgDefaultServer As String			= "http://couitchy.free.fr/upload/MTGM"
+	Public Const CgURL0 As String					= "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=#&type=card"
 	Public Const CgURL1 As String         			= "/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         			= "/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         			= "/Updates/PicturesStamp.txt"
-	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r19.txt"
-	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r19.txt"
+	Public Const CgURL1D As String         			= "/Updates/ContenuStamp r20.txt"
+	Public Const CgURL1E As String         			= "/Updates/ContenuSizes r20.txt"
 	Public Const CgURL2 As String         			= "/Updates/Magic The Gathering Manager r4.new"
 	Public Const CgURL2B As String         			= "/Updates/Beta/Magic The Gathering Manager.new"
 	Public Const CgURL3 As String         			= "/Updates/Images DB.mdb"
@@ -126,6 +130,7 @@ Public Module clsModule
 	Public Const CgURL19 As String         			= "/Updates/Rulings.xml"
 	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes r19.log"
 	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF r19.log"
+	Public Const CgURL22 As String         			= "/Updates/MD_Multiverse r20.log"
 	Public Const CgDL1 As String         			= "Vérification des mises à jour..."
 	Public Const CgDL2 As String         			= "Téléchargement en cours"
 	Public Const CgDL2b As String         			= "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
@@ -146,6 +151,7 @@ Public Module clsModule
 	Public Const CgErr9 As String					= "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."
 	Public Const CgErr10 As String					= "La zone 'Regard' doit être vide pour pouvoir afficher la Réserve..."
 	Public Const CgErr11 As String					= "Impossible de modifier les préférences..."
+	Public Const CgFExtH As String					= ".html"
 	Public Const CgFExtO As String					= ".dck"
 	Public Const CgFExtN As String					= ".dk2"
 	Public Const CgFExtA As String					= ".dec"
@@ -196,7 +202,7 @@ Public Module clsModule
 	Public CgNumbers() As String 					= {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 	Public CgRarities() As String					= {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
 	Public CgSearchFields() As String 				= {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Card.Series", "Spell.myCost", "Card.SubType", "SubTypes.SubTypeVF"}
-	Public CgRequiredFiles() As String				= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", CgMagicBack, CgUpdater}
+	Public CgRequiredFiles() As String				= {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", "\ICSharpCode.SharpZipLib.dll", CgMagicBack, CgUpdater}
 	Public CgStrConn() As String      				= {"Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source=", "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="}
 	Public CgCriteres As New Hashtable(CgNCriterions)
 	Public CgVirtualPath As String
@@ -216,10 +222,15 @@ Public Module clsModule
 		MTGM
 		Apprentice
 		MWS
+		Web
 	End Enum
 	Public Enum eServer
 		FreePagesPerso
 		ChromeLightStudio
+	End Enum
+	Public Enum ePicturesSource
+		Local
+		Online
 	End Enum
 	Public Enum eSearchType
 		Alpha = 0
@@ -355,7 +366,7 @@ Public Module clsModule
 			'Si le fichier n'existe pas
 			If Not File.Exists(Application.StartupPath + VpFile) Then
 				'Essaie de le télécharger
-				Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + VgOptions.VgSettings.DownloadServer + CgURL8 + VpFile.Replace("\", "")), VpFile)
+				Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL8 + VpFile.Replace("\", "")), VpFile)
 				'Si le fichier n'existe toujours pas, on ne démarre pas
 				If Not File.Exists(Application.StartupPath + VpFile) Then
 					Call ShowWarning(clsModule.CgErr0)
@@ -646,6 +657,9 @@ Public Module clsModule
 					If CInt(VpDBVersion) < 19 Then
 						VgDBCommand.CommandText = "Alter Table Card Add MultiverseId Long;"
 						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update Card Set MultiverseId = 0;"
+						VgDBCommand.ExecuteNonQuery
+						Call ShowInformation("Vous pouvez maintenant avoir l'image de chaque carte selon son édition (à activer dans les Préférences) !")
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
@@ -1053,6 +1067,26 @@ Public Module clsModule
 				Return VpStr
 		End Select
 	End Function
+	Public Function MatchColor(VpColor As String) As String
+		Select Case VpColor.ToUpper
+			Case "W"
+				Return "White"
+			Case "U"
+				Return "Blue"
+			Case "R"
+				Return "Red"
+			Case "G"
+				Return "Green"
+			Case "B"
+				Return "Black"
+			Case "M"
+				Return "Multicolor"
+			Case "A"
+				Return "Colorless"
+			Case Else
+				Return VpColor
+		End Select
+	End Function
 	Public Function ExtractENName(VpStr As String) As String
 	Dim VpTitle As String = VpStr
 		VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
@@ -1256,6 +1290,20 @@ Public Module clsModule
 				Return VpIn
 		End Select
 	End Function
+	Public Sub CopyStream(VpIn As Stream, VpOut As Stream)
+	Dim VpBuffer() As Byte = New Byte(8 * 1024 - 1) {}
+	Dim VpLen As Integer
+		Do
+			VpLen = VpIn.Read(VpBuffer, 0, VpBuffer.Length)
+			If VpLen > 0 Then
+				VpOut.Write(VpBuffer, 0, VpLen)	
+			Else
+				Exit Do
+			End If
+		Loop
+		VpOut.Flush
+		VpOut.Close
+	End Sub
 	Public Function SafeGetNonZeroVal(VpColumn As String) As Single
 		With VgDBReader
 			If .GetValue(.GetOrdinal(VpColumn)) Is DBNull.Value Then
@@ -1680,10 +1728,10 @@ Public Module clsModule
 			.Close
 		End With
 		For Each VpCard As String In VpCards
-			Call LoadScanCard(VpCard, Nothing, True, VpSaveFolder)
+			Call LoadScanCard(VpCard, 0, Nothing, True, VpSaveFolder)
 		Next VpCard
 	End Sub
-	Public Sub LoadScanCard(VpTitle As String, VppicScanCard As PictureBox, Optional VpSave As Boolean = False, Optional VpSaveFolder As String = "")
+	Public Sub LoadScanCard(VpTitle As String, VpMultiverseId As Long, VppicScanCard As PictureBox, Optional VpSave As Boolean = False, Optional VpSaveFolder As String = "")
 	'---------------------------------------------------------------------------------
 	'Charge l'image scannérisée de la carte recherchée dans la zone prévue à cet effet
 	'---------------------------------------------------------------------------------
@@ -1701,6 +1749,8 @@ Public Module clsModule
 			Exit Sub
 		ElseIf MainForm.VgMe.IsMainReaderBusy Then
 			Exit Sub
+		ElseIf VpMultiverseId <> 0 AndAlso VgOptions.VgSettings.PicturesSource = ePicturesSource.Online Then
+			VppicScanCard.LoadAsync(clsModule.CgURL0.Replace("#", VpMultiverseId.ToString))
 		ElseIf File.Exists(VgOptions.VgSettings.PicturesFile) Then
 			If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < CgImgMinLength Then
 				If Not VpSave Then
@@ -2720,4 +2770,23 @@ Public Class clsFullInfos
 			Public legality As String
 		End Class
 	End Class
+End Class
+<Serializable> _
+Public Class clsCardInfos
+	Public MultiverseId As Long	
+	Public EncNbr As Long
+	Public Title As String
+	Public TitleFR As String
+	Public SubTypeVF As String
+	Public TexteFR As String
+	Public Rarity As String
+	Public Series As String
+	Public SeriesNM_MtG As String
+	Public SeriesNM_FR As String
+	Public Items As Integer
+	Public Cost As String
+	Public Color As String
+	Public Power As String
+	Public Tough As String
+	Public Price As Single
 End Class

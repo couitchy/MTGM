@@ -35,6 +35,7 @@ Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Ch
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\NPlot.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\TreeViewMS.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Win7Taskbar.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\SandBar.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\SourceGrid2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\SourceLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion

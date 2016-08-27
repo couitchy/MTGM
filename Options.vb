@@ -111,6 +111,7 @@ Public Partial Class Options
 		Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
 		Private VmLastUpdateSubTypesPatch As String = clsModule.CgLastUpdateSubsPatch
 		Private VmLastUpdateSubTypesVFPatch As String = clsModule.CgLastUpdateSubsVFPatch
+		Private VmLastUpdateMultiverseIdPatch As String = ""
 		Private VmShowUpdateMenus As Boolean = False
 		Private VmPrevSearches As String = ""
 		Private VmVFDefault As Boolean = True
@@ -119,6 +120,7 @@ Public Partial Class Options
 		Private VmShowLines As Boolean = False
 		Private VmDownloadServerEnum As clsModule.eServer = clsModule.eServer.FreePagesPerso
 		Private VmShowAllSeries As Boolean = False
+		Private VmPicturesSource As clsModule.ePicturesSource = clsmodule.ePicturesSource.Local
 		<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 		Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 			Get
@@ -348,6 +350,15 @@ Public Partial Class Options
 				VmImageMode = VpImageMode
 			End Set
 		End Property
+		<DisplayName("Source des images"), Category("Explorateur"), DefaultValue(clsModule.ePicturesSource.Local), Description("Emplacement source des images des cartes")> _
+		Public Property PicturesSource As clsModule.ePicturesSource
+			Get
+				Return VmPicturesSource
+			End Get
+			Set (VpPicturesSource As clsModule.ePicturesSource)
+				VmPicturesSource = VpPicturesSource
+			End Set
+		End Property
 		<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des autorisations de tournoi")> _
 		Public Property LastUpdateAut As String
 			Get
@@ -418,6 +429,15 @@ Public Partial Class Options
 			End Get
 			Set (VpLastUpdateSubTypesVFPatch As String)
 				VmLastUpdateSubTypesVFPatch = VpLastUpdateSubTypesVFPatch
+			End Set
+		End Property
+		<Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des identifiants Multiverse")> _
+		Public Property LastUpdateMultiverseIdPatch As String
+			Get
+				Return VmLastUpdateMultiverseIdPatch
+			End Get
+			Set (VpLastUpdateMultiverseIdPatch As String)
+				VmLastUpdateMultiverseIdPatch = VpLastUpdateMultiverseIdPatch
 			End Set
 		End Property
 		<Browsable(False), Category("Général"), Description("Liste des dernières recherches effectuées")> _

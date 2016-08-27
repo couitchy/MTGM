@@ -65,7 +65,8 @@ Public Partial Class MainForm
 		Private VmValue As String = ""			'Valeur de ce champ
 		Private VmValue2 As String = ""			'Titre VF
 		Private VmValue3 As Boolean = False		'Double carte
-		Private VmDescendance As String = ""	'Requête SQL permettant de générer la descendante du noeud courant
+		Private VmMultiverseId As Long = 0		'Identifiant universel
+		Private VmDescendance As String = ""	'Requête SQL permettant de générer la descendance du noeud courant
 		Public Sub New
 		End Sub
 		Public Sub New(VpValue As String)
@@ -101,6 +102,14 @@ Public Partial Class MainForm
 			End Get
 			Set (VpValue3 As Boolean)
 				VmValue3 = VpValue3
+			End Set
+		End Property
+		Public Property MultiverseId As Long
+			Get
+				Return VmMultiverseId
+			End Get
+			Set (VpMultiverseId As Long)
+				VmMultiverseId = VpMultiverseId
 			End Set
 		End Property
 		Public Property Descendance As String
@@ -851,6 +860,27 @@ Public Partial Class MainForm
 			Call clsModule.ShowWarning("Impossible de trouver le fichier 'AllSets-x.json'") 
 		End If
 	End Sub
+	Public Function FixMultiverse2 As Boolean
+	'-----------------------------------------------------------------------
+	'Télécharge et installe une mise à jour pour les identifiants Multiverse
+	'-----------------------------------------------------------------------
+	Dim VpLog As StreamReader
+	Dim VpStrs() As String
+		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL22), clsModule.CgMdMultiverse)
+		If File.Exists(Application.StartupPath + clsModule.CgMdMultiverse) Then
+	    	VpLog = New StreamReader(Application.StartupPath + clsModule.CgMdMultiverse, Encoding.UTF8)
+			While Not VpLog.EndOfStream
+				VpStrs = VpLog.ReadLine.Split("#")
+				VgDBCommand.CommandText = "Update Card Set MultiverseId = " + VpStrs(2) + " Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
+				VgDBCommand.ExecuteNonQuery
+	    	End While
+			VpLog.Close
+			Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgMdMultiverse)
+		Else
+			Return False
+		End If
+		Return True
+	End Function
 	Private Sub GoFind
 	'------------------------------------------
 	'Déclenche la procédure de recherche simple
@@ -1206,19 +1236,19 @@ Public Partial Class MainForm
 		End If
 		VmMustReload = False
 	End Sub
-	Private Function CanAdd(VpTag As clsTag, VpCard As String) As Boolean
+	Private Function CanAdd(VpNodeTag As clsTag, VpNodeTitle As String) As Boolean
 	'--------------------------------------------------------------------------
 	'Si l'on est en mode suggestions, empêche l'insertion d'un noeud non validé
 	'--------------------------------------------------------------------------
-		If VpTag.Key = "Card.Title" And Not VmSuggestions Is Nothing Then
+		If VpNodeTag.Key = "Card.Title" And Not VmSuggestions Is Nothing Then
 			For Each VpSugg As clsCorrelation In VmSuggestions
-				If VpSugg.Card1 = VpCard Then
+				If VpSugg.Card1 = VpNodeTitle Then
 					Return True
 				End If
 			Next VpSugg
 			Return False
 		Else
-			Return ( VpCard <> "" )
+			Return ( VpNodeTitle <> "" )
 		End If
 	End Function
 	Private Sub RecurLoadTvw(VpSource1 As String, VpSource2 As String, VpNode As TreeNode, VpRecurLevel As Integer, VpRestriction As String, VpReserve As Boolean)
@@ -1236,9 +1266,11 @@ Public Partial Class MainForm
 		If VpRecurLevel > VmFilterCriteria.NSelectedCriteria Then Exit Sub
 		'La requête s'effectue dans les deux tables Card et Spell mises en correspondances sur le nom de la carte, elles-mêmes mises en correspondance avec MyGames ou MyCollection sur le numéro encyclopédique
 		If VpCurTag.Key = "Card.Title" Then
-			VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, Card.SpecialDoubleCard From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+			VpSQL = "Select Distinct Card.Title, Spell.Color, CardFR.TitleFR, Card.SpecialDoubleCard, Max(Card.MultiverseId) From ((" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On CardFR.EncNbr = Card.EncNbr Where "
+			VpStr = " Group By Card.Title, Spell.Color, CardFR.TitleFR, Card.SpecialDoubleCard"
 		Else
 			VpSQL = "Select Distinct " + VpCurTag.Key + " From (" + VpSource1 + " Inner Join Card On " + VpSource2 + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
+			VpStr = ""
 		End If
 		'Ajoute les conditions sur les identifiants des jeux
 		VpSQL = VpSQL + VpRestriction
@@ -1251,8 +1283,8 @@ Public Partial Class MainForm
 			VpSQL = VpSQL + Me.ElderCriteria(CType(VpParent.Tag, clsTag).Value, CType(VpParent.Parent.Tag, clsTag).Key)
 			VpParent = VpParent.Parent
 		End While
-		'Suppression des mots-clés inutiles
-		VpSQL = clsModule.TrimQuery(VpSQL)
+		'Suppression des mots-clés inutiles et agrégation
+		VpSQL = clsModule.TrimQuery(VpSQL, , VpStr)
 		'Mémorise la requête
 		CType(VpNode.Tag, clsTag).Descendance = VpSQL
 		'Exécution de la requête
@@ -1280,7 +1312,13 @@ Public Partial Class MainForm
 						'Caption explicite
 						VpChild.Text = clsModule.FormatTitle(VpCurTag.Key, VpChildTag.Value, Me.IsInVFMode)
 					'Si on est au niveau du nom des cartes, il faut mémoriser dans le tag des paramètres supplémentaires
-					ElseIf VpCurTag.Key = "Card.Title"
+					ElseIf VpCurTag.Key = "Card.Title" Then
+						'Identifiant universel
+						If Not .IsDBNull(4) Then
+							VpChildTag.MultiverseId = CLng(.GetValue(4))
+						Else
+							VpChildTag.MultiverseId = 0
+						End If
 						'Traduction
 						VpChildTag.Value2 = .GetString(2)
 						'Flag double carte
@@ -1458,14 +1496,14 @@ Public Partial Class MainForm
 		Call Me.ManageDispMenu(Me.mnuDisp, VpMenuTitle)
 		VmDeckMode = VpDeckMode
 	End Sub
-	Private Function ShowCard(VpTitle As String, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean) As Boolean
+	Private Function ShowCard(VpTitle As String, VpMultiverseId As Long, VpDownFace As Boolean, VpTransformed As Boolean, VpReserve As Boolean) As Boolean
 	'-------------------------------------------------------------------
 	'Affiche les infos d'une carte après sa sélection dans l'explorateur
 	'-------------------------------------------------------------------
 		If Not VpTitle Is Nothing AndAlso VpTitle <> "" Then
 			Call Me.LoadCarac(VpTitle, VpDownFace, VpTransformed, VpReserve)
 			If Not Me.splitV2.Panel2Collapsed Then
-				Call clsModule.LoadScanCard(VpTitle, Me.picScanCard)
+				Call clsModule.LoadScanCard(VpTitle, VpMultiverseId, Me.picScanCard)
 			End If
 			If Me.grpAutorisations.Visible Then
 				Call Me.LoadAutorisations(VpTitle)
@@ -2055,7 +2093,7 @@ Public Partial Class MainForm
 			Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
 		End If
 	End Function
-	Private Function GetTransformedNames(VpTitle As String, VpReverse As Boolean, VpDownFace As Boolean) As clsTag
+	Private Function GetTransformedTag(VpTitle As String, VpReverse As Boolean, VpDownFace As Boolean) As clsTag
 	'----------------------------------------------------------
 	'Retourne les noms (VO/VF) de la carte transformée associée
 	'----------------------------------------------------------
@@ -2074,15 +2112,17 @@ Public Partial Class MainForm
 			End If
 		End If
 		VpEncNbr = VgDBCommand.ExecuteScalar
-		Return Me.GetNames(VpEncNbr)
+		Return Me.GetTag(VpEncNbr)
 	End Function
-	Private Function GetNames(VpEncNbr As Long) As clsTag
+	Private Function GetTag(VpEncNbr As Long) As clsTag
 	Dim VpNames As New clsTag
 		If VpEncNbr <> 0 Then
 			VgDBCommand.CommandText = "Select Card.Title From Card Where Card.EncNbr = " + VpEncNbr.ToString + ";"
 			VpNames.Value = VgDBCommand.ExecuteScalar.ToString
 			VgDBCommand.CommandText = "Select CardFR.TitleFR From CardFR Where CardFR.EncNbr = " + VpEncNbr.ToString + ";"
 			VpNames.Value2 = VgDBCommand.ExecuteScalar.ToString
+			VgDBCommand.CommandText = "Select Card.MultiverseId From Card Where Card.EncNbr = " + VpEncNbr.ToString + ";"
+			VpNames.MultiverseId = CLng(VgDBCommand.ExecuteScalar)
 		End If
 		Return VpNames
 	End Function
@@ -2846,7 +2886,7 @@ Public Partial Class MainForm
 			'Sélection d'un élément de type 'carte'
 			If e.Node.Parent.Tag.Key = "Card.Title" Then
 				VpTransformed = Me.IsTransformed(e.Node)
-				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), Me.IsDownFace(e.Node) Xor VpTransformed, VpTransformed, Me.IsReserveSelected)
+				Call Me.ShowCard(If(VpTransformed, Me.picScanCard.Tag, e.Node.Tag.Value), e.Node.Tag.MultiverseId, Me.IsDownFace(e.Node) Xor VpTransformed, VpTransformed, Me.IsReserveSelected)
 			Else
 				'Préconstruction de la requête avec les conditions sur les critères des ancêtres
 				VpParent = e.Node
@@ -2860,7 +2900,7 @@ Public Partial Class MainForm
 					Call Me.ManageMode(False)
 					Call Me.LoadCaracOther(e.Node.Tag.Value, clsModule.eModeCarac.Serie, VpElderCriteria)
 					If Not Me.splitV2.Panel2Collapsed Then
-						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text, , Me.IsInVFMode), Me.picScanCard)
+						Call clsModule.LoadScanCard(clsModule.CgImgSeries + clsModule.GetSerieCodeFromName(e.Node.Text, , Me.IsInVFMode), 0, Me.picScanCard)
 					End If
 					Call Me.LoadAutorisations("")
 				'Sélection d'un élément de type 'couleur'
@@ -2868,7 +2908,7 @@ Public Partial Class MainForm
 					Call Me.ManageMode(False)
 					Call Me.LoadCaracOther(clsModule.CgImgColors + e.Node.Text, clsModule.eModeCarac.Couleur, VpElderCriteria)
 					If Not Me.splitV2.Panel2Collapsed Then
-						Call clsModule.LoadScanCard(clsModule.CgImgColors + e.Node.Text, Me.picScanCard)
+						Call clsModule.LoadScanCard(clsModule.CgImgColors + e.Node.Text, 0, Me.picScanCard)
 					End If
 					Call Me.LoadAutorisations("")
 				'Sélection d'un élément de type 'type'
@@ -3209,8 +3249,8 @@ Public Partial Class MainForm
 			If VpNode.Parent.Tag.Key = "Card.Title" AndAlso VpNode.Tag.Value3 Then		'On doit refaire la vérif. au cas où l'évènement aurait été triggé par un clic sur l'image
 				VpDownFace = Me.IsDownFace(VpNode)
 				VpTransformed = Me.IsTransformed(VpNode)
-				VpNames = Me.GetTransformedNames(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)
-				If Me.ShowCard(VpNames.Value, Not (VpDownFace Xor VpTransformed), Not VpTransformed, Me.IsReserveSelected) Then
+				VpNames = Me.GetTransformedTag(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)
+				If Me.ShowCard(VpNames.Value, VpNames.MultiverseId, Not (VpDownFace Xor VpTransformed), Not VpTransformed, Me.IsReserveSelected) Then
 					'Met à jour le noeud de l'arbre
 					VpNode.Text = If(Me.IsInVFMode, VpNames.Value2, VpNames.Value)
 					'Mémorise la référence de l'image
@@ -3413,10 +3453,17 @@ Public Partial Class MainForm
 	'--------------------------------------------------------------------------------------
 	Dim VpCell As Cells.Cell = e.Cell
 	Dim VpEdition As String = VpCell.Tag
+	Dim VpId As Long
 		'Si on est en VO, il peut arriver que le texte change selon l'édition
 		If Not Me.IsInVFMode Then
 			VgDBCommand.CommandText = "Select CardText From Card Where Title = '" + Me.CurrentCardTitle.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
 			Call Me.PutInRichText(Me.txtRichCard, Me.imglstCarac, VgDBCommand.ExecuteScalar.ToString, "")
+		End If
+		'Si l'utilisateur a choisi de récupérer l'image en ligne, il faut la changer selon l'édition
+		If VgOptions.VgSettings.PicturesSource = clsModule.ePicturesSource.Online AndAlso Not Me.splitV2.Panel2Collapsed Then
+			VgDBCommand.CommandText = "Select MultiverseId From Card Where Title = '" + Me.CurrentCardTitle.Replace("'", "''") + "' And Series = '" + VpEdition + "';"
+			VpId = CLng(VgDBCommand.ExecuteScalar)
+			If VpId <> 0 Then Me.picScanCard.LoadAsync(clsModule.CgURL0.Replace("#", VpId.ToString))
 		End If
 	End Sub
 	Sub CellValidated(sender As Object, e As CellEventArgs)

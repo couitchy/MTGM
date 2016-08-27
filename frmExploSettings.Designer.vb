@@ -95,6 +95,7 @@ Partial Class frmExploSettings
 		Me.chklstClassement.Size = New System.Drawing.Size(116, 124)
 		Me.chklstClassement.TabIndex = 5
 		AddHandler Me.chklstClassement.SelectedIndexChanged, AddressOf Me.ChklstClassementSelectedIndexChanged
+		AddHandler Me.chklstClassement.ItemCheck, AddressOf Me.ChklstClassementItemCheck
 		'
 		'frmExploSettings
 		'
@@ -112,6 +113,7 @@ Partial Class frmExploSettings
 		Me.TopMost = true
 		AddHandler KeyUp, AddressOf Me.FrmExploSettingsKeyUp
 		AddHandler FormClosing, AddressOf Me.FrmExploSettingsFormClosing
+		AddHandler Load, AddressOf Me.FrmExploSettingsLoad
 		Me.toolStrip.ResumeLayout(false)
 		Me.toolStrip.PerformLayout
 		Me.ResumeLayout(false)

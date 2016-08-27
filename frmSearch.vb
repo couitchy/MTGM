@@ -289,7 +289,7 @@ Public Partial Class frmSearch
 	End Sub
 	Sub LstResultSelectedIndexChanged(sender As Object, e As EventArgs)
 		If Me.lstResult.SelectedItem IsNot Nothing AndAlso Me.picScanCard.Visible Then
-			Call clsModule.LoadScanCard(clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), Me.picScanCard)
+			Call clsModule.LoadScanCard(clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), 0, Me.picScanCard)
 		End If
 	End Sub
 	Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
