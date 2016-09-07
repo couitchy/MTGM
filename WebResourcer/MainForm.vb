@@ -1359,6 +1359,12 @@ Public Partial Class MainForm
 				Return "magicgamedaycards#" + VpStr
 			Case "ZX"
 				Return "zendikarexpeditions#" + VpStr
+			Case "TC"
+				Return "takethecrown#" + VpStr
+			Case "MA"
+				Return "eternalmasters#" + VpStr
+			Case "EM"
+				Return "eldritchmoon#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1575,6 +1581,12 @@ Public Partial Class MainForm
 				Return "MG"
 			Case "zendikarexpeditions"
 				Return "ZX"
+			Case "takethecrown"
+				Return "TC"
+			Case "eternalmasters"
+				Return "MA"
+			Case "eldritchmoon"
+				Return "EM"
 			Case Else
 				Return ""
 		End Select

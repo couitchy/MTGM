@@ -843,7 +843,7 @@ Public Partial Class MainForm
 	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
 		VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
 		VgDBCommand.ExecuteNonQuery
-		If File.Exists("AllSets-x.json") Then
+		If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
 			VpSerializer.MaxJsonLength = Integer.MaxValue
 			VpJSONFullDB = (New StreamReader("AllSets-x.json")).ReadToEnd
 			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))(VpJSONFullDB)
@@ -2393,8 +2393,11 @@ Public Partial Class MainForm
 	Dim VpDBReader As OleDbDataReader
 	Dim VpMustReload As Boolean = False
 	Dim VpQuant As Integer
-		'La requête permettant de construire les fils du noeud sélectionné a été mémorisée dans un tag
+		'La requête permettant de construire les fils du noeud sélectionné a été mémorisée dans un tag => on en récupère la clause From
 		VpSQL = VpSQL.Substring(VpSQL.IndexOf("From"))
+		If VpSQL.Contains("Group By") Then
+			VpSQL = VpSQL.Substring(0, VpSQL.LastIndexOf("Group By") - 1)
+		End If
 		If Not Me.IsInAdvSearch Then
 			VpSQL = "Select " + VpSource + ".EncNbr, Items, Foil " + VpSQL
 		Else

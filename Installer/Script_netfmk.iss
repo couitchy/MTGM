@@ -70,14 +70,14 @@ function isxdl_IsConnected: Integer;
 external 'isxdl_IsConnected@files:isxdl.dll stdcall';
 
 const
-dotnetRedistURL = 'http://couitchy.free.fr/upload/fmk/dotnetfx35sp1.exe';
+dotnetRedistURL = 'http://download.microsoft.com/download/2/0/E/20E90413-712F-438C-988E-FDAA79A8AC3D/dotnetfx35.exe';
 
 function InitializeSetup(): Boolean;
 begin
   Result := true;
   dotNetNeeded := false;
   // Check for required netfx installation
-  if (not RegKeyExists(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5')) then begin
+  if (not RegKeyExists(HKLM, 'Software\Microsoft\.NETFramework\v3.0')) then begin
     dotNetNeeded := true;
     if (not IsAdminLoggedOn()) then begin
       MsgBox('Magic The Gathering Manager nécessite l''installation du Microsoft .NET Framework 3.5 sur cet ordinateur en tant qu''Administrateur.', mbInformation, MB_OK);

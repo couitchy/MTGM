@@ -39,7 +39,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34688
+	Public Const CgCodeLines As Integer   			= 34707
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -86,6 +86,7 @@ Public Module clsModule
 	Public Const CgColViewerZipRes As String		= "\CollectionViewer.zip"	
 	Public Const CgUpDFile As String      			= "\Magic The Gathering Manager.new"
 	Public Const CgDownDFile As String     			= "\Magic The Gathering Manager.bak"
+	Public Const CgUpMultiverse As String			= "\AllSets-x.json"
 	Public Const CgUpDDB As String      			= "\Images DB.mdb"
 	Public Const CgUpDDBb As String      			= "\Patch.mdb"
 	Public Const CgUpDDBd As String      			= "Images%20DB.dat"
@@ -1993,6 +1994,7 @@ Public Module clsModule
 			End If
 		End Try
 		'Updates
+		Call SecureDelete(Application.StartupPath + CgUpMultiverse)
 		Call SecureDelete(Application.StartupPath + CgUpRulings)
 		Call SecureDelete(Application.StartupPath + CgUpTXTFR)
 		Call SecureDelete(Application.StartupPath + CgUpDFile)
