@@ -204,6 +204,7 @@ Partial Class MainForm
 		Me.cmnuCbar = New System.Windows.Forms.ContextMenuStrip(Me.components)
 		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem
 		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuUpdateMultiverseId = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -595,7 +596,7 @@ Partial Class MainForm
 		'
 		'mnuFile
 		'
-		Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBSelect, Me.mnuExport, Me.mnuSeparator3, Me.mnuNewEdition, Me.mnuRemEdition, Me.mnuTranslate, Me.mnuSeparator4, Me.mnuUpdatePrices, Me.mnuUpdatePictures, Me.mnuUpdateAutorisations, Me.mnuUpdateRulings, Me.mnuUpdateSimu, Me.mnuUpdateTxtFR, Me.mnuSeparator5, Me.mnuExit})
+		Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBSelect, Me.mnuExport, Me.mnuSeparator3, Me.mnuNewEdition, Me.mnuRemEdition, Me.mnuTranslate, Me.mnuSeparator4, Me.mnuUpdatePrices, Me.mnuUpdatePictures, Me.mnuUpdateAutorisations, Me.mnuUpdateRulings, Me.mnuUpdateSimu, Me.mnuUpdateTxtFR, Me.mnuUpdateMultiverseId, Me.mnuSeparator5, Me.mnuExit})
 		Me.mnuFile.Name = "mnuFile"
 		Me.mnuFile.Size = New System.Drawing.Size(54, 20)
 		Me.mnuFile.Text = "Fichier"
@@ -716,6 +717,14 @@ Partial Class MainForm
 		Me.mnuUpdateTxtFR.Size = New System.Drawing.Size(279, 22)
 		Me.mnuUpdateTxtFR.Text = "Mettre à jour les textes des cartes en VF"
 		AddHandler Me.mnuUpdateTxtFR.Click, AddressOf Me.MnuUpdateTxtFRClick
+		'
+		'mnuUpdateMultiverseId
+		'
+		Me.mnuUpdateMultiverseId.Image = CType(resources.GetObject("mnuUpdateMultiverseId.Image"),System.Drawing.Image)
+		Me.mnuUpdateMultiverseId.Name = "mnuUpdateMultiverseId"
+		Me.mnuUpdateMultiverseId.Size = New System.Drawing.Size(279, 22)
+		Me.mnuUpdateMultiverseId.Text = "Mettre à jour les identifiants Multiverse"
+		AddHandler Me.mnuUpdateMultiverseId.Click, AddressOf Me.MnuUpdateMultiverseIdClick
 		'
 		'mnuSeparator5
 		'
@@ -1994,6 +2003,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuUpdateMultiverseId As System.Windows.Forms.ToolStripMenuItem
 	Private picAutMulti As System.Windows.Forms.PictureBox
 	Private mnuPlugHTML As System.Windows.Forms.ToolStripMenuItem
 	Private btExpand As System.Windows.Forms.ToolStripButton

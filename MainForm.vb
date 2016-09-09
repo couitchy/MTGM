@@ -2659,6 +2659,7 @@ Public Partial Class MainForm
 		Me.mnuUpdatePrices.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuUpdateSimu.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuUpdateTxtFR.Visible = VgOptions.VgSettings.ShowUpdateMenus
+		Me.mnuUpdateMultiverseId.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuFixFR2.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuFixPic.Visible = VgOptions.VgSettings.ShowUpdateMenus
 		Me.mnuTranslate.Visible = VgOptions.VgSettings.ShowUpdateMenus
@@ -2686,6 +2687,7 @@ Public Partial Class MainForm
 				Me.mnuUpdatePrices.Visible = False
 				Me.mnuUpdateSimu.Visible = False
 				Me.mnuUpdateTxtFR.Visible = False
+				Me.mnuUpdateMultiverseId.Visible = False
 				Me.mnuFixFR2.Visible = False
 				Me.mnuFixPic.Visible = False
 				Me.mnuTranslate.Visible = False
@@ -3052,6 +3054,17 @@ Public Partial Class MainForm
 					Call Me.UpdateTxtFR
 				Else
 					Call clsModule.ShowWarning("Fichier des traductions introuvable...")
+				End If
+			End If
+		End If
+	End Sub
+	Sub MnuUpdateMultiverseIdClick(sender As Object, e As EventArgs)
+		If clsModule.DBOK Then
+			If clsModule.ShowQuestion("Se connecter à Internet pour récupérer la liste des identifiants Multiverse ?") = System.Windows.Forms.DialogResult.Yes Then
+				If Me.FixMultiverse2 Then
+					Call clsModule.ShowInformation("Mise à jour des identifiants terminée !")
+				Else
+					Call clsModule.ShowWarning(clsModule.CgDL3b)
 				End If
 			End If
 		End If
