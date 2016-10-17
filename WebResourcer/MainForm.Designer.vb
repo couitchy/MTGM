@@ -114,8 +114,11 @@ Partial Class MainForm
 		Me.dlgBrowse = New System.Windows.Forms.FolderBrowserDialog()
 		Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog()
 		Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog()
+		Me.dlgOpen6 = New System.Windows.Forms.OpenFileDialog()
 		Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog()
+		Me.dlgSave3 = New System.Windows.Forms.SaveFileDialog()
 		Me.mnuPricesHistoryRebuild = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsRulingsFilter = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsExtractMultiverseId = New System.Windows.Forms.ToolStripMenuItem()
 		Me.menuStrip.SuspendLayout
 		Me.toolStrip.SuspendLayout
@@ -187,7 +190,7 @@ Partial Class MainForm
 		'
 		'mnuCards
 		'
-		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuCardReplaceTitle, Me.mnuCardsExtractMultiverseId})
+		Me.mnuCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsExtract, Me.mnuTrad, Me.mnuCardsAut, Me.mnuCardReplaceTitle, Me.mnuCardsRulingsFilter, Me.mnuCardsExtractMultiverseId})
 		Me.mnuCards.Name = "mnuCards"
 		Me.mnuCards.Size = New System.Drawing.Size(152, 22)
 		Me.mnuCards.Text = "Cartes"
@@ -740,11 +743,23 @@ Partial Class MainForm
 		Me.dlgOpen5.Filter = "Fichiers de configuration (*.ini)|*.ini"
 		Me.dlgOpen5.Title = "Sélection du fichier à préparer"
 		'
+		'dlgOpen6
+		'
+		Me.dlgOpen6.DefaultExt = "xml"
+		Me.dlgOpen6.Filter = "Fichiers XML (*.xml)|*.xml"
+		Me.dlgOpen6.Title = "Sélection du fichier à préparer"
+		'
 		'dlgSave2
 		'
 		Me.dlgSave2.DefaultExt = "dat"
 		Me.dlgSave2.Filter = "Data files (*.dat) | *.dat"
 		Me.dlgSave2.Title = "Sélection du fichier de sortie"
+		'
+		'dlgSave3
+		'
+		Me.dlgSave3.DefaultExt = "xml"
+		Me.dlgSave3.Filter = "Fichiers XML (*.xml) | *.xml"
+		Me.dlgSave3.Title = "Sélection du fichier de sortie"
 		'
 		'mnuPricesHistoryRebuild
 		'
@@ -752,6 +767,14 @@ Partial Class MainForm
 		Me.mnuPricesHistoryRebuild.Size = New System.Drawing.Size(283, 22)
 		Me.mnuPricesHistoryRebuild.Text = "Reconstruire complètement l'historique"
 		AddHandler Me.mnuPricesHistoryRebuild.Click, AddressOf Me.MnuPricesHistoryRebuildClick
+		'
+		'
+		'mnuCardsRulingsFilter
+		'
+		Me.mnuCardsRulingsFilter.Name = "mnuCardsRulingsFilter"
+		Me.mnuCardsRulingsFilter.Size = New System.Drawing.Size(278, 22)
+		Me.mnuCardsRulingsFilter.Text = "Filtrer les rulings"
+		AddHandler Me.mnuCardsRulingsFilter.Click, AddressOf Me.MnuCardsRulingsFilterClick
 		'
 		'mnuCardsExtractMultiverseId
 		'
@@ -788,6 +811,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuCardsRulingsFilter As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractMultiverseId As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesHistoryRebuild As System.Windows.Forms.ToolStripMenuItem
 	Private mnuSeriesSpoilers As System.Windows.Forms.ToolStripMenuItem
@@ -811,9 +835,11 @@ Partial Class MainForm
 	Private mnuCardsExtractDiff3 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff As System.Windows.Forms.ToolStripMenuItem
 	Private dlgSave2 As System.Windows.Forms.SaveFileDialog
+	Private dlgSave3 As System.Windows.Forms.SaveFileDialog
 	Private mnuPicturesNewSP As System.Windows.Forms.ToolStripMenuItem
 	Private mnuFilterTitles As System.Windows.Forms.ToolStripMenuItem
 	Private dlgOpen5 As System.Windows.Forms.OpenFileDialog
+	Private dlgOpen6 As System.Windows.Forms.OpenFileDialog
 	Private mnuINIReady As System.Windows.Forms.ToolStripMenuItem
 	Private mnuDBReady As System.Windows.Forms.ToolStripMenuItem
 	Private mnuBuildPatch As System.Windows.Forms.ToolStripMenuItem

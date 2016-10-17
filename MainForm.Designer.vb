@@ -432,6 +432,7 @@ Partial Class MainForm
 		Me.imglstCarac.Images.SetKeyName(54, "_lt.png")
 		Me.imglstCarac.Images.SetKeyName(55, "_ls.png")
 		Me.imglstCarac.Images.SetKeyName(56, "_lc.png")
+		Me.imglstCarac.Images.SetKeyName(57, "_le.png")
 		'
 		'cmnuTvw
 		'

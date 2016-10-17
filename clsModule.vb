@@ -39,7 +39,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34707
+	Public Const CgCodeLines As Integer   			= 34749
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -1483,9 +1483,23 @@ Public Module clsModule
 	'----------------------------------------------------------------------------
 	'Télécharge immédiatement l'application mise à jour ou une de ses dépendances
 	'----------------------------------------------------------------------------
+	Dim VpCopy As Process
 		Try
 			VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
 		Catch
+			'Si on arrive là c'est qu'on n'a pas les droits d'écriture => on télécharge dans un dossier temporaire et on lance la copie en demandant les droits d'admin
+			Try
+				VgClient.DownloadFile(VpURI, Path.GetTempPath + VpOutput)
+            	VpCopy = New Process
+            	VpCopy.StartInfo.FileName = "cmd.exe" 
+            	VpCopy.StartInfo.Arguments = "/c copy """ + Path.GetTempPath + VpOutput + """ """ + Application.StartupPath + """"
+            	VpCopy.StartInfo.UseShellExecute = True
+            	VpCopy.StartInfo.Verb = "runas"
+            	VpCopy.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+            	VpCopy.Start
+            	VpCopy.WaitForExit
+			Catch
+			End Try
 		End Try
 	End Sub
 	Public Sub DownloadUpdate(VpURI As System.Uri, VpOutput As String, Optional VpBaseDir As Boolean = True, Optional VpSilent As Boolean = False)

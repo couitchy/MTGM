@@ -774,6 +774,44 @@ Public Partial Class MainForm
 			End If
 		End If
 	End Sub
+	Sub FilterRulings
+	'----------------------------------------------------------------------------------------------------------------
+	'Remplace les références à des URLs de symboles dans le fichier des règles spécifiques par les symboles effectifs
+	'----------------------------------------------------------------------------------------------------------------
+	Dim VpIn As StreamReader
+	Dim VpOut As StreamWriter
+	Dim VpStr As String
+		Me.dlgOpen6.FileName = ""
+		Me.dlgOpen6.ShowDialog
+		If Me.dlgOpen6.FileName <> "" Then
+			Me.dlgSave3.FileName = ""
+			Me.dlgSave3.ShowDialog
+			If Me.dlgSave3.FileName <> "" Then
+				Call Me.AddToLog("Filtrage des rulings...", eLogType.Information)
+				Application.DoEvents
+				VpIn = New StreamReader(Me.dlgOpen6.FileName)
+				VpOut = New StreamWriter(Me.dlgSave3.FileName)
+				VpStr = VpIn.ReadToEnd
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=e&amp;type=symbol"" alt=""Energy"" align=""absbottom"" />", "{E}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=U&amp;type=symbol"" alt=""Blue"" align=""absbottom"" />", "{U}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=C&amp;type=symbol"" alt=""Colorless"" align=""absbottom"" />", "{C}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=X&amp;type=symbol"" alt=""Variable Colorless"" align=""absbottom"" />", "{X}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=6&amp;type=symbol"" alt=""6"" align=""absbottom"" />", "{6}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=5&amp;type=symbol"" alt=""5"" align=""absbottom"" />", "{5}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=4&amp;type=symbol"" alt=""4"" align=""absbottom"" />", "{4}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=3&amp;type=symbol"" alt=""3"" align=""absbottom"" />", "{3}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=2&amp;type=symbol"" alt=""2"" align=""absbottom"" />", "{2}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=1&amp;type=symbol"" alt=""1"" align=""absbottom"" />", "{1}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=0&amp;type=symbol"" alt=""0"" align=""absbottom"" />", "{0}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol"" alt=""Tap"" align=""absbottom"" />", "{T}")
+				VpOut.Write(VpStr)
+				VpOut.Flush
+				VpOut.Close
+				VpIn.Close
+				Call Me.AddToLog("Le filtrage des rulings est terminé...", eLogType.Information)
+			End If
+		End If
+	End Sub
 	Sub ExtractCardsMultiverseId
 	'-----------------------------------
 	'Listing des identifiants Multiverse
@@ -1365,6 +1403,12 @@ Public Partial Class MainForm
 				Return "eternalmasters#" + VpStr
 			Case "EM"
 				Return "eldritchmoon#" + VpStr
+			Case "V9"
+				Return "FromtheVaultLore#" + VpStr
+			Case "KD"
+				Return "kaladesh#" + VpStr
+			Case "KI"
+				Return "kaladeshinventions#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1587,6 +1631,10 @@ Public Partial Class MainForm
 				Return "MA"
 			Case "eldritchmoon"
 				Return "EM"
+			Case "kaladesh"
+				Return "KD"
+			Case "kaladeshinventions"
+				Return "KI"
 			Case Else
 				Return ""
 		End Select
@@ -1783,6 +1831,8 @@ Public Partial Class MainForm
 			Next VpI
 			If VpItem = "" And VpItemColorlessOnly Then
 				VpItem = "Colorless"
+			ElseIf VpItem = "" AndAlso (VpStrs.Length < 8 OrElse Not VpStrs(7).Contains("Artifact")) Then
+				Call Me.AddToLog("Vérifier la couleur de la carte : " + VpCard, eLogType.Warning)
 			End If
 			Select Case VpStrs(3)
 				Case "Mythic Rare"
@@ -2499,6 +2549,9 @@ Public Partial Class MainForm
 		If Not VmDB Is Nothing Then
 			Call Me.ExtractCardsPricesAborted
 		End If
+	End Sub
+	Sub MnuCardsRulingsFilterClick(sender As Object, e As EventArgs)
+		Call Me.FilterRulings
 	End Sub
 	Sub MnuCardsExtractMultiverseIdClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then

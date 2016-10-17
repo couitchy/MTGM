@@ -98,7 +98,7 @@ Public Partial Class frmBuyMV
 		VpElement = Me.wbMV.Document.All.GetElementsByName("recherche_titre").Item(0)
 		VpElement.SetAttribute("value", VpCard)
 		For Each VpElement In Me.wbMV.Document.All
-			If VpElement.GetAttribute("src").ToLower.Contains("/go.gif") Then
+			If VpElement.GetAttribute("src").ToLower.Contains("/go.png") Then
 				'Validation
 				VpElement.InvokeMember("click")
 				Call Me.BrowseAndWait

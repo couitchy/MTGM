@@ -1960,6 +1960,8 @@ Public Partial Class MainForm
 						VpImgIndex = 55
 					Case "c"
 						VpImgIndex = 56
+					Case "e"
+						VpImgIndex = 57
 					Case Else
 						VpImgIndex = -1
 				End Select
