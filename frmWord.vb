@@ -124,8 +124,10 @@ Public Partial Class frmWord
 	 					VpPicture.Left = VpLeft
 	 					VpCount = VpCount + 1
 	 					If VpCount Mod CmImgPerPage = 0 Then		'9 vignettes par page
-						 	VpWordApp.Selection.GoTo(What := 0, Which := 1)
-	 						VpWordApp.Selection.InsertBreak
+						 	VpWordApp.Selection.GoTo(What := 1, Which := 1)
+						 	VpWordApp.Selection.InsertBreak
+						 	VpWordApp.Selection.GoTo(What := 1, Which := 1)
+						 	VpWordApp.Selection.GoTo(What := 3, Which := 1)
 	 						VpLeft = 0
 	 						VpTop = 0
 	 					ElseIf VpCount Mod CmImgPerRow = 0 Then		'3 vignettes par ligne

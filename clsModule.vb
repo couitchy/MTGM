@@ -39,7 +39,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34749
+	Public Const CgCodeLines As Integer   			= 34825
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -1805,7 +1805,7 @@ Public Module clsModule
 						End Try
 					Else
 						VpDest = VpSaveFolder + "\" + AvoidForbiddenChr(VpTitle) + ".jpg"
-						If Not File.Exists(VpDest) Then
+						If (Not File.Exists(VpDest)) OrElse (New FileInfo(VpDest)).Length = 0 Then
 							File.Copy(VpTmp, VpDest)
 						End If
 					End If

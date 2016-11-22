@@ -205,6 +205,7 @@ Partial Class MainForm
 		Me.btHistPricesSimple = New System.Windows.Forms.ToolStripMenuItem
 		Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuUpdateMultiverseId = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuClipTitle = New System.Windows.Forms.ToolStripMenuItem
 		Me.statusStrip.SuspendLayout
 		Me.cmnuTvw.SuspendLayout
 		Me.mnu.SuspendLayout
@@ -436,7 +437,7 @@ Partial Class MainForm
 		'
 		'cmnuTvw
 		'
-		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
+		Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuClipTitle, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
 		Me.cmnuTvw.Name = "cmnuTvw"
 		Me.cmnuTvw.Size = New System.Drawing.Size(234, 236)
 		'
@@ -1929,6 +1930,15 @@ Partial Class MainForm
 		Me.btHistPricesFoil.Text = "Prix foil"
 		AddHandler Me.btHistPricesFoil.Click, AddressOf Me.BtHistPricesFoilClick
 		'
+		'mnuClipTitle
+		'
+		Me.mnuClipTitle.Enabled = false
+		Me.mnuClipTitle.Image = CType(resources.GetObject("mnuClipTitle.Image"),System.Drawing.Image)
+		Me.mnuClipTitle.Name = "mnuClipTitle"
+		Me.mnuClipTitle.Size = New System.Drawing.Size(233, 22)
+		Me.mnuClipTitle.Text = "Copier le titre"
+		AddHandler Me.mnuClipTitle.Click, AddressOf Me.MnuClipTitleClick
+		'
 		'MainForm
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -2004,6 +2014,7 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuClipTitle As System.Windows.Forms.ToolStripMenuItem
 	Private mnuUpdateMultiverseId As System.Windows.Forms.ToolStripMenuItem
 	Private picAutMulti As System.Windows.Forms.PictureBox
 	Private mnuPlugHTML As System.Windows.Forms.ToolStripMenuItem

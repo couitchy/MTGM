@@ -210,7 +210,6 @@ Public Partial Class MainForm
 			Next VpI
 		Catch
 		End Try
-		VpPrices = VpPrices.Replace("Planechase 2012 D...^", "Planechase 2012^")		'très crade mais c'est de la faute du site magiccorporation
 		VpPrices = VpPrices.Trim
 		If VpPrices.EndsWith("#") Then
 			Return VpPrices
@@ -1409,6 +1408,8 @@ Public Partial Class MainForm
 				Return "kaladesh#" + VpStr
 			Case "KI"
 				Return "kaladeshinventions#" + VpStr
+			Case "DR"
+				Return "DuelDecksNissavsObNixilis#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1635,6 +1636,8 @@ Public Partial Class MainForm
 				Return "KD"
 			Case "kaladeshinventions"
 				Return "KI"
+			Case "DuelDecksNissavsObNixilis"
+				Return "DR"
 			Case Else
 				Return ""
 		End Select

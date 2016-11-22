@@ -696,7 +696,7 @@ Public Partial Class MainForm
 	'Remplace les textes VF par leur version VO
 	'------------------------------------------
 		VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText;"
-		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'C4' Or Card.Series = 'DH' Or Card.Series = 'V7' Or Card.Series = 'FR' Or Card.Series = 'DT' Or Card.Series = 'MU' Or Card.Series = 'DJ' Or Card.Series = 'OR' Or Card.Series = 'V8' Or Card.Series = 'BZ' Or Card.Series = 'DC' Or Card.Series = 'C5';"
+		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'KD';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"
 		VgDBCommand.ExecuteNonQuery
@@ -2867,11 +2867,12 @@ Public Partial Class MainForm
 				Me.mnuTransform.Enabled = False
 			End If
 			'Suppression
-			Me.mnuDeleteACard.Enabled = Not Me.IsInAdvSearch 'VpEn And VpSingle And Not Me.IsInAdvSearch
+			Me.mnuDeleteACard.Enabled = VpNode IsNot Nothing And Not Me.IsInAdvSearch
 			'Déplacement
-			Me.mnuMoveACard.Enabled = Not Me.IsInAdvSearch 'VpEn And VpSingle And
+			Me.mnuMoveACard.Enabled = VpNode IsNot Nothing And Not Me.IsInAdvSearch
 			'Copie
-			Me.mnuCopyACard.Enabled = True 'VpEn
+			Me.mnuCopyACard.Enabled = VpNode IsNot Nothing
+			Me.mnuClipTitle.Enabled = VpNode IsNot Nothing
 			'Achat
 			If Not VpNode Is Nothing Then
 				Me.mnuBuy.Enabled = VpEn Or ( VpNode.Parent Is Nothing And Not Me.IsInAdvSearch )
@@ -2951,6 +2952,10 @@ Public Partial Class MainForm
 	Sub TvwExploreKeyUp(ByVal sender As Object, ByVal e As KeyEventArgs)
 		If e.KeyCode = Keys.F3 And Me.mnuFindNext.Enabled Then
 			Call Me.FindNextCard
+		ElseIf e.KeyCode = Keys.Delete And Me.tvwExplore.SelectedNode IsNot Nothing And Not Me.IsInAdvSearch Then
+			If clsModule.ShowQuestion("Êtes-vous sûr de vouloir supprimer '" + Me.tvwExplore.SelectedNode.Text + "' ?")  = System.Windows.Forms.DialogResult.Yes Then
+				Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Deletion)
+			End If
 		End If
 	End Sub
 	Sub MnuUpdateSimuActivate(ByVal sender As Object, ByVal e As EventArgs)
@@ -3245,6 +3250,9 @@ Public Partial Class MainForm
 			VpPerfs.Show
 			VpPerfs.BringToFront
 		End If
+	End Sub
+	Sub MnuClipTitleClick(sender As Object, e As EventArgs)
+		Clipboard.SetDataObject(Me.tvwExplore.SelectedNode.Text)
 	End Sub
 	Sub MnuMoveACardActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Move, sender.Text)
