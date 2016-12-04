@@ -344,6 +344,7 @@ Partial Class frmStats
 		'
 		'txtOldest
 		'
+		Me.txtOldest.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtOldest.Location = New System.Drawing.Point(150, 98)
 		Me.txtOldest.Name = "txtOldest"
 		Me.txtOldest.ReadOnly = true
@@ -353,6 +354,7 @@ Partial Class frmStats
 		'
 		'txtRarest
 		'
+		Me.txtRarest.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtRarest.Location = New System.Drawing.Point(150, 72)
 		Me.txtRarest.Name = "txtRarest"
 		Me.txtRarest.ReadOnly = true
@@ -362,6 +364,7 @@ Partial Class frmStats
 		'
 		'txtTougher
 		'
+		Me.txtTougher.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtTougher.Location = New System.Drawing.Point(150, 46)
 		Me.txtTougher.Name = "txtTougher"
 		Me.txtTougher.ReadOnly = true
@@ -371,6 +374,7 @@ Partial Class frmStats
 		'
 		'txtNCartes
 		'
+		Me.txtNCartes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtNCartes.Location = New System.Drawing.Point(150, 20)
 		Me.txtNCartes.Name = "txtNCartes"
 		Me.txtNCartes.ReadOnly = true
@@ -453,6 +457,7 @@ Partial Class frmStats
 		'
 		'cmdHistPrices
 		'
+		Me.cmdHistPrices.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.cmdHistPrices.BackgroundImage = CType(resources.GetObject("cmdHistPrices.BackgroundImage"),System.Drawing.Image)
 		Me.cmdHistPrices.Location = New System.Drawing.Point(119, 17)
 		Me.cmdHistPrices.Name = "cmdHistPrices"
@@ -463,6 +468,7 @@ Partial Class frmStats
 		'
 		'txtMeanPrice2
 		'
+		Me.txtMeanPrice2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMeanPrice2.Location = New System.Drawing.Point(150, 71)
 		Me.txtMeanPrice2.Name = "txtMeanPrice2"
 		Me.txtMeanPrice2.ReadOnly = true
@@ -483,6 +489,7 @@ Partial Class frmStats
 		'
 		'txtMostExpensive
 		'
+		Me.txtMostExpensive.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMostExpensive.Location = New System.Drawing.Point(150, 98)
 		Me.txtMostExpensive.Name = "txtMostExpensive"
 		Me.txtMostExpensive.ReadOnly = true
@@ -503,6 +510,7 @@ Partial Class frmStats
 		'
 		'txtMeanPrice
 		'
+		Me.txtMeanPrice.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMeanPrice.Location = New System.Drawing.Point(150, 46)
 		Me.txtMeanPrice.Name = "txtMeanPrice"
 		Me.txtMeanPrice.ReadOnly = true
@@ -523,6 +531,7 @@ Partial Class frmStats
 		'
 		'txtTotPrice
 		'
+		Me.txtTotPrice.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtTotPrice.Location = New System.Drawing.Point(150, 20)
 		Me.txtTotPrice.Name = "txtTotPrice"
 		Me.txtTotPrice.ReadOnly = true
@@ -537,7 +546,7 @@ Partial Class frmStats
 		Me.lblTotPrice.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
 		Me.lblTotPrice.Location = New System.Drawing.Point(3, 23)
 		Me.lblTotPrice.Name = "lblTotPrice"
-		Me.lblTotPrice.Size = New System.Drawing.Size(47, 13)
+		Me.lblTotPrice.Size = New System.Drawing.Size(118, 13)
 		Me.lblTotPrice.TabIndex = 16
 		Me.lblTotPrice.Text = "Prix total"
 		'
@@ -571,6 +580,7 @@ Partial Class frmStats
 		'
 		'txtMeanCost2
 		'
+		Me.txtMeanCost2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMeanCost2.Location = New System.Drawing.Point(150, 45)
 		Me.txtMeanCost2.Name = "txtMeanCost2"
 		Me.txtMeanCost2.ReadOnly = true
@@ -591,6 +601,7 @@ Partial Class frmStats
 		'
 		'txtMaxCost
 		'
+		Me.txtMaxCost.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMaxCost.Location = New System.Drawing.Point(150, 98)
 		Me.txtMaxCost.Name = "txtMaxCost"
 		Me.txtMaxCost.ReadOnly = true
@@ -611,6 +622,7 @@ Partial Class frmStats
 		'
 		'txtMinCost
 		'
+		Me.txtMinCost.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMinCost.Location = New System.Drawing.Point(150, 72)
 		Me.txtMinCost.Name = "txtMinCost"
 		Me.txtMinCost.ReadOnly = true
@@ -631,6 +643,7 @@ Partial Class frmStats
 		'
 		'txtMeanCost
 		'
+		Me.txtMeanCost.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMeanCost.Location = New System.Drawing.Point(150, 20)
 		Me.txtMeanCost.Name = "txtMeanCost"
 		Me.txtMeanCost.ReadOnly = true
@@ -679,6 +692,7 @@ Partial Class frmStats
 		'
 		'txtMeanTough
 		'
+		Me.txtMeanTough.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMeanTough.Location = New System.Drawing.Point(150, 45)
 		Me.txtMeanTough.Name = "txtMeanTough"
 		Me.txtMeanTough.ReadOnly = true
@@ -699,6 +713,7 @@ Partial Class frmStats
 		'
 		'txtRAC
 		'
+		Me.txtRAC.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtRAC.Location = New System.Drawing.Point(150, 98)
 		Me.txtRAC.Name = "txtRAC"
 		Me.txtRAC.ReadOnly = true
@@ -719,6 +734,7 @@ Partial Class frmStats
 		'
 		'txtRAD
 		'
+		Me.txtRAD.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtRAD.Location = New System.Drawing.Point(150, 72)
 		Me.txtRAD.Name = "txtRAD"
 		Me.txtRAD.ReadOnly = true
@@ -739,6 +755,7 @@ Partial Class frmStats
 		'
 		'txtMeanPower
 		'
+		Me.txtMeanPower.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
 		Me.txtMeanPower.Location = New System.Drawing.Point(150, 20)
 		Me.txtMeanPower.Name = "txtMeanPower"
 		Me.txtMeanPower.ReadOnly = true
@@ -1021,7 +1038,7 @@ Partial Class frmStats
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-		Me.ClientSize = New System.Drawing.Size(579, 415)
+		Me.ClientSize = New System.Drawing.Size(600, 415)
 		Me.Controls.Add(Me.splitH)
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmStats"

@@ -39,7 +39,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34825
+	Public Const CgCodeLines As Integer   			= 34929
 	Public Const CGNClasses As Integer   			= 69
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
@@ -87,6 +87,7 @@ Public Module clsModule
 	Public Const CgUpDFile As String      			= "\Magic The Gathering Manager.new"
 	Public Const CgDownDFile As String     			= "\Magic The Gathering Manager.bak"
 	Public Const CgUpMultiverse As String			= "\AllSets-x.json"
+	Public Const CgUpMultiverse2 As String			= "\AllSets-x.json.zip"
 	Public Const CgUpDDB As String      			= "\Images DB.mdb"
 	Public Const CgUpDDBb As String      			= "\Patch.mdb"
 	Public Const CgUpDDBd As String      			= "Images%20DB.dat"
@@ -132,6 +133,7 @@ Public Module clsModule
 	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes r19.log"
 	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF r19.log"
 	Public Const CgURL22 As String         			= "/Updates/MD_Multiverse r20.log"
+	Public Const CgURL23 As String         			= "https://mtgjson.com/json/AllSets-x.json.zip"
 	Public Const CgDL1 As String         			= "Vérification des mises à jour..."
 	Public Const CgDL2 As String         			= "Téléchargement en cours"
 	Public Const CgDL2b As String         			= "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
@@ -1562,9 +1564,9 @@ Public Module clsModule
 		End If
 		'Maj EXE
 		If File.Exists(Application.StartupPath + CgUpDFile) Then
-			File.SetLastWriteTimeUtc(Application.StartupPath + CgUpDFile, VgRemoteDate)
-			Call SecureDelete(Application.StartupPath + CgDownDFile)
 			Try
+				File.SetLastWriteTimeUtc(Application.StartupPath + CgUpDFile, VgRemoteDate)
+				Call SecureDelete(Application.StartupPath + CgDownDFile)
 				File.Copy(Process.GetCurrentProcess.MainModule.FileName, Application.StartupPath + CgDownDFile)
 				Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
 			Catch
@@ -2009,6 +2011,7 @@ Public Module clsModule
 		End Try
 		'Updates
 		Call SecureDelete(Application.StartupPath + CgUpMultiverse)
+		Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
 		Call SecureDelete(Application.StartupPath + CgUpRulings)
 		Call SecureDelete(Application.StartupPath + CgUpTXTFR)
 		Call SecureDelete(Application.StartupPath + CgUpDFile)

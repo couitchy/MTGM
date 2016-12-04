@@ -32,15 +32,16 @@ Imports NPlot
 Public Partial Class frmStats
 	Private VmSource As String
 	Private VmRestriction As String
-	Private VmOwnerChildren As clsChildren
+	Private VmOwner As MainForm
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
 		VmSource = VpOwner.MySource
 		VmRestriction = VpOwner.Restriction
 		If VmSource = clsModule.CgSDecks Then
 			VmRestriction += "Reserve = False"
+			Me.lblTotPrice.Text = "Prix total (avec réserve)"
 		End If
-		VmOwnerChildren = VpOwner.MyChildren
+		VmOwner = VpOwner
 		Me.Text = clsModule.CgStats + VpOwner.Restriction(True)
 		AddHandler Me.cboCriterion.ComboBox.SelectedIndexChanged, AddressOf CboCriterionSelectedIndexChanged
 	End Sub
@@ -423,17 +424,17 @@ Public Partial Class frmStats
 	Dim VpSQL As String
 		VpSQL = "Select " + VpQuery + " From (((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) " + VpTblCreature
 		VpSQL = VpSQL + If(VpSQL.EndsWith("And "), "", "Where ")
-		VpSQL = VpSQL + VmRestriction
+		VpSQL = VpSQL + If(VpQuery.Contains("Price"), VmOwner.Restriction, VmRestriction)
 		VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + VpSort
 		Return VgDBCommand.ExecuteScalar
 	End Function
 	Private Function GetGrapher As frmGrapher
 	Dim VpPricesHistory As frmGrapher
-		If VmOwnerChildren.DoesntExist(VmOwnerChildren.PricesHistory) Then
+		If VmOwner.MyChildren.DoesntExist(VmOwner.MyChildren.PricesHistory) Then
 			VpPricesHistory = New frmGrapher
-			VmOwnerChildren.PricesHistory = VpPricesHistory
+			VmOwner.MyChildren.PricesHistory = VpPricesHistory
 		Else
-			VpPricesHistory = VmOwnerChildren.PricesHistory
+			VpPricesHistory = VmOwner.MyChildren.PricesHistory
 		End If
 		VpPricesHistory.Show
 		VpPricesHistory.BringToFront

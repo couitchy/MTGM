@@ -57,6 +57,7 @@ Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports System.Text
 Imports System.Web.Script.Serialization
+Imports ICSharpCode.SharpZipLib.Zip
 #End Region
 Public Partial Class MainForm
 	#Region "Sous-classes"
@@ -698,7 +699,7 @@ Public Partial Class MainForm
 		VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText;"
 		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'KD';"
 		VgDBCommand.ExecuteNonQuery
-		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"
+		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"	'requête pas utile si on utilise la clause Where Card.Series = 
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Public Function FixSubTypes As Boolean
@@ -841,11 +842,31 @@ Public Partial Class MainForm
 	Dim VpSerializer As New JavaScriptSerializer
 	Dim VpJSONFullDB As String
 	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
+	Dim VpZipStream As ZipInputStream	
+	Dim VpZipEntry As ZipEntry
 		VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
 		VgDBCommand.ExecuteNonQuery
+		'Essaie de télécharger le fichier depuis Internet
+		If Not File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
+			Call clsModule.DownloadNow(New Uri(CgURL23), clsModule.CgUpMultiverse2)
+			If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse2) Then
+				VpZipStream = New ZipInputStream(File.OpenRead(Application.StartupPath + clsModule.CgUpMultiverse2))
+				Do
+					VpZipEntry = VpZipStream.GetNextEntry
+					If VpZipEntry IsNot Nothing AndAlso VpZipEntry.IsFile AndAlso VpZipEntry.Name <> "" Then
+						Using VpFile As Stream = File.OpenWrite(Application.StartupPath + clsModule.CgUpMultiverse)
+							Call clsModule.CopyStream(VpZipStream, VpFile)
+						End Using
+					Else
+						Exit Do
+					End If
+				Loop
+				VpZipStream.Close
+			End If
+		End If
 		If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
 			VpSerializer.MaxJsonLength = Integer.MaxValue
-			VpJSONFullDB = (New StreamReader("AllSets-x.json")).ReadToEnd
+			VpJSONFullDB = (New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd
 			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))(VpJSONFullDB)
 			For Each VpSerie As String In VpJSONInfos.Keys
 				For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
@@ -856,8 +877,10 @@ Public Partial Class MainForm
 					End Try
 				Next VpCard
 			Next VpSerie
+			Call SecureDelete(Application.StartupPath + CgUpMultiverse)
+			Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
 		Else
-			Call clsModule.ShowWarning("Impossible de trouver le fichier 'AllSets-x.json'") 
+			Call clsModule.ShowWarning("Impossible de trouver le fichier '" + clsModule.CgUpMultiverse + "'") 
 		End If
 	End Sub
 	Public Function FixMultiverse2 As Boolean
@@ -1972,7 +1995,7 @@ Public Partial Class MainForm
 			    Using VpGraphics As Graphics = Graphics.FromImage(VpImg12)
     				VpGraphics.DrawImage(VpImg18, New Rectangle(0, 0, VpImg12.Width , VpImg12.Height), New Rectangle(0, 0, VpImg18.Width, VpImg18.Height), GraphicsUnit.Pixel)
 				End Using
-    			VpRich.InsertImage(VpImg12)
+    			VpRich.InsertImage(If(VpRich.Font.Size < 13, VpImg12, VpImg18))
 			End If
 			VpStr = VpStr.Substring(VpStr.IndexOf("!") + 1)
 		End While
@@ -2681,6 +2704,14 @@ Public Partial Class MainForm
 					Me.WindowState = .RestoredState
 				Catch
 				End Try
+			End If
+			'Polices par défaut
+			If .FontSize = -1 Then
+				.FontSize = Me.txtRichCard.Font.Size
+				Call VgOptions.SaveSettings
+			Else
+				Me.txtRichCard.Font = New Font(Me.txtRichCard.Font.Name, .FontSize)
+				Me.txtRichOther.Font = New Font(Me.txtRichOther.Font.Name, .FontSize)
 			End If
 			'Anciens menus de mises à jour
 			If Not .ShowUpdateMenus Then
@@ -3467,7 +3498,11 @@ Public Partial Class MainForm
 		If File.Exists(Application.StartupPath + clsModule.CgDownDFile) Then
 			If clsModule.ShowQuestion("Êtes-vous sûr de vouloir restaurer la précédente version sauvegardée de l'application ?")  = System.Windows.Forms.DialogResult.Yes Then
 				File.Move(Application.StartupPath + clsModule.CgDownDFile, Application.StartupPath + clsModule.CgUpDFile)
-				Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
+				Try
+					Process.Start(New ProcessStartInfo(Application.StartupPath + CgUpdater))
+				Catch
+					Call clsModule.ShowInformation("Opération annulée..." + vbCrLf + "Aucun changement n'a été effectué.")
+				End Try
 			End If
 		Else
 			Call clsModule.ShowWarning("Aucune version antérieure n'a été trouvée dans le répertoire d'installation...")

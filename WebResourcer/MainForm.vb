@@ -1410,6 +1410,8 @@ Public Partial Class MainForm
 				Return "kaladeshinventions#" + VpStr
 			Case "DR"
 				Return "DuelDecksNissavsObNixilis#" + VpStr
+			Case "C6"
+				Return "commander2016#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1638,6 +1640,8 @@ Public Partial Class MainForm
 				Return "KI"
 			Case "DuelDecksNissavsObNixilis"
 				Return "DR"
+			Case "commander2016"
+				Return "C6"
 			Case Else
 				Return ""
 		End Select

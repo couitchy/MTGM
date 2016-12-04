@@ -909,6 +909,15 @@ Public Class ExRichTextBox
 	Private Function RemoveBadChars(_originalRtf As String) As String
 		Return _originalRtf.Replace(vbNullChar, "")
 	End Function
-
+	
+	Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
+	Const WM_MOUSEWHEEL As Integer = &H20A
+		If Not ( m.Msg = WM_MOUSEWHEEL AndAlso Control.ModifierKeys = Keys.Control ) Then
+			MyBase.WndProc(m)
+		Else
+			Me.Font = New Font(Me.Font.Name, Me.Font.Size + Math.Sign(m.WParam.ToInt32))
+		End If
+	End Sub
+	
 	#End Region
 End Class
