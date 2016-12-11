@@ -57,7 +57,6 @@ Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports System.Text
 Imports System.Web.Script.Serialization
-Imports ICSharpCode.SharpZipLib.Zip
 #End Region
 Public Partial Class MainForm
 	#Region "Sous-classes"
@@ -640,12 +639,108 @@ Public Partial Class MainForm
 		VgDBCommand.CommandText = "Update Card Set PriceDate = #01/01/01# Where PriceDate > Date();"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
-	Private Sub FixSubTypesDB
-	'-------------------------------------------------------------
-	'Remplace la majorité des sous-types d'enchantement par 'Aura'
-	'-------------------------------------------------------------
+	Private Sub FixOnlyVO
+	'----------------------------------------------------------------------------------------------------
+	'Remplace les titres de cartes VF par les VO pour les éditions qui ne sont pas censées être traduites
+	'----------------------------------------------------------------------------------------------------
+	Dim VpSeries As New Hashtable
+		'Détermine le taux de traduction des éditions
+		VgDBCommand.CommandText = "Select Card.Series, Count(*) From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.Title <> CardFR.TitleFR Group By Card.Series;"
+    	VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				VpSeries.Add(.GetString(0), CSng(.GetValue(1)))
+			End While
+			.Close
+		End With
+		VgDBCommand.CommandText = "Select Card.Series, Count(*) From Card Group By Card.Series;"
+    	VgDBReader = VgDBCommand.ExecuteReader
+		With VgDBReader
+			While .Read
+				If VpSeries.Contains(.GetString(0)) Then
+					VpSeries.Item(.GetString(0)) /= CSng(.GetValue(1))
+				End If
+			End While
+			.Close
+		End With
+		'Si le pourcentage de cartes traduites n'atteint pas 90%, c'est sans doute que l'édition ne devait pas exister en VF : on remet les cartes traduites en VO
+		For Each VpSerie As String In VpSeries.Keys
+			If VpSeries.Item(VpSerie) < 0.9 Then
+				VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = Card.Title Where Card.Series = '" + VpSerie + "';"
+				VgDBCommand.ExecuteNonQuery
+			End If
+		Next VpSerie
+	End Sub
+	Private Sub FixSubTypesDB(VpFull As Boolean)
+	'--------------------------------------------
+	'Correction des sous-types et des super-types
+	'--------------------------------------------
+	Dim VpSerializer As JavaScriptSerializer
+	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
+	Dim VpSubType As String
+	Dim VpSubTypeVF As String
+	Dim VpNewItems As List(Of String)
+		'Remplace la majorité des sous-types d'enchantement par 'Aura'
 		VgDBCommand.CommandText = "Update Card Set SubType = 'Aura' Where Type = 'E' And (SubType = 'Artifact' Or SubType = 'Artifact Creature' Or SubType = 'Creature' Or SubType = 'Dead Creature' Or SubType = 'Equipment' Or SubType = 'Land' Or SubType = 'Leg.Land' Or SubType = 'Mountain'  Or SubType = 'Permanent' Or SubType = 'Player' Or SubType = 'Wall');"
 		VgDBCommand.ExecuteNonQuery
+		'Traitements complémentaires
+		If VpFull Then
+			'Remplace 'Leg.' par ' Legend' à la fin
+			VgDBCommand.CommandText = "Update Card Set SubType = Mid(SubType, 6) & ' Legend' Where Left(SubType, 5) = 'Leg. ';"
+			VgDBCommand.ExecuteNonQuery
+			VgDBCommand.CommandText = "Update Card Set SubType = Mid(SubType, 5) & ' Legend' Where Left(SubType, 4) = 'Leg.';"
+			VgDBCommand.ExecuteNonQuery
+			VgDBCommand.CommandText = "Update Card Set SubType = 'Legend' Where SubType = ' Legend';"
+			VgDBCommand.ExecuteNonQuery
+			'Essaie de télécharger le fichier JSON général depuis Internet
+			If Not File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
+				Call clsModule.DownloadUnzip(New Uri(CgURL23), clsModule.CgUpMultiverse2, clsModule.CgUpMultiverse)
+			End If
+			'Si ça a réussi on peut passer à la correction du flag légendaire
+			If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
+				VpNewItems = New List(Of String)
+				VpSerializer = New JavaScriptSerializer
+				VpSerializer.MaxJsonLength = Integer.MaxValue
+				VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd)
+				For Each VpSerie As String In VpJSONInfos.Keys
+					For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
+						'Pour chaque carte légendaire trouvée
+						If VpCard.supertypes IsNot Nothing AndAlso VpCard.supertypes.Contains("Legendary") Then
+							VgDBCommand.CommandText = "Select Card.SubType From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+							VpSubType = clsModule.SafeGetScalarText
+							'si leur sous-type dans la base ne contient pas déjà 'Legend'
+							If Not VpSubType.Contains("Legend") Then
+								'si le sous-type est vide
+								If VpSubType = "" Then
+									'on le met à 'Legendary'
+									VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.SubType = 'Legendary' Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+									VgDBCommand.ExecuteNonQuery
+								Else
+									'si le sous-type existe dans la table de traduction des sous-types
+									VgDBCommand.CommandText = "Select SubTypeVF From SubTypes Where SubTypeVO = '" + VpSubType.Replace("'", "''") + "';"
+									VpSubTypeVF = clsModule.SafeGetScalarText
+									If VpSubTypeVF <> "" Then
+										'on crée une nouvelle entrée identique mais avec ' Legend' à la fin en VO et ' légendaire' à la fin en VF (si ce n'est pas déjà fait)
+										If Not VpNewItems.Contains(VpSubType) Then
+											VgDBCommand.CommandText = "Insert Into SubTypes(SubTypeVO, SubTypeVF) Values ('" + VpSubType.Replace("'", "''") + " Legend', '" + VpSubTypeVF.Replace("'", "''") + " légendaire');"
+											VgDBCommand.ExecuteNonQuery
+											VpNewItems.Add(VpSubType)
+										End If
+									End If
+									'on met à jour l'entrée en rajoutant ' Legend' à la fin
+									VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.SubType = '" + VpSubType.Replace("'", "''") + " Legend' Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+									VgDBCommand.ExecuteNonQuery
+								End If
+							End If
+						End If
+					Next VpCard
+				Next VpSerie
+				Call SecureDelete(Application.StartupPath + CgUpMultiverse)
+				Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
+			Else
+				Call clsModule.ShowWarning("Impossible de trouver le fichier '" + clsModule.CgUpMultiverse + "'") 
+			End If
+		End If
 	End Sub
 	Private Sub FixFR
 	'--------------------------------------------------------------------------------------------
@@ -839,35 +934,19 @@ Public Partial Class MainForm
 	'---------------------------------------
 	'Mise à jour des identifiants Multiverse
 	'---------------------------------------
-	Dim VpSerializer As New JavaScriptSerializer
-	Dim VpJSONFullDB As String
+	Dim VpSerializer As JavaScriptSerializer
 	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
-	Dim VpZipStream As ZipInputStream	
-	Dim VpZipEntry As ZipEntry
 		VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
 		VgDBCommand.ExecuteNonQuery
-		'Essaie de télécharger le fichier depuis Internet
+		'Essaie de télécharger le fichier JSON général depuis Internet
 		If Not File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
-			Call clsModule.DownloadNow(New Uri(CgURL23), clsModule.CgUpMultiverse2)
-			If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse2) Then
-				VpZipStream = New ZipInputStream(File.OpenRead(Application.StartupPath + clsModule.CgUpMultiverse2))
-				Do
-					VpZipEntry = VpZipStream.GetNextEntry
-					If VpZipEntry IsNot Nothing AndAlso VpZipEntry.IsFile AndAlso VpZipEntry.Name <> "" Then
-						Using VpFile As Stream = File.OpenWrite(Application.StartupPath + clsModule.CgUpMultiverse)
-							Call clsModule.CopyStream(VpZipStream, VpFile)
-						End Using
-					Else
-						Exit Do
-					End If
-				Loop
-				VpZipStream.Close
-			End If
+			Call clsModule.DownloadUnzip(New Uri(CgURL23), clsModule.CgUpMultiverse2, clsModule.CgUpMultiverse)
 		End If
+		'Si ça a réussi on peut passer à la mise à jour effective
 		If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
+			VpSerializer = New JavaScriptSerializer
 			VpSerializer.MaxJsonLength = Integer.MaxValue
-			VpJSONFullDB = (New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd
-			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))(VpJSONFullDB)
+			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd)
 			For Each VpSerie As String In VpJSONInfos.Keys
 				For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
 					Try
@@ -3183,8 +3262,10 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub MnuFixSubTypesActivate(ByVal sender As Object, ByVal e As EventArgs)
+	Dim VpFull As Boolean
 		If clsModule.DBOK Then
-			Call Me.FixSubTypesDB
+			VpFull = ( MessageBox.Show("Corriger également les super-types (cette opération peut prendre beaucoup de temps) ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes )
+			Call Me.FixSubTypesDB(VpFull)
 			Call clsModule.ShowInformation("Terminé !")
 		End If
 	End Sub
@@ -3194,6 +3275,12 @@ Public Partial Class MainForm
 			Call clsModule.ShowInformation("Terminé !")
 		End If
 	End Sub
+	Sub MnuFixOnlyVOActivate(ByVal sender As Object, ByVal e As EventArgs)
+		If clsModule.DBOK Then
+			Call Me.FixOnlyVO
+			Call clsModule.ShowInformation("Terminé !")
+		End If
+	End Sub	
 	Sub MnuFixCreaturesClick(sender As Object, e As EventArgs)
 		If clsModule.DBOK Then
 			Call Me.FixCreatures("*")

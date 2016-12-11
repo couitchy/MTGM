@@ -35,12 +35,13 @@ Imports System.ComponentModel
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports System.Globalization
+Imports ICSharpCode.SharpZipLib.Zip
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 34929
-	Public Const CGNClasses As Integer   			= 69
+	Public Const CgCodeLines As Integer   			= 35058
+	Public Const CGNClasses As Integer   			= 75
 	Public Const CgLastUpdateAut As String			= "13/04/2015"
 	Public Const CgLastUpdateSimu As String			= "12/04/2015"
 	Public Const CgLastUpdateTxtVF As String		= "06/04/2015"
@@ -1316,6 +1317,13 @@ Public Module clsModule
 			End If
 		End With
 	End Function
+	Public Function SafeGetScalarText As String
+		Try
+			Return VgDBCommand.ExecuteScalar.ToString
+		Catch
+			Return ""
+		End Try
+	End Function
 	Public Sub InitCriteres(VpMainForm As MainForm)
 		For VpI As Integer = 0 To VpMainForm.FilterCriteria.NCriteria - 1
 			CgCriteres.Add(VpMainForm.FilterCriteria.MyList.Items(VpI), CgCriterionsFields(VpI))
@@ -1528,6 +1536,28 @@ Public Module clsModule
 			End Try
 		End If
 	End Sub
+	Public Sub DownloadUnzip(VpURI As System.Uri, VpOutput As String, VpInside As String)
+	'-------------------------------------------------------------
+	'Télécharge immédiatement et décompresse la ressource demandée
+	'-------------------------------------------------------------
+	Dim VpZipStream As ZipInputStream
+	Dim VpZipEntry As ZipEntry
+		Call DownloadNow(VpURI, VpOutput)
+		If File.Exists(Application.StartupPath + VpOutput) Then
+			VpZipStream = New ZipInputStream(File.OpenRead(Application.StartupPath + VpOutput))
+			Do
+				VpZipEntry = VpZipStream.GetNextEntry
+				If VpZipEntry IsNot Nothing AndAlso VpZipEntry.IsFile AndAlso VpZipEntry.Name <> "" Then
+					Using VpFile As Stream = File.OpenWrite(Application.StartupPath + VpInside)
+						Call clsModule.CopyStream(VpZipStream, VpFile)
+					End Using
+				Else
+					Exit Do
+				End If
+			Loop
+			VpZipStream.Close
+		End If
+	End Sub
 	Public Sub ClientDownloadProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs) Handles VgClient.DownloadProgressChanged
 '		MainForm.VgMe.VgBar.Style = ProgressBarStyle.Blocks
 		MainForm.VgMe.prgAvance.Maximum = 100
@@ -1663,6 +1693,9 @@ Public Module clsModule
 		End Try
 	End Function
 	Public Function HasPriceHistory As Boolean
+	'--------------------------------------------------
+	'Vérifie si la base contient un historique des prix
+	'--------------------------------------------------
 		VgDBCommand.CommandText = "Select Count(*) From PricesHistory;"
 		Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
 	End Function
