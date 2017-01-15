@@ -16,6 +16,7 @@
 '| Release 12     |                        			01/10/2012 |
 '| Release 13     |                        			09/05/2014 |
 '| Release 14     |                        			09/05/2015 |
+'| Release 15     |           						15/01/2017 |
 '| Auteur         |      							  Couitchy |
 '|-------------------------------------------------------------|
 '| Modifications :               							   |
@@ -1412,6 +1413,8 @@ Public Partial Class MainForm
 				Return "DuelDecksNissavsObNixilis#" + VpStr
 			Case "C6"
 				Return "commander2016#" + VpStr
+			Case "WD"
+				Return "welcomedeck2016#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1642,6 +1645,8 @@ Public Partial Class MainForm
 				Return "DR"
 			Case "commander2016"
 				Return "C6"
+			Case "welcomedeck2016"
+				Return "WD"
 			Case Else
 				Return ""
 		End Select

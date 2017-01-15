@@ -16,6 +16,7 @@
 '| Release 12     |                        01/10/2012 |
 '| Release 13     |                        09/05/2014 |
 '| Release 14     |                        09/05/2015 |
+'| Release 15     |                        15/01/2017 |
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
@@ -111,7 +112,7 @@ Public Partial Class Options
 		Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
 		Private VmLastUpdateSubTypesPatch As String = clsModule.CgLastUpdateSubsPatch
 		Private VmLastUpdateSubTypesVFPatch As String = clsModule.CgLastUpdateSubsVFPatch
-		Private VmLastUpdateMultiverseIdPatch As String = ""
+		Private VmLastUpdateMultiverseIdPatch As String = clsModule.CgLastUpdateMultiIdPatch
 		Private VmShowUpdateMenus As Boolean = False
 		Private VmPrevSearches As String = ""
 		Private VmVFDefault As Boolean = True
