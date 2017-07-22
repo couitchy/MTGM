@@ -356,7 +356,9 @@ Public Partial Class MainForm
 	Dim VpCardData() As String
 	Dim VpPrice As String
 	Dim VpEdition As String
+	Dim VpEdition0 As String
 	Dim VpEditionsOK As New List(Of String)
+	Dim VpEditionsKO As New Hashtable
 	Dim VpCardName As String
 	Dim VpDate As String
 	Dim VpEncNbr As Long
@@ -381,6 +383,7 @@ Public Partial Class MainForm
 			For Each VpStr As String In VpCardData
 				If VpStr.IndexOf("^") <> -1 Then
 					VpEdition = VpStr.Substring(0, VpStr.IndexOf("^")).Replace("'", "''")
+					VpEdition0 = VpEdition.Replace("PREMIUMFOILVO", "")
 					If Not VpEditionsOK.Contains(VpEdition) Then	'fait en sorte de ne prendre que le premier prix par édition (correspondant à la qualité de carte NM/MT)
 						VpEditionsOK.Add(VpEdition)
 						VpPrice = VpStr.Substring(VpStr.IndexOf("^") + 1).Replace("€", "").Trim
@@ -429,6 +432,11 @@ Public Partial Class MainForm
 							End If
 						Else
 							If Array.IndexOf(CmIgnoredEditions, VpEdition) < 0 Then
+								If VpEditionsKO.Contains(VpEdition0) Then
+									VpEditionsKO.Item(VpEdition0) += 1
+								Else
+									VpEditionsKO.Add(VpEdition0, 1)
+								End If
 								Call Me.AddToLog("Pas de correspondance de prix trouvée pour la carte " + VpCardName + " - " + VpEdition, eLogType.Warning)
 							End If
 						End If
@@ -444,6 +452,9 @@ Public Partial Class MainForm
 		If Me.btCancel.Tag Then
 			Call Me.AddToLog("La mise à jour de l'historique des prix a été annulée.", eLogType.Warning, , True)
 		Else
+			For Each VpEdition0 In VpEditionsKO.Keys
+				Call Me.AddToLog("Edition non trouvée : " + VpEdition0 + " (" + VpEditionsKO.Item(VpEdition0).ToString + ")", eLogType.Warning)
+			Next VpEdition0
 			Call Me.AddToLog("La mise à jour de l'historique des prix est terminée.", eLogType.Information, , True)
 		End If
 	End Sub
@@ -926,6 +937,7 @@ Public Partial Class MainForm
 	'------------------------------------------------------------
 	Dim VpClient As New WebClient
 	Dim VpStr As String = ""
+	Dim VpE As String
 	Dim VpStrs() As String
 	Dim VpIr As Integer
 		Try
@@ -954,6 +966,12 @@ Public Partial Class MainForm
 				VpStr = VpStr.Replace("<br />" + vbCrLf, vbCrLf)
 				VpStr = VpStr.Replace(vbCrLf + "<br />", vbCrLf)
 				VpStr = VpStr.Replace("<br />", vbCrLf)
+				For Each VpEnder As String In ( New String() { " ", ")", "!", ":", ";", ".", ",", "?" } )
+					For VpI As Integer = 8 To 1 Step -1
+						VpE = " " + ( New String("E", VpI) ) + VpEnder
+						VpStr = VpStr.Replace(VpE, VpE.Replace("E", "!e!"))
+					Next VpI
+				Next VpEnder
 				Return VpStr
 			End If
 		Catch
@@ -1415,6 +1433,16 @@ Public Partial Class MainForm
 				Return "commander2016#" + VpStr
 			Case "WD"
 				Return "welcomedeck2016#" + VpStr
+			Case "ER"
+				Return "aetherrevolt#" + VpStr
+			Case "C1"
+				Return "commandersarsenal#" + VpStr
+			Case "AK"
+				Return "amonkhet#" + VpStr
+			Case "MW"
+				Return "modernmasters2017#" + VpStr
+			Case "HD"
+				Return "hourofdevastation#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1647,6 +1675,16 @@ Public Partial Class MainForm
 				Return "C6"
 			Case "welcomedeck2016"
 				Return "WD"
+			Case "aetherrevolt"
+				Return "ER"
+			Case "commandersarsenal"
+				Return "C1"
+			Case "amonkhet"
+				Return "AK"
+			Case "modernmasters2017"
+				Return "MW"
+			Case "hourofdevastation"
+				Return "HD"
 			Case Else
 				Return ""
 		End Select
@@ -2554,7 +2592,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsExtractDiff4Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select Autorisations.Title From Autorisations Where Card.Title = Autorisations.Title) Order By Card.Title Asc;")
+			Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select Autorisations.Title From Autorisations Where Card.Title = Autorisations.Title) And Card.Type <> 'K' And Card.SpecialDoubleCard = False Order By Card.Title Asc;")
 		End If
 	End Sub
 	Sub MnuCardsExtractDiff5Click(sender As Object, e As EventArgs)

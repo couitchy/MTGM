@@ -108,7 +108,7 @@ Public Partial Class Options
 		Private VmLastUpdateSimu As String = clsModule.CgLastUpdateSimu
 		Private VmLastUpdateTxtVF As String = clsModule.CgLastUpdateTxtVF
 		Private VmLastUpdateRulings As String = clsModule.CgLastUpdateRulings
-		Private VmLastUpdatePictPatch As String = ""
+		Private VmLastUpdatePictPatch As String = clsModule.CgLastUpdatePictPatch
 		Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
 		Private VmLastUpdateSubTypesPatch As String = clsModule.CgLastUpdateSubsPatch
 		Private VmLastUpdateSubTypesVFPatch As String = clsModule.CgLastUpdateSubsVFPatch
@@ -120,6 +120,7 @@ Public Partial Class Options
 		Private VmCopyRange As Integer = 1
 		Private VmShowLines As Boolean = False
 		Private VmDownloadServerEnum As clsModule.eServer = clsModule.eServer.FreePagesPerso
+		Private VmMarketServerEnum As clsModule.eMarketServer = clsModule.eMarketServer.MagicCardMarket
 		Private VmShowAllSeries As Boolean = False
 		Private VmPicturesSource As clsModule.ePicturesSource = clsmodule.ePicturesSource.Local
 		Private VmFontSize As Single = -1
@@ -132,7 +133,7 @@ Public Partial Class Options
 				VmDefaultSearchCriterion = VpDefaultSearchCriterion
 			End Set
 		End Property
-		<DisplayName("Taille de police"), Category("Général"), Description("Taille par défaut des polices pour les textes dans le panneau des propriétés / détails")> _
+		<DisplayName("Taille de police"), Category("Général"), Description("Taille par défaut des polices pour les textes dans le panneau des propriétés / détails (redémarrer l'application pour prendre en compte les modifications)")> _
 		Public Property FontSize As Single
 			Get
 				Return VmFontSize
@@ -476,6 +477,15 @@ Public Partial Class Options
 			End Get
 			Set (VpDownloadServerEnum As clsModule.eServer)
 				VmDownloadServerEnum = VpDownloadServerEnum
+			End Set
+		End Property
+		<DisplayName("Serveur d'achats de cartes"), Category("Mises à jour"), Description("Serveur à contacter pour récupérer les informations d'achats / ventes")> _
+		Public Property MarketServerEnum As clsModule.eMarketServer
+			Get
+				Return VmMarketServerEnum
+			End Get
+			Set (VpMarketServerEnum As clsModule.eMarketServer)
+				VmMarketServerEnum = VpMarketServerEnum
 			End Set
 		End Property
 		<XmlIgnore(), Browsable(False), Category("Mises à jour"), Description("URL explicite du serveur de téléchargement")> _

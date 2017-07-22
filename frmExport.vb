@@ -211,8 +211,8 @@ Public Partial Class frmExport
 			VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpSource.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '', Null, False);"
 			VgDBCommand.ExecuteNonQuery
 		End If 
-		'** Gestion formats MTGM **
 		Select Case VpPath.Substring(VpPath.LastIndexOf(".")).ToLower
+			'** Gestion formats MTGM **
 			Case clsModule.CgFExtO, clsModule.CgFExtN
 				VpStrs = VpIn.ReadLine.Split("#")
 				'Vérifie qu'il n'y a pas une confusion avec le format XMage
@@ -385,7 +385,7 @@ Public Partial Class frmExport
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
 				Call Me.GoImport(VpStr, VpSource, False)
-			'** Gestion format Magic Online **
+			'** Gestion formats Magic Online ou Urza Gatherer **
 			Case clsModule.CgFExtL
 				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgPicLogExt))
 				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgFExtO))
@@ -393,6 +393,7 @@ Public Partial Class frmExport
 					VpStr = VpIn.ReadLine
 					If VpStr.Contains(",") Then
 						VpStrs = VpStr.Split(",")
+						'Cas 1 : Magic Online
 						If VpStrs.Length = 7 AndAlso IsNumeric(VpStrs(1)) Then
 							VpQte = CInt(Val(VpStrs(1)))
 							VpEdition = VpStrs(4)
@@ -415,6 +416,30 @@ Public Partial Class frmExport
 									VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
 								End If
 							End If
+						'Cas 2 : Urza Gatherer
+						ElseIf VpStrs.Length = 4 AndAlso IsNumeric(VpStrs(0)) Then
+							VpQte = CInt(Val(VpStrs(0)))
+							VpEdition = ""
+							VpName = VpStrs(1)
+							VpFoil = False
+							VpReserve = Not ( VpStrs(3).ToLower = "main" )
+							'Exact match
+							VgDBCommand.CommandText = "Select Top 1 EncNbr From Card Where Title = '" + VpName.Replace("'", "''") + "';"
+							VpO = VgDBCommand.ExecuteScalar
+							If Not VpO Is Nothing Then
+								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+							Else
+								VpNeedLog = True
+								'Partial match
+								VgDBCommand.CommandText = "Select Top 1 EncNbr From Card Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%');"
+								VpO = VgDBCommand.ExecuteScalar
+								If Not VpO Is Nothing Then
+									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+									VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+								Else
+									VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								End If
+							End If
 						End If
 					End If
 				End While
@@ -427,7 +452,54 @@ Public Partial Class frmExport
 					End If
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
-				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgFExtO), VpSource, False)				
+				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgFExtO), VpSource, False)
+			'** Gestion format Magic Collection **
+			Case clsModule.CgFExtC
+				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtC, clsModule.CgPicLogExt))
+				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtC, clsModule.CgFExtO))
+				While Not VpIn.EndOfStream
+					VpStr = VpIn.ReadLine
+					If VpStr.Contains(";") Then
+						VpStrs = VpStr.Split(";")
+						If VpStrs.Length >= 7 AndAlso IsNumeric(VpStrs(6)) Then
+							VpQte = CInt(Val(VpStrs(6)))
+							VpEdition = VpStrs(3).Replace("PO2", "P02")
+							VpName = VpStrs(0).Replace(" (1)", "").Replace(" (2)", "").Replace(" (3)", "").Replace(" (4)", "").Replace(" (5)", "").Replace(" (6)", "").Replace(" (7)", "").Replace(" (8)", "")
+							VpFoil = False	'à gérer proprement : on a l'info mais chaque ligne peut contenir simultanément des foils et des non-foils
+							'Exact match
+							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MO = '" + VpEdition + "';"
+							VpO = VgDBCommand.ExecuteScalar
+							If VpO Is Nothing Then
+								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MW = '" + VpEdition + "';"
+								VpO = VgDBCommand.ExecuteScalar
+							End If
+							If Not VpO Is Nothing Then
+								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+							Else
+								VpNeedLog = True
+								'Partial match
+								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And ( SeriesCD_MO = '" + VpEdition + "' Or SeriesCD_MW = '" + VpEdition + "' );"
+								VpO = VgDBCommand.ExecuteScalar
+								If Not VpO Is Nothing Then
+									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+									VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+								Else
+									VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								End If
+							End If
+						End If
+					End If
+				End While
+				VpConverted.Close
+				VpLog.Close
+				VpIn.Close
+				If VpNeedLog Then
+					If clsModule.ShowQuestion("Certaines cartes n'ont pas été trouvées..." + vbCrLf + "Voulez-vous afficher le journal ?") = System.Windows.Forms.DialogResult.Yes Then
+						Process.Start(VpPath.ToLower.Replace(clsModule.CgFExtC, clsModule.CgPicLogExt))
+					End If
+				End If
+				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
+				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtC, clsModule.CgFExtO), VpSource, False)
 			Case Else
 				Call clsModule.ShowWarning("Format non pris en charge...")
 		End Select

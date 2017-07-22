@@ -47,6 +47,7 @@ Public Module clsModule
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
 	Public Const CgLastUpdateTxtVF As String		= "20/10/2016"
 	Public Const CgLastUpdateRulings As String		= "16/10/2016"
+	Public Const CgLastUpdatePictPatch As String	= "27/12/2014"
 	Public Const CgLastUpdateTradPatch As String	= "09/01/2017"
 	Public Const CgLastUpdateSubsPatch As String	= "04/04/2015"
 	Public Const CgLastUpdateSubsVFPatch As String	= "03/04/2015"
@@ -62,6 +63,7 @@ Public Module clsModule
 	Public Const CgGraphsExtraMargin As Single		= 0.2
 	Public Const CgMaxGraphs As Integer				= 128
 	Public Const CgMaxVignettes As Integer			= 120
+	Public Const CgMaxEditionsMarket As Integer		= 4
 	Public Const CgMissingTable As Long				= -2147217865
 	Public Const CgImgMinLength As Long				= 296297676
 	Public Const CgTimeOut As Integer				= 5
@@ -137,6 +139,9 @@ Public Module clsModule
 	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF r19.log"
 	Public Const CgURL22 As String         			= "/Updates/MD_Multiverse r20.log"
 	Public Const CgURL23 As String         			= "https://mtgjson.com/json/AllSets-x.json.zip"
+	Public Const CgURL24 As String					= "https://www.mkmapi.eu/ws/v1.1/output.json/products/card-name/1/1/false"
+	Public Const CgURL25 As String					= "https://www.mkmapi.eu/ws/v1.1/output.json/articles/"
+	Public Const CgURL26 As String					= "http://magic-ville.fr/fr/"
 	Public Const CgDL1 As String         			= "Vérification des mises à jour..."
 	Public Const CgDL2 As String         			= "Téléchargement en cours"
 	Public Const CgDL2b As String         			= "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
@@ -163,6 +168,7 @@ Public Module clsModule
 	Public Const CgFExtA As String					= ".dec"
 	Public Const CgFExtW As String					= ".mwDeck"
 	Public Const CgFExtX As String					= ".xmg"
+	Public Const CgFExtC As String					= ".txt"
 	Public Const CgFExtM As String					= ".xml"
 	Public Const CgFExtL As String					= ".csv"
 	Public Const CgFExtD As String					= ".mdb"
@@ -202,6 +208,7 @@ Public Module clsModule
 	Public Const CgAlternateStart2 As String		= "Name:"
 	Public Const CgFoil As String					= "PREMIUMFOILVO"
 	Public Const CgFoil2 As String					= " (Foil)"
+	Public CgBuyLanguage() As String				= {"French", "English"}
 	Public CgBalises() As String 					= {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}
 	Public CgManaParsing() As String 				= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
 	Public CgCriterionsFields() As String 			= {"Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Items", "Card.Title"}
@@ -233,6 +240,10 @@ Public Module clsModule
 	Public Enum eServer
 		FreePagesPerso
 		ChromeLightStudio
+	End Enum
+	Public Enum eMarketServer
+		MagicVille
+		MagicCardMarket
 	End Enum
 	Public Enum ePicturesSource
 		Local
@@ -280,12 +291,14 @@ Public Module clsModule
 	End Enum
 	Public Enum eBasketMode
 		Local
-		MV
+		Remote
 	End Enum
 	Public Enum eQuality
 		Mint = 0
 		NearMint
 		Excellent
+		Good
+		LightPlayed
 		Played
 		Poor
 	End Enum
@@ -1093,14 +1106,6 @@ Public Module clsModule
 				Return VpColor
 		End Select
 	End Function
-	Public Function ExtractENName(VpStr As String) As String
-	Dim VpTitle As String = VpStr
-		VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
-		If VpTitle.Contains("(") Then
-			VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
-		End If
-		Return VpTitle.Substring(0, VpTitle.Length - 1)
-	End Function
 	'---------------------
 	'Gestion formats dates
 	'---------------------
@@ -1117,6 +1122,9 @@ Public Module clsModule
 		Else
 			Return CgPerfsVFree
 		End If
+	End Function
+	Public Function GetDate(VpDate As Date) As String
+		Return "'" + VpDate.ToString + "'"
 	End Function
 	Public Function MyPrice(VpStr As String) As Integer
 	'-------------------------------------------------------
@@ -1208,8 +1216,25 @@ Public Module clsModule
 		Next VpMVCard
 		Return VpB
 	End Function
-	Public Function GetDate(VpDate As Date) As String
-		Return "'" + VpDate.ToString + "'"
+	Public Function MyQuality(VpQuality As String) As eQuality
+		Select Case VpQuality
+			Case "MT"
+				Return eQuality.Mint
+			Case "NM"
+				Return eQuality.NearMint
+			Case "EX"
+				Return eQuality.Excellent
+			Case "GD"
+				Return eQuality.Good
+			Case "LP"
+				Return eQuality.LightPlayed
+			Case "PL"
+				Return eQuality.Played
+			Case "PO"
+				Return eQuality.Poor
+			Case Else
+				Return eQuality.Good
+		End Select
 	End Function
 	Public Function StrCount(VpStr As String, VpChar As String) As Integer
 	'----------------------------------------------------------------------------------------
@@ -1296,20 +1321,14 @@ Public Module clsModule
 				Return VpIn
 		End Select
 	End Function
-	Public Sub CopyStream(VpIn As Stream, VpOut As Stream)
-	Dim VpBuffer() As Byte = New Byte(8 * 1024 - 1) {}
-	Dim VpLen As Integer
-		Do
-			VpLen = VpIn.Read(VpBuffer, 0, VpBuffer.Length)
-			If VpLen > 0 Then
-				VpOut.Write(VpBuffer, 0, VpLen)	
-			Else
-				Exit Do
-			End If
-		Loop
-		VpOut.Flush
-		VpOut.Close
-	End Sub
+	Public Function ExtractENName(VpStr As String) As String
+	Dim VpTitle As String = VpStr
+		VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
+		If VpTitle.Contains("(") Then
+			VpTitle = VpTitle.Substring(VpTitle.IndexOf("(") + 1)
+		End If
+		Return VpTitle.Substring(0, VpTitle.Length - 1)
+	End Function
 	Public Function SafeGetNonZeroVal(VpColumn As String) As Single
 		With VgDBReader
 			If .GetValue(.GetOrdinal(VpColumn)) Is DBNull.Value Then
@@ -1349,6 +1368,20 @@ Public Module clsModule
 			Next VpI
 			.AutoSize
 		End With
+	End Sub
+	Public Sub CopyStream(VpIn As Stream, VpOut As Stream)
+	Dim VpBuffer() As Byte = New Byte(8 * 1024 - 1) {}
+	Dim VpLen As Integer
+		Do
+			VpLen = VpIn.Read(VpBuffer, 0, VpBuffer.Length)
+			If VpLen > 0 Then
+				VpOut.Write(VpBuffer, 0, VpLen)	
+			Else
+				Exit Do
+			End If
+		Loop
+		VpOut.Flush
+		VpOut.Close
 	End Sub
 	Public Function GetPictSP As String
 	Dim VpRequest As HttpWebRequest
@@ -1843,7 +1876,10 @@ Public Module clsModule
 					Else
 						VpDest = VpSaveFolder + "\" + AvoidForbiddenChr(VpTitle) + ".jpg"
 						If (Not File.Exists(VpDest)) OrElse (New FileInfo(VpDest)).Length = 0 Then
-							File.Copy(VpTmp, VpDest)
+							Try
+								File.Copy(VpTmp, VpDest)
+							Catch
+							End Try
 						End If
 					End If
 				Else
@@ -2092,7 +2128,7 @@ Public Class clsChildren
 	Private VmDeleteEdition As frmDeleteEdition = Nothing
 	Private VmGestDecks As frmGestDecks = Nothing
 	Private VmGestAdv As frmGestAdv = Nothing
-	Private VmBuyMV As frmBuyMV = Nothing
+	Private VmCardsBuyer As frmBuyCards = Nothing
 	Private VmSearcher As frmSearch = Nothing
 	Private VmPerfs As frmPerfs = Nothing
 	Private VmUpdateContenu As frmUpdateContenu = Nothing
@@ -2125,12 +2161,12 @@ Public Class clsChildren
 			VmGestAdv = VpGestAdv
 		End Set
 	End Property
-	Public Property MVBuyer As frmBuyMV
+	Public Property CardsBuyer As frmBuyCards
 		Get
-			Return VmBuyMV
+			Return VmCardsBuyer
 		End Get
-		Set (VpBuyMV As frmBuyMV)
-			VmBuyMV = VpBuyMV
+		Set (VpCardsBuyer As frmBuyCards)
+			VmCardsBuyer = VpCardsBuyer
 		End Set
 	End Property
 	Public Property Searcher As frmSearch
@@ -2760,7 +2796,7 @@ Public Class clsTxtFR
 	End Property
 End Class
 <Serializable> _
-Public Class clsFullInfos	
+Public Class clsFullInfos
 	Public name As String
 	Public code As String
 	Public gathererCode As String
@@ -2791,7 +2827,7 @@ Public Class clsFullInfos
 		Public number As String
 		Public power As String
 		Public toughness As String
-		Public loyalty As Integer
+		'Public loyalty As Integer
 		Public multiverseid As Long
 		Public variations As List(Of Long)
 		Public imageName As String
@@ -2843,4 +2879,75 @@ Public Class clsCardInfos
 	Public Power As String
 	Public Tough As String
 	Public Price As Single
+End Class
+<Serializable> _
+Public Class clsArticleRequest
+	Public article As List(Of clsArticle)
+	Public Class clsArticle
+		Public idArticle As Long
+		Public idProduct As Long
+		Public language As clsLanguage
+		Public comments As String
+		Public price As Single
+		Public count As Integer
+		Public inShoppingCart As Boolean
+		Public seller As clsSeller
+		Public condition As String
+		Public isFoil As Boolean
+		Public isSigned As Boolean
+		Public isPlayset As Boolean
+		Public isAltered As Boolean
+		Public Class clsLanguage
+			Public idLanguage As Integer
+			Public languageName As String
+		End Class
+		Public Class clsSeller
+			Public idUser As Long
+			Public username As String
+			Public country As String
+			Public isCommercial As Integer
+			Public riskGroup As Integer
+			Public reputation As Integer
+			Public shipsFast As Integer
+			Public sellCount As Integer
+			Public onVacation As Boolean
+			Public idDisplayLanguage As Integer
+		End Class
+	End Class
+End Class
+<Serializable> _
+Public Class clsProductRequest
+	Public product As List (Of clsProduct)
+	Public Class clsProduct
+		Public idProduct As Long
+		Public idMetaproduct As Long
+		Public idGame As Integer
+		'Public countReprints As Integer
+		'Public name As Dictionary(Of String, clsName)
+		'Public website As String
+		'Public image As String
+		'Public category As clsCategory
+		'Public priceGuide As clsPriceGuide
+		Public expansion As String
+		'Public expIcon As Integer
+		'Public number As Integer
+		'Public rarity As String
+		'Public Class clsName
+		'	Public idLanguage As Integer
+		'	Public languageName As String
+		'	Public productName As String
+		'End Class
+		'Public Class clsCategory
+		'	Public idCategory As Integer
+		'	Public categoryName As String
+		'End Class
+		'Public Class clsPriceGuide
+		'	Public SELL As Single
+		'	Public LOW As Single
+		'	Public LOWEX As Single
+		'	Public LOWFOIL As Single
+		'	Public AVG As Single
+		'	Public TREND As Single
+		'End Class
+	End Class
 End Class

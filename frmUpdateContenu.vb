@@ -138,7 +138,7 @@ Public Partial Class frmUpdateContenu
 			Case clsMAJContenu.EgMAJContenu.NewPict
 				If File.Exists(VgOptions.VgSettings.PicturesFile) Then
 					VpPictFileSize = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length
-					If VpStamp.Contains(VpPictFileSize.ToString) Then
+					If VpPictFileSize <> 0 AndAlso VpStamp.Contains(VpPictFileSize.ToString) Then
 						If VpStamp.IndexOf(VpPictFileSize.ToString) > 1 Then
 							VpCur = VpStamp.Substring(0, VpStamp.IndexOf(VpPictFileSize.ToString) - 3)
 							VpCur = VpCur.Substring(VpCur.LastIndexOf("#") + 1)
@@ -258,6 +258,7 @@ Public Partial Class frmUpdateContenu
 				End If
 			Case clsMAJContenu.EgMAJContenu.NewPict
 				'Appel silencieux (multiple) pour mise(s) à jour d'images
+				If MainForm.VgMe.IsInImgDL Then Return False
 				For VpI As Integer = 1 + CInt(VpElement.Locale.Replace("SP", "")) To CInt(VpElement.Serveur.Replace("SP", ""))
 					VmPassiveUpdate = EgPassiveUpdate.InProgress
 					'Téléchargement du fichier accompagnateur
@@ -395,9 +396,7 @@ Public Partial Class frmUpdateContenu
 			'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 			If Me.CreateGraphics().DpiX <> 96 Then
 				Me.grpUpdate.Dock = DockStyle.None
-				For Each VpColumn As ColumnHeader In Me.chklstContenus.Columns
-					VpColumn.Width = -1
-				Next VpColumn
+				Me.chklstContenus.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
 			End If
 		End If
 	End Sub

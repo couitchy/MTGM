@@ -843,7 +843,7 @@ Public Class clsPerformances
 	'-----------------------------------------------------------------------------------------------
 	Dim VpMat() As Single
 	Dim VpN As Integer
-		VpN =  VpGames.Length
+		VpN = VpGames.Length
 		ReDim VpMat(0 To VpN - 1)
 		For VpI As Integer = 0 To VpN - 1
 			VpMat(VpI) = 100 * clsPerformances.GetRatio(VpGames(VpI))
@@ -856,7 +856,7 @@ Public Class clsPerformances
 	'-------------------------------------------------------------------------------------------------------------------
 	Dim VpMat(,) As Single
 	Dim VpN As Integer
-		VpN =  VpGames.Length
+		VpN = VpGames.Length
 		ReDim VpMat(0 To VpN - 1, 0 To VpN - 1)
 		For VpI As Integer = 0 To VpN - 1
 			For VpJ As Integer = 0 To VpN - 1

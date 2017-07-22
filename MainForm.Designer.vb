@@ -127,7 +127,7 @@ Partial Class MainForm
 		Me.mnuPlateau = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuSimu = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuStats = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuMV = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuMarket = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPlugins = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPlugResourcer = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuPlugHTML = New System.Windows.Forms.ToolStripMenuItem
@@ -567,8 +567,8 @@ Partial Class MainForm
 		Me.mnuBuy.Image = CType(resources.GetObject("mnuBuy.Image"),System.Drawing.Image)
 		Me.mnuBuy.Name = "mnuBuy"
 		Me.mnuBuy.Size = New System.Drawing.Size(233, 22)
-		Me.mnuBuy.Text = "Acheter sur Magic-Ville"
-		AddHandler Me.mnuBuy.Click, AddressOf Me.MnuBuyClick
+		Me.mnuBuy.Text = "Acheter sur Internet"
+		AddHandler Me.mnuBuy.Click, AddressOf Me.MnuBuyItemClick
 		'
 		'dlgOpen2
 		'
@@ -993,7 +993,7 @@ Partial Class MainForm
 		'
 		'mnuBigSearch
 		'
-		Me.mnuBigSearch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuStdSearch, Me.mnuAdvancedSearch, Me.mnuSeparator8, Me.mnuExcelGen, Me.mnuWordGen, Me.mnuPerfs, Me.mnuPlateau, Me.mnuSimu, Me.mnuStats, Me.mnuMV})
+		Me.mnuBigSearch.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuStdSearch, Me.mnuAdvancedSearch, Me.mnuSeparator8, Me.mnuExcelGen, Me.mnuWordGen, Me.mnuPerfs, Me.mnuPlateau, Me.mnuSimu, Me.mnuStats, Me.mnuMarket})
 		Me.mnuBigSearch.Name = "mnuBigSearch"
 		Me.mnuBigSearch.Size = New System.Drawing.Size(50, 20)
 		Me.mnuBigSearch.Text = "Outils"
@@ -1076,14 +1076,14 @@ Partial Class MainForm
 		Me.mnuStats.Text = "Statistiques sur la sélection"
 		AddHandler Me.mnuStats.Click, AddressOf Me.MnuStatsActivate
 		'
-		'mnuMV
+		'mnuMarket
 		'
-		Me.mnuMV.Image = CType(resources.GetObject("mnuMV.Image"),System.Drawing.Image)
-		Me.mnuMV.Name = "mnuMV"
-		Me.mnuMV.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.B),System.Windows.Forms.Keys)
-		Me.mnuMV.Size = New System.Drawing.Size(303, 22)
-		Me.mnuMV.Text = "Achats sur Magic-Ville"
-		AddHandler Me.mnuMV.Click, AddressOf Me.MnuMVClick
+		Me.mnuMarket.Image = CType(resources.GetObject("mnuMarket.Image"),System.Drawing.Image)
+		Me.mnuMarket.Name = "mnuMarket"
+		Me.mnuMarket.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.B),System.Windows.Forms.Keys)
+		Me.mnuMarket.Size = New System.Drawing.Size(303, 22)
+		Me.mnuMarket.Text = "Achats sur Internet"
+		AddHandler Me.mnuMarket.Click, AddressOf Me.MnuBuyFormClick
 		'
 		'mnuPlugins
 		'
@@ -2074,7 +2074,7 @@ Partial Class MainForm
 	Private mnuGestAdv As System.Windows.Forms.ToolStripMenuItem
 	Private btWebsite As System.Windows.Forms.ToolStripButton
 	Private mnuWebsite As System.Windows.Forms.ToolStripMenuItem
-	Private mnuMV As System.Windows.Forms.ToolStripMenuItem
+	Private mnuMarket As System.Windows.Forms.ToolStripMenuItem
 	Private mnuContenuUpdate As System.Windows.Forms.ToolStripMenuItem
 	Private mnuApplicationUpdate As System.Windows.Forms.ToolStripMenuItem
 	Private mnuUpdateAutorisations As System.Windows.Forms.ToolStripMenuItem

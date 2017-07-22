@@ -1206,11 +1206,9 @@ Public Partial Class MainForm
 				VpBusy = .Selection.GetCells(0).DataModel.IsEditing
 			End If
 			If VpBusy Then
-				If IsNumeric(.Selection.GetCells(0)) Then
-					SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille si elle est cohérente...
-				Else
-					SendKeys.Send("{ESC}")			'...ou à l'annuler si elle ne l'est pas
-				End If
+				SendKeys.Send("{ENTER}")		'crade mais force à valider la cellule en cours d'édition dans la grille si elle est cohérente...
+				Application.DoEvents
+				SendKeys.Send("{ESC}")			'...ou à l'annuler si elle ne l'est pas (auquel cas le {ENTER} précédent n'aura eu aucun effet)
 				Application.DoEvents
 			End If
 		End With
@@ -2557,21 +2555,21 @@ Public Partial Class MainForm
 			Call Me.ReloadWithHistory
 		End If
 	End Sub
-	Private Sub MVBuy(VpLoad As Boolean, VpFullLoad As Boolean)
-	'---------------------------------------------------
-	'Chargement du formulaire des achats sur Magic-Ville
-	'---------------------------------------------------
-	Dim VpBuy As frmBuyMV
+	Private Sub OnlineBuy(VpLoad As Boolean, VpFullLoad As Boolean)
+	'----------------------------------------------
+	'Chargement du formulaire d'achats sur Internet
+	'----------------------------------------------
+	Dim VpBuyer As frmBuyCards
 	Dim VpSource As String = Me.MySource
 	Dim VpSQL As String
-		If VmMyChildren.DoesntExist(VmMyChildren.MVBuyer) Then
-			VpBuy = New frmBuyMV
-			VmMyChildren.MVBuyer = VpBuy
+		If VmMyChildren.DoesntExist(VmMyChildren.CardsBuyer) Then
+			VpBuyer = New frmBuyCards(VgOptions.VgSettings.MarketServerEnum)
+			VmMyChildren.CardsBuyer = VpBuyer
 		Else
-			VpBuy = VmMyChildren.MVBuyer
+			VpBuyer = VmMyChildren.CardsBuyer
 		End If
-		VpBuy.Show
-		VpBuy.BringToFront
+		VpBuyer.Show
+		VpBuyer.BringToFront
 		If VpFullLoad Then
 			VpSQL = "Select Title, Items From " + VpSource + " Inner Join Card On Card.EncNbr = " + VpSource + ".EncNbr Where "
 			VpSQL = VpSQL + Me.Restriction
@@ -2579,16 +2577,16 @@ Public Partial Class MainForm
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				While .Read
-					VpBuy.AddToBasket(.GetString(0), .GetInt32(1))
+					VpBuyer.AddToBasket(.GetString(0), .GetInt32(1))
 				End While
 				.Close
 			End With
-			VpBuy.LoadGrid(clsModule.eBasketMode.Local)
+			Call VpBuyer.LoadGrid(clsModule.eBasketMode.Local)
 		ElseIf VpLoad Then
 			For Each VpNode As TreeNode In Me.tvwExplore.SelectedNodes
-				VpBuy.AddToBasket(VpNode.Text)
+				Call VpBuyer.AddToBasket(VpNode.Tag.Value)
 			Next VpNode
-			VpBuy.LoadGrid(clsModule.eBasketMode.Local)
+			Call VpBuyer.LoadGrid(clsModule.eBasketMode.Local)
 		End If
 	End Sub
 	#End Region
@@ -2951,6 +2949,7 @@ Public Partial Class MainForm
 		Call Me.ReloadCarac
 	End Sub
 	Sub BtExpandClick(sender As Object, e As EventArgs)
+		Call Me.CheckGridBusy
 		Me.btExpand.Checked = Not Me.btExpand.Checked
 		Call Me.MyRefresh
 	End Sub
@@ -3519,11 +3518,11 @@ Public Partial Class MainForm
 	Sub MnuCheckForBetasActivate(ByVal sender As Object, ByVal e As EventArgs)
 		Call clsModule.CheckForUpdates(True, True)
 	End Sub
-	Sub MnuMVClick(sender As Object, e As EventArgs)
-		Call Me.MVBuy(False, False)
+	Sub MnuBuyFormClick(sender As Object, e As EventArgs)
+		Call Me.OnlineBuy(False, False)
 	End Sub
-	Sub MnuBuyClick(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.MVBuy(True, ( Me.tvwExplore.SelectedNode.Parent Is Nothing ))
+	Sub MnuBuyItemClick(ByVal sender As Object, ByVal e As EventArgs)
+		Call Me.OnlineBuy(True, ( Me.tvwExplore.SelectedNode.Parent Is Nothing ))
 	End Sub
 	Sub MnuDBOpenClick(sender As Object, e As EventArgs)
 		Call Me.ClearAll
@@ -3549,7 +3548,7 @@ Public Partial Class MainForm
 						Call clsModule.ShowWarning("Impossible d'écraser " + Me.dlgSave.FileName + "..." + vbCrLf + "Le fichier est en cours d'utilisation.")
 					End If
 				Else
-					Call clsModule.ShowWarning("Vous avez sélectionné le fichier actuellement ouvert !")
+					Call clsModule.ShowWarning("Inutile de sélectionner le fichier actuellement ouvert, il est déjà sauvegardé automatiquement !")
 				End If
 			End If
 		End If

@@ -146,7 +146,7 @@ Public Partial Class frmNewEdition
 							If VpFullUpdate Then
 								VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
 							Else
-								VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "' Where SeriesCD = '" + .SeriesCD + "';"
+								VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
 							End If
 							VgDBCommand.ExecuteNonQuery
 						End With

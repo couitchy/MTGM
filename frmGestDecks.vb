@@ -283,6 +283,11 @@ Public Partial Class frmGestDecks
 	End Sub
 	Sub FrmGestDecksLoad(ByVal sender As Object, ByVal e As EventArgs)
 		Call Me.LoadDecks
+		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+		If Me.CreateGraphics().DpiX <> 96 Then
+			Me.Width *= 2
+			Me.Width *= 0.5
+		End If
 	End Sub
 	Sub TvwDecksAfterSelect(sender As Object, e As TreeViewEventArgs)
 		If e.Node Is Me.RootNode Then

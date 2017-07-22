@@ -514,9 +514,7 @@ Public Partial Class frmPlateau
 	End Sub
 	Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
-		If Me.btBibliReveal.Checked Then
-			Call Me.ManageReDraw(VmPlateauPartie.Bibli)
-		End If
+		Call Me.ManageReDraw(VmPlateauPartie.Bibli)
 	End Sub
 	Sub BtMainShuffleClick(sender As Object, e As EventArgs)
 		Call clsPlateauPartie.Shuffle(VmPlateauPartie.Main)

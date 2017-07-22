@@ -6,7 +6,7 @@
 ' 
 ' To change this template use Tools | Options | Coding | Edit Standard Headers.
 '
-Partial Class frmBuyMV
+Partial Class frmBuyCards
 	Inherits System.Windows.Forms.Form
 	
 	''' <summary>
@@ -34,7 +34,7 @@ Partial Class frmBuyMV
 	''' </summary>
 	Private Sub InitializeComponent()
 		Me.components = New System.ComponentModel.Container
-		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBuyMV))
+		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBuyCards))
 		Me.splitH = New System.Windows.Forms.SplitContainer
 		Me.cbarGestion = New TD.SandBar.ContainerBar
 		Me.pnlGestion = New TD.SandBar.ContainerBarClientPanel

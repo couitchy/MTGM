@@ -119,7 +119,7 @@ Partial Class frmExploSettings
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
-	Public chklstClassement As System.Windows.Forms.CheckedListBox
+	Private chklstClassement As System.Windows.Forms.CheckedListBox
 	Private btRefresh As System.Windows.Forms.ToolStripButton
 	Private btDown As System.Windows.Forms.ToolStripButton
 	Private btUp As System.Windows.Forms.ToolStripButton

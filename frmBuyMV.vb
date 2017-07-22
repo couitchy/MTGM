@@ -25,13 +25,14 @@
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports System.IO
-Public Partial Class frmBuyMV
-	Private Const CmURL As String = "http://magic-ville.fr/fr/"
-	Private VmIsComplete As Boolean = False
+Public Partial Class frmBuyCards
+	Private VmServer As clsModule.eMarketServer
 	Private VmToBuy As New List(Of clsLocalCard)
 	Private VmToSell As New List(Of clsMVCard)
-	Public Sub New()
+	Private VmIsComplete As Boolean = False
+	Public Sub New(VpServer As clsModule.eMarketServer)
 		Me.InitializeComponent()
+		VmServer = VpServer
 	End Sub
 	Public Sub AddToBasket(VpName As String)
 	'------------------------------------------------------------------
@@ -94,7 +95,7 @@ Public Partial Class frmBuyMV
 	Dim VpCurId As Integer
 	Dim VpProposition As clsMVCard = Nothing
 		'Site de Magic-Ville
-		Call Me.BrowseAndWait(CmURL)
+		Call Me.BrowseAndWait(clsModule.CgURL26)
 		'Saisie de la carte dans la zone de recherche
 		VpElement = Me.wbMV.Document.All.GetElementsByName("recherche_titre").Item(0)
 		VpElement.SetAttribute("value", VpCard)
@@ -251,7 +252,7 @@ Public Partial Class frmBuyMV
 	Public Sub LoadGrid(VpMode As clsModule.eBasketMode)
 	Dim VpCellModel As DataModels.IDataModel
 		'Mode 1 : Résultats de la recherche sur Magic-Ville
-		If VpMode = clsModule.eBasketMode.MV Then
+		If VpMode = clsModule.eBasketMode.Remote Then
 			'Préparation de la grille
 			With Me.grdBasket
 				'Nettoyage
@@ -350,7 +351,7 @@ Public Partial Class frmBuyMV
 		Call Me.LoadGrid(eBasketMode.Local)
 	End Sub
 	Sub BtMVBasketActivate(ByVal sender As Object, ByVal e As EventArgs)
-		Call Me.LoadGrid(eBasketMode.MV)
+		Call Me.LoadGrid(eBasketMode.Remote)
 	End Sub
 	Sub CmdRefreshClick(ByVal sender As Object, ByVal e As EventArgs)
 		Me.cmdRefresh.Visible = False
@@ -367,7 +368,7 @@ Public Partial Class frmBuyMV
 			Next VpCard
 			Me.prgRefresh.Value = 0
 			Call Me.ClearSellList
-			Call Me.LoadGrid(clsModule.eBasketMode.MV)
+			Call Me.LoadGrid(clsModule.eBasketMode.Remote)
 		Catch
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
 		End Try

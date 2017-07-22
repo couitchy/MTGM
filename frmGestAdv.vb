@@ -70,6 +70,12 @@ Public Partial Class frmGestAdv
 	Sub FrmGestAdvLoad(sender As Object, e As EventArgs)
 		Call Me.ReloadListes
 		VmCanClose = True
+		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
+		If Me.CreateGraphics().DpiX <> 96 Then
+			Me.Width *= 2
+			Me.Width *= 0.5
+			Me.lvwAdv.Columns.Item(1).Width *= Me.CreateGraphics().DpiX / 96
+		End If
 	End Sub
 	Sub BtAddActivate(sender As Object, e As EventArgs)
 	Dim VpAdvName As String
