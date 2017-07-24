@@ -33,38 +33,42 @@ Partial Class frmBuyCards
 	''' not be able to load this method if it was changed manually.
 	''' </summary>
 	Private Sub InitializeComponent()
-		Me.components = New System.ComponentModel.Container
+		Me.components = New System.ComponentModel.Container()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBuyCards))
-		Me.splitH = New System.Windows.Forms.SplitContainer
-		Me.cbarGestion = New TD.SandBar.ContainerBar
-		Me.pnlGestion = New TD.SandBar.ContainerBarClientPanel
-		Me.splitV1 = New System.Windows.Forms.SplitContainer
-		Me.optSeller = New System.Windows.Forms.RadioButton
-		Me.optQuality = New System.Windows.Forms.RadioButton
-		Me.optPrice = New System.Windows.Forms.RadioButton
-		Me.lblInfo = New System.Windows.Forms.Label
-		Me.splitV2 = New System.Windows.Forms.SplitContainer
-		Me.lblSeller = New System.Windows.Forms.Label
-		Me.lstSeller = New System.Windows.Forms.ListBox
-		Me.cmdCancelMV = New System.Windows.Forms.Button
-		Me.cmdCalc = New System.Windows.Forms.Button
-		Me.prgRefresh = New System.Windows.Forms.ProgressBar
-		Me.cmdRefresh = New System.Windows.Forms.Button
-		Me.txtTot = New System.Windows.Forms.TextBox
-		Me.lblTot = New System.Windows.Forms.Label
-		Me.cbarBasket = New TD.SandBar.ContainerBar
-		Me.pnlBasket = New TD.SandBar.ContainerBarClientPanel
-		Me.grdBasket = New SourceGrid2.Grid
-		Me.wbMV = New System.Windows.Forms.WebBrowser
-		Me.btLocalBasket = New TD.SandBar.ButtonItem
-		Me.btMVBasket = New TD.SandBar.ButtonItem
-		Me.btSaveBasket = New TD.SandBar.ButtonItem
-		Me.btLoadBasket = New TD.SandBar.ButtonItem
+		Me.splitH = New System.Windows.Forms.SplitContainer()
+		Me.cbarGestion = New TD.SandBar.ContainerBar()
+		Me.pnlGestion = New TD.SandBar.ContainerBarClientPanel()
+		Me.splitV1 = New System.Windows.Forms.SplitContainer()
+		Me.chkSeller = New System.Windows.Forms.CheckBox()
+		Me.chkGood = New System.Windows.Forms.CheckBox()
+		Me.chkExcellent = New System.Windows.Forms.CheckBox()
+		Me.chkNearMint = New System.Windows.Forms.CheckBox()
+		Me.chkMint = New System.Windows.Forms.CheckBox()
+		Me.chkTransactions = New System.Windows.Forms.CheckBox()
+		Me.sldTransactions = New System.Windows.Forms.TrackBar()
+		Me.lblInfo = New System.Windows.Forms.Label()
+		Me.splitV2 = New System.Windows.Forms.SplitContainer()
+		Me.lblSeller = New System.Windows.Forms.Label()
+		Me.lstSeller = New System.Windows.Forms.ListBox()
+		Me.cmdCancel = New System.Windows.Forms.Button()
+		Me.cmdCalc = New System.Windows.Forms.Button()
+		Me.prgRefresh = New System.Windows.Forms.ProgressBar()
+		Me.cmdRefresh = New System.Windows.Forms.Button()
+		Me.txtTot = New System.Windows.Forms.TextBox()
+		Me.lblTot = New System.Windows.Forms.Label()
+		Me.cbarBasket = New TD.SandBar.ContainerBar()
+		Me.pnlBasket = New TD.SandBar.ContainerBarClientPanel()
+		Me.grdBasket = New SourceGrid2.Grid()
+		Me.btLocalBasket = New TD.SandBar.ButtonItem()
+		Me.btRemoteBasket = New TD.SandBar.ButtonItem()
+		Me.btSaveBasket = New TD.SandBar.ButtonItem()
+		Me.btLoadBasket = New TD.SandBar.ButtonItem()
 		Me.cmnuSeller = New System.Windows.Forms.ContextMenuStrip(Me.components)
-		Me.mnuAddSeller = New System.Windows.Forms.ToolStripMenuItem
-		Me.mnuRemoveSeller = New System.Windows.Forms.ToolStripMenuItem
-		Me.dlgSave = New System.Windows.Forms.SaveFileDialog
-		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
+		Me.mnuAddSeller = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuRemoveSeller = New System.Windows.Forms.ToolStripMenuItem()
+		Me.dlgSave = New System.Windows.Forms.SaveFileDialog()
+		Me.dlgOpen = New System.Windows.Forms.OpenFileDialog()
+		Me.lblTransactions = New System.Windows.Forms.Label()
 		Me.splitH.Panel1.SuspendLayout
 		Me.splitH.Panel2.SuspendLayout
 		Me.splitH.SuspendLayout
@@ -73,18 +77,19 @@ Partial Class frmBuyCards
 		Me.splitV1.Panel1.SuspendLayout
 		Me.splitV1.Panel2.SuspendLayout
 		Me.splitV1.SuspendLayout
+		CType(Me.sldTransactions,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.splitV2.Panel1.SuspendLayout
 		Me.splitV2.Panel2.SuspendLayout
 		Me.splitV2.SuspendLayout
 		Me.cbarBasket.SuspendLayout
 		Me.pnlBasket.SuspendLayout
-		Me.grdBasket.SuspendLayout
 		Me.cmnuSeller.SuspendLayout
 		Me.SuspendLayout
 		'
 		'splitH
 		'
 		Me.splitH.Dock = System.Windows.Forms.DockStyle.Fill
+		Me.splitH.IsSplitterFixed = true
 		Me.splitH.Location = New System.Drawing.Point(0, 0)
 		Me.splitH.Name = "splitH"
 		Me.splitH.Orientation = System.Windows.Forms.Orientation.Horizontal
@@ -132,9 +137,14 @@ Partial Class frmBuyCards
 		'
 		'splitV1.Panel1
 		'
-		Me.splitV1.Panel1.Controls.Add(Me.optSeller)
-		Me.splitV1.Panel1.Controls.Add(Me.optQuality)
-		Me.splitV1.Panel1.Controls.Add(Me.optPrice)
+		Me.splitV1.Panel1.Controls.Add(Me.lblTransactions)
+		Me.splitV1.Panel1.Controls.Add(Me.chkSeller)
+		Me.splitV1.Panel1.Controls.Add(Me.chkGood)
+		Me.splitV1.Panel1.Controls.Add(Me.chkExcellent)
+		Me.splitV1.Panel1.Controls.Add(Me.chkNearMint)
+		Me.splitV1.Panel1.Controls.Add(Me.chkMint)
+		Me.splitV1.Panel1.Controls.Add(Me.chkTransactions)
+		Me.splitV1.Panel1.Controls.Add(Me.sldTransactions)
 		Me.splitV1.Panel1.Controls.Add(Me.lblInfo)
 		'
 		'splitV1.Panel2
@@ -144,54 +154,90 @@ Partial Class frmBuyCards
 		Me.splitV1.SplitterDistance = 235
 		Me.splitV1.TabIndex = 0
 		'
-		'optSeller
+		'chkSeller
 		'
-		Me.optSeller.AutoSize = true
-		Me.optSeller.BackColor = System.Drawing.Color.Transparent
-		Me.optSeller.Location = New System.Drawing.Point(10, 87)
-		Me.optSeller.Name = "optSeller"
-		Me.optSeller.Size = New System.Drawing.Size(111, 17)
-		Me.optSeller.TabIndex = 7
-		Me.optSeller.TabStop = true
-		Me.optSeller.Text = "Vendeurs préférés"
-		Me.optSeller.UseVisualStyleBackColor = false
-		AddHandler Me.optSeller.CheckedChanged, AddressOf Me.OptGestionCheckedChanged
+		Me.chkSeller.AutoSize = true
+		Me.chkSeller.Location = New System.Drawing.Point(10, 88)
+		Me.chkSeller.Name = "chkSeller"
+		Me.chkSeller.Size = New System.Drawing.Size(208, 17)
+		Me.chkSeller.TabIndex = 14
+		Me.chkSeller.Text = "Exclure les vendeurs listés"
+		Me.chkSeller.UseVisualStyleBackColor = True
+		AddHandler Me.chkSeller.CheckedChanged, AddressOf Me.ChkSellerCheckedChanged
 		'
-		'optQuality
+		'chkGood
 		'
-		Me.optQuality.AutoSize = true
-		Me.optQuality.BackColor = System.Drawing.Color.Transparent
-		Me.optQuality.Location = New System.Drawing.Point(10, 64)
-		Me.optQuality.Name = "optQuality"
-		Me.optQuality.Size = New System.Drawing.Size(97, 17)
-		Me.optQuality.TabIndex = 6
-		Me.optQuality.Text = "Etat de la carte"
-		Me.optQuality.UseVisualStyleBackColor = false
-		AddHandler Me.optQuality.CheckedChanged, AddressOf Me.OptGestionCheckedChanged
+		Me.chkGood.AutoSize = true
+		Me.chkGood.Location = New System.Drawing.Point(164, 60)
+		Me.chkGood.Name = "chkGood"
+		Me.chkGood.Size = New System.Drawing.Size(52, 17)
+		Me.chkGood.TabIndex = 13
+		Me.chkGood.Text = "Good"
+		Me.chkGood.UseVisualStyleBackColor = true
 		'
-		'optPrice
+		'chkExcellent
 		'
-		Me.optPrice.AutoSize = true
-		Me.optPrice.BackColor = System.Drawing.Color.Transparent
-		Me.optPrice.Checked = true
-		Me.optPrice.Location = New System.Drawing.Point(10, 41)
-		Me.optPrice.Name = "optPrice"
-		Me.optPrice.Size = New System.Drawing.Size(42, 17)
-		Me.optPrice.TabIndex = 5
-		Me.optPrice.TabStop = true
-		Me.optPrice.Text = "Prix"
-		Me.optPrice.UseVisualStyleBackColor = false
-		AddHandler Me.optPrice.CheckedChanged, AddressOf Me.OptGestionCheckedChanged
+		Me.chkExcellent.AutoSize = true
+		Me.chkExcellent.Location = New System.Drawing.Point(111, 60)
+		Me.chkExcellent.Name = "chkExcellent"
+		Me.chkExcellent.Size = New System.Drawing.Size(47, 17)
+		Me.chkExcellent.TabIndex = 12
+		Me.chkExcellent.Text = "Exc."
+		Me.chkExcellent.UseVisualStyleBackColor = true
+		'
+		'chkNearMint
+		'
+		Me.chkNearMint.AutoSize = true
+		Me.chkNearMint.Checked = true
+		Me.chkNearMint.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkNearMint.Location = New System.Drawing.Point(62, 60)
+		Me.chkNearMint.Name = "chkNearMint"
+		Me.chkNearMint.Size = New System.Drawing.Size(43, 17)
+		Me.chkNearMint.TabIndex = 11
+		Me.chkNearMint.Text = "NM"
+		Me.chkNearMint.UseVisualStyleBackColor = true
+		'
+		'chkMint
+		'
+		Me.chkMint.AutoSize = true
+		Me.chkMint.Checked = true
+		Me.chkMint.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkMint.Location = New System.Drawing.Point(10, 60)
+		Me.chkMint.Name = "chkMint"
+		Me.chkMint.Size = New System.Drawing.Size(46, 17)
+		Me.chkMint.TabIndex = 10
+		Me.chkMint.Text = "Mint"
+		Me.chkMint.UseVisualStyleBackColor = true
+		'
+		'chkTransactions
+		'
+		Me.chkTransactions.AutoSize = true
+		Me.chkTransactions.Checked = true
+		Me.chkTransactions.CheckState = System.Windows.Forms.CheckState.Checked
+		Me.chkTransactions.Location = New System.Drawing.Point(10, 32)
+		Me.chkTransactions.Name = "chkTransactions"
+		Me.chkTransactions.Size = New System.Drawing.Size(15, 14)
+		Me.chkTransactions.TabIndex = 9
+		Me.chkTransactions.UseVisualStyleBackColor = true
+		'
+		'sldTransactions
+		'
+		Me.sldTransactions.Location = New System.Drawing.Point(125, 30)
+		Me.sldTransactions.Minimum = 1
+		Me.sldTransactions.Name = "sldTransactions"
+		Me.sldTransactions.Size = New System.Drawing.Size(97, 45)
+		Me.sldTransactions.TabIndex = 8
+		Me.sldTransactions.Value = 3
 		'
 		'lblInfo
 		'
+		Me.lblInfo.AutoSize = true
 		Me.lblInfo.BackColor = System.Drawing.Color.Transparent
 		Me.lblInfo.Location = New System.Drawing.Point(9, 7)
 		Me.lblInfo.Name = "lblInfo"
-		Me.lblInfo.Size = New System.Drawing.Size(225, 34)
+		Me.lblInfo.Size = New System.Drawing.Size(188, 13)
 		Me.lblInfo.TabIndex = 4
-		Me.lblInfo.Text = "Minimiser le nombre de transactions Magic-Ville en privilégiant le critère suivan"& _ 
-		"t :"
+		Me.lblInfo.Text = "Optimiser les achats selon les critères :"
 		'
 		'splitV2
 		'
@@ -206,7 +252,7 @@ Partial Class frmBuyCards
 		'
 		'splitV2.Panel2
 		'
-		Me.splitV2.Panel2.Controls.Add(Me.cmdCancelMV)
+		Me.splitV2.Panel2.Controls.Add(Me.cmdCancel)
 		Me.splitV2.Panel2.Controls.Add(Me.cmdCalc)
 		Me.splitV2.Panel2.Controls.Add(Me.prgRefresh)
 		Me.splitV2.Panel2.Controls.Add(Me.cmdRefresh)
@@ -224,7 +270,7 @@ Partial Class frmBuyCards
 		Me.lblSeller.Name = "lblSeller"
 		Me.lblSeller.Size = New System.Drawing.Size(187, 29)
 		Me.lblSeller.TabIndex = 1
-		Me.lblSeller.Text = "Liste des vendeurs préférés :"
+		Me.lblSeller.Text = "Liste des vendeurs exclus :"
 		Me.lblSeller.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
 		'
 		'lstSeller
@@ -237,19 +283,20 @@ Partial Class frmBuyCards
 		Me.lstSeller.TabIndex = 0
 		AddHandler Me.lstSeller.MouseUp, AddressOf Me.LstSellerMouseUp
 		'
-		'cmdCancelMV
+		'cmdCancel
 		'
-		Me.cmdCancelMV.Location = New System.Drawing.Point(8, 26)
-		Me.cmdCancelMV.Name = "cmdCancelMV"
-		Me.cmdCancelMV.Size = New System.Drawing.Size(141, 23)
-		Me.cmdCancelMV.TabIndex = 3
-		Me.cmdCancelMV.Text = "Annuler"
-		Me.cmdCancelMV.UseVisualStyleBackColor = true
-		Me.cmdCancelMV.Visible = false
-		AddHandler Me.cmdCancelMV.Click, AddressOf Me.CmdCancelMVClick
+		Me.cmdCancel.Location = New System.Drawing.Point(8, 26)
+		Me.cmdCancel.Name = "cmdCancel"
+		Me.cmdCancel.Size = New System.Drawing.Size(141, 23)
+		Me.cmdCancel.TabIndex = 3
+		Me.cmdCancel.Text = "Annuler"
+		Me.cmdCancel.UseVisualStyleBackColor = true
+		Me.cmdCancel.Visible = false
+		AddHandler Me.cmdCancel.Click, AddressOf Me.CmdCancelClick
 		'
 		'cmdCalc
 		'
+		Me.cmdCalc.Enabled = false
 		Me.cmdCalc.Location = New System.Drawing.Point(8, 51)
 		Me.cmdCalc.Name = "cmdCalc"
 		Me.cmdCalc.Size = New System.Drawing.Size(141, 23)
@@ -303,7 +350,7 @@ Partial Class frmBuyCards
 		Me.cbarBasket.DrawActionsButton = false
 		Me.cbarBasket.Flow = TD.SandBar.ToolBarLayout.Horizontal
 		Me.cbarBasket.Guid = New System.Guid("0201851e-8b6d-4b50-81e7-8ea9ba9ea4d9")
-		Me.cbarBasket.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btLocalBasket, Me.btMVBasket, Me.btSaveBasket, Me.btLoadBasket})
+		Me.cbarBasket.Items.AddRange(New TD.SandBar.ToolbarItemBase() {Me.btLocalBasket, Me.btRemoteBasket, Me.btSaveBasket, Me.btLoadBasket})
 		Me.cbarBasket.Location = New System.Drawing.Point(0, 0)
 		Me.cbarBasket.Movable = false
 		Me.cbarBasket.Name = "cbarBasket"
@@ -327,7 +374,6 @@ Partial Class frmBuyCards
 		Me.grdBasket.AutoStretchRowsToFitHeight = false
 		Me.grdBasket.BackColor = System.Drawing.Color.Transparent
 		Me.grdBasket.ContextMenuStyle = SourceGrid2.ContextMenuStyle.None
-		Me.grdBasket.Controls.Add(Me.wbMV)
 		Me.grdBasket.CustomSort = false
 		Me.grdBasket.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grdBasket.GridToolTipActive = true
@@ -346,30 +392,17 @@ Partial Class frmBuyCards
 						Or SourceGrid2.GridSpecialKeys.Shift),SourceGrid2.GridSpecialKeys)
 		Me.grdBasket.TabIndex = 0
 		'
-		'wbMV
-		'
-		Me.wbMV.AllowWebBrowserDrop = false
-		Me.wbMV.IsWebBrowserContextMenuEnabled = false
-		Me.wbMV.Location = New System.Drawing.Point(10, 35)
-		Me.wbMV.MinimumSize = New System.Drawing.Size(20, 20)
-		Me.wbMV.Name = "wbMV"
-		Me.wbMV.ScriptErrorsSuppressed = true
-		Me.wbMV.Size = New System.Drawing.Size(564, 115)
-		Me.wbMV.TabIndex = 5
-		Me.wbMV.Visible = false
-		AddHandler Me.wbMV.DocumentCompleted, AddressOf Me.WbMVDocumentCompleted
-		'
 		'btLocalBasket
 		'
 		Me.btLocalBasket.Icon = CType(resources.GetObject("btLocalBasket.Icon"),System.Drawing.Icon)
 		Me.btLocalBasket.Text = "Cartes à acheter"
 		AddHandler Me.btLocalBasket.Activate, AddressOf Me.BtLocalBasketActivate
 		'
-		'btMVBasket
+		'btRemoteBasket
 		'
-		Me.btMVBasket.Icon = CType(resources.GetObject("btMVBasket.Icon"),System.Drawing.Icon)
-		Me.btMVBasket.Text = "Résultat de la recherche"
-		AddHandler Me.btMVBasket.Activate, AddressOf Me.BtMVBasketActivate
+		Me.btRemoteBasket.Icon = CType(resources.GetObject("btRemoteBasket.Icon"),System.Drawing.Icon)
+		Me.btRemoteBasket.Text = "Résultat de la recherche"
+		AddHandler Me.btRemoteBasket.Activate, AddressOf Me.BtRemoteBasketActivate
 		'
 		'btSaveBasket
 		'
@@ -405,26 +438,37 @@ Partial Class frmBuyCards
 		'
 		'dlgSave
 		'
-		Me.dlgSave.DefaultExt = "mvb"
-		Me.dlgSave.Filter = "Magic-Ville Baskets (*.mvb) | *.mvb"
-		Me.dlgSave.Title = "Enregistrement du panier Magic-Ville"
+		Me.dlgSave.DefaultExt = "mcb"
+		Me.dlgSave.Filter = "Magic Cards Baskets (*.mcb) | *.mcb"
+		Me.dlgSave.Title = "Enregistrement du panier"
 		'
 		'dlgOpen
 		'
-		Me.dlgOpen.DefaultExt = "mvb"
-		Me.dlgOpen.Filter = "Magic-Ville Baskets (*.mvb) | *.mvb"
-		Me.dlgOpen.Title = "Chargement du panier Magic-Ville"
+		Me.dlgOpen.DefaultExt = "mcb"
+		Me.dlgOpen.Filter = "Magic Cards Baskets (*.mcb) | *.mcb"
+		Me.dlgOpen.Title = "Chargement du panier"
 		'
-		'frmBuyMV
+		'lblTransactions
+		'
+		Me.lblTransactions.AutoSize = true
+		Me.lblTransactions.BackColor = System.Drawing.Color.Transparent
+		Me.lblTransactions.Location = New System.Drawing.Point(26, 32)
+		Me.lblTransactions.Name = "lblTransactions"
+		Me.lblTransactions.Size = New System.Drawing.Size(90, 13)
+		Me.lblTransactions.TabIndex = 15
+		Me.lblTransactions.Text = "Max. transactions"
+		'
+		'frmBuyCards
 		'
 		Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
 		Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
 		Me.ClientSize = New System.Drawing.Size(588, 355)
 		Me.Controls.Add(Me.splitH)
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
-		Me.Name = "frmBuyMV"
-		Me.Text = "Achats de cartes à des Magic-Villois"
-		AddHandler Load, AddressOf Me.FrmBuyMVLoad
+		Me.Name = "frmBuyCards"
+		Me.Text = "Achats de cartes sur Internet"
+		AddHandler Load, AddressOf Me.FrmBuyCardsLoad
+		AddHandler Resize, AddressOf Me.FrmBuyCardsResize
 		Me.splitH.Panel1.ResumeLayout(false)
 		Me.splitH.Panel2.ResumeLayout(false)
 		Me.splitH.ResumeLayout(false)
@@ -434,17 +478,25 @@ Partial Class frmBuyCards
 		Me.splitV1.Panel1.PerformLayout
 		Me.splitV1.Panel2.ResumeLayout(false)
 		Me.splitV1.ResumeLayout(false)
+		CType(Me.sldTransactions,System.ComponentModel.ISupportInitialize).EndInit
 		Me.splitV2.Panel1.ResumeLayout(false)
 		Me.splitV2.Panel2.ResumeLayout(false)
 		Me.splitV2.Panel2.PerformLayout
 		Me.splitV2.ResumeLayout(false)
 		Me.cbarBasket.ResumeLayout(false)
 		Me.pnlBasket.ResumeLayout(false)
-		Me.grdBasket.ResumeLayout(false)
 		Me.cmnuSeller.ResumeLayout(false)
 		Me.ResumeLayout(false)
 	End Sub
-	Private cmdCancelMV As System.Windows.Forms.Button
+	Private lblTransactions As System.Windows.Forms.Label
+	Private chkNearMint As System.Windows.Forms.CheckBox
+	Private chkExcellent As System.Windows.Forms.CheckBox
+	Private chkGood As System.Windows.Forms.CheckBox
+	Private chkSeller As System.Windows.Forms.CheckBox
+	Private sldTransactions As System.Windows.Forms.TrackBar
+	Private chkTransactions As System.Windows.Forms.CheckBox
+	Private chkMint As System.Windows.Forms.CheckBox
+	Private cmdCancel As System.Windows.Forms.Button
 	Private dlgOpen As System.Windows.Forms.OpenFileDialog
 	Private dlgSave As System.Windows.Forms.SaveFileDialog
 	Private btLoadBasket As TD.SandBar.ButtonItem
@@ -453,8 +505,7 @@ Partial Class frmBuyCards
 	Private mnuAddSeller As System.Windows.Forms.ToolStripMenuItem
 	Private cmnuSeller As System.Windows.Forms.ContextMenuStrip
 	Private cmdCalc As System.Windows.Forms.Button
-	Private wbMV As System.Windows.Forms.WebBrowser
-	Private btMVBasket As TD.SandBar.ButtonItem
+	Private btRemoteBasket As TD.SandBar.ButtonItem
 	Private btLocalBasket As TD.SandBar.ButtonItem
 	Private prgRefresh As System.Windows.Forms.ProgressBar
 	Private txtTot As System.Windows.Forms.TextBox
@@ -464,9 +515,6 @@ Partial Class frmBuyCards
 	Private lblSeller As System.Windows.Forms.Label
 	Private splitV2 As System.Windows.Forms.SplitContainer
 	Private lblInfo As System.Windows.Forms.Label
-	Private optPrice As System.Windows.Forms.RadioButton
-	Private optQuality As System.Windows.Forms.RadioButton
-	Private optSeller As System.Windows.Forms.RadioButton
 	Private splitV1 As System.Windows.Forms.SplitContainer
 	Private cbarGestion As TD.SandBar.ContainerBar
 	Private pnlGestion As TD.SandBar.ContainerBarClientPanel

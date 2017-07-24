@@ -41,8 +41,8 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 35098
-	Public Const CGNClasses As Integer   			= 75
+	Public Const CgCodeLines As Integer   			= 35925
+	Public Const CGNClasses As Integer   			= 84
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
 	Public Const CgLastUpdateTxtVF As String		= "20/10/2016"
@@ -64,6 +64,7 @@ Public Module clsModule
 	Public Const CgMaxGraphs As Integer				= 128
 	Public Const CgMaxVignettes As Integer			= 120
 	Public Const CgMaxEditionsMarket As Integer		= 4
+	Public Const CgWorstShippingCost As Single		= 10
 	Public Const CgMissingTable As Long				= -2147217865
 	Public Const CgImgMinLength As Long				= 296297676
 	Public Const CgTimeOut As Integer				= 5
@@ -199,7 +200,6 @@ Public Module clsModule
 	Public Const CgSFromSearch As String			= "MySearch"
 	Public Const CgCard As String		  			= "(carte)"
 	Public Const CgPerfsEfficiency As String 		= "Calcul du facteur d'efficacité" + vbCrLf + "----------------------------------" + vbCrLf + "NB. Ce calcul n'a de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix)." + vbCrLf + "~1, le jeu est à la hauteur de son prix (jeu normal)" + vbCrLf + "<1, le jeu gagne plus de parties qu'il n'en devrait compte tenu de son prix (jeu efficient)" + vbCrLf + ">1, le jeu gagne moins de parties qu'il n'en devrait compte tenu de son prix (jeu soit mauvais / soit ""bulldozer"")" + vbCrLf + "(un résultat négatif signifie qu'il manque des informations pour le calcul : prix du jeu, résultats de parties...)" + vbCrLf + vbCrLf
-	Public Const CgTransactionsMV As String			= "Transaction(s) à effectuer :"
 	Public Const CgPerfsVersion As String 			= "nouv."
 	Public Const CgPerfsTotal As String   			= "TOTAL "
 	Public Const CgPerfsTotalV As String  			= "toutes"
@@ -1196,26 +1196,6 @@ Public Module clsModule
 			Return ""
 		End If
 	End Function
-	Public Function MyClone(VpA As List(Of clsLocalCard)) As List(Of clsLocalCard)
-	'-------------------------------------------
-	'Duplication de la liste des cartes désirées
-	'-------------------------------------------
-	Dim VpB As New List(Of clsLocalCard)
-		For Each VpLocalCard As clsLocalCard In VpA
-			VpB.Add(New clsLocalCard(VpLocalCard.Name, VpLocalCard.Quantite))
-		Next VpLocalCard
-		Return VpB
-	End Function
-	Public Function MyClone2(VpA As List(Of clsMVCard)) As List(Of clsMVCard)
-	'-------------------------------------------
-	'Duplication de la liste des cartes désirées
-	'-------------------------------------------
-	Dim VpB As New List(Of clsMVCard)
-		For Each VpMVCard As clsMVCard In VpA
-			VpB.Add(New clsMVCard(VpMVCard.Name, VpMVCard.Vendeur, VpMVCard.Edition, VpMVCard.Etat, VpMVCard.Quantite, VpMVCard.Prix))
-		Next VpMVCard
-		Return VpB
-	End Function
 	Public Function MyQuality(VpQuality As String) As eQuality
 		Select Case VpQuality
 			Case "MT"
@@ -1824,7 +1804,7 @@ Public Module clsModule
 	Dim VpEnd As Long
 	Dim VpPicturesFile As StreamReader
 	Dim VpPicturesFileB As BinaryReader
-	Dim VpTmp As String = GetFreeTempFile
+	Dim VpTmp As String = GetFreeTempFile(".jpg")
 	Dim VpTmpFile As StreamWriter
 	Dim VpTmpFileB As BinaryWriter
 	Dim VpMissingTable As Boolean = False
@@ -2051,7 +2031,7 @@ Public Module clsModule
 			Return 0
 		End Try
 	End Function
-	Public Function GetFreeTempFile As String
+	Public Function GetFreeTempFile(VpExt As String) As String
 	'--------------------------------------------------
 	'Retourne un nom de fichier temporaire image valide
 	'--------------------------------------------------
@@ -2059,11 +2039,11 @@ Public Module clsModule
 			If .FreeTempFileIndex = -1 Then
 				Do
 					.FreeTempFileIndex += 1
-				Loop While File.Exists(Path.GetTempPath + "\mtgm~" + .FreeTempFileIndex.ToString + ".jpg")
+				Loop While File.Exists(Path.GetTempPath + "\mtgm~" + .FreeTempFileIndex.ToString + VpExt)
 			Else
 				.FreeTempFileIndex += 1
 			End If
-			Return Path.GetTempPath + "\mtgm~" + .FreeTempFileIndex.ToString + ".jpg"
+			Return Path.GetTempPath + "\mtgm~" + .FreeTempFileIndex.ToString + VpExt
 		End With
 	End Function
 	Public Sub DeleteTempFiles(Optional VpSilent As Boolean = False)
@@ -2073,6 +2053,16 @@ Public Module clsModule
 		'Images
 		Try
 			For Each VpFile As FileInfo In (New DirectoryInfo(Path.GetTempPath)).GetFiles("mtgm~*.jpg")
+				Call SecureDelete(VpFile.FullName)
+			Next VpFile
+		Catch
+			If Not VpSilent Then
+				Call ShowWarning("Impossible d'accéder au répertoire temporaire...")
+			End If
+		End Try
+		'Logs
+		Try
+			For Each VpFile As FileInfo In (New DirectoryInfo(Path.GetTempPath)).GetFiles("mtgm~*.txt")
 				Call SecureDelete(VpFile.FullName)
 			Next VpFile
 		Catch

@@ -90,7 +90,7 @@ Public Partial Class Options
 		Private VmPicturesFile As String = Application.StartupPath + clsModule.CgDAT
 		Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
 		Private VmPlugins As String = Application.StartupPath
-		Private VmPreferredSellers As String = ""
+		Private VmBannedSellers As String = ""
 		Private VmDefaultActivatedCriteria As String = "1#7"
 		Private VmDefaultCriteriaOrder As String = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Quantité#Carte"
 		Private VmRestoreCriteria As Boolean = True
@@ -214,13 +214,13 @@ Public Partial Class Options
 				VmNomsJeux = VpNomsJeux
 			End Set
 		End Property
-		<Browsable(False), Category("Général"), Description("Noms des vendeurs préférés (à séparer par un dièse)")> _
-		Public Property PreferredSellers As String
+		<Browsable(False), Category("Général"), Description("Noms des vendeurs bannis (à séparer par un dièse)")> _
+		Public Property BannedSellers As String
 			Get
-				Return VmPreferredSellers
+				Return VmBannedSellers
 			End Get
-			Set (VpPreferredSellers As String)
-				VmPreferredSellers = VpPreferredSellers
+			Set (VpBannedSellers As String)
+				VmBannedSellers = VpBannedSellers
 			End Set
 		End Property
 		<DisplayName("Base par défaut"), Category("Emplacements des fichiers"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _

@@ -89,6 +89,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmBuySettings.resx">
+      <DependentUpon>frmBuySettings.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmReserve.resx">
       <DependentUpon>frmReserve.vb</DependentUpon>
     </EmbeddedResource>
@@ -111,10 +114,14 @@
       <DependentUpon>frmAddCards.vb</DependentUpon>
     </Compile>
     <Compile Include="frmAddCards.vb" />
-    <Compile Include="frmBuyMV.Designer.vb">
-      <DependentUpon>frmBuyMV.vb</DependentUpon>
+    <Compile Include="frmBuyCards.Designer.vb">
+      <DependentUpon>frmBuyCards.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmBuyMV.vb" />
+    <Compile Include="frmBuyCards.vb" />
+    <Compile Include="frmBuySettings.Designer.vb">
+      <DependentUpon>frmBuySettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmBuySettings.vb" />
     <Compile Include="frmCalendar.Designer.vb">
       <DependentUpon>frmCalendar.vb</DependentUpon>
     </Compile>
@@ -218,8 +225,8 @@
     <EmbeddedResource Include="frmAddCards.resx">
       <DependentUpon>frmAddCards.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmBuyMV.resx">
-      <DependentUpon>frmBuyMV.vb</DependentUpon>
+    <EmbeddedResource Include="frmBuyCards.resx">
+      <DependentUpon>frmBuyCards.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCalendar.resx">
       <DependentUpon>frmCalendar.vb</DependentUpon>
