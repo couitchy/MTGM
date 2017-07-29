@@ -23,7 +23,9 @@
 '| - watchdog sur la connexion Magic-Ville 20/02/2010 |
 '| - gestion des requêtes MagicCardMarket  15/01/2017 |
 '| - optimisation des achats (heuristique) 23/07/2017 |
+'| - restauration des requêtes Magic-Ville 29/07/2017 |
 '------------------------------------------------------
+#Region "Importations"
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports System.IO
@@ -33,15 +35,44 @@ Imports System.Net
 Imports System.Web.Script.Serialization
 Imports System.Xml
 Imports System.Xml.Serialization
+#End Region
 Public Partial Class frmBuyCards
-	Private VmServer As clsModule.eMarketServer
-	Private VmToBuy As New List(Of clsLocalCard)
-	Private VmToSell As New List(Of clsRemoteCard)
-	Private VmEditions As List(Of String)
-	Private VmSplitterDistance As Integer
+	#Region "Déclarations"	
+	Private VmServer As clsModule.eMarketServer			'Market place choisie par l'utilisateur pour effectuer ses transactions
+	Private VmToBuy As New List(Of clsLocalCard)		'Collection des cartes souhaitées à l'achat
+	Private VmToSell As New List(Of clsRemoteCard)		'Collection des cartes disponibles à la vente
+	Private VmEditions As List(Of String)				'Liste des éditions disponibles pour une même carte dans le cas où il y en a trop et qu'il faut potentiellement restreindre le volume de recherches
+	Private VmSplitterDistance As Integer				'Position du séparateur
+	Private VmBrowser As New WebBrowser					'Navigateur web
+	Private VmIsComplete As Boolean = False				'Page complètement affichée dans le navigateur
+	#End Region
+	#Region "Méthodes"
 	Public Sub New(VpServer As clsModule.eMarketServer)
 		Me.InitializeComponent()
+		'Market place
 		VmServer = VpServer
+		'Initialisation du navigateur
+		VmBrowser.AllowWebBrowserDrop = false
+		VmBrowser.IsWebBrowserContextMenuEnabled = false
+		VmBrowser.ScriptErrorsSuppressed = true
+		AddHandler VmBrowser.DocumentCompleted, AddressOf Me.BrowserDocumentCompleted
+	End Sub
+	Private Sub BrowseAndWait(Optional VpURL As String = "")
+	'---------------------------------------------------------------------------
+	'Navigue sur la page passée en paramètre en respectant le délai d'expiration
+	'---------------------------------------------------------------------------
+	Dim VpStart As Date = Now
+		VmIsComplete = False
+		If VpURL <> "" Then
+			VmBrowser.Navigate(VpURL)
+		End If
+		While Not VmIsComplete
+			If Now.Subtract(VpStart).TotalSeconds > clsModule.CgTimeOut Then
+				VmBrowser.Stop
+				VmIsComplete = True
+			End If
+			Application.DoEvents
+		End While
 	End Sub
 	Public Sub AddToBasket(VpName As String)
 	'------------------------------------------------------------------
@@ -86,11 +117,11 @@ Public Partial Class frmBuyCards
 	Dim VpBannedSellers() As String = VgOptions.VgSettings.BannedSellers.ToLower.Split("#")
 		If VpBannedSellers IsNot Nothing AndAlso VpBannedSellers.Length > 0 Then
 			'Récupération des éléments à supprimer
-			For Each VpProposition As clsRemoteCard In VmToSell
-				If Array.IndexOf(VpBannedSellers, VpProposition.Vendeur.Name.ToLower) >= 0 Then
-					VpToRemove.Add(VpProposition)
+			For Each VpRemoteCard As clsRemoteCard In VmToSell
+				If Array.IndexOf(VpBannedSellers, VpRemoteCard.Vendeur.Name.ToLower) >= 0 Then
+					VpToRemove.Add(VpRemoteCard)
 				End If
-			Next VpProposition
+			Next VpRemoteCard
 			'Suppression effective
 			For Each VpDelete As clsRemoteCard In VpToRemove
 				VmToSell.Remove(VpDelete)
@@ -101,12 +132,88 @@ Public Partial Class frmBuyCards
 	'--------------------------------------------------------------------------------------------------------------
 	'Se connecte sur Magic-Ville pour récupérer les informations de ventes relatives à la carte passée en paramètre
 	'--------------------------------------------------------------------------------------------------------------
-		'TODO à restaurer depuis l'ancienne version
+	Dim VpElement As HtmlElement
+	Dim VpLastId As Integer = 0
+	Dim VpCurId As Integer
+	Dim VpRemoteCard As clsRemoteCard = Nothing
+	Dim VpToRemove As New List(Of clsRemoteCard)
+		'Connexion au site de Magic-Ville
+		Call Me.BrowseAndWait(clsModule.CgURL26)
+		'Saisie de la carte dans la zone de recherche
+		VpElement = VmBrowser.Document.All.GetElementsByName("recherche_titre").Item(0)
+		VpElement.SetAttribute("value", VpCard)
+		For Each VpElement In VmBrowser.Document.All
+			If VpElement.GetAttribute("src").ToLower.Contains("/go.png") Then
+				'Validation
+				VpElement.InvokeMember("click")
+				Call Me.BrowseAndWait
+				Exit For
+			End If
+		Next VpElement
+		'Page intermédiaire (ne s'affiche qu'en cas d'ambiguité)
+		For Each VpElement In VmBrowser.Document.All
+			If VpElement.GetAttribute("href") <> "" AndAlso Not VpElement.InnerText Is Nothing Then
+				If VpElement.InnerText.ToLower.Trim = VpCard.ToLower Then
+					'Validation
+					VpElement.InvokeMember("click")
+					Call Me.BrowseAndWait
+					Exit For
+				End If
+			End If
+		Next VpElement
+		'Page des achats
+		For Each VpElement In VmBrowser.Document.All
+			If VpElement.InnerText = "Achetez cette carte à un magicvillois" Then
+				'Validation
+				VpElement.InvokeMember("click")
+				Call Me.BrowseAndWait
+				Exit For
+			End If
+		Next VpElement
+		'Parsing des propriétés
+		For Each VpElement In VmBrowser.Document.All
+			If VpElement.Name.Contains("[") Then
+				VpCurId = Val(VpElement.Name.Substring(VpElement.Name.IndexOf("[") + 1))
+				'Si l'identifiant a changé, c'est qu'on est sur une nouvelle entrée
+				If VpCurId <> VpLastId Then
+					VpRemoteCard = New clsRemoteCard(VpCard)
+					VmToSell.Add(VpRemoteCard)
+					VpLastId = VpCurId
+				End If
+				'Remplissage des propriétés au fur et à mesure
+				With VpRemoteCard
+					If VpElement.Name.Contains("qte") Then
+						.Quantity = CInt(VpElement.InnerText.Substring(VpElement.InnerText.Length - 1))
+					ElseIf VpElement.Name.Contains("ref") Then
+						.Edition = VpElement.GetAttribute("value")
+					ElseIf VpElement.Name.Contains("lang") Then
+						.Language = clsModule.MyLanguage(VpElement.GetAttribute("value"))
+					ElseIf VpElement.Name.Contains("etat") Then
+						.Etat = VpElement.GetAttribute("value")
+					ElseIf VpElement.Name.Contains("seller") Then
+						.Vendeur = New clsSeller(VpElement.GetAttribute("value"))
+					End If
+				End With
+			ElseIf VpElement.GetAttribute("color") = "#3333ff" Then
+				VpRemoteCard.Prix = clsModule.MyVal(VpElement.InnerText)
+			End If
+		Next VpElement
+		'Supprime de la collection tout ce qui ne respecte pas les critères actifs
+		For Each VpRemoteCard In VmToSell
+			With VpRemoteCard
+				If Not ( Array.IndexOf(clsModule.CgBuyLanguage, .Language.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, .Etat) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .Vendeur.Name.ToLower) < 0) ) Then
+					VpToRemove.Add(VpRemoteCard)
+				End If
+			End With
+		Next VpRemoteCard
+		For Each VpDelete As clsRemoteCard In VpToRemove
+			VmToSell.Remove(VpDelete)
+		Next VpDelete
 	End Sub
 	Private Sub MKMFetch(VpCard As String, VpQualities() As clsModule.eQuality, VpBannedSellers() As String)
-	'--------------------------------------------------------------------------------------------------------------------
-	'Se connecte sur Magic Card Market pour récupérer les informations de ventes relatives à la carte passée en paramètre
-	'--------------------------------------------------------------------------------------------------------------------
+	'------------------------------------------------------------------------------------------------------------------
+	'Se connecte sur MagicCardMarket pour récupérer les informations de ventes relatives à la carte passée en paramètre
+	'------------------------------------------------------------------------------------------------------------------
 	Dim VpProducts As clsProductRequest = Nothing
 	Dim VpArticles As clsArticleRequest = Nothing
 	Dim VpFilterEditions As frmBuySettings
@@ -125,7 +232,7 @@ Public Partial Class frmBuyCards
 				'Ajout à la collection si respect des critères actifs
 				For Each VpArticle As clsArticleRequest.clsArticle In VpArticles.article
 					With VpArticle
-						If Array.IndexOf(clsModule.CgBuyLanguage, .language.languageName) >= 0 AndAlso Array.IndexOf(VpQualities, clsModule.MyQuality(.condition)) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .seller.username.ToLower) < 0) Then
+						If Array.IndexOf(clsModule.CgBuyLanguage, .language.languageName.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, clsModule.MyQuality(.condition)) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .seller.username.ToLower) < 0) Then
 							VmToSell.Add(New clsRemoteCard(VpCard, New clsSeller(.seller.username), VpProduct.expansion, .language.languageName, clsModule.MyQuality(.condition), .count, 0, .price))
 						End If
 					End With
@@ -446,6 +553,8 @@ Public Partial Class frmBuyCards
 			Me.cmdCalc.Enabled = True
 		End If
 	End Sub
+	#End Region
+	#Region "Evènements"
 	Private Sub CellValidated(sender As Object, e As CellEventArgs)
 	Dim VpQ As Short
 		With clsModule.VgSessionSettings
@@ -473,10 +582,12 @@ Public Partial Class frmBuyCards
 	Sub CmdRefreshClick(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpQualities As New List(Of clsModule.eQuality)
 	Dim VpBannedSellers() As String = Nothing
+		'Information utilisateur
 		If VmToBuy.Count = 0 Then
 			Call clsModule.ShowInformation("Choisissez des cartes à acheter via clic droit dans l'explorateur !")
 			Exit Sub
 		End If
+		'Blocage d'actions indésirables
 		Me.cmdRefresh.Visible = False
 		Me.cmdCancel.Tag = False
 		Me.cmdCancel.Visible = True
@@ -496,11 +607,10 @@ Public Partial Class frmBuyCards
 		Try
 			'Récupère les informations pour chaque carte
 			For Each VpCard As clsLocalCard In VmToBuy
+				Application.DoEvents
 				'Vérifie qu'on n'a pas demandé à annuler la recherche
 				If Me.cmdCancel.Tag = True Then
 					Exit For
-				Else
-					Application.DoEvents
 				End If
 				'Choix de la market place
 				Select Case VmServer
@@ -512,6 +622,7 @@ Public Partial Class frmBuyCards
 				End Select
 				Me.prgRefresh.Increment(1)
 			Next VpCard
+			'Finalisation et affichage des résultats dans la grid
 			Me.prgRefresh.Value = 0
 			Application.DoEvents
 			Call Me.ClearSellList
@@ -519,6 +630,7 @@ Public Partial Class frmBuyCards
 		Catch
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
 		End Try
+		'Restauration des actions bloquées
 		Me.cmdRefresh.Visible = True
 		Me.cmdCancel.Visible = False
 		Me.cmdCalc.Enabled = True
@@ -613,11 +725,17 @@ Public Partial Class frmBuyCards
 		Me.cmdCancel.Visible = False
 		Me.cmdRefresh.Visible = True
 	End Sub
+	Sub BrowserDocumentCompleted(ByVal sender As Object, ByVal e As WebBrowserDocumentCompletedEventArgs)
+		VmIsComplete = True
+	End Sub
+	#End Region
+	#Region "Propriétés"
 	Public WriteOnly Property Editions As List(Of String)
 		Set (VpEditions As List(Of String))
 			VmEditions = VpEditions
 		End Set
 	End Property
+	#End Region
 End Class
 Public Class clsCapsuleCards
 	Private VmToBuy As List(Of clsLocalCard)
@@ -804,15 +922,11 @@ Public Class clsRemoteCard
 		VmBought = VpBought
 		VmPrix = VpPrix
 	End Sub
+	Public Sub New(VpName As String)
+		Me.New(VpName, New clsSeller, "", "", clsModule.eQuality.Mint, 0, 0, 0)
+	End Sub
 	Public Sub New
-		VmName = ""
-		VmVendeur = New clsSeller
-		VmEdition = ""
-		VmLanguage = ""
-		VmEtat = clsModule.eQuality.Mint
-		VmQuant = 0
-		VmBought = 0
-		VmPrix = 0
+		Me.New("", New clsSeller, "", "", clsModule.eQuality.Mint, 0, 0, 0)
 	End Sub
 	Public Shared Function GetClone(VpA As List(Of clsRemoteCard)) As List(Of clsRemoteCard)
 	'-------------------------------------------

@@ -208,7 +208,7 @@ Public Module clsModule
 	Public Const CgAlternateStart2 As String		= "Name:"
 	Public Const CgFoil As String					= "PREMIUMFOILVO"
 	Public Const CgFoil2 As String					= " (Foil)"
-	Public CgBuyLanguage() As String				= {"French", "English"}
+	Public CgBuyLanguage() As String				= {"french", "english"}
 	Public CgBalises() As String 					= {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}
 	Public CgManaParsing() As String 				= {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
 	Public CgCriterionsFields() As String 			= {"Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Items", "Card.Title"}
@@ -1214,6 +1214,16 @@ Public Module clsModule
 				Return eQuality.Poor
 			Case Else
 				Return eQuality.Good
+		End Select
+	End Function
+	Public Function MyLanguage(VpLanguage As String) As String
+		Select Case VpLanguage.ToLower
+			Case "fra"
+				Return "French"
+			Case "eng"
+				Return "English"
+			Case Else
+				Return VpLanguage
 		End Select
 	End Function
 	Public Function StrCount(VpStr As String, VpChar As String) As Integer
