@@ -120,7 +120,7 @@ Public Partial Class Options
 		Private VmCopyRange As Integer = 1
 		Private VmShowLines As Boolean = False
 		Private VmDownloadServerEnum As clsModule.eServer = clsModule.eServer.FreePagesPerso
-		Private VmMarketServerEnum As clsModule.eMarketServer = clsModule.eMarketServer.MagicCardMarket
+		Private VmMarketServerEnum As clsModule.eMarketServer = clsModule.eMarketServer.MagicVille
 		Private VmShowAllSeries As Boolean = False
 		Private VmPicturesSource As clsModule.ePicturesSource = clsmodule.ePicturesSource.Local
 		Private VmFontSize As Single = -1

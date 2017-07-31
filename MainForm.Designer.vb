@@ -1082,7 +1082,7 @@ Partial Class MainForm
 		Me.mnuMarket.Name = "mnuMarket"
 		Me.mnuMarket.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.B),System.Windows.Forms.Keys)
 		Me.mnuMarket.Size = New System.Drawing.Size(303, 22)
-		Me.mnuMarket.Text = "Achats sur Internet"
+		Me.mnuMarket.Text = "Achat de cartes sur Internet"
 		AddHandler Me.mnuMarket.Click, AddressOf Me.MnuBuyFormClick
 		'
 		'mnuPlugins
@@ -1583,6 +1583,7 @@ Partial Class MainForm
 		Me.splitH3.Location = New System.Drawing.Point(0, 0)
 		Me.splitH3.Name = "splitH3"
 		Me.splitH3.Orientation = System.Windows.Forms.Orientation.Horizontal
+		AddHandler Me.splitH3.Resize, AddressOf Me.SplitH3Resize
 		'
 		'splitH3.Panel1
 		'

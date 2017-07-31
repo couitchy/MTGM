@@ -245,6 +245,7 @@ Public Partial Class frmBuyCards
 	Dim VpRequest As HttpWebRequest
 	Dim VpSerializer As New JavaScriptSerializer
 	Dim VpWebResponse As HttpWebResponse
+		VpURL = VpURL.Replace("'", "%27")	'cas non gérés par EscapeUriString
 		VpSerializer.MaxJsonLength = Integer.MaxValue
 		VpRequest = HttpWebRequest.Create(VpURL)
 		VpRequest.Method = "GET"

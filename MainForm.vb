@@ -3735,12 +3735,15 @@ Public Partial Class MainForm
 		End If
 	End Sub
 	Sub MainFormResizeEnd(sender As Object, e As EventArgs)
-		Me.splitH3.SplitterDistance = 42
+		Me.splitH3.SplitterDistance = 42 * Me.CreateGraphics().DpiX / 96		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 	End Sub
 	Sub MainFormResize(sender As Object, e As EventArgs)
 		If Control.MouseButtons = MouseButtons.None Then
-			Me.splitH3.SplitterDistance = 42
+			Me.splitH3.SplitterDistance = 42 * Me.CreateGraphics().DpiX / 96	'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 		End If
+	End Sub
+	Sub SplitH3Resize(sender As Object, e As EventArgs)
+		Me.splitH3.SplitterDistance = 42 * Me.CreateGraphics().DpiX / 96		'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
 	End Sub
 	Sub CmnuCbarClosed(sender As Object, e As ToolStripDropDownClosedEventArgs)
 		Me.btHistPrices.Checked = False
