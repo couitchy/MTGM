@@ -171,7 +171,9 @@ Public Partial Class frmNewEdition
 	Dim VpAlready As List(Of String)
 	Dim VpNew As New List(Of String)
 	Dim VpMustAdd As Boolean
-		Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
+		If Not File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
+			Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
+		End If
 		If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
 			VpAlready = Me.BuildList("Select UCase(SeriesNM) From Series;")
 			VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)

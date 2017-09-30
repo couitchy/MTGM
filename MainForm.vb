@@ -1966,9 +1966,14 @@ Public Partial Class MainForm
 	Dim VpImg18 As Image
 	Dim VpImg12 As Bitmap
 		VpRich.Clear
+		'Gestion des sous-types
 		If VpSubType <> "" Then
 			VpRich.AppendTextAsRtf(VpSubType + vbCrLf + vbCrLf, New Font(VpRich.Font, FontStyle.Bold))
 		End If
+		'Gestion des symboles non usuels
+		VpStr = VpStr.Replace("[chaos]", "!o!")
+		VpStr = VpStr.Replace("[plane]", "!p!")
+		'Gestion de tous les symboles
 		While VpStr.IndexOf("!") <> VpStr.LastIndexOf("!")	'tant qu'il reste 2 '!', il reste un symbole à convertir
 			VpRich.AppendText(VpStr.Substring(0, VpStr.IndexOf("!")))
 			VpStr = VpStr.Substring(VpStr.IndexOf("!") + 1)
@@ -2063,6 +2068,10 @@ Public Partial Class MainForm
 						VpImgIndex = 56
 					Case "e"
 						VpImgIndex = 57
+					Case "o"
+						VpImgIndex = 58
+					Case "p"
+						VpImgIndex = 59
 					Case Else
 						VpImgIndex = -1
 				End Select

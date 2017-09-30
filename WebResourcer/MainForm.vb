@@ -52,7 +52,7 @@ Public Partial Class MainForm
 	Private Const CmKey6B As String  		= ".html"">"
 	Private Const CmKey7 As String  		= "<td>"
 	Private Const CmKey7B As String  		= "</td>"
-	Private Const CmKey7C As String  		= "<img src=""http://magiccards.info/images/en.gif"" alt=""English"" width=""16"" height=""11"" class=""flag2""> "
+	Private Const CmKey7C As String  		= "<img src=""/images/en.gif"" alt=""English"" width=""16"" height=""11"" class=""flag2""> "
 	Private Const CmKey8 As String  		= "<p"
 	Private Const CmKey8B As String  		= "<b>"
 	Private Const CmKey8C As String  		= "</b></p>"
@@ -803,8 +803,16 @@ Public Partial Class MainForm
 				VpIn = New StreamReader(Me.dlgOpen6.FileName)
 				VpOut = New StreamWriter(Me.dlgSave3.FileName)
 				VpStr = VpIn.ReadToEnd
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=chaos&amp;type=symbol"" alt=""Chaos"" align=""absbottom"" />", "{O}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=pw&amp;type=symbol"" alt=""Planeswalk"" align=""absbottom"" />", "{P}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=e&amp;type=symbol"" alt=""Energy"" align=""absbottom"" />", "{E}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=R&amp;type=symbol"" alt=""Red"" align=""absbottom"" />", "{R}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=U&amp;type=symbol"" alt=""Blue"" align=""absbottom"" />", "{U}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=G&amp;type=symbol"" alt=""Green"" align=""absbottom"" />", "{G}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=W&amp;type=symbol"" alt=""White"" align=""absbottom"" />", "{W}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol"" alt=""Black"" align=""absbottom"" />", "{B}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=WB&amp;type=symbol"" alt=""White or Black"" align=""absbottom"" />", "{W/B}")
+				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=BG&amp;type=symbol"" alt=""Black or Green"" align=""absbottom"" />", "{B/G}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=C&amp;type=symbol"" alt=""Colorless"" align=""absbottom"" />", "{C}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=X&amp;type=symbol"" alt=""Variable Colorless"" align=""absbottom"" />", "{X}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=6&amp;type=symbol"" alt=""6"" align=""absbottom"" />", "{6}")
@@ -1443,6 +1451,34 @@ Public Partial Class MainForm
 				Return "modernmasters2017#" + VpStr
 			Case "HD"
 				Return "hourofdevastation#" + VpStr
+			Case "AI"
+				Return "archenemyNicolBolas#" + VpStr
+			Case "CP"
+				Return "clashpack#" + VpStr
+			Case "CA"
+				Return "commanderanthology#" + VpStr
+			Case "A1"
+				Return "DuelDecksAnthologyDivinevsDemonic#" + VpStr
+			Case "A3"
+				Return "DuelDecksAnthologyElvesvsGoblins#" + VpStr
+			Case "A4"
+				Return "DuelDecksAnthologyGarrukvsLiliana#" + VpStr
+			Case "A5"
+				Return "DuelDecksAnthologyJacevsChandra#" + VpStr
+			Case "PA"
+				Return "planechaseanthology#" + VpStr
+			Case "C7"
+				Return "commander2017#" + VpStr
+			Case "DL"
+				Return "DuelDecksMindvsMight#" + VpStr
+			Case "WE"
+				Return "welcomedeck2017#" + VpStr
+			Case "AJ"
+				Return "amonkhetinvocations#" + VpStr
+			Case "GW"
+				Return "wpngateway#" + VpStr
+			Case "XL"
+				Return "ixalan#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1685,6 +1721,34 @@ Public Partial Class MainForm
 				Return "MW"
 			Case "hourofdevastation"
 				Return "HD"
+			Case "archenemyNicolBolas"
+				Return "AI"
+			Case "clashpack"
+				Return "CP"
+			Case "commanderanthology"
+				Return "CA"
+			Case "DuelDecksAnthologyDivinevsDemonic"
+				Return "A1"
+			Case "DuelDecksAnthologyElvesvsGoblins"
+				Return "A3"
+			Case "DuelDecksAnthologyGarrukvsLiliana"
+				Return "A4"
+			Case "DuelDecksAnthologyJacevsChandra"
+				Return "A5"
+			Case "planechaseanthology"
+				Return "PA"
+			Case "commander2017"
+				Return "C7"
+			Case "DuelDecksMindvsMight"
+				Return "DL"
+			Case "welcomedeck2017"
+				Return "WE"
+			Case "amonkhetinvocations"
+				Return "AJ"
+			Case "wpngateway"
+				Return "GW"
+			Case "ixalan"
+				Return "XL"
 			Case Else
 				Return ""
 		End Select
