@@ -41,7 +41,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 36054
+	Public Const CgCodeLines As Integer   			= 36179
 	Public Const CGNClasses As Integer   			= 84
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -70,6 +70,8 @@ Public Module clsModule
 	Public Const CgTimeOut As Integer				= 5
 	Public Const CgMTGCardWidth_mm As Integer		= 63
 	Public Const CgMTGCardHeight_mm As Integer		= 88
+	Public Const CgMTGCardWidth_crop_mm As Integer	= 57
+	Public Const CgMTGCardHeight_crop_mm As Integer	= 82
 	Public Const CgMTGCardWidth_px As Integer		= 210
 	Public Const CgMTGCardHeight_px As Integer		= 300
 	Public Const CgCounterDiametr_px As Integer 	= 20
@@ -1899,6 +1901,43 @@ Public Module clsModule
 			End If
 		End If
 	End Sub
+	Public Function HasBorder(VpPath As String) As Boolean
+	'-------------------------------------------------------------------------------------------------------
+	'Regarde si l'image dont le chemin est passé en paramètre contient une bordure noire ou blanche continue
+	'-------------------------------------------------------------------------------------------------------
+	Dim VpBitmap As Bitmap
+	Dim VpColor As Color
+	Dim VpCount As Integer = 0
+	Dim VpW As Integer = 0
+	Dim VpB As Integer = 0
+		If File.Exists(VpPath) Then
+			Try
+				VpBitmap = Bitmap.FromFile(VpPath)
+			Catch
+				Return True
+			End Try
+			'Regarde le nombre de pixels noirs (ou blancs) sur une bordure de 4 pixels autour de la carte
+			For VpX As Integer = 0 To VpBitmap.Width - 1
+				For VpY As Integer = 0 To VpBitmap.Height - 1
+					If VpX < 4 OrElse VpY < 4 OrElse VpX > (VpBitmap.Width - 1) - 4 OrElse VpY > (VpBitmap.Height - 1) - 4 Then
+						VpCount += 1
+						VpColor = VpBitmap.GetPixel(VpX, VpY)
+						'Pixel noir
+						If VpColor.R < 40 AndAlso VpColor.G < 40 AndAlso VpColor.B < 40 Then
+							VpB += 1
+						'Pixel blanc
+						ElseIf VpColor.R > 215 AndAlso VpColor.G > 215 AndAlso VpColor.B > 215 Then
+							VpW += 1
+						End If
+					End If
+				Next VpY
+			Next VpX
+			'En déduit s'il y a une bordure ou pas
+			Return ( (VpB / VpCount > 0.5 AndAlso VpW / VpCount < 0.1) OrElse (VpW / VpCount > 0.5 AndAlso VpB / VpCount < 0.1) )
+		Else
+			Return True
+		End If
+	End Function
 	Public Function GetAdvCount As Integer
 	'------------------------------------------------------
 	'Retourne le nombre de propriétaires en base de données

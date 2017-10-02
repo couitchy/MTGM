@@ -22,6 +22,7 @@
 '| Modifications :                                    |
 '| - intégration possible des coûts invoc. 26/05/2012 |
 '| - intégration possible A/D et texte	   03/08/2013 |
+'| - gestion présence bordure / taille	   01/10/2017 |
 '------------------------------------------------------
 Imports System.IO
 Public Partial Class frmWord
@@ -57,6 +58,7 @@ Public Partial Class frmWord
 	Dim VpWordApp As Object			'Objet Word par OLE
 	Dim VpDocument As Object
 	Dim VpPicture As Object
+	Dim VpPath As String
 	Dim VpTable As Object
 	Dim VpSQL As String
 	Dim VpTop As Integer
@@ -78,7 +80,7 @@ Public Partial Class frmWord
 		'Nouveau document
 		VpWordApp.DisplayAlerts = False
 		VpDocument = VpWordApp.Documents.Add
-		VpWordApp.Visible = Me.chkWordShow.Checked
+		VpWordApp.Visible = False
 		MainForm.VgMe.IsMainReaderBusy = True
 		'Récupération de la liste
 		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost, Creature.Power, Creature.Tough, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText") + " From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join Creature On Card.Title = Creature.Title Where "
@@ -118,9 +120,15 @@ Public Partial Class frmWord
 			For Each VpItem As clsWordItem In VpItems
 				Try
 					For VpI As Integer = 1 To VpItem.Quant
-	 					VpPicture = VpDocument.Shapes.AddPicture(Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem.TitleVO) + ".jpg", False, True, 1, 1, 1, 1)
-	 					VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm)
-	 					VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm)
+						VpPath = Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem.TitleVO) + ".jpg"
+						VpPicture = VpDocument.Shapes.AddPicture(VpPath, False, True, 1, 1, 1, 1)
+						If Not Me.chkManageBorder.Checked OrElse clsModule.HasBorder(VpPath) Then
+	 						VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm)
+	 						VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm)
+						Else
+	 						VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_crop_mm)
+	 						VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_crop_mm)
+						End If
 	 					VpPicture.Top = VpTop
 	 					VpPicture.Left = VpLeft
 	 					VpCount = VpCount + 1

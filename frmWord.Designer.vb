@@ -51,7 +51,7 @@ Partial Class frmWord
 		Me.prgAvance = New System.Windows.Forms.ProgressBar()
 		Me.cmdSaveImg = New System.Windows.Forms.Button()
 		Me.txtSaveImg = New System.Windows.Forms.TextBox()
-		Me.chkWordShow = New System.Windows.Forms.CheckBox()
+		Me.chkManageBorder = New System.Windows.Forms.CheckBox()
 		Me.chkSingle = New System.Windows.Forms.CheckBox()
 		Me.btVignettes = New TD.SandBar.ButtonItem()
 		Me.btAdvance = New TD.SandBar.ButtonItem()
@@ -162,7 +162,7 @@ Partial Class frmWord
 		Me.grpOptions.Controls.Add(Me.prgAvance)
 		Me.grpOptions.Controls.Add(Me.cmdSaveImg)
 		Me.grpOptions.Controls.Add(Me.txtSaveImg)
-		Me.grpOptions.Controls.Add(Me.chkWordShow)
+		Me.grpOptions.Controls.Add(Me.chkManageBorder)
 		Me.grpOptions.Controls.Add(Me.chkSingle)
 		Me.grpOptions.Dock = System.Windows.Forms.DockStyle.Fill
 		Me.grpOptions.Location = New System.Drawing.Point(0, 0)
@@ -261,15 +261,16 @@ Partial Class frmWord
 		Me.txtSaveImg.Size = New System.Drawing.Size(166, 20)
 		Me.txtSaveImg.TabIndex = 5
 		'
-		'chkWordShow
+		'chkManageBorder
 		'
-		Me.chkWordShow.AutoSize = true
-		Me.chkWordShow.Location = New System.Drawing.Point(39, 60)
-		Me.chkWordShow.Name = "chkWordShow"
-		Me.chkWordShow.Size = New System.Drawing.Size(197, 17)
-		Me.chkWordShow.TabIndex = 3
-		Me.chkWordShow.Text = "Afficher Word pendant la génération"
-		Me.chkWordShow.UseVisualStyleBackColor = true
+		Me.chkManageBorder.AutoSize = True
+		Me.chkManageBorder.Checked = true
+		Me.chkManageBorder.Location = New System.Drawing.Point(39, 60)
+		Me.chkManageBorder.Name = "chkManageBorder"
+		Me.chkManageBorder.Size = New System.Drawing.Size(197, 17)
+		Me.chkManageBorder.TabIndex = 3
+		Me.chkManageBorder.Text = "Ajuster taille selon présence bordure"
+		Me.chkManageBorder.UseVisualStyleBackColor = true
 		'
 		'chkSingle
 		'
@@ -330,7 +331,7 @@ Partial Class frmWord
 	Private cmdWord As System.Windows.Forms.Button
 	Private lblWord As System.Windows.Forms.Label
 	Private grpVignettes As System.Windows.Forms.GroupBox
-	Private chkWordShow As System.Windows.Forms.CheckBox
+	Private chkManageBorder As System.Windows.Forms.CheckBox
 	Private chkSingle As System.Windows.Forms.CheckBox
 	Private dlgBrowse As System.Windows.Forms.FolderBrowserDialog
 	Private txtSaveImg As System.Windows.Forms.TextBox

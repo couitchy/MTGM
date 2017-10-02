@@ -392,7 +392,7 @@ Public Partial Class frmBuyCards
 								.Before.Quantity -= .N
 								.Before.Bought += .N
 								.Before.Vendeur.Bought += .N
-								'Restituion à l'ex-nouveau vendeur
+								'Restitution à l'ex-nouveau vendeur
 								.After.Quantity += .N
 								.After.Bought -= .N
 								.After.Vendeur.Bought -= .N
