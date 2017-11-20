@@ -899,13 +899,15 @@ Public Module clsModule
 			VgImgSeries.ImageSize = New Size(21, 21)
 			VgImgSeries.TransparentColor = System.Drawing.Color.Transparent
 			For Each VpIcon As String In System.IO.Directory.GetFiles(Application.StartupPath + CgIcons, "*" + CgIconsExt)
-				VpHandle = Image.FromFile(VpIcon)
-				VpKey = VpIcon.Substring(VpIcon.LastIndexOf("\") + 1)
-				If Not VgImgSeries.Images.Keys.Contains(VpKey) Then
-					VgImgSeries.Images.Add(VpKey, VpHandle)
-				End If
-				If Not VpImgSeries.Images.Keys.Contains(VpKey) Then
-					VpImgSeries.Images.Add(VpKey, VpHandle)
+				If File.Exists(VpIcon) Then
+					VpHandle = Image.FromFile(VpIcon)
+					VpKey = VpIcon.Substring(VpIcon.LastIndexOf("\") + 1)
+					If Not VgImgSeries.Images.Keys.Contains(VpKey) Then
+						VgImgSeries.Images.Add(VpKey, VpHandle)
+					End If
+					If Not VpImgSeries.Images.Keys.Contains(VpKey) Then
+						VpImgSeries.Images.Add(VpKey, VpHandle)
+					End If
 				End If
 			Next VpIcon
 		End If
@@ -1905,6 +1907,7 @@ Public Module clsModule
 	'-------------------------------------------------------------------------------------------------------
 	'Regarde si l'image dont le chemin est passé en paramètre contient une bordure noire ou blanche continue
 	'-------------------------------------------------------------------------------------------------------
+	Const CpBorderSize As Integer = 8
 	Dim VpBitmap As Bitmap
 	Dim VpColor As Color
 	Dim VpCount As Integer = 0
@@ -1919,7 +1922,7 @@ Public Module clsModule
 			'Regarde le nombre de pixels noirs (ou blancs) sur une bordure de 4 pixels autour de la carte
 			For VpX As Integer = 0 To VpBitmap.Width - 1
 				For VpY As Integer = 0 To VpBitmap.Height - 1
-					If VpX < 4 OrElse VpY < 4 OrElse VpX > (VpBitmap.Width - 1) - 4 OrElse VpY > (VpBitmap.Height - 1) - 4 Then
+					If VpX < CpBorderSize OrElse VpY < CpBorderSize OrElse VpX > (VpBitmap.Width - 1) - CpBorderSize OrElse VpY > (VpBitmap.Height - 1) - CpBorderSize Then
 						VpCount += 1
 						VpColor = VpBitmap.GetPixel(VpX, VpY)
 						'Pixel noir
