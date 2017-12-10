@@ -1479,6 +1479,8 @@ Public Partial Class MainForm
 				Return "wpngateway#" + VpStr
 			Case "XL"
 				Return "ixalan#" + VpStr
+			Case "DU"
+				Return "DuelDecksMerfolkvsGoblins#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1749,6 +1751,8 @@ Public Partial Class MainForm
 				Return "GW"
 			Case "ixalan"
 				Return "XL"
+			Case "DuelDecksMerfolkvsGoblins"
+				Return "DU"
 			Case Else
 				Return ""
 		End Select
