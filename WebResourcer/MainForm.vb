@@ -1481,6 +1481,8 @@ Public Partial Class MainForm
 				Return "ixalan#" + VpStr
 			Case "DU"
 				Return "DuelDecksMerfolkvsGoblins#" + VpStr
+			Case "VA"
+				Return "FromtheVaultTransform#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1753,6 +1755,8 @@ Public Partial Class MainForm
 				Return "XL"
 			Case "DuelDecksMerfolkvsGoblins"
 				Return "DU"
+			Case "FromtheVaultTransform"
+				Return "VA"
 			Case Else
 				Return ""
 		End Select

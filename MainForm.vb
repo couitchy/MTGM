@@ -2205,7 +2205,7 @@ Public Partial Class MainForm
 			Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
 		End If
 	End Function
-	Private Function GetTransformedTag(VpTitle As String, VpReverse As Boolean, VpDownFace As Boolean) As clsTag
+	Private Function GetTransformedTag(VpTitle As String, VpReverse As Boolean, VpDownFace As Boolean, VpOnlyVO As Boolean) As clsTag
 	'----------------------------------------------------------
 	'Retourne les noms (VO/VF) de la carte transformée associée
 	'----------------------------------------------------------
@@ -2224,15 +2224,15 @@ Public Partial Class MainForm
 			End If
 		End If
 		VpEncNbr = VgDBCommand.ExecuteScalar
-		Return Me.GetTag(VpEncNbr)
+		Return Me.GetTag(VpEncNbr, VpOnlyVO)
 	End Function
-	Private Function GetTag(VpEncNbr As Long) As clsTag
+	Private Function GetTag(VpEncNbr As Long, VpOnlyVO As Boolean) As clsTag
 	Dim VpNames As New clsTag
 		If VpEncNbr <> 0 Then
 			VgDBCommand.CommandText = "Select Card.Title From Card Where Card.EncNbr = " + VpEncNbr.ToString + ";"
 			VpNames.Value = VgDBCommand.ExecuteScalar.ToString
 			VgDBCommand.CommandText = "Select CardFR.TitleFR From CardFR Where CardFR.EncNbr = " + VpEncNbr.ToString + ";"
-			VpNames.Value2 = VgDBCommand.ExecuteScalar.ToString
+			VpNames.Value2 = If(VpOnlyVO, VpNames.Value, VgDBCommand.ExecuteScalar.ToString)
 			VgDBCommand.CommandText = "Select Card.MultiverseId From Card Where Card.EncNbr = " + VpEncNbr.ToString + ";"
 			VpNames.MultiverseId = CLng(VgDBCommand.ExecuteScalar)
 		End If
@@ -3402,7 +3402,7 @@ Public Partial Class MainForm
 			If VpNode.Parent.Tag.Key = "Card.Title" AndAlso VpNode.Tag.Value3 Then		'On doit refaire la vérif. au cas où l'évènement aurait été triggé par un clic sur l'image
 				VpDownFace = Me.IsDownFace(VpNode)
 				VpTransformed = Me.IsTransformed(VpNode)
-				VpNames = Me.GetTransformedTag(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace)
+				VpNames = Me.GetTransformedTag(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace, Me.IsInVFMode And (VpNode.Tag.Value = VpNode.Tag.Value2))
 				If Me.ShowCard(VpNames.Value, VpNames.MultiverseId, Not (VpDownFace Xor VpTransformed), Not VpTransformed, Me.IsReserveSelected) Then
 					'Met à jour le noeud de l'arbre
 					VpNode.Text = If(Me.IsInVFMode, VpNames.Value2, VpNames.Value)
