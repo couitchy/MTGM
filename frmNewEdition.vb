@@ -171,6 +171,8 @@ Public Partial Class frmNewEdition
 	Dim VpAlready As List(Of String)
 	Dim VpNew As New List(Of String)
 	Dim VpMustAdd As Boolean
+	Dim VpWidth As Integer
+	Dim VpMaxWidth As Integer = Integer.MinValue
 		If Not File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
 			Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
 		End If
@@ -191,9 +193,12 @@ Public Partial Class frmNewEdition
 					If VpMustAdd Then
 						VpNew.Add(VpLine)
 						Me.chkNewEditionAuto.Items.Add(VpInfos(2), False)
+						VpWidth = TextRenderer.MeasureText(VpInfos(2), Me.chkNewEditionAuto.Font).Width
+						VpMaxWidth = Math.Max(VpWidth, VpMaxWidth)
 					End If
 				End If
 			Loop
+			Me.chkNewEditionAuto.ColumnWidth = VpMaxWidth + 20
 			Me.cmdAutoPrevious.Enabled = True
 			Return VpNew
 		Else
