@@ -29,8 +29,8 @@
 Imports System.IO
 Imports System.Xml
 Imports System.Reflection
-Imports ICSharpCode.SharpZipLib.Zip
 Imports System.Web.Script.Serialization
+Imports ICSharpCode.SharpZipLib.Zip
 Public Partial Class frmExport
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
@@ -138,6 +138,9 @@ Public Partial Class frmExport
 		Process.Start(VpPath + "\index.html")
 	End Sub
 	Private Sub JSONExport(VpSources As List(Of String))
+	'------------------------------------------------------------------------------------
+	'Construction d'un fichier d'export JSON qui sera lisible par le HTMLCollectionViewer
+	'------------------------------------------------------------------------------------
 	Dim VpContent As New List(Of clsCardInfos)
 	Dim VpCur As clsCardInfos
 	Dim VpJSON As String
@@ -183,6 +186,40 @@ Public Partial Class frmExport
 			VpOut.Close
 		Next VpDeck	
 	End Sub
+	Private Function JSONBypass(VpStr As String, VpSection As String) As Dictionary(Of String, Integer)
+	'--------------------------------------------------------------------------------------------------------------------------------------
+	'Désérialisation manuelle de dictionnaire <String, Integer> à cause d'un bug dans le Framework 3.5
+	'Le problème n'a pas lieu en targetant le 4.0 via JavaScriptSerializer.Deserialize, mais je préfère rester en 3.5 pour d'autres raisons
+	'--------------------------------------------------------------------------------------------------------------------------------------
+	Dim VpJSON As String
+	Dim VpItems() As String
+	Dim VpPair() As String
+	Dim VpKey As String
+	Dim VpValue As Integer
+	Dim VpLast As Boolean
+	Dim VpOut As New Dictionary(Of String, Integer)
+		VpJSON = VpStr.Substring(VpStr.IndexOf(VpSection) - 2)
+		VpItems = VpJSON.Replace("{""" + VpSection + """:{", "").Replace(",""" + VpSection + """:{", "").Split(", """)
+		For Each VpItem As String In VpItems
+			VpLast = VpItem.Contains("}")
+			If VpItem.Length > 1 Then
+				VpPair = VpItem.Replace("""", "").Replace("}", "").Split(":")
+				VpKey = VpPair(0)
+				VpValue = CInt(Val(VpPair(1)))
+				If VpValue > 0 Then
+					If Not VpOut.ContainsKey(VpKey) Then
+						VpOut.Add(VpKey, VpValue)
+					Else
+						VpOut.Item(VpKey) += VpValue	'si doublon sur la clé (= multiverse id), on somme les quantités
+					End If
+				End If
+			End If
+			If VpLast Then
+				Exit For
+			End If
+		Next VpItem
+		Return VpOut
+	End Function
 	Private Sub GoImport(VpPath As String, VpSource As String, VpIsNew As Boolean)
 	'--------------------------------------------------------------------------------------------------
 	'Importe le fichier spécifié à la destination spécifiée (collection ou nouveau deck ou ancien deck)
@@ -191,6 +228,7 @@ Public Partial Class frmExport
 	Dim VpReader As XmlTextReader
 	Dim VpLog As StreamWriter
 	Dim VpConverted As StreamWriter
+	Dim VpUgs As clsUrzaGathererInfos
 	Dim VpStrs(0 To 1) As String
 	Dim VpStr As String
 	Dim VpId As Integer
@@ -385,7 +423,48 @@ Public Partial Class frmExport
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
 				Call Me.GoImport(VpStr, VpSource, False)
-			'** Gestion formats Magic Online ou Urza Gatherer **
+			'** Gestion format Urza Gatherer **
+			Case clsModule.CgFExtU
+				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtU, clsModule.CgPicLogExt))
+				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtU, clsModule.CgFExtO))
+				VpStr = VpIn.ReadToEnd
+				VpUgs = New clsUrzaGathererInfos
+				'On récupère les identifiants Multiverse
+				VpUgs.Count = Me.JSONBypass(VpStr, "Count")
+				VpUgs.Foils = Me.JSONBypass(VpStr, "Foils")
+				VpUgs.Promos = Me.JSONBypass(VpStr, "Promos")
+				VpUgs.Conditions = Me.JSONBypass(VpStr, "Conditions")
+				For Each VpCardId As String In VpUgs.Count.Keys
+					'Exact match
+					VgDBCommand.CommandText = "Select EncNbr From Card Where MultiverseId = " + VpCardId + ";"
+					VpO = VgDBCommand.ExecuteScalar
+					If Not VpO Is Nothing Then
+						VpQte = VpUgs.Count.Item(VpCardId)
+						If VpUgs.Foils.ContainsKey(VpCardId) Then
+							VpQteFoil = VpUgs.Foils.Item(VpCardId)
+							VpConverted.WriteLine(VpO.ToString + "#" + VpQteFoil.ToString + "##True")
+							If VpQte - VpQteFoil > 0 Then
+								VpConverted.WriteLine(VpO.ToString + "#" + (VpQte - VpQteFoil).ToString + "##False")
+							End If
+						Else
+							VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+						End If
+					Else
+						VpNeedLog = True
+						VpLog.WriteLine("No match for Multiverse Id: " + VpCardId)
+					End If
+				Next VpCardId
+				VpConverted.Close
+				VpLog.Close
+				VpIn.Close
+				If VpNeedLog Then
+					If clsModule.ShowQuestion("Certaines cartes n'ont pas été trouvées..." + vbCrLf + "Voulez-vous afficher le journal ?") = System.Windows.Forms.DialogResult.Yes Then
+						Process.Start(VpPath.ToLower.Replace(clsModule.CgFExtU, clsModule.CgPicLogExt))
+					End If
+				End If
+				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
+				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtU, clsModule.CgFExtO), VpSource, False)
+			'** Gestion formats Magic Online ou export d'Urza Gatherer **
 			Case clsModule.CgFExtL
 				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgPicLogExt))
 				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgFExtO))

@@ -198,7 +198,9 @@ Public Partial Class frmNewEdition
 					End If
 				End If
 			Loop
-			Me.chkNewEditionAuto.ColumnWidth = VpMaxWidth + 20
+			If VpMaxWidth > 0 Then
+				Me.chkNewEditionAuto.ColumnWidth = VpMaxWidth + 20
+			End If
 			Me.cmdAutoPrevious.Enabled = True
 			Return VpNew
 		Else

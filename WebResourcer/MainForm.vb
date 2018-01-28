@@ -1483,6 +1483,10 @@ Public Partial Class MainForm
 				Return "DuelDecksMerfolkvsGoblins#" + VpStr
 			Case "VA"
 				Return "FromtheVaultTransform#" + VpStr
+			Case "IM"
+				Return "iconicmasters#" + VpStr
+			Case "UB"
+				Return "unstable#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1757,6 +1761,10 @@ Public Partial Class MainForm
 				Return "DU"
 			Case "FromtheVaultTransform"
 				Return "VA"
+			Case "iconicmasters"
+				Return "IM"
+			Case "unstable"
+				Return "UB"
 			Case Else
 				Return ""
 		End Select

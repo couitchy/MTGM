@@ -33,15 +33,15 @@ Imports System.Text.RegularExpressions
 Imports System.Net
 Imports System.IO
 Imports System.ComponentModel
+Imports System.Globalization
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
-Imports System.Globalization
 Imports ICSharpCode.SharpZipLib.Zip
 Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 36195
+	Public Const CgCodeLines As Integer   			= 36309
 	Public Const CGNClasses As Integer   			= 84
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -174,6 +174,7 @@ Public Module clsModule
 	Public Const CgFExtC As String					= ".txt"
 	Public Const CgFExtM As String					= ".xml"
 	Public Const CgFExtL As String					= ".csv"
+	Public Const CgFExtU As String					= ".ugs"
 	Public Const CgFExtD As String					= ".mdb"
 	Public Const CgIconsExt As String				= ".png"
 	Public Const CgPicUpExt As String				= ".dat"
@@ -2836,6 +2837,12 @@ Public Class clsTxtFR
 			VmAlready = VpAlready
 		End Set
 	End Property
+End Class
+Public Class clsUrzaGathererInfos
+	Public Count As Dictionary(Of String, Integer)
+	Public Foils As Dictionary(Of String, Integer)
+	Public Promos As Dictionary(Of String, Integer)
+	Public Conditions As Dictionary(Of String, Integer)
 End Class
 <Serializable> _
 Public Class clsFullInfos
