@@ -1487,6 +1487,8 @@ Public Partial Class MainForm
 				Return "iconicmasters#" + VpStr
 			Case "UB"
 				Return "unstable#" + VpStr
+			Case "RX"
+				Return "rivalsofixalan#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1765,6 +1767,8 @@ Public Partial Class MainForm
 				Return "IM"
 			Case "unstable"
 				Return "UB"
+			Case "rivalsofixalan"
+				Return "RX"
 			Case Else
 				Return ""
 		End Select
