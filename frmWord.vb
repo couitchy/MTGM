@@ -251,12 +251,14 @@ Public Partial Class frmWord
 			Call clsModule.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + clsModule.CgMaxVignettes.ToString + ".")
 		Else
 			Me.cmdWord.Enabled = False
+			Application.UseWaitCursor = True
 			If Me.optSaveImg.Checked Then
 				Call Me.WordGen(False)
 				Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
 			Else
 				Call Me.WordGen(True)
 			End If
+			Application.UseWaitCursor = False
 			Me.cmdWord.Enabled = True
 		End If
 	End Sub

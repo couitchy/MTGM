@@ -123,7 +123,7 @@ Public Partial Class Options
 		Private VmMarketServerEnum As clsModule.eMarketServer = clsModule.eMarketServer.MagicVille
 		Private VmShowAllSeries As Boolean = False
 		Private VmPicturesSource As clsModule.ePicturesSource = clsmodule.ePicturesSource.Local
-		Private VmFontSize As Single = -1
+		Private VmFontSize As Single = 10
 		<DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
 		Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
 			Get
@@ -133,7 +133,7 @@ Public Partial Class Options
 				VmDefaultSearchCriterion = VpDefaultSearchCriterion
 			End Set
 		End Property
-		<DisplayName("Taille de police"), Category("Général"), Description("Taille par défaut des polices pour les textes dans le panneau des propriétés / détails (redémarrer l'application pour prendre en compte les modifications)")> _
+		<DisplayName("Taille de police"), Category("Général"), DefaultValue(10f), Description("Taille par défaut des polices pour les textes dans le panneau des propriétés / détails (redémarrer l'application pour prendre en compte les modifications)")> _
 		Public Property FontSize As Single
 			Get
 				Return VmFontSize

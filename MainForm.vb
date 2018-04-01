@@ -2817,7 +2817,10 @@ Public Partial Class MainForm
 			If .AutoHideImage Then
 				Call Me.MnuShowImageActivate(sender, e)
 			End If
-			'Image par défaut
+			'Images
+			If (Not File.Exists(VgOptions.VgSettings.PicturesFile)) AndAlso VgOptions.VgSettings.PicturesFile <> "" Then
+				Call clsModule.ShowInformation("Vous devriez maintenant télécharger les images des cartes via le menu Fichier / Mettre à jour les images !")
+			End If
 			If (Not File.Exists(.MagicBack)) OrElse .MagicBack.StartsWith(".") Then
 				.MagicBack = Application.StartupPath + clsModule.CgMagicBack
 			End If

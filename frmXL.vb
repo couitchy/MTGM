@@ -293,11 +293,13 @@ Public Partial Class frmXL
 	End Sub
 	Sub CmdXLClick(sender As Object, e As EventArgs)
 		Me.cmdXL.Enabled = False
+		Application.UseWaitCursor = True
 		Call Me.ExcelGen
 		If Me.chkSaveImg.Checked Then
 			Call clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
 			Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
 		End If
+		Application.UseWaitCursor = False
 		Me.cmdXL.Enabled = True
 	End Sub
 	Sub BtColumnsActivate(sender As Object, e As EventArgs)
