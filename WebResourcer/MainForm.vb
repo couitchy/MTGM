@@ -1489,6 +1489,8 @@ Public Partial Class MainForm
 				Return "unstable#" + VpStr
 			Case "RX"
 				Return "rivalsofixalan#" + VpStr
+			Case "A2"
+				Return "masters25#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1769,6 +1771,8 @@ Public Partial Class MainForm
 				Return "UB"
 			Case "rivalsofixalan"
 				Return "RX"
+			Case "masters25"
+				Return "A2"
 			Case Else
 				Return ""
 		End Select
