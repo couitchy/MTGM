@@ -823,11 +823,12 @@ Public Partial Class MainForm
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=1&amp;type=symbol"" alt=""1"" align=""absbottom"" />", "{1}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=0&amp;type=symbol"" alt=""0"" align=""absbottom"" />", "{0}")
 				VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol"" alt=""Tap"" align=""absbottom"" />", "{T}")
+				VpStr = VpStr.Replace("<tr class=""post oddItem"" style=""background-color: rgba(255,255,366, 0.08);"">", "")
 				VpOut.Write(VpStr)
 				VpOut.Flush
 				VpOut.Close
 				VpIn.Close
-				Call Me.AddToLog("Le filtrage des rulings est terminé...", eLogType.Information)
+				Call Me.AddToLog("Le filtrage des rulings est terminé.", eLogType.Information)
 			End If
 		End If
 	End Sub
@@ -1491,6 +1492,8 @@ Public Partial Class MainForm
 				Return "rivalsofixalan#" + VpStr
 			Case "A2"
 				Return "masters25#" + VpStr
+			Case "DO"
+				Return "dominaria#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1773,6 +1776,8 @@ Public Partial Class MainForm
 				Return "RX"
 			Case "masters25"
 				Return "A2"
+			Case "dominaria"
+				Return "DO"
 			Case Else
 				Return ""
 		End Select
@@ -2030,6 +2035,25 @@ Public Partial Class MainForm
 		VpOut.Flush
 		VpOut.Close
 		Call Me.AddToLog("La récupération des fichiers spoilers est terminée.", eLogType.Information)
+	End Sub
+	Private Sub ListSubtypes
+	'---------------------------------------------------------------------------------------------------
+	'Liste les sous-types non traduits et les trie par ordre d'occurrences, du plus répandu au plus rare
+	'---------------------------------------------------------------------------------------------------
+		Call Me.AddToLog("L'analyse des sous-types a commencé...", eLogType.Information)
+		Application.DoEvents
+    	VmDBCommand.CommandText = "Select SubType, Count(*) From Card Where Not Exists (Select SubTypeVO From SubTypes Where Card.SubType = SubTypes.SubTypeVO) Group By SubType Order By 2 Desc;"
+    	VmDBReader = VmDBCommand.ExecuteReader
+		With VmDBReader
+			While .Read
+				If Not .IsDBNull(0) AndAlso .GetString(0).Trim <> "" Then
+					Call Me.AddToLog("Sous-type non traduit : " + .GetString(0) + " (" + .GetInt32(1).ToString + ")", eLogType.Warning)
+					Application.DoEvents
+				End If
+			End While
+			.Close
+		End With
+		Call Me.AddToLog("L'analyse des sous-types est terminée.", eLogType.Information)
 	End Sub
 	Private Sub ExtractTexts
 	'-----------------------------------------
@@ -2675,7 +2699,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuCardsExtractDiff3Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
-			Call Me.ExtractCards("Select Distinct Card.Title From Card Inner Join TextesFR On Card.Title = TextesFR.CardName Where Card.CardText = TextesFR.TexteFR And Trim(Card.CardText) <> """" And Card.CardText <> Null;")
+			Call Me.ExtractCards("Select Distinct Card.Title From Card Inner Join TextesFR On Card.Title = TextesFR.CardName Where Card.CardText = TextesFR.TexteFR And Trim(Card.CardText) <> """" And Card.CardText <> Null And Card.Title <> 'Forest' And Card.Title <> 'Plains' And Card.Title <> 'Mountain' And Card.Title <> 'Swamp' And Card.Title <> 'Island';")
 		End If
 	End Sub
 	Sub MnuCardsExtractDiff4Click(sender As Object, e As EventArgs)
@@ -2767,6 +2791,11 @@ Public Partial Class MainForm
 	Sub MnuCompareTradClick(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.CompareTexts
+		End If
+	End Sub
+	Sub MnuListSubtypesClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.ListSubtypes
 		End If
 	End Sub
 	Sub MnuBuildDoubleClick(sender As Object, e As EventArgs)

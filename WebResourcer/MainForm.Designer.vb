@@ -58,6 +58,7 @@ Partial Class MainForm
 		Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCheckTrad = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCompareTrad = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuListSubtypes = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem()
@@ -247,7 +248,7 @@ Partial Class MainForm
 		'
 		'mnuTrad
 		'
-		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad})
+		Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad, Me.mnuListSubtypes})
 		Me.mnuTrad.Image = CType(resources.GetObject("mnuTrad.Image"),System.Drawing.Image)
 		Me.mnuTrad.Name = "mnuTrad"
 		Me.mnuTrad.Size = New System.Drawing.Size(278, 22)
@@ -294,6 +295,13 @@ Partial Class MainForm
 		Me.mnuCompareTrad.Size = New System.Drawing.Size(398, 22)
 		Me.mnuCompareTrad.Text = "Comparaison interactive de traductions"
 		AddHandler Me.mnuCompareTrad.Click, AddressOf Me.MnuCompareTradClick
+		'
+		'mnuListSubtypes
+		'
+		Me.mnuListSubtypes.Name = "mnuListSubtypes"
+		Me.mnuListSubtypes.Size = New System.Drawing.Size(398, 22)
+		Me.mnuListSubtypes.Text = "Lister les sous-types non traduits"
+		AddHandler Me.mnuListSubtypes.Click, AddressOf Me.MnuListSubtypesClick
 		'
 		'mnuCardsAut
 		'
@@ -831,6 +839,7 @@ Partial Class MainForm
 	Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCheckTrad As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCompareTrad As System.Windows.Forms.ToolStripMenuItem
+	Private mnuListSubtypes As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff4 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff3 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractDiff As System.Windows.Forms.ToolStripMenuItem
