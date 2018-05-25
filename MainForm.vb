@@ -1511,6 +1511,9 @@ Public Partial Class MainForm
 	Dim VpO As Object
 	Dim VpSource As String = Me.MySource
 	Dim VpElderCriteria As String
+		If Me.IsMainReaderBusy Then
+			Exit Sub
+		End If
 		If VpSource = clsModule.CgSDecks Then
 			VpElderCriteria = VpPartialElderCriteria + "Reserve = " + Me.IsReserveSelected.ToString
 		Else

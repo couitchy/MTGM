@@ -83,7 +83,8 @@ Public Partial Class frmWord
 		VpWordApp.Visible = False
 		MainForm.VgMe.IsMainReaderBusy = True
 		'Récupération de la liste
-		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost, Creature.Power, Creature.Tough, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText") + " From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join Creature On Card.Title = Creature.Title Where "
+		VpSQL = If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText")
+		VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost, Creature.Power, Creature.Tough, IIf(IsNull(" + VpSQL + "), '', " + VpSQL + ") From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join Creature On Card.Title = Creature.Title Where "
 		VpSQL = VpSQL + VmRestriction
 		VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title, Spell.Cost, Creature.Power, Creature.Tough, CardText, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText"))
 		VgDBCommand.CommandText = VpSQL
