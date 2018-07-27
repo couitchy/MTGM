@@ -24,6 +24,7 @@
 '| - gestion des requêtes MagicCardMarket  15/01/2017 |
 '| - optimisation des achats (heuristique) 23/07/2017 |
 '| - restauration des requêtes Magic-Ville 29/07/2017 |
+'| - prise en compte des frais de port     25/07/2018 |
 '------------------------------------------------------
 #Region "Importations"
 Imports SourceGrid2
@@ -37,7 +38,7 @@ Imports System.Xml
 Imports System.Xml.Serialization
 #End Region
 Public Partial Class frmBuyCards
-	#Region "Déclarations"	
+	#Region "Déclarations"
 	Private VmServer As clsModule.eMarketServer			'Market place choisie par l'utilisateur pour effectuer ses transactions
 	Private VmToBuy As New List(Of clsLocalCard)		'Collection des cartes souhaitées à l'achat
 	Private VmToSell As New List(Of clsRemoteCard)		'Collection des cartes disponibles à la vente
@@ -272,7 +273,45 @@ Public Partial Class frmBuyCards
 		Next VpRemoteCard
 		Return VpExtracted
 	End Function
-	Private Sub CalcTransactions(VpPath As String)
+	Private Function ChangeTransaction(VpFound As clsRemoteCard, VpCard As clsRemoteCard, VpBackups As List(Of clsBackupTransaction)) As Boolean
+	'------------------------------------------------------------------------------------------------------------------------------
+	'Modification d'une transaction au profit d'un vendeur pour un autre, et sauvegarde des informations pour annulation éventuelle
+	'------------------------------------------------------------------------------------------------------------------------------
+	Dim VpN As Integer
+		If VpFound.Vendeur IsNot Nothing Then
+			VpN = Math.Min(VpCard.Bought, VpFound.Quantity)
+			'Restitution au vendeur initial
+			VpCard.Quantity += VpN
+			VpCard.Bought -= VpN
+			VpCard.Vendeur.Bought -= VpN
+			'Acquisition auprès du nouveau vendeur
+			VpFound.Quantity -= VpN
+			VpFound.Bought += VpN
+			VpFound.Vendeur.Bought += VpN
+			'Sauvegarde en cas d'annulation
+			VpBackups.Add(New clsBackupTransaction(VpCard, VpFound, VpN))
+			Return True
+		End If
+		Return False
+	End Function
+	Private Sub CancelChanges(VpBackups As List(Of clsBackupTransaction))
+	'---------------------------------------------------------------------------
+	'Annulation des modifications effectuées temporairement sur les transactions
+	'---------------------------------------------------------------------------
+		For Each VpBackup As clsBackupTransaction In VpBackups
+			With VpBackup
+				'Réacquisition auprès du vendeur initial
+				.Before.Quantity -= .N
+				.Before.Bought += .N
+				.Before.Vendeur.Bought += .N
+				'Restitution à l'ex-autre vendeur
+				.After.Quantity += .N
+				.After.Bought -= .N
+				.After.Vendeur.Bought -= .N
+			End With
+		Next VpBackup
+	End Sub
+	Private Sub CalcTransactions(VpMaxTransactions As Integer, VpPath As String)
 	'------------------------------------------------------------------------------------------------------------------------------
 	'Détermine les transactions nécessaires pour acheter toutes les cartes désirées de la bonne manière (heuristique sous-optimale)
 	'------------------------------------------------------------------------------------------------------------------------------
@@ -286,6 +325,7 @@ Public Partial Class frmBuyCards
 	Dim VpNewDeal As Boolean														'Au moins une modification de transaction a eu lieu sur la sous-itération courante
 	Dim VpN As Integer																'Nombre de cartes dans la transaction courante
 	Dim VpV, VpV1 As Integer														'Nombre de vendeurs sollicités pour l'ensemble des transactions
+	Dim VpPreTotal As Single														'Coût total pour l'ensemble des transactions avant optimisation finale par rapport aux frais de port
 		'Calcule la disponibilité des cartes et la couverture des vendeurs
 		For Each VpLocalCard As clsLocalCard In VpToBuy
 			For Each VpRemoteCard As clsRemoteCard In VpToSell
@@ -345,14 +385,14 @@ Public Partial Class frmBuyCards
 			VpV = clsSeller.GetCount(VpSellers)
 			'Optimisation itérative par réduction du nombre de vendeurs à solliciter
 			While True
-				'Parcourt chaque vendeur (en commençant par ceux dont on souhaite se passer)
+				'Parcourt chaque vendeur en commençant par ceux dont on souhaite se passer
 				For Each VpSeller1 As clsSeller In VpSellers
 					VpBackups.Clear
 					VpNewDeal = True
 					'Tant qu'on arrive à réduire la sollicitation de ce vendeur
 					While VpNewDeal
 						VpNewDeal = False
-						'Parcourt les cartes qu'on lui a acheté
+						'Parcourt les cartes qu'on lui a achetées
 						For Each VpCard1 As clsRemoteCard In VpSeller1.GetCardsOfInterest(VpToSell, True)
 							VpFound = New clsRemoteCard(VpCard1.Name, Nothing, VpCard1.Edition, VpCard1.Language, VpCard1.Etat, VpCard1.Quantity, VpCard1.Bought, Single.PositiveInfinity)
 							'Parcourt les vendeurs susceptibles de proposer davantage de cartes que lui
@@ -367,53 +407,59 @@ Public Partial Class frmBuyCards
 								End If
 							Next VpSeller2
 							'Effectue la modification de la transaction si on a trouvé un nouveau vendeur
-							If VpFound.Vendeur IsNot Nothing Then
-								VpN = Math.Min(VpCard1.Bought, VpFound.Quantity)
-								'Restitution au vendeur initial
-								VpCard1.Quantity += VpN
-								VpCard1.Bought -= VpN
-								VpCard1.Vendeur.Bought -= VpN
-								'Acquisition auprès du nouveau vendeur
-								VpFound.Quantity -= VpN
-								VpFound.Bought += VpN
-								VpFound.Vendeur.Bought += VpN
-								'Sauvegarde en cas d'annulation
-								VpBackups.Add(New clsBackupTransaction(VpCard1, VpFound, VpN))
-								VpNewDeal = True
-							End If
+							VpNewDeal = VpNewDeal Or Me.ChangeTransaction(VpFound, VpCard1, VpBackups)
 						Next VpCard1
 						Application.DoEvents
 					End While
 					'Si on n'a pas réussi à transférer l'intégralité des transactions avec ce vendeur et qu'on est donc obligé de le garder, on restaure toutes les transactions dans leur état initial puisqu'il était moins cher que les autres
 					If VpSeller1.Bought > 0 Then
-						For Each VpBackup As clsBackupTransaction In VpBackups
-							With VpBackup
-								'Réacquisition auprès du vendeur initial
-								.Before.Quantity -= .N
-								.Before.Bought += .N
-								.Before.Vendeur.Bought += .N
-								'Restitution à l'ex-nouveau vendeur
-								.After.Quantity += .N
-								.After.Bought -= .N
-								.After.Vendeur.Bought -= .N
-							End With
-						Next VpBackup
+						Call Me.CancelChanges(VpBackups)
 					End If
 					'Si on a déjà atteint le nombre de transactions souhaité, pas la peine de continuer
-					If clsSeller.GetCount(VpSellers) <= Me.sldTransactions.Value Then
+					If clsSeller.GetCount(VpSellers) <= VpMaxTransactions Then
 						Exit For
 					End If
 				Next VpSeller1
 				'On arrête d'optimiser dès qu'on atteint le nombre de transactions souhaité ou qu'on ne peut plus le diminuer par rapport à l'itération précédente
 				VpV1 = clsSeller.GetCount(VpSellers)
-				If VpV1 <= Me.sldTransactions.Value Or Not VpV1 < VpV Then
+				If VpV1 <= VpMaxTransactions Or Not VpV1 < VpV Then
 					Exit While
 				End If
 				VpV = VpV1
 			End While
+			VpPreTotal = clsRemoteCard.GetTotal(VpToSell)
+			'Optimisation finale par rapport aux frais de port
+			For Each VpSeller1 As clsSeller In VpSellers
+				'Si on sollicite un vendeur pour un montant n'atteignant même pas les frais de port, on va essayer de dispatcher les acquisitions ailleurs
+				If clsRemoteCard.GetSubTotal(VpToSell, VpSeller1) <= clsModule.CgWorstShippingCost Then
+					VpBackups.Clear
+					'Parcourt les cartes qu'on lui a achetées
+					For Each VpCard1 As clsRemoteCard In VpSeller1.GetCardsOfInterest(VpToSell, True)
+						VpFound = New clsRemoteCard(VpCard1.Name, Nothing, VpCard1.Edition, VpCard1.Language, VpCard1.Etat, VpCard1.Quantity, VpCard1.Bought, Single.PositiveInfinity)
+						'Parcourt les autres vendeurs qu'on a déjà sollicités pour voir s'ils proposent la carte en question
+						For Each VpSeller2 As clsSeller In VpSellers
+							If VpSeller1 IsNot VpSeller2 Then
+								'Recherche à qui il vaudrait mieux acheter cette carte pour minimiser le surcoût en se passant du vendeur dont on ne veut plus
+								For Each VpCard2 As clsRemoteCard In VpSeller2.GetCardsOfInterest(VpToSell, False)
+									If VpCard2.Name = VpFound.Name AndAlso VpCard2.Quantity > 0 AndAlso VpCard2.Prix <= VpFound.Prix AndAlso VpSeller2.Bought > 0 Then
+										VpFound = VpCard2
+									End If
+								Next VpCard2
+							End If
+							'Effectue la modification de la transaction si on a trouvé un autre vendeur
+							Call Me.ChangeTransaction(VpFound, VpCard1, VpBackups)
+						Next VpSeller2
+						Application.DoEvents
+					Next VpCard1
+					'Si on n'a pas réussi à transférer l'intégralité des transactions avec ce vendeur ou bien qu'au final ça coûte plus cher que les frais de port économisés, on restaure toutes les transactions dans leur état initial
+					If VpSeller1.Bought > 0 OrElse clsRemoteCard.GetTotal(VpToSell) - VpPreTotal >= clsModule.CgWorstShippingCost Then
+						Call Me.CancelChanges(VpBackups)
+					End If
+				End If
+			Next VpSeller1
 			'Avertissement si le nombre maximal de transactions autorisées est dépassé
-			If clsSeller.GetCount(VpSellers) > Me.sldTransactions.Value Then
-				Call clsModule.ShowWarning("Impossible d'effectuer tous les achats avec seulement " + Me.sldTransactions.Value.ToString + " transaction(s)...")
+			If clsSeller.GetCount(VpSellers) > VpMaxTransactions Then
+				Call clsModule.ShowWarning("Impossible d'effectuer tous les achats avec seulement " + VpMaxTransactions.ToString + " transaction(s)...")
 			End If
 		End If
 		'Récapitulatif des transactions par vendeur
@@ -447,9 +493,12 @@ Public Partial Class frmBuyCards
 	End Sub
 	Public Sub LoadGrid(VpMode As clsModule.eBasketMode)
 	Dim VpCellModel As DataModels.IDataModel
-		Me.grdBasket.SuspendLayout
 		'Mode 1 : Résultats de la recherche sur Internet
 		If VpMode = clsModule.eBasketMode.Remote Then
+			#If DEBUG Then
+				Return
+			#End If
+			Me.grdBasket.SuspendLayout
 			Application.UseWaitCursor = True
 			'Préparation de la grille
 			With Me.grdBasket
@@ -489,6 +538,7 @@ Public Partial Class frmBuyCards
 			End With
 			Me.prgRefresh.Value = 0
 			Application.UseWaitCursor = False
+			Me.grdBasket.ResumeLayout
 		'Mode 2 : Cartes à acheter
 		Else
 			VpCellModel = Utility.CreateDataModel(Type.GetType("System.Int32"))
@@ -513,7 +563,6 @@ Public Partial Class frmBuyCards
 				.AutoSize
 			End With
 		End If
-		Me.grdBasket.ResumeLayout
 	End Sub
 	Private Sub BasketSave(VpPath As String)
 	'--------------------
@@ -521,15 +570,15 @@ Public Partial Class frmBuyCards
 	'--------------------
 	Dim VpCapsule As New clsCapsuleCards
 	Dim VpXmlSerializer As New XmlSerializer(GetType(clsCapsuleCards), New Type() {GetType(clsLocalCard), GetType(clsRemoteCard), GetType(clsSeller)})
-    Dim VpFile As FileStream
-    Dim VpWriter As XmlTextWriter
+	Dim VpFile As FileStream
+	Dim VpWriter As XmlTextWriter
 		VpCapsule.ToBuy = VmToBuy
 		VpCapsule.ToSell = VmToSell
 		VpFile = New FileStream(VpPath, FileMode.Create)
 		VpWriter = New XmlTextWriter(VpFile, Nothing)
-        VpXmlSerializer.Serialize(VpWriter, VpCapsule)
-        VpWriter.Close
-        VpFile.Close
+		VpXmlSerializer.Serialize(VpWriter, VpCapsule)
+		VpWriter.Close
+		VpFile.Close
 	End Sub
 	Private Sub BasketLoad(VpPath As String)
 	'----------------------
@@ -537,18 +586,18 @@ Public Partial Class frmBuyCards
 	'----------------------
 	Dim VpCapsule As clsCapsuleCards
 	Dim VpXmlSerializer As New XmlSerializer(GetType(clsCapsuleCards), New Type() {GetType(clsLocalCard), GetType(clsRemoteCard), GetType(clsSeller)})
-    Dim VpFile As New FileStream(VpPath, FileMode.Open)
-    Dim VpReader As New XmlTextReader(VpFile)
-   		VpCapsule = CType(VpXmlSerializer.Deserialize(VpReader), clsCapsuleCards)
-        VpReader.Close
-        VpFile.Close
-        VmToBuy = VpCapsule.ToBuy
-        VmToSell = VpCapsule.ToSell
-        Call Me.LoadGrid(eBasketMode.Local)
-        If VmToSell.Count > 0 Then
-        	If Me.chkSeller.Checked Then
-        		Call Me.ExcludeSellers
-        	End If
+	Dim VpFile As New FileStream(VpPath, FileMode.Open)
+	Dim VpReader As New XmlTextReader(VpFile)
+		VpCapsule = CType(VpXmlSerializer.Deserialize(VpReader), clsCapsuleCards)
+		VpReader.Close
+		VpFile.Close
+		VmToBuy = VpCapsule.ToBuy
+		VmToSell = VpCapsule.ToSell
+		Call Me.LoadGrid(eBasketMode.Local)
+		If VmToSell.Count > 0 Then
+			If Me.chkSeller.Checked Then
+				Call Me.ExcludeSellers
+			End If
 			Call Me.ClearSellList
 			Call Me.LoadGrid(clsModule.eBasketMode.Remote)
 			Me.cmdCalc.Enabled = True
@@ -640,7 +689,7 @@ Public Partial Class frmBuyCards
 	Dim VpPath As String = clsModule.GetFreeTempFile(".txt")
 		Me.prgRefresh.Style = ProgressBarStyle.Marquee
 		Cursor.Current = Cursors.WaitCursor
-		Call Me.CalcTransactions(VpPath)
+		Call Me.CalcTransactions(Me.sldTransactions.Value, VpPath)
 		If File.Exists(VpPath) Then
 			Process.Start(VpPath)
 		End If
@@ -953,9 +1002,9 @@ Public Class clsRemoteCard
 		Return VpTotal
 	End Function
 	Public Shared Function GetSubTotal(VpToSell As List(Of clsRemoteCard), VpSeller As clsSeller) As Single
-	'---------------------------------------------------------------------------------------------
-	'Retourne le total des coûts d'acquisition (hors frais de port) auprès des vendeurs sollicités 
-	'---------------------------------------------------------------------------------------------
+	'-------------------------------------------------------------------------------------------------------------
+	'Retourne le total des coûts d'acquisition (hors frais de port) auprès du vendeur sollicité passé en paramètre
+	'-------------------------------------------------------------------------------------------------------------
 	Dim VpTotal As Single = 0
 		For Each VpRemoteCard As clsRemoteCard In VpToSell
 			If VpRemoteCard.Vendeur Is VpSeller Then

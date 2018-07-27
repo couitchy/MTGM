@@ -1494,6 +1494,12 @@ Public Partial Class MainForm
 				Return "masters25#" + VpStr
 			Case "DO"
 				Return "dominaria#" + VpStr
+			Case "DV"
+				Return "DuelDecksElvesvsInventors#" + VpStr
+			Case "BB"
+				Return "battlebond#" + VpStr
+			Case "M9"
+				Return "magic2019#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1778,6 +1784,12 @@ Public Partial Class MainForm
 				Return "A2"
 			Case "dominaria"
 				Return "DO"
+			Case "DuelDecksElvesvsInventors"
+				Return "DV"
+			Case "battlebond"
+				Return "BB"
+			Case "magic2019"
+				Return "M9"
 			Case Else
 				Return ""
 		End Select

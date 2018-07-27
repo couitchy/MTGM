@@ -166,7 +166,7 @@ Public Partial Class frmExport
 					VpCur.Series = .GetValue(.GetOrdinal("SeriesCD")).ToString
 					VpCur.SeriesNM_FR = .GetValue(.GetOrdinal("SeriesNM_FR")).ToString
 					VpCur.SeriesNM_MtG = .GetValue(.GetOrdinal("SeriesNM_MtG")).ToString
-					VpCur.SubTypeVF =.GetValue(.GetOrdinal("SubTypeVF")).ToString
+					VpCur.SubTypeVF = .GetValue(.GetOrdinal("SubTypeVF")).ToString
 					VpCur.TexteFR = .GetValue(.GetOrdinal("TexteFR")).ToString.Trim
 					VpCur.Title = .GetString(.GetOrdinal("Card.Title"))
 					VpCur.TitleFR = .GetString(.GetOrdinal("TitleFR"))
