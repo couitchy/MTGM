@@ -1500,6 +1500,10 @@ Public Partial Class MainForm
 				Return "battlebond#" + VpStr
 			Case "M9"
 				Return "magic2019#" + VpStr
+			Case "GS"
+				Return "GlobalSeriesJiangYangguMuYanling#" + VpStr
+			Case "SS"
+				Return "SignatureSpellbookJace#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1790,6 +1794,10 @@ Public Partial Class MainForm
 				Return "BB"
 			Case "magic2019"
 				Return "M9"
+			Case "GlobalSeriesJiangYangguMuYanling"
+				Return "GS"
+			Case "SignatureSpellbookJace"
+				Return "SS"
 			Case Else
 				Return ""
 		End Select

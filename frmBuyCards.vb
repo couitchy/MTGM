@@ -428,9 +428,9 @@ Public Partial Class frmBuyCards
 				VpV = VpV1
 			End While
 			VpPreTotal = clsRemoteCard.GetTotal(VpToSell)
-			'Optimisation finale par rapport aux frais de port
+			'Optimisation complémentaire par rapport aux frais de port
 			For Each VpSeller1 As clsSeller In VpSellers
-				'Si on sollicite un vendeur pour un montant n'atteignant même pas les frais de port, on va essayer de dispatcher les acquisitions ailleurs
+				'Si on sollicite un vendeur pour un montant n'atteignant même pas les frais de port max, on va essayer de dispatcher les acquisitions ailleurs
 				If clsRemoteCard.GetSubTotal(VpToSell, VpSeller1) <= clsModule.CgWorstShippingCost Then
 					VpBackups.Clear
 					'Parcourt les cartes qu'on lui a achetées
@@ -452,11 +452,34 @@ Public Partial Class frmBuyCards
 						Application.DoEvents
 					Next VpCard1
 					'Si on n'a pas réussi à transférer l'intégralité des transactions avec ce vendeur ou bien qu'au final ça coûte plus cher que les frais de port économisés, on restaure toutes les transactions dans leur état initial
-					If VpSeller1.Bought > 0 OrElse clsRemoteCard.GetTotal(VpToSell) - VpPreTotal >= clsModule.CgWorstShippingCost Then
+					If VpSeller1.Bought > 0 OrElse clsRemoteCard.GetTotal(VpToSell) - VpPreTotal >= clsModule.CgShippingCost Then
 						Call Me.CancelChanges(VpBackups)
 					End If
 				End If
 			Next VpSeller1
+			'Optimisation finale sur les cartes les plus chères si on a réussi (en particulier grâce à l'étape précédente) à solliciter moins de vendeurs que ce que la consigne autorise
+			VpBackups.Clear
+			VpToSell.Reverse
+			If clsSeller.GetCount(VpSellers) < VpMaxTransactions Then
+				'Parcourt les cartes achetées, de la plus chère à la moins chère
+				For Each VpCard1 As clsRemoteCard In VpToSell
+					If VpCard1.Bought > 0 Then
+						VpFound = New clsRemoteCard(VpCard1.Name, Nothing, VpCard1.Edition, VpCard1.Language, VpCard1.Etat, VpCard1.Quantity, VpCard1.Bought, Single.PositiveInfinity)
+						'Recherche si la carte est disponible avec une économie supérieure aux frais de port engendrés
+						For Each VpCard2 As clsRemoteCard In VpToSell
+							If VpCard2.Name = VpFound.Name AndAlso VpCard2.Quantity > 0 AndAlso VpCard2.Prix <= VpFound.Prix AndAlso VpCard1.Prix - VpCard2.Prix > clsModule.CgShippingCost Then
+								VpFound = VpCard2
+							End If
+						Next VpCard2
+						'Effectue la modification de la transaction si on a trouvé un meilleur vendeur
+						Call Me.ChangeTransaction(VpFound, VpCard1, VpBackups)
+						'Si on a atteint le nombre de transactions souhaité, il faut s'arrêter
+						If clsSeller.GetCount(VpSellers) >= VpMaxTransactions Then
+							Exit For
+						End If
+					End If
+				Next VpCard1
+			End If
 			'Avertissement si le nombre maximal de transactions autorisées est dépassé
 			If clsSeller.GetCount(VpSellers) > VpMaxTransactions Then
 				Call clsModule.ShowWarning("Impossible d'effectuer tous les achats avec seulement " + VpMaxTransactions.ToString + " transaction(s)...")

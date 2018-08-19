@@ -2090,6 +2090,14 @@ Public Partial Class MainForm
 			VpStr = VpStr.Substring(VpStr.IndexOf("!") + 1)
 		End While
 		VpRich.AppendText(VpStr)
+		'Gestion des descriptions en italique
+		If VpStr.Contains(" &lt;i&gt;") Then
+			VpRich.SelectionStart = VpRich.Text.IndexOf(" &lt;i&gt;")
+			VpRich.SelectionLength = VpRich.Text.IndexOf(" &lt;/i&gt;") - VpRich.SelectionStart + 11
+			VpRich.SelectionFont = New Font(VpRich.Font, FontStyle.Italic)
+			VpRich.SelectedRtf = VpRich.SelectedRtf.Replace(" &lt;i&gt;", "").Replace(" &lt;/i&gt;", "")
+			VpRich.DeselectAll
+		End If
 	End Sub
 	Private Sub LoadAutorisations(VpCard As String)
 	'-----------------------------------------------------------------------
