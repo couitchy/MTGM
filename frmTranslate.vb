@@ -70,9 +70,9 @@ Public Partial Class frmTranslate
 		Return VpIn
 	End Function	
 	Private Sub Launch(VpSerie As String)
-	'------------------------------------------------------------------------------------------
-	'Parcours les cartes de la série passée en paramètre et demande leur traduction une par une
-	'------------------------------------------------------------------------------------------
+	'-------------------------------------------------------------------------------------------
+	'Parcours les cartes de l'édition passée en paramètre et demande leur traduction une par une
+	'-------------------------------------------------------------------------------------------
 	Dim VpDBCommand As New OleDbCommand
 		MainForm.VgMe.IsMainReaderBusy = True
     	VpDBCommand.Connection = VgDB

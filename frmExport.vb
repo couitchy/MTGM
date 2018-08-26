@@ -263,7 +263,7 @@ Public Partial Class frmExport
 				While True
 					VpName = VpStrs(0)
 					VpEdition = VpStrs(1)
-					'Pré-traitement 1 : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et sa série
+					'Pré-traitement 1 : dans le cas du nouveau format d'exportation v2, il faut d'abord retrouver le numéro encyclopédique correspondant au nom de la carte et son édition
 					If VpStrs.Length > 2 AndAlso VpStrs(2) <> "" Then
 						VpStrs(0) = clsModule.GetEncNbr(VpStrs(0), VpStrs(1))
 						VpStrs(1) = VpStrs(2)

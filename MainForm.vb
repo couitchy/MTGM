@@ -250,12 +250,14 @@ Public Partial Class MainForm
 	'Vérification fichier / base de données par défaut
 	'-------------------------------------------------
 	Dim VpCur As FileInfo
-	Dim VpDefault As FileInfo
-		'Si le fichier sélectionné est différent de celui par défaut, propose de l'y mettre
-		If File.Exists(VgOptions.VgSettings.DefaultBase) And File.Exists(VpFile) Then
+	Dim VpDefault As FileInfo = Nothing
+		'Si le fichier sélectionné est différent de celui par défaut ou que celui par défaut n'existe pas, propose de l'y mettre
+		If File.Exists(VpFile) Then
 			VpCur = New FileInfo(VpFile)
-			VpDefault = New FileInfo(VgOptions.VgSettings.DefaultBase)
-			If VpCur.FullName <> VpDefault.FullName Then
+			If File.Exists(VgOptions.VgSettings.DefaultBase) Then
+				VpDefault = New FileInfo(VgOptions.VgSettings.DefaultBase)
+			End If
+			If VpDefault Is Nothing OrElse VpCur.FullName <> VpDefault.FullName Then
 				If clsModule.ShowQuestion("Voulez-vous définir la base de données que vous tentez d'ouvrir comme étant celle par défaut ?" + vbCrLf + "Choisissez 'Oui' pour ouvrir automatiquement cette base à chaque démarrage du logiciel...") = DialogResult.Yes Then
 					VgOptions.VgSettings.DefaultBase = VpCur.FullName
 					Call VgOptions.SaveSettings
@@ -862,7 +864,7 @@ Public Partial Class MainForm
 	Dim VpFile As StreamReader
 	Dim VpCheckCard As clsMyCard
 	Dim VpCounter As Integer = 0
-		'Cherche dans la base tous les artefacts de la série concernée
+		'Cherche dans la base tous les artefacts de l'édition concernée
 		VgDBCommand.CommandText = "Select Title From Card Inner Join Series On Card.Series = Series.SeriesCD Where SeriesNM = '" + VpSerie.Replace("'", "''") + "' And Type = 'A';"
 		VgDBReader = VgDBCommand.ExecuteReader
 		With VgDBReader
@@ -1810,7 +1812,7 @@ Public Partial Class MainForm
 						VpRow = Me.grdPropCard.RowsCount
 						Me.grdPropCard.Rows.Insert(VpRow)
 						Me.grdPropPicture.Rows.Insert(VpRow)
-						'Colonne série
+						'Colonne édition
 						Me.grdPropCard(VpRow, 0) = New Cells.Cell(.GetString(.GetOrdinal(If(Me.IsInVFMode, "SeriesNM_FR", "SeriesNM"))))
 						Me.grdPropCard(VpRow, 0).Tag = .GetString(.GetOrdinal("Series"))
 						Me.grdPropPicture(VpRow, 0) = New Cells.Cell(CDate(.GetValue(.GetOrdinal("Release"))).Year)
@@ -3036,7 +3038,7 @@ Public Partial Class MainForm
 					VpElderCriteria = VpElderCriteria + Me.ElderCriteria(VpParent.Tag.Value, VpParent.Parent.Tag.Key)
 					VpParent = VpParent.Parent
 				End While
-				'Sélection d'un élément de type 'série'
+				'Sélection d'un élément de type 'édition'
 				If e.Node.Parent.Tag.Key = "Card.Series" Then
 					Call Me.ManageMode(False)
 					Call Me.LoadCaracOther(e.Node.Tag.Value, clsModule.eModeCarac.Serie, VpElderCriteria)

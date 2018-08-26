@@ -41,7 +41,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 36468
+	Public Const CgCodeLines As Integer   			= 36470
 	Public Const CGNClasses As Integer   			= 84
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -313,21 +313,21 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID, SubTypes
-		BDD_v13		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve, MyGamesID
-		BDD_v14		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries, infos Réserve
-		BDD_v15		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes séries
+		BDD_v1		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
+		BDD_v14		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
+		BDD_v15		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
 		BDD_v16		'manque MultiverseId, dossiers decks, tournois 1V1&Multi
 		BDD_v17		'manque MultiverseId, dossiers decks
 		BDD_v18		'manque MultiverseId
@@ -657,7 +657,7 @@ Public Module clsModule
 						VgDBCommand.ExecuteNonQuery
 						VgDBCommand.CommandText = "Update Series Set SeriesCD_MW = SeriesCD;"
 						VgDBCommand.ExecuteNonQuery
-						Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des séries / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les autres formats de logiciels Magic...")
+						Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des éditions / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les autres formats de logiciels Magic...")
 					End If
 					'Passage version 16 à 17
 					If CInt(VpDBVersion) < 17 Then
@@ -1653,9 +1653,9 @@ Public Module clsModule
 		Return CLng(VgDBCommand.ExecuteScalar)
 	End Function
 	Public Function GetSerieCodeFromName(VpName As String, Optional VpApprox As Boolean = False, Optional VpFR As Boolean = False) As String
-	'-----------------------------------------------------------------------------------------
-	'Retourne le code id d'une série à partir de son nom VO ou VF, éventuellement approximatif
-	'-----------------------------------------------------------------------------------------
+	'-------------------------------------------------------------------------------------------
+	'Retourne le code id d'une édition à partir de son nom VO ou VF, éventuellement approximatif
+	'-------------------------------------------------------------------------------------------
 	Dim VpO As Object
 		If VpName.Length = 2 Then
 			Return VpName

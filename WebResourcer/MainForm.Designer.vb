@@ -236,7 +236,7 @@ Partial Class MainForm
 		'
 		Me.mnuCardsExtractDiff2.Name = "mnuCardsExtractDiff2"
 		Me.mnuCardsExtractDiff2.Size = New System.Drawing.Size(406, 22)
-		Me.mnuCardsExtractDiff2.Text = "celles ayant un titre VO/VF identique (hors séries VO exclusives)"
+		Me.mnuCardsExtractDiff2.Text = "celles ayant un titre VO/VF identique (hors éditions VO exclusives)"
 		AddHandler Me.mnuCardsExtractDiff2.Click, AddressOf Me.MnuCardsExtractDiff2Click
 		'
 		'mnuCardsExtractDiff5
@@ -272,14 +272,14 @@ Partial Class MainForm
 		'
 		Me.mnuFilterTitles.Name = "mnuFilterTitles"
 		Me.mnuFilterTitles.Size = New System.Drawing.Size(398, 22)
-		Me.mnuFilterTitles.Text = "Extraction des titres VF pour une nouvelle série"
+		Me.mnuFilterTitles.Text = "Extraction des titres VF pour une nouvelle édition"
 		AddHandler Me.mnuFilterTitles.Click, AddressOf Me.MnuFilterTitlesClick
 		'
 		'mnuBuildTitles
 		'
 		Me.mnuBuildTitles.Name = "mnuBuildTitles"
 		Me.mnuBuildTitles.Size = New System.Drawing.Size(398, 22)
-		Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une série depuis la base"
+		Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une édition depuis la base"
 		AddHandler Me.mnuBuildTitles.Click, AddressOf Me.MnuBuildTitlesClick
 		'
 		'mnuCheckTrad
@@ -345,7 +345,7 @@ Partial Class MainForm
 		Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
 		Me.mnuSeries.Name = "mnuSeries"
 		Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
-		Me.mnuSeries.Text = "Séries"
+		Me.mnuSeries.Text = "Editions"
 		'
 		'mnuSeriesSpoilers
 		'
@@ -380,7 +380,7 @@ Partial Class MainForm
 		'
 		Me.mnuBuildDouble.Name = "mnuBuildDouble"
 		Me.mnuBuildDouble.Size = New System.Drawing.Size(432, 22)
-		Me.mnuBuildDouble.Text = "Construire le fichier des doubles cartes pour une série depuis la base"
+		Me.mnuBuildDouble.Text = "Construire le fichier des doubles cartes pour une édition depuis la base"
 		AddHandler Me.mnuBuildDouble.Click, AddressOf Me.MnuBuildDoubleClick
 		'
 		'mnuFixTxtVO

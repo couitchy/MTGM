@@ -232,7 +232,7 @@ Partial Class frmNewEdition
 		Me.optUpdate.Name = "optUpdate"
 		Me.optUpdate.Size = New System.Drawing.Size(191, 17)
 		Me.optUpdate.TabIndex = 10
-		Me.optUpdate.Text = "Mettre à jour les en-têtes des séries"
+		Me.optUpdate.Text = "Mettre à jour les en-têtes des éditions"
 		Me.optUpdate.UseVisualStyleBackColor = true
 		'
 		'optManual
@@ -349,7 +349,7 @@ Partial Class frmNewEdition
 		Me.chkHeaderAlready.Name = "chkHeaderAlready"
 		Me.chkHeaderAlready.Size = New System.Drawing.Size(346, 17)
 		Me.chkHeaderAlready.TabIndex = 6
-		Me.chkHeaderAlready.Text = "Les caractéristiques de la série sont déjà saisies [sauter cette étape]"
+		Me.chkHeaderAlready.Text = "Les caractéristiques de l'édition sont déjà saisies [sauter cette étape]"
 		Me.chkHeaderAlready.UseVisualStyleBackColor = true
 		AddHandler Me.chkHeaderAlready.CheckedChanged, AddressOf Me.ChkHeaderAlreadyCheckedChanged
 		'
@@ -482,7 +482,7 @@ Partial Class frmNewEdition
 		Me.Name = "frmNewEdition"
 		Me.ShowInTaskbar = false
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-		Me.Text = "Ajout d'une nouvelle série"
+		Me.Text = "Ajout d'une nouvelle édition"
 		AddHandler Load, AddressOf Me.FrmNewEditionLoad
 		Me.grpData.ResumeLayout(false)
 		Me.splitH.Panel1.ResumeLayout(false)

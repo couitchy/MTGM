@@ -63,7 +63,7 @@ Public Partial Class frmAddCards
 	'Gère le changement de la sélection dans un des comboboxes :
 	'- traduction dans l'autre
 	'- récupération du numéro encyclopédique
-	'- récupération des séries disponibles
+	'- récupération des éditions disponibles
 	'-----------------------------------------------------------
 		If VmChangesCommited Then Exit Sub
 		VmChangesCommited = True

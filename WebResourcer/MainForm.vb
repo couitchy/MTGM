@@ -1803,9 +1803,9 @@ Public Partial Class MainForm
 		End Select
 	End Function
 	Private Sub BuildHeaders(VpR14 As Boolean)
-	'-------------------------------------------
-	'Génération du fichier d'en-têtes des séries
-	'-------------------------------------------
+	'---------------------------------------------
+	'Génération du fichier d'en-têtes des éditions
+	'---------------------------------------------
 	Dim VpTxt As StreamWriter
 	Dim VpStr As String
 		Me.dlgSave.FileName = ""
@@ -2242,7 +2242,7 @@ Public Partial Class MainForm
 	'---------------------------------------------------------------------------------------------------------------
 	'Construit un fichier de titres des cartes en français pour l'édition demandée, avec les infos déjà dans la base
 	'---------------------------------------------------------------------------------------------------------------
-	Dim VpSerie As String = InputBox("Entrer le code de la série")
+	Dim VpSerie As String = InputBox("Entrer le code de l'édition")
 	Dim VpOut As StreamWriter
 		If VpSerie.Length = 2 Then
 			Me.dlgSave.FileName = ""
@@ -2282,7 +2282,7 @@ Public Partial Class MainForm
 	'----------------------------------------------------------------------------------------------------------------------------
 	'Construit le fichier des doubles cartes pour l'édition demandée, avec les infos déjà dans la base (associations recto-verso)
 	'----------------------------------------------------------------------------------------------------------------------------
-	Dim VpSerie As String = InputBox("Entrer le code de la série")
+	Dim VpSerie As String = InputBox("Entrer le code de l'édition")
 	Dim VpOut As StreamWriter
 	Dim VpDown As Hashtable
 	Dim VpTop As Hashtable
@@ -2570,13 +2570,13 @@ Public Partial Class MainForm
 	Dim VpMax As Long
 	Dim VpBestFit As Long
 	Dim VpBestFitDelta As Long = Long.MaxValue
-	Dim VpSerie As String = InputBox("Entrer le code de la série")
+	Dim VpSerie As String = InputBox("Entrer le code de l'édition")
 		If VpSerie.Length = 2 Then
 			VmDBCommand.CommandText = "Select Min(EncNbr) From Card Where UCase(Series) = '" + VpSerie.ToUpper + "';"
 			VpMin = VmDBCommand.ExecuteScalar
 			VmDBCommand.CommandText = "Select Max(EncNbr) From Card Where UCase(Series) = '" + VpSerie.ToUpper + "';"
 			VpMax = VmDBCommand.ExecuteScalar
-			Call Me.AddToLog("L'intervalle pour cette série est [" + VpMin.ToString + ";" + VpMax.ToString + "]", eLogType.Information, , True)
+			Call Me.AddToLog("L'intervalle pour cette édition est [" + VpMin.ToString + ";" + VpMax.ToString + "]", eLogType.Information, , True)
 	    	VmDBCommand.CommandText = "Select EncNbr From Card Order By EncNbr;"
 	    	VmDBReader = VmDBCommand.ExecuteReader
 	    	ReDim VpEncNbrs(0)
@@ -2611,7 +2611,7 @@ Public Partial Class MainForm
 			Next VpI
 			Call Me.AddToLog("Emplacement le plus adapté : " + VpBestFit.ToString, eLogType.Information, , True)
 			VmDBCommand.CommandText = "Select Series.SeriesNM From Series Inner Join Card On Series.SeriesCD = Card.Series Where Card.EncNbr = " + VpBestFit.ToString + ";"
-			Call Me.AddToLog("Série normalement à cet endroit : " + VmDBCommand.ExecuteScalar.ToString, eLogType.Information, , True)
+			Call Me.AddToLog("Edition normalement à cet endroit : " + VmDBCommand.ExecuteScalar.ToString, eLogType.Information, , True)
 		End If
 	End Sub
 	Sub MnuExitClick(sender As Object, e As EventArgs)
@@ -2840,7 +2840,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuSeriesSpoilersClick(sender As Object, e As EventArgs)
 	Dim VpCode As String
-		VpCode = InputBox("Quel est le code de la nouvelle série à ajouter ?", "Récupération des spoilers", "(code)")
+		VpCode = InputBox("Quel est le code de la nouvelle édition à ajouter ?", "Récupération des spoilers", "(code)")
 		If VpCode <> "" Then
 			Me.dlgBrowse.SelectedPath = ""
 			Me.dlgBrowse.ShowDialog

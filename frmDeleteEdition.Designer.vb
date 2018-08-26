@@ -117,7 +117,7 @@ Partial Class frmDeleteEdition
 		Me.chkHeader.Name = "chkHeader"
 		Me.chkHeader.Size = New System.Drawing.Size(191, 17)
 		Me.chkHeader.TabIndex = 1
-		Me.chkHeader.Text = "Supprimer aussi l'en-tête de la série"
+		Me.chkHeader.Text = "Supprimer aussi l'en-tête de l'édition"
 		Me.chkHeader.UseVisualStyleBackColor = true
 		'
 		'chkCards
@@ -143,7 +143,7 @@ Partial Class frmDeleteEdition
 		Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
 		Me.Name = "frmDeleteEdition"
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-		Me.Text = "Suppression d'une série"
+		Me.Text = "Suppression d'une édition"
 		AddHandler Load, AddressOf Me.FrmDeleteEditionLoad
 		Me.grpSerie.ResumeLayout(false)
 		Me.grpSerie.PerformLayout

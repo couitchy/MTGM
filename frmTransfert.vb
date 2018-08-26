@@ -131,9 +131,9 @@ Public Partial Class frmTransfert
 		Return VpRet Or ( VgDBCommand.ExecuteScalar > 1 )
 	End Function
 	Public Shared Function GetMatchingEdition(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String) As String
-	'------------------------------------------------------------------------------------------------
-	'Dans le cas où NeedsPrecision a retourné faux, trouve la série correspondant à la carte courante
-	'------------------------------------------------------------------------------------------------
+	'-------------------------------------------------------------------------------------------------
+	'Dans le cas où NeedsPrecision a retourné faux, trouve l'édition correspondant à la carte courante
+	'-------------------------------------------------------------------------------------------------
 	Dim VpSQL As String
 		VpSQL = "Select Card.Series From ((" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
 		VpSQL = VpSQL + VpOwner.Restriction

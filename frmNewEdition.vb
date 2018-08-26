@@ -35,9 +35,9 @@ Public Partial Class frmNewEdition
 		Me.picMagic.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
 	End Sub
 	Private Function InsertHeader As Boolean
-	'--------------------------------------------------------------
-	'Inscrit l'en-tête de la nouvelle série dans la base de données
-	'--------------------------------------------------------------
+	'----------------------------------------------------------------
+	'Inscrit l'en-tête de la nouvelle édition dans la base de données
+	'----------------------------------------------------------------
 		Try
 			With VmEditionHeader
 				'(SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Foils, Nullx12, Notes)
@@ -51,9 +51,9 @@ Public Partial Class frmNewEdition
 		Return True
 	End Function
 	Private Sub DLResource(VpCount As String, VpFrom As String, VpTo As String)
-	'------------------------------------------------------
-	'Télécharge un fichier nécessaire à l'ajout d'une série
-	'------------------------------------------------------
+	'--------------------------------------------------------
+	'Télécharge un fichier nécessaire à l'ajout d'une édition
+	'--------------------------------------------------------
 		Me.lblStatus.Text = "Téléchargement des données en cours... " + VpCount
 		Application.DoEvents
 		Call clsModule.DownloadNow(New Uri(VpFrom), VpTo)
@@ -125,9 +125,9 @@ Public Partial Class frmNewEdition
 		Call clsModule.SecureDelete(Application.StartupPath + VpDouble)
 	End Sub
 	Private Sub UpdateSeriesHeaders
-	'--------------------------------------------------------------
-	'Met à jour les en-têtes des séries (table Series) dans la base
-	'--------------------------------------------------------------
+	'----------------------------------------------------------------
+	'Met à jour les en-têtes des éditions (table Series) dans la base
+	'----------------------------------------------------------------
 	Dim VpSeriesInfos As StreamReader
 	Dim VpInfos() As String
 	Dim VpLine As String
@@ -299,7 +299,7 @@ Public Partial Class frmNewEdition
 					Try
 						VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyCardText + ");"
 						VgDBCommand.ExecuteNonQuery
-					Catch	'Trappe d'erreur au cas où une mise à jour de textes VF a été faite avant que la série n'ait été ajoutée (auquel cas TextesFR est déjà bon et il n'y a rien de plus à faire)
+					Catch	'Trappe d'erreur au cas où une mise à jour de textes VF a été faite avant que l'édition n'ait été ajoutée (auquel cas TextesFR est déjà bon et il n'y a rien de plus à faire)
 					End Try
 				End If
 			Catch
@@ -418,9 +418,9 @@ Public Partial Class frmNewEdition
 		Return VpList
 	End Function
 	Sub CheckLoad
-	'--------------------------------------------------------------------------------------------------------------------------------------
-	'Ajoute dans la checkboxlist l'ensemble des séries présentes dans la table des éditions mais pas dans celle des cartes déjà référencées
-	'--------------------------------------------------------------------------------------------------------------------------------------
+	'----------------------------------------------------------------------------------------------------------------------------------------
+	'Ajoute dans la checkboxlist l'ensemble des éditions présentes dans la table des éditions mais pas dans celle des cartes déjà référencées
+	'----------------------------------------------------------------------------------------------------------------------------------------
 	Dim VpAlready As List(Of String)
 	Dim VpAll As List(Of String)
 		Me.chkNewEdition.Items.Clear
@@ -457,7 +457,7 @@ Public Partial Class frmNewEdition
 				Me.chkNewEdition.Tag = Me.chkNewEdition.CheckedItems(0).ToString
 				Call Me.AddNewEdition
 			Else
-				Call clsModule.ShowWarning("Aucune série n'a été sélectionnée dans la liste...")
+				Call clsModule.ShowWarning("Aucune édition n'a été sélectionnée dans la liste...")
 			End If
 		End If
 	End Sub
@@ -764,7 +764,7 @@ Public Class clsEditionHeader
 	Private VmLand As Integer = 10
 	Private VmLogoEdition As String = ""
 	Private VmNotesEdition As String = ""
-	<Category("Identification"), Description("Code de la série à 2 chiffres")> _
+	<Category("Identification"), Description("Code de l'édition à 2 chiffres")> _
 	Public Property SeriesCD As String
 		Get
 			Return VmSeriesCD.Substring(0, 2)
@@ -773,7 +773,7 @@ Public Class clsEditionHeader
 			VmSeriesCD = VpSeriesCD
 		End Set
 	End Property
-	<Category("Identification"), Description("Code de la série à 2 chiffres (Magic Online)")> _
+	<Category("Identification"), Description("Code de l'édition à 2 chiffres (Magic Online)")> _
 	Public Property SeriesCD_MO As String
 		Get
 			Return VmSeriesCD_MO
@@ -782,7 +782,7 @@ Public Class clsEditionHeader
 			VmSeriesCD_MO = VpSeriesCD_MO
 		End Set
 	End Property
-	<Category("Identification"), Description("Code de la série à 2 chiffres (Magic Workstation)")> _
+	<Category("Identification"), Description("Code de l'édition à 2 chiffres (Magic Workstation)")> _
 	Public Property SeriesCD_MW As String
 		Get
 			Return VmSeriesCD_MW
@@ -791,7 +791,7 @@ Public Class clsEditionHeader
 			VmSeriesCD_MW = VpSeriesCD_MW
 		End Set
 	End Property
-	<Category("Identification"), Description("Nom de la série (VO)")> _
+	<Category("Identification"), Description("Nom de l'édition (VO)")> _
 	Public Property SeriesNM As String
 		Get
 			Return VmSeriesNM
@@ -800,7 +800,7 @@ Public Class clsEditionHeader
 			VmSeriesNM = VpSeriesNM
 		End Set
 	End Property
-	<Category("Identification"), Description("Nom de la série (VF)")> _
+	<Category("Identification"), Description("Nom de l'édition (VF)")> _
 	Public Property SeriesNM_FR As String
 		Get
 			Return VmSeriesNM_FR
@@ -809,7 +809,7 @@ Public Class clsEditionHeader
 			VmSeriesNM_FR = VpSeriesNM_FR
 		End Set
 	End Property
-	<Category("Identification"), Description("Nom raccourci de la série sur magiccorportation.com (correspondance requise pour la mise à jour des prix...)")> _
+	<Category("Identification"), Description("Nom raccourci de l'édition sur magiccorportation.com (correspondance requise pour la mise à jour des prix...)")> _
 	Public Property SeriesNM_MtG As String
 		Get
 			Return VmSeriesNM_MtG

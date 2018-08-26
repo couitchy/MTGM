@@ -196,7 +196,7 @@ Partial Class frmTranslate
 		Me.Name = "frmTranslate"
 		Me.ShowInTaskbar = false
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-		Me.Text = "Traduction des cartes d'une série"
+		Me.Text = "Traduction des cartes d'une édition"
 		AddHandler Load, AddressOf Me.FrmTranslateLoad
 		AddHandler FormClosing, AddressOf Me.FrmTranslateFormClosing
 		Me.grpSerie.ResumeLayout(false)

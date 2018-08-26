@@ -651,7 +651,7 @@ Partial Class MainForm
 		Me.mnuNewEdition.Image = CType(resources.GetObject("mnuNewEdition.Image"),System.Drawing.Image)
 		Me.mnuNewEdition.Name = "mnuNewEdition"
 		Me.mnuNewEdition.Size = New System.Drawing.Size(279, 22)
-		Me.mnuNewEdition.Text = "Ajouter des séries..."
+		Me.mnuNewEdition.Text = "Ajouter des éditions..."
 		AddHandler Me.mnuNewEdition.Click, AddressOf Me.MnuNewEditionActivate
 		'
 		'mnuRemEdition
@@ -659,7 +659,7 @@ Partial Class MainForm
 		Me.mnuRemEdition.Image = CType(resources.GetObject("mnuRemEdition.Image"),System.Drawing.Image)
 		Me.mnuRemEdition.Name = "mnuRemEdition"
 		Me.mnuRemEdition.Size = New System.Drawing.Size(279, 22)
-		Me.mnuRemEdition.Text = "Supprimer une série"
+		Me.mnuRemEdition.Text = "Supprimer une édition"
 		AddHandler Me.mnuRemEdition.Click, AddressOf Me.MnuRemEditionActivate
 		'
 		'mnuTranslate
@@ -667,7 +667,7 @@ Partial Class MainForm
 		Me.mnuTranslate.Image = CType(resources.GetObject("mnuTranslate.Image"),System.Drawing.Image)
 		Me.mnuTranslate.Name = "mnuTranslate"
 		Me.mnuTranslate.Size = New System.Drawing.Size(279, 22)
-		Me.mnuTranslate.Text = "Traduire une série"
+		Me.mnuTranslate.Text = "Traduire une édition"
 		AddHandler Me.mnuTranslate.Click, AddressOf Me.MnuTranslateActivate
 		'
 		'mnuSeparator4
