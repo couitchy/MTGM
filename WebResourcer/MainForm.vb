@@ -27,6 +27,7 @@ Imports System.Net
 Imports System.IO
 Imports System.Text
 Imports System.Threading
+Imports System.Web.Script.Serialization
 Public Partial Class MainForm
 	Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
 	Private Const CmStrConn As String		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
@@ -37,6 +38,7 @@ Public Partial Class MainForm
 	Private Const CmURL4 As String  		= "http://www.magiccorporation.com"
 	Private Const CmURL5 As String  		= "http://magiccards.info/###/^^.html"
 	Private Const CmURL6 As String  		= "http://magiccards.info/query?q=%2B%2Be%3A###%2Fen&v=spoiler&s=issue"
+	Private Const CmURL7 As String  		= "https://mtgjson.com/json/###-x.json"
 	Private Const CmId As String  			= "#cardname#"
 	Private Const CmKey0 As String 			= "recherche_titre"
 	Private Const CmKey1 As String 			= "gathering-cartes-view"
@@ -2056,6 +2058,137 @@ Public Partial Class MainForm
 		VpOut.Close
 		Call Me.AddToLog("La récupération des fichiers spoilers est terminée.", eLogType.Information)
 	End Sub
+	Private Sub DownloadSpoilers2(VpCode As String)
+	'-----------------------------------------------------------------------------------------------------------
+	'Construit les fichiers (listing avec traduction, checklist, spoilerlist) nécessaires à l'ajout de l'édition
+	'-----------------------------------------------------------------------------------------------------------
+	Dim VpClient As New WebClient
+	Dim VpSerializer As JavaScriptSerializer
+	Dim VpJSONInfos As clsFullInfos = Nothing
+		'Récupération du json
+		Call Me.AddToLog("Téléchargement des informations depuis MTG JSON...", eLogType.Information)
+		Application.DoEvents
+		VpClient.DownloadFile(CmURL7.Replace("###", VpCode.ToUpper), Me.dlgBrowse.SelectedPath + "\" + VpCode + ".json")
+		VpSerializer = New JavaScriptSerializer
+		VpSerializer.MaxJsonLength = Integer.MaxValue
+		VpJSONInfos = VpSerializer.Deserialize(Of clsFullInfos)((New StreamReader(Me.dlgBrowse.SelectedPath + "\" + VpCode + ".json")).ReadToEnd)
+		'Infos sur l'édition
+		Call Me.AddToLog("*** Nom VO : " + VpJSONInfos.name, eLogType.Information)
+		Call Me.AddToLog("*** Nom VF : " + VpJSONInfos.translations.Item("fr"), eLogType.Information)
+		Call Me.AddToLog("*** Date de sortie : " + VpJSONInfos.releaseDate, eLogType.Information)
+		Call Me.AddToLog("*** Bordure des cartes : " + VpJSONInfos.border, eLogType.Information)
+		Call Me.AddToLog("*** Extension : " + VpJSONInfos.block, eLogType.Information)
+		Call Me.AddToLog("*** Code : " + VpJSONInfos.code, eLogType.Information)
+		'Construction des listings
+		Call Me.AddToLog("Construction du listing VO/VF...", eLogType.Information)
+		Application.DoEvents
+		Call Me.BuildAllTitles(VpJSONInfos)
+		Call Me.AddToLog("Construction de la checklist...", eLogType.Information)
+		Application.DoEvents
+		Call Me.BuildCheckList(VpJSONInfos)
+		Call Me.AddToLog("Construction de la spoilerlist...", eLogType.Information)
+		Application.DoEvents
+		Call Me.BuildSpoilerList(VpJSONInfos)
+		Call Me.AddToLog("Construction du listing des doubles cartes...", eLogType.Information)
+		Application.DoEvents
+		Call Me.BuildDoubles(VpJSONInfos)
+		Call Me.AddToLog("La construction des fichiers spoilers est terminée.", eLogType.Information)
+	End Sub
+	Private Sub BuildAllTitles(VpJSONInfos As clsFullInfos)
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_titles_fr.txt")
+	Dim VpAlready As New List(Of String)
+		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
+			With VpCard
+				If Not VpAlready.Contains(.name) Then
+					For Each VpForeign As clsFullInfos.clsFullCardInfos.clsForeignInfos In .foreignNames
+						If VpForeign.language = "French" Then
+							VpOut.WriteLine(.name + "#" + VpForeign.name)
+							Exit For
+						End If
+					Next VpForeign
+					VpAlready.Add(.name)
+				End If
+			End With
+		Next VpCard
+		VpOut.Flush
+		VpOut.Close
+	End Sub
+	Private Sub BuildCheckList(VpJSONInfos As clsFullInfos)
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_checklist_en.txt")
+	Dim VpColors As String
+		VpOut.WriteLine("#" + vbTab + "Name" + vbTab + "Artist" + vbTab + "Color" + vbTab + "Rarity" + vbTab + "Set")
+		VpJSONInfos.cards.Sort(New clsFullInfos.clsFullCardInfosComparer)
+		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
+			With VpCard
+				If .colors Is Nothing Then
+					If .type <> "Land" AndAlso Not .type.StartsWith("Basic Land") Then
+						Call Me.AddToLog("Vérifier la couleur de la carte : " + .name, eLogType.Warning)
+					End If
+					VpColors = "/"
+				Else
+					VpColors = ""
+					For Each VpColor As String In .colors
+						VpColors += "/" + VpColor 
+					Next VpColor
+				End If
+				VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+			End With
+		Next VpCard
+		VpOut.Flush
+		VpOut.Close
+	End Sub
+	Private Sub BuildSpoilerList(VpJSONInfos As clsFullInfos)
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_spoiler_en.txt")
+	Dim VpSubcosts() As String
+	Dim VpCost As String
+		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
+			With VpCard
+				VpOut.WriteLine("Name: " + vbTab + .name)
+				VpCost = ""
+				If .manaCost IsNot Nothing Then
+					VpSubcosts = .manaCost.Split("{")
+					If VpSubcosts.Length > 1 Then
+						For VpI As Integer = 1 To VpSubcosts.Length - 1
+							VpSubcosts(VpI) = VpSubcosts(VpI).Replace("}", "")
+							If VpSubcosts(VpI).Contains("/") Then
+								VpCost += "(" + VpSubcosts(VpI) + ")"
+							Else
+								VpCost += VpSubcosts(VpI)
+							End If
+						Next VpI
+					Else
+						VpCost = .manaCost.Replace("{", "").Replace("}", "")
+					End If
+				End If
+				VpOut.WriteLine("Cost: " + vbTab + VpCost)
+				VpOut.WriteLine("Type: " + vbTab + .type)
+				If .types.Contains("Creature") Then
+					VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
+				ElseIf .types.Contains("Planeswalker") Then
+					VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
+				Else
+					VpOut.WriteLine("Pow/Tgh: " + vbTab)
+				End If
+				VpOut.WriteLine("Rules Text: " + vbTab + If(.[text] Is Nothing, "", .[text].Replace("\n", vbCrLf)))
+				VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + .rarity)
+				VpOut.WriteLine("")
+			End With
+		Next VpCard
+		VpOut.Flush
+		VpOut.Close
+	End Sub
+	Private Sub BuildDoubles(VpJSONInfos As clsFullInfos)
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_doubles_en.txt")
+		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
+			With VpCard
+				If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then
+					VpOut.WriteLine(.names.Item(1) + "#" + .names.Item(0)) 
+				End If
+			End With
+		Next VpCard
+		VpOut.Flush
+		VpOut.Close
+	End Sub
 	Private Sub ListSubtypes
 	'---------------------------------------------------------------------------------------------------
 	'Liste les sous-types non traduits et les trie par ordre d'occurrences, du plus répandu au plus rare
@@ -2845,7 +2978,8 @@ Public Partial Class MainForm
 			Me.dlgBrowse.SelectedPath = ""
 			Me.dlgBrowse.ShowDialog
 			If Me.dlgBrowse.SelectedPath <> "" Then
-				Call Me.DownloadSpoilers(VpCode)
+				'Call Me.DownloadSpoilers(VpCode)
+				Call Me.DownloadSpoilers2(VpCode)
 			End If
 		End If
 	End Sub
@@ -2854,5 +2988,78 @@ Public Partial Class MainForm
 		Public Function Compare(ByVal x As FileSystemInfo, ByVal y As FileSystemInfo) As Integer Implements IComparer(Of FileSystemInfo).Compare
 			Return x.LastWriteTime.CompareTo(y.LastWriteTime)
 		End Function
+	End Class
+	<Serializable> _
+	Public Class clsFullInfos
+		Public name As String
+		Public code As String
+		Public gathererCode As String
+		Public oldCode As String
+		Public magicCardsInfoCode As String
+		Public releaseDate As String
+		Public border As String
+		Public type As String
+		Public block As String
+		Public onlineOnly As Boolean
+		Public translations As Dictionary(Of String, String)
+		Public cards As List(Of clsFullCardInfos)
+		Public Class clsFullCardInfos
+			Public id As String
+			Public layout As String
+			Public name As String
+			Public names As List(Of String)
+			Public manaCost As String
+			Public cmc As Single
+			Public colors As List(Of String)
+			Public colorIdentity As List(Of String)
+			Public type As String
+			Public supertypes As List(Of String)
+			Public types As List(Of String)
+			Public subtypes As List(Of String)
+			Public rarity As String
+			Public [text] As String
+			Public artist As String
+			Public number As String
+			Public power As String
+			Public toughness As String
+			Public loyalty As Object
+			Public multiverseid As Long
+			Public variations As List(Of Long)
+			Public imageName As String
+			Public watermark As String
+			Public border As String
+			Public timeshifted As Boolean
+			Public hand As Integer
+			Public life As Integer
+			Public reserved As Boolean
+			Public releaseDate As String
+			Public starter As Boolean
+			Public rulings As List(Of clsRulingsInfos)
+			Public foreignNames As List(Of clsForeignInfos)
+			Public printings As List(Of String)
+			Public originalText As String
+			Public originalType As String
+			Public legalities As List(Of clsLegalityInfos)
+			Public source As String
+			Public Class clsRulingsInfos
+				Public [date] As String
+				Public [text] As String
+			End Class
+			Public Class clsForeignInfos
+				Public language As String
+				Public name As String
+				Public multiverseid As Long
+			End Class
+			Public Class clsLegalityInfos
+				Public format As String
+				Public legality As String
+			End Class
+		End Class
+		Public Class clsFullCardInfosComparer
+			Implements IComparer(Of clsFullCardInfos)
+			Public Function Compare(ByVal x As clsFullCardInfos, ByVal y As clsFullCardInfos) As Integer Implements IComparer(Of clsFullCardInfos).Compare
+				Return x.name.CompareTo(y.name)
+			End Function
+		End Class
 	End Class
 End Class
