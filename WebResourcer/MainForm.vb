@@ -1506,6 +1506,8 @@ Public Partial Class MainForm
 				Return "GlobalSeriesJiangYangguMuYanling#" + VpStr
 			Case "SS"
 				Return "SignatureSpellbookJace#" + VpStr
+			Case "C8"
+				Return "commander2018#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1800,6 +1802,8 @@ Public Partial Class MainForm
 				Return "GS"
 			Case "SignatureSpellbookJace"
 				Return "SS"
+			Case "commander2018"
+				Return "C8"
 			Case Else
 				Return ""
 		End Select
@@ -2074,7 +2078,9 @@ Public Partial Class MainForm
 		VpJSONInfos = VpSerializer.Deserialize(Of clsFullInfos)((New StreamReader(Me.dlgBrowse.SelectedPath + "\" + VpCode + ".json")).ReadToEnd)
 		'Infos sur l'édition
 		Call Me.AddToLog("*** Nom VO : " + VpJSONInfos.name, eLogType.Information)
-		Call Me.AddToLog("*** Nom VF : " + VpJSONInfos.translations.Item("fr"), eLogType.Information)
+		If VpJSONInfos.translations IsNot Nothing AndAlso VpJSONInfos.translations.ContainsKey("fr") Then
+			Call Me.AddToLog("*** Nom VF : " + VpJSONInfos.translations.Item("fr"), eLogType.Information)
+		End If
 		Call Me.AddToLog("*** Date de sortie : " + VpJSONInfos.releaseDate, eLogType.Information)
 		Call Me.AddToLog("*** Bordure des cartes : " + VpJSONInfos.border, eLogType.Information)
 		Call Me.AddToLog("*** Extension : " + VpJSONInfos.block, eLogType.Information)
@@ -2141,37 +2147,41 @@ Public Partial Class MainForm
 	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_spoiler_en.txt")
 	Dim VpSubcosts() As String
 	Dim VpCost As String
+	Dim VpDone As New List(Of String)
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
-				VpOut.WriteLine("Name: " + vbTab + .name)
-				VpCost = ""
-				If .manaCost IsNot Nothing Then
-					VpSubcosts = .manaCost.Split("{")
-					If VpSubcosts.Length > 1 Then
-						For VpI As Integer = 1 To VpSubcosts.Length - 1
-							VpSubcosts(VpI) = VpSubcosts(VpI).Replace("}", "")
-							If VpSubcosts(VpI).Contains("/") Then
-								VpCost += "(" + VpSubcosts(VpI) + ")"
-							Else
-								VpCost += VpSubcosts(VpI)
-							End If
-						Next VpI
-					Else
-						VpCost = .manaCost.Replace("{", "").Replace("}", "")
+				If Not VpDone.Contains(.name) Then
+					VpOut.WriteLine("Name: " + vbTab + .name)
+					VpCost = ""
+					If .manaCost IsNot Nothing Then
+						VpSubcosts = .manaCost.Split("{")
+						If VpSubcosts.Length > 1 Then
+							For VpI As Integer = 1 To VpSubcosts.Length - 1
+								VpSubcosts(VpI) = VpSubcosts(VpI).Replace("}", "")
+								If VpSubcosts(VpI).Contains("/") Then
+									VpCost += "(" + VpSubcosts(VpI) + ")"
+								Else
+									VpCost += VpSubcosts(VpI)
+								End If
+							Next VpI
+						Else
+							VpCost = .manaCost.Replace("{", "").Replace("}", "")
+						End If
 					End If
+					VpOut.WriteLine("Cost: " + vbTab + VpCost)
+					VpOut.WriteLine("Type: " + vbTab + .type)
+					If .types.Contains("Creature") Then
+						VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
+					ElseIf .types.Contains("Planeswalker") Then
+						VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
+					Else
+						VpOut.WriteLine("Pow/Tgh: " + vbTab)
+					End If
+					VpOut.WriteLine("Rules Text: " + vbTab + If(.[text] Is Nothing, "", .[text].Replace("\n", vbCrLf)))
+					VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + .rarity)
+					VpOut.WriteLine("")
+					VpDone.Add(.name)
 				End If
-				VpOut.WriteLine("Cost: " + vbTab + VpCost)
-				VpOut.WriteLine("Type: " + vbTab + .type)
-				If .types.Contains("Creature") Then
-					VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
-				ElseIf .types.Contains("Planeswalker") Then
-					VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
-				Else
-					VpOut.WriteLine("Pow/Tgh: " + vbTab)
-				End If
-				VpOut.WriteLine("Rules Text: " + vbTab + If(.[text] Is Nothing, "", .[text].Replace("\n", vbCrLf)))
-				VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + .rarity)
-				VpOut.WriteLine("")
 			End With
 		Next VpCard
 		VpOut.Flush

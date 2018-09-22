@@ -873,7 +873,7 @@ Public Partial Class MainForm
 			End While
 			.Close
 		End With
-		'Vérifie dans la spoiler list s'il faut les ajouter dans la table Creature (Title, Power, Tough, Nullx37)
+		'Vérifie dans la spoilerlist s'il faut les ajouter dans la table Creature (Title, Power, Tough, Nullx37)
 		Me.dlgOpen4.FileName = ""
 		Me.dlgOpen4.ShowDialog
 		If Me.dlgOpen4.FileName <> "" Then
