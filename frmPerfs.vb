@@ -368,6 +368,9 @@ Public Partial Class frmPerfs
 	Dim VpVersusMatD2() As Integer
 	Dim VpTotV1 As Integer
 	Dim VpTotV2 As Integer
+	Dim VpTot As Integer
+	Dim VpG As Integer
+	Dim VpN As Integer
 	Dim VpEfficiencies As New List(Of clsEfficiency)
 	Dim VpFrequences As New List(Of clsMatchCounter)
 		Try
@@ -493,13 +496,20 @@ Public Partial Class frmPerfs
 							.Rows(VpRow).EntireRow.Font.Bold = True
 							VpRow = VpRow + 1
 							VpFrequences.Clear
+							VpTot = 0
 							For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
 								For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
 									If clsModule.GetDeckFormat(VpDeck1) = clsModule.GetDeckFormat(VpDeck2) Then
-										VpFrequences.Add(New clsMatchCounter(VpDeck1 + " / " + VpDeck2, clsPerformances.GetNPlayed(VpDeck1, VpDeck2)))
+										VpN = clsPerformances.GetNPlayed(VpDeck1, VpDeck2)
+										VpFrequences.Add(New clsMatchCounter(VpDeck1 + " / " + VpDeck2, VpN))
+										VpTot += VpN
+										VpG += 1
 									End If
 								Next VpDeck2
 							Next VpDeck1
+							For Each VpMatchCounter As clsMatchCounter In VpFrequences
+								VpMatchCounter.Proba = Math.Max(0.01, (1 - VpMatchCounter.Count / (2 * VpTot / VpG))) * clsModule.VgRandom.NextDouble
+							Next VpMatchCounter
 							VpFrequences.Sort(New clsMatchCounter.clsMatchCounterComparer)
 							For Each VpMatchCounter As clsMatchCounter In VpFrequences
 								.Cells(VpRow, 1) = VpMatchCounter.Versus
@@ -999,14 +1009,16 @@ Public Class clsMatchCounter
 	Public Class clsMatchCounterComparer
 		Implements IComparer(Of clsMatchCounter)
 		Public Function Compare(ByVal x As clsMatchCounter, ByVal y As clsMatchCounter) As Integer Implements IComparer(Of clsMatchCounter).Compare
-			Return y.Count - x.Count
+			Return x.Proba.CompareTo(y.Proba)
 		End Function
 	End Class
 	Private VmVersus As String
 	Private VmCount As Integer
+	Private VmProba As Single
 	Public Sub New(VpVersus As String, VpCount As Integer)
 		VmVersus = VpVersus
 		VmCount = VpCount
+		VmProba = 0
 	End Sub
 	Public ReadOnly Property Versus As String
 		Get
@@ -1017,5 +1029,13 @@ Public Class clsMatchCounter
 		Get
 			Return VmCount
 		End Get
+	End Property
+	Public Property Proba As Single
+		Get
+			Return VmProba
+		End Get
+		Set (VpProba As Single)
+			VmProba = VpProba
+		End Set
 	End Property
 End Class
