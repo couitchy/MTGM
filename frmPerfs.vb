@@ -368,11 +368,8 @@ Public Partial Class frmPerfs
 	Dim VpVersusMatD2() As Integer
 	Dim VpTotV1 As Integer
 	Dim VpTotV2 As Integer
-	Dim VpTot As Integer
-	Dim VpG As Integer
-	Dim VpN As Integer
 	Dim VpEfficiencies As New List(Of clsEfficiency)
-	Dim VpFrequences As New List(Of clsMatchCounter)
+	Dim VpTournoi As clsMagicTournament
 		Try
 			VpExcelApp = CreateObject("Excel.Application")
 		Catch
@@ -491,32 +488,24 @@ Public Partial Class frmPerfs
 					For VpJ As Integer = VpI + 1 To VpM
 						VpJ1 = clsModule.GetAdvName(VpI)
 						VpJ2 = clsModule.GetAdvName(VpJ)
+						VpTournoi = new clsMagicTournament
 						If clsModule.GetAdvDecksCount(VpJ1) > 0 And clsModule.GetAdvDecksCount(VpJ2) > 0 Then
 							.Cells(VpRow, 1) = VpJ1 + " vs. " + VpJ2
 							.Rows(VpRow).EntireRow.Font.Bold = True
 							VpRow = VpRow + 1
-							VpFrequences.Clear
-							VpTot = 0
 							For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
 								For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
 									If clsModule.GetDeckFormat(VpDeck1) = clsModule.GetDeckFormat(VpDeck2) Then
-										VpN = clsPerformances.GetNPlayed(VpDeck1, VpDeck2)
-										VpFrequences.Add(New clsMatchCounter(VpDeck1 + " / " + VpDeck2, VpN))
-										VpTot += VpN
-										VpG += 1
+										VpTournoi.CreateMatchup(VpDeck1, VpDeck2, clsPerformances.GetNPlayed(VpDeck1, VpDeck2), 0)
 									End If
 								Next VpDeck2
 							Next VpDeck1
-							For Each VpMatchCounter As clsMatchCounter In VpFrequences
-								VpMatchCounter.Proba = Math.Max(0.01, (1 - VpMatchCounter.Count / (2 * VpTot / VpG))) * clsModule.VgRandom.NextDouble
-							Next VpMatchCounter
-							VpFrequences.Sort(New clsMatchCounter.clsMatchCounterComparer)
-							For Each VpMatchCounter As clsMatchCounter In VpFrequences
-								.Cells(VpRow, 1) = VpMatchCounter.Versus
-								.Cells(VpRow, 2) = VpMatchCounter.Count
-								VpRow = VpRow + 1
-							Next VpMatchCounter
-							VpRow = VpRow + 1
+							For Each VpDuel As clsMatchup In VpTournoi.GetDuelList
+								.Cells(VpRow, 1) = VpDuel.Deck1 + " / " + VpDuel.Deck2
+								.Cells(VpRow, 2) = VpDuel.DeckConfrontations
+								VpRow += 1
+							Next VpDuel
+							VpRow += 1
 						End If
 					Next VpJ
 				Next VpI

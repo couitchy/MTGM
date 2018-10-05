@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="About.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="clsMagicTournament.vb" />
     <Compile Include="clsModule.vb" />
     <Compile Include="CustomClass.vb" />
     <Compile Include="ExRichTextBox.vb" />
