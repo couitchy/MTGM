@@ -1099,7 +1099,7 @@ Public Partial Class MainForm
 			Next VpElement
 			For Each VpElement In Me.wbMV.Document.All
 				If VpElement.InnerText = "Autorisations en Tournois" Then
-					Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml)
+					Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml + VpElement.NextSibling.NextSibling.NextSibling.InnerHtml)
 				End If
 			Next VpElement
 		Catch
@@ -1118,6 +1118,7 @@ Public Partial Class MainForm
 						VpAut = VpAut + VpA.Substring(VpA.LastIndexOf("/") + 1) + "#"
 					End If
 				Next VpA
+				VpAut = VpAut.Replace("#1vs1", "#blocdk#1vs1")
 				Return VpAut.Substring(0, VpAut.Length - 1)
 			End If
 		Catch
@@ -1201,6 +1202,92 @@ Public Partial Class MainForm
 				Call Me.AddToLog("La récupération des autorisations de tournois a été annulée.", eLogType.Warning, , True)
 			Else
 				Call Me.AddToLog("La récupération des autorisations de tournois est terminée.", eLogType.Information, , True)
+			End If
+		End If
+	End Sub
+	Private Function ReadAutorisations(VpPath As String) As Dictionary(Of String, String)
+	Dim VpFile As StreamReader
+	Dim VpData As New Dictionary(Of String, String)
+	Dim VpStr As String
+	Dim VpName As String
+	Dim VpAut As String
+		VpFile = New StreamReader(VpPath)
+		While Not VpFile.EndOfStream
+			VpStr = VpFile.ReadLine
+			If VpStr.Contains("#") Then
+				VpName = VpStr.Substring(0, VpStr.IndexOf("#"))
+				VpAut = VpStr.Substring(VpStr.IndexOf("#"))
+				If Not VpAut.Contains("#mtgo") Then
+					VpAut += "#mtgodk"
+				End If
+				VpData.Add(VpName, VpAut)
+			End If
+		End While
+		VpFile.Close
+		Return VpData
+	End Function
+	Private Sub MergeAutorisations
+	'------------------------------------
+	'Fusion de 2 fichiers d'autorisations
+	'------------------------------------
+	Dim VpPathCur As String
+	Dim VpPathOld As String
+	Dim VpDataCur As Dictionary(Of String, String)
+	Dim VpDataOld As Dictionary(Of String, String)
+	Dim VpKeysCur() As String
+	Dim VpKeysOld() As String
+	Dim VpMerge As StreamWriter
+		Call Me.AddToLog("Attente saisie listing récent...", eLogType.Information)
+		Application.DoEvents
+		Me.dlgOpen4.FileName = ""
+		Me.dlgOpen4.ShowDialog
+		If Me.dlgOpen4.FileName <> "" Then
+			VpPathCur = Me.dlgOpen4.FileName
+			Call Me.AddToLog("Attente saisie listing ancien...", eLogType.Information)
+			Application.DoEvents
+			Me.dlgOpen4.FileName = ""
+			Me.dlgOpen4.ShowDialog
+			If Me.dlgOpen4.FileName <> "" Then
+				VpPathOld = Me.dlgOpen4.FileName
+				Me.dlgSave.FileName = ""
+				Me.dlgSave.ShowDialog
+				If Me.dlgSave.FileName <> "" Then
+					Call Me.AddToLog("La fusion des autorisations de tournois a commencé...", eLogType.Information, True)
+					Application.DoEvents
+					VpDataCur = Me.ReadAutorisations(VpPathCur)
+					VpDataOld = Me.ReadAutorisations(VpPathOld)
+					ReDim VpKeysCur(0 To VpDataCur.Keys.Count - 1)
+					ReDim VpKeysOld(0 To VpDataOld.Keys.Count - 1)
+					Call VpDataCur.Keys.CopyTo(VpKeysCur, 0)
+					Call VpDataOld.Keys.CopyTo(VpKeysOld, 0)
+					Call Me.AddToLog("*** Reprise des anciennes autorisations 'bloc' :", eLogType.Information)
+					For Each VpCard As String In VpKeysCur
+						If VpDataOld.ContainsKey(VpCard) AndAlso VpDataCur.Item(VpCard).Contains("#blocdk#") Then
+							VpDataCur.Item(VpCard) = VpDataCur.Item(VpCard).Replace("#blocdk#", If(VpDataOld.Item(VpCard).Contains("#blocno"), "#blocno#", "#bloc#"))
+						Else
+							Call Me.AddToLog("Pas de correspondance trouvée pour : " + VpCard, eLogType.Information)
+							Application.DoEvents
+						End If
+					Next VpCard
+					Call Me.AddToLog("*** Autorisations de cartes manquantes reprises :", eLogType.Information)
+					For Each VpCard As String In VpKeysOld
+						If Not VpDataCur.ContainsKey(VpCard) Then
+							VpDataCur.Add(VpCard, VpDataOld.Item(VpCard))
+							Call Me.AddToLog(VpCard + " = " + VpDataCur.Item(VpCard), eLogType.Information)
+							Application.DoEvents
+						End If
+					Next VpCard
+					ReDim VpKeysCur(0 To VpDataCur.Keys.Count - 1)
+					Call VpDataCur.Keys.CopyTo(VpKeysCur, 0)
+					VpMerge = New StreamWriter(Me.dlgSave.FileName)
+					VpMerge.WriteLine(Now.ToShortDateString)
+					For Each VpCard As String In VpKeysCur
+						VpMerge.WriteLine(VpCard + VpDataCur.Item(VpCard))
+					Next VpCard
+					VpMerge.Flush
+					VpMerge.Close
+					Call Me.AddToLog("La fusion des autorisations de tournois est terminée.", eLogType.Information, , True)
+				End If
 			End If
 		End If
 	End Sub
@@ -2892,6 +2979,9 @@ Public Partial Class MainForm
 		If Not VmDB Is Nothing Then
 			Call Me.UpdateAutorisations(False)
 		End If
+	End Sub
+	Sub MnuCardsAutMergeClick(sender As Object, e As EventArgs)
+		Call Me.MergeAutorisations
 	End Sub
 	Sub WbMVDocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
 		VmIsComplete = True

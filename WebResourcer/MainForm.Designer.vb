@@ -62,6 +62,7 @@ Partial Class MainForm
 		Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuCardsAutMerge = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuCardReplaceTitle = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem()
@@ -305,25 +306,32 @@ Partial Class MainForm
 		'
 		'mnuCardsAut
 		'
-		Me.mnuCardsAut.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsAutAll, Me.mnuCardsAutListe})
+		Me.mnuCardsAut.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsAutAll, Me.mnuCardsAutListe, Me.mnuCardsAutMerge})
 		Me.mnuCardsAut.Image = CType(resources.GetObject("mnuCardsAut.Image"),System.Drawing.Image)
 		Me.mnuCardsAut.Name = "mnuCardsAut"
 		Me.mnuCardsAut.Size = New System.Drawing.Size(278, 22)
-		Me.mnuCardsAut.Text = "Récupérer les autorisations en tournois"
+		Me.mnuCardsAut.Text = "Autorisations en tournois"
 		'
 		'mnuCardsAutAll
 		'
 		Me.mnuCardsAutAll.Name = "mnuCardsAutAll"
 		Me.mnuCardsAutAll.Size = New System.Drawing.Size(110, 22)
-		Me.mnuCardsAutAll.Text = "Toutes"
+		Me.mnuCardsAutAll.Text = "Récupérer Toutes"
 		AddHandler Me.mnuCardsAutAll.Click, AddressOf Me.MnuCardsAutClick
 		'
 		'mnuCardsAutListe
 		'
 		Me.mnuCardsAutListe.Name = "mnuCardsAutListe"
 		Me.mnuCardsAutListe.Size = New System.Drawing.Size(110, 22)
-		Me.mnuCardsAutListe.Text = "Liste"
+		Me.mnuCardsAutListe.Text = "Récupérer Liste"
 		AddHandler Me.mnuCardsAutListe.Click, AddressOf Me.MnuCardsAutListeClick
+		'
+		'mnuCardsAutMerge
+		'
+		Me.mnuCardsAutMerge.Name = "mnuCardsAutMerge"
+		Me.mnuCardsAutMerge.Size = New System.Drawing.Size(110, 22)
+		Me.mnuCardsAutMerge.Text = "Fusionner 2 fichiers d'autorisations"
+		AddHandler Me.mnuCardsAutMerge.Click, AddressOf Me.MnuCardsAutMergeClick
 		'
 		'mnuCardReplaceTitle
 		'
@@ -828,6 +836,7 @@ Partial Class MainForm
 	Private mnuCardsExtractDiff5 As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesUpdateListe As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesUpdateAll As System.Windows.Forms.ToolStripMenuItem
+	Private mnuCardsAutMerge As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsAutListe As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsAutAll As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPicturesRevertSP As System.Windows.Forms.ToolStripMenuItem

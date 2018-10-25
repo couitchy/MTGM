@@ -192,6 +192,7 @@ Partial Class MainForm
 		Me.picAutT2 = New System.Windows.Forms.PictureBox
 		Me.picAutBloc = New System.Windows.Forms.PictureBox
 		Me.picAut1V1 = New System.Windows.Forms.PictureBox
+		Me.picAutMTGO = New System.Windows.Forms.PictureBox
 		Me.btShowAll = New TD.SandBar.ButtonItem
 		Me.btCardUse = New TD.SandBar.ButtonItem
 		Me.btHistPrices = New TD.SandBar.ButtonItem
@@ -249,6 +250,7 @@ Partial Class MainForm
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).BeginInit
 		CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).BeginInit
+		CType(Me.picAutMTGO,System.ComponentModel.ISupportInitialize).BeginInit
 		Me.cbarImage.SuspendLayout
 		Me.pnlImage.SuspendLayout
 		Me.splitH4.Panel1.SuspendLayout
@@ -1718,6 +1720,7 @@ Partial Class MainForm
 		'grpAutorisations
 		'
 		Me.grpAutorisations.BackColor = System.Drawing.Color.Transparent
+		Me.grpAutorisations.Controls.Add(Me.picAutMTGO)
 		Me.grpAutorisations.Controls.Add(Me.picAutMulti)
 		Me.grpAutorisations.Controls.Add(Me.picAutT1)
 		Me.grpAutorisations.Controls.Add(Me.picAutT15)
@@ -1731,6 +1734,14 @@ Partial Class MainForm
 		Me.grpAutorisations.Size = New System.Drawing.Size(469, 39)
 		Me.grpAutorisations.TabIndex = 18
 		Me.grpAutorisations.TabStop = false
+		'
+		'picAutMTGO
+		'
+		Me.picAutMTGO.Location = New System.Drawing.Point(331, 10)
+		Me.picAutMTGO.Name = "picAutMTGO"
+		Me.picAutMTGO.Size = New System.Drawing.Size(35, 25)
+		Me.picAutMTGO.TabIndex = 6
+		Me.picAutMTGO.TabStop = false
 		'
 		'picAutMulti
 		'
@@ -1919,6 +1930,9 @@ Partial Class MainForm
 		Me.imglstAutorisations.Images.SetKeyName(19, "_aTM.png")
 		Me.imglstAutorisations.Images.SetKeyName(20, "_aTMno.png")
 		Me.imglstAutorisations.Images.SetKeyName(21, "_aTMoff.png")
+		Me.imglstAutorisations.Images.SetKeyName(22, "_aMTGO.png")
+		Me.imglstAutorisations.Images.SetKeyName(23, "_aMTGOno.png")
+		Me.imglstAutorisations.Images.SetKeyName(24, "_aMTGOoff.png")
 		'
 		'cmnuCbar
 		'
@@ -2015,6 +2029,7 @@ Partial Class MainForm
 		CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).EndInit
 		CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).EndInit
+		CType(Me.picAutMTGO,System.ComponentModel.ISupportInitialize).EndInit
 		Me.cbarImage.ResumeLayout(false)
 		Me.pnlImage.ResumeLayout(false)
 		Me.splitH4.Panel1.ResumeLayout(false)
@@ -2082,6 +2097,7 @@ Partial Class MainForm
 	Private mnuApplicationUpdate As System.Windows.Forms.ToolStripMenuItem
 	Private mnuUpdateAutorisations As System.Windows.Forms.ToolStripMenuItem
 	Private imglstAutorisations As System.Windows.Forms.ImageList
+	Private picAutMTGO As System.Windows.Forms.PictureBox
 	Private picAut1V1 As System.Windows.Forms.PictureBox
 	Private picAutBloc As System.Windows.Forms.PictureBox
 	Private picAutT2 As System.Windows.Forms.PictureBox

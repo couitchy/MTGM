@@ -357,6 +357,9 @@ Public Partial Class MainForm
 			If VpCardData.Length = 8 Then
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, 1V1, Multi) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ");"
 				VgDBCommand.ExecuteNonQuery
+			ElseIf VpCardData.Length = 9 Then
+				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, Blocoff, 1V1, Multi, MTGO, MTGOoff) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (VpCardData(5).EndsWith("dk")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ", " + (Not VpCardData(8).EndsWith("no")).ToString + ", " + (VpCardData(8).EndsWith("dk")).ToString + ");"
+				VgDBCommand.ExecuteNonQuery
 			End If
 			Me.prgAvance.Increment(1)
 			Application.DoEvents
@@ -2114,12 +2117,13 @@ Public Partial Class MainForm
 			Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(5)
 			Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(2)
 			Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(8)
+			Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(24)
 		Else
-			VgDBCommand.CommandText = "Select T1, T1r, T15, T2, M, Bloc, [1V1], Multi From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
+			VgDBCommand.CommandText = "Select T1, T1r, T15, T2, M, Bloc, Blocoff, [1V1], Multi, MTGO, MTGOoff From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
 				If .Read Then
-					'Autorisations T1
+					'Autorisations T1 (Vintage)
 					If .GetBoolean(1) Then
 						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(12)		'Restriction à 1 item
 					ElseIf .GetBoolean(0) Then
@@ -2127,41 +2131,51 @@ Public Partial Class MainForm
 					Else
 						Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(10)
 					End If
-					'Autorisations T1.5
+					'Autorisations T1.5 (Legacy)
 					If .GetBoolean(2) Then
 						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(16)
 					Else
 						Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(17)
 					End If
-					'Autorisations T2
+					'Autorisations T2 (Standard)
 					If .GetBoolean(3) Then
 						Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(13)
 					Else
 						Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(14)
 					End If
-					'Autorisations M
+					'Autorisations M (Modern)
 					If .GetBoolean(4) Then
 						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(19)
 					Else
 						Me.picAutM.Image = Me.imglstAutorisations.Images.Item(20)
 					End If
 					'Autorisations Bloc
-					If .GetBoolean(5) Then
+					If .GetBoolean(6) Then
+						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(5)
+					ElseIf .GetBoolean(5) Then
 						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(3)
 					Else
 						Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(4)
 					End If
 					'Autorisations 1 vs 1
-					If .GetBoolean(6) Then
+					If .GetBoolean(7) Then
 						Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(0)
 					Else
 						Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(1)
 					End If
 					'Autorisations Multi
-					If .GetBoolean(7) Then
+					If .GetBoolean(8) Then
 						Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(6)
 					Else
 						Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(7)
+					End If
+					'Autorisations MTGO
+					If .GetBoolean(10) Then
+						Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(24)
+					ElseIf .GetBoolean(9) Then
+						Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(22)
+					Else
+						Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(23)
 					End If
 				Else
 					Call Me.LoadAutorisations("")

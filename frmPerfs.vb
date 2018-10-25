@@ -368,6 +368,7 @@ Public Partial Class frmPerfs
 	Dim VpVersusMatD2() As Integer
 	Dim VpTotV1 As Integer
 	Dim VpTotV2 As Integer
+	Dim VpTotMat As New Dictionary(Of String, Single)
 	Dim VpEfficiencies As New List(Of clsEfficiency)
 	Dim VpTournoi As clsMagicTournament
 		Try
@@ -378,10 +379,9 @@ Public Partial Class frmPerfs
 		End Try
 		With VpExcelApp
 			.Workbooks.Add
-			If .Sheets.Count < 3 Then
+			While .Sheets.Count < 4
 				.Sheets.Add
-				.Sheets.Add
-			End If
+			End While
 			'Partie 1 : efficacité dans l'absolu
 			With .Sheets(1)
 				.Name = "Efficience"
@@ -422,10 +422,10 @@ Public Partial Class frmPerfs
 					End If
 				Next VpI
 			End With
-			VpRow = 1
 			'Partie 2 : résultats matches versus
 			With .Sheets(2)
 				.Name = "Matches vs."
+				VpRow = 1
 				VpM = clsModule.GetAdvCount
 				For VpI As Integer = 1 To VpM
 					For VpJ As Integer = VpI + 1 To VpM
@@ -468,6 +468,8 @@ Public Partial Class frmPerfs
 								.Cells(VpK + VpRow + 1, VpF + 2) = VpVersusMatV2(VpF).ToString + "V / " + VpVersusMatD2(VpF).ToString + "D"
 								.Cells(VpK + VpRow + 1, VpF + 2).Interior.ColorIndex = 48
 							Next VpF
+							VpTotMat.Add(VpJ1 + VpJ2, VpTotV1 / (VpTotV1 + VpTotV2))
+							VpTotMat.Add(VpJ2 + VpJ1, VpTotV2 / (VpTotV1 + VpTotV2))
 							.Cells(VpK + VpRow + 1, VpVersusMatV2.Length + 2) = VpTotV1.ToString + "V / " + VpTotV2.ToString + "D"
 							.Cells(VpK + VpRow + 1, VpVersusMatV2.Length + 2).Interior.ColorIndex = 48
 							.Cells(VpK + VpRow + 1, VpVersusMatV2.Length + 2).Font.Bold = True
@@ -480,10 +482,37 @@ Public Partial Class frmPerfs
 					.Columns(VpI).EntireColumn.AutoFit
 				Next VpI
 			End With
-			VpRow = 1
-			'Partie 3 : fréquence des matches
+			'Partie 3 : résultats joueurs versus
 			With .Sheets(3)
+				.Name = "Joueurs vs."
+				.Rows(1).EntireRow.Font.Bold = True
+				.Columns(1).EntireColumn.Font.Bold = True
+				For VpI As Integer = 1 To VpM
+					For VpJ As Integer = 1 To VpM
+						If VpI <> VpJ Then
+							VpJ1 = clsModule.GetAdvName(VpI)
+							VpJ2 = clsModule.GetAdvName(VpJ)
+							.Cells(1 + VpI, 1) = VpJ1
+							.Cells(1, 1 + VpJ) = VpJ2
+							If VpTotMat.ContainsKey(VpJ1 + VpJ2) Then
+								.Cells(1 + VpI, 1 + VpJ) = VpTotMat.Item(VpJ1 + VpJ2)
+								.Cells(1 + VpI, 1 + VpJ).NumberFormat = "0%"
+							Else
+								.Cells(1 + VpI, 1 + VpJ).Interior.ColorIndex = 48
+							End If
+						Else
+							.Cells(1 + VpI, 1 + VpJ).Interior.ColorIndex = 48
+						End If
+					Next VpJ
+				Next VpI
+				For VpI As Integer = 1 To VpM
+					.Columns(VpI).EntireColumn.AutoFit
+				Next VpI
+			End With
+			'Partie 4 : fréquence des matches
+			With .Sheets(4)
 				.Name = "Fréquences"
+				VpRow = 1
 				For VpI As Integer = 1 To VpM
 					For VpJ As Integer = VpI + 1 To VpM
 						VpJ1 = clsModule.GetAdvName(VpI)

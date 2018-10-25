@@ -41,7 +41,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 36929
+	Public Const CgCodeLines As Integer   			= 37105
 	Public Const CGNClasses As Integer   			= 87
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -134,7 +134,7 @@ Public Module clsModule
 	Public Const CgURL12 As String         			= "/Updates/Series r18.txt"
 	Public Const CgURL13 As String         			= "/Updates/MTGM.pdf"
 	Public Const CgURL14 As String         			= "/Updates/MD_Trad.log"
-	Public Const CgURL15 As String         			= "/Updates/Tournois r17.txt"
+	Public Const CgURL15 As String         			= "/Updates/Tournois r21.txt"
 	Public Const CgURL16 As String					= "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
 	Public Const CgURL17 As String					= "http://mtgm.free.fr"
 	Public Const CgURL18 As String					= "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
@@ -313,25 +313,26 @@ Public Module clsModule
 	End Enum
 	Public Enum eDBVersion
 		Unknown	= 0	'version inconnue (base corrompue)
-		BDD_v1		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-		BDD_v2		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-		BDD_v3		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-		BDD_v4		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-		BDD_v5		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-		BDD_v6		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-		BDD_v7		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-		BDD_v8		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-		BDD_v9		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-		BDD_v10		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-		BDD_v11		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
-		BDD_v12		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
-		BDD_v13		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
-		BDD_v14		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
-		BDD_v15		'manque MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
-		BDD_v16		'manque MultiverseId, dossiers decks, tournois 1V1&Multi
-		BDD_v17		'manque MultiverseId, dossiers decks
-		BDD_v18		'manque MultiverseId
-		BDD_v19		'à jour
+		BDD_v1		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+		BDD_v2		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+		BDD_v3		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+		BDD_v4		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+		BDD_v5		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+		BDD_v6		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+		BDD_v7		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+		BDD_v8		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+		BDD_v9		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+		BDD_v10		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+		BDD_v11		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
+		BDD_v12		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
+		BDD_v13		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
+		BDD_v14		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
+		BDD_v15		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
+		BDD_v16		'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi
+		BDD_v17		'manque tournois MTGO, MultiverseId, dossiers decks
+		BDD_v18		'manque tournois MTGO, MultiverseId
+		BDD_v19		'manque tournois MTGO
+		BDD_v20		'à jour
 	End Enum
 	Public Enum eDBProvider
 		Jet = 0
@@ -463,7 +464,7 @@ Public Module clsModule
 					VpDBVersion = eDBVersion.BDD_v9
 				Else
 					VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
-					If VpSchemaTable.Rows.Count <> 8 And VpSchemaTable.Rows.Count <> 9 Then
+					If VpSchemaTable.Rows.Count <> 8 And VpSchemaTable.Rows.Count <> 9 And VpSchemaTable.Rows.Count <> 12 Then
 						'Si on est ici, BDD version 10
 						VpDBVersion = eDBVersion.BDD_v10
 					Else
@@ -490,7 +491,7 @@ Public Module clsModule
 										VpDBVersion = eDBVersion.BDD_v15
 									Else
 										VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
-										If VpSchemaTable.Rows.Count <> 9 Then
+										If VpSchemaTable.Rows.Count <> 9 And VpSchemaTable.Rows.Count <> 12 Then
 											'Si on est ici, BDD version 16
 											VpDBVersion = eDBVersion.BDD_v16
 										Else
@@ -504,8 +505,14 @@ Public Module clsModule
 													'Si on est ici, BDD version 18
 													VpDBVersion = eDBVersion.BDD_v18
 												Else
-													'Si on est ici, BDD version 19
-													VpDBVersion = eDBVersion.BDD_v19
+													VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
+													If VpSchemaTable.Rows.Count <> 12 Then
+														'Si on est ici, BDD version 19
+														VpDBVersion = eDBVersion.BDD_v19
+													Else
+														'Si on est ici, BDD version 20
+														VpDBVersion = eDBVersion.BDD_v20
+													End If
 												End If
 											End If
 										End If
@@ -523,10 +530,10 @@ Public Module clsModule
 		'Actions à effectuer en conséquence
 		If VpDBVersion = eDBVersion.Unknown Then		'Version inconnue
 			Return False
-		ElseIf VpDBVersion = eDBVersion.BDD_v19 Then	'Dernière version
+		ElseIf VpDBVersion = eDBVersion.BDD_v20 Then	'Dernière version
 			Return True
 		Else											'Versions intermédiaires
-			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v19)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+			If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v20)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
 				Try
 					'Passage version 1 à 2
 					If CInt(VpDBVersion) < 2 Then
@@ -683,6 +690,17 @@ Public Module clsModule
 						VgDBCommand.CommandText = "Update Card Set MultiverseId = 0;"
 						VgDBCommand.ExecuteNonQuery
 						Call ShowInformation("Vous pouvez maintenant avoir l'image de chaque carte selon son édition (à activer dans les Préférences) !")
+					End If
+					'Passage version 19 à 20
+					If CInt(VpDBVersion) < 20 Then
+						VgDBCommand.CommandText = "Alter Table Autorisations Add MTGO Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table Autorisations Add Blocoff Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Alter Table Autorisations Add MTGOoff Bit;"
+						VgDBCommand.ExecuteNonQuery
+						VgDBCommand.CommandText = "Update Autorisations Set MTGOoff = 1;"
+						VgDBCommand.ExecuteNonQuery
 					End If
 				Catch
 					Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
