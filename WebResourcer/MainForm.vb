@@ -1262,7 +1262,7 @@ Public Partial Class MainForm
 					Call VpDataOld.Keys.CopyTo(VpKeysOld, 0)
 					Call Me.AddToLog("*** Reprise des anciennes autorisations 'bloc' :", eLogType.Information)
 					For Each VpCard As String In VpKeysCur
-						If VpDataOld.ContainsKey(VpCard) AndAlso VpDataCur.Item(VpCard).Contains("#blocdk#") Then
+						If VpDataOld.ContainsKey(VpCard) AndAlso VpDataCur.Item(VpCard).Contains("#blocdk#") AndAlso Not VpDataOld.Item(VpCard).Contains("#blocdk#") Then
 							VpDataCur.Item(VpCard) = VpDataCur.Item(VpCard).Replace("#blocdk#", If(VpDataOld.Item(VpCard).Contains("#blocno"), "#blocno#", "#bloc#"))
 						Else
 							Call Me.AddToLog("Pas de correspondance trouvée pour : " + VpCard, eLogType.Information)
@@ -1595,6 +1595,8 @@ Public Partial Class MainForm
 				Return "SignatureSpellbookJace#" + VpStr
 			Case "C8"
 				Return "commander2018#" + VpStr
+			Case "GR"
+				Return "guildsofravnica#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1891,6 +1893,8 @@ Public Partial Class MainForm
 				Return "SS"
 			Case "commander2018"
 				Return "C8"
+			Case "guildsofravnica"
+				Return "GR"
 			Case Else
 				Return ""
 		End Select
