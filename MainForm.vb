@@ -2424,7 +2424,7 @@ Public Partial Class MainForm
 				Return 49
 			Case "Q"
 				Return 50
-			Case "Y"
+			Case "Y", "Z"
 				Return 51
 			Case "P"
 				Return 52

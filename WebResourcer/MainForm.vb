@@ -1597,6 +1597,8 @@ Public Partial Class MainForm
 				Return "commander2018#" + VpStr
 			Case "GR"
 				Return "guildsofravnica#" + VpStr
+			Case "XP"
+				Return "explorersofixalan#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1895,6 +1897,8 @@ Public Partial Class MainForm
 				Return "C8"
 			Case "guildsofravnica"
 				Return "GR"
+			Case "explorersofixalan"
+				Return "XP"
 			Case Else
 				Return ""
 		End Select
@@ -2192,11 +2196,11 @@ Public Partial Class MainForm
 		Call Me.AddToLog("La construction des fichiers spoilers est terminée.", eLogType.Information)
 	End Sub
 	Private Sub BuildAllTitles(VpJSONInfos As clsFullInfos)
-	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_titles_fr.txt")
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_titles_fr.txt")
 	Dim VpAlready As New List(Of String)
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
-				If Not VpAlready.Contains(.name) Then
+				If Not VpAlready.Contains(.name) AndAlso .foreignNames IsNot Nothing Then
 					For Each VpForeign As clsFullInfos.clsFullCardInfos.clsForeignInfos In .foreignNames
 						If VpForeign.language = "French" Then
 							VpOut.WriteLine(.name + "#" + VpForeign.name)
@@ -2211,7 +2215,7 @@ Public Partial Class MainForm
 		VpOut.Close
 	End Sub
 	Private Sub BuildCheckList(VpJSONInfos As clsFullInfos)
-	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_checklist_en.txt")
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_checklist_en.txt")
 	Dim VpColors As String
 		VpOut.WriteLine("#" + vbTab + "Name" + vbTab + "Artist" + vbTab + "Color" + vbTab + "Rarity" + vbTab + "Set")
 		VpJSONInfos.cards.Sort(New clsFullInfos.clsFullCardInfosComparer)
@@ -2235,7 +2239,7 @@ Public Partial Class MainForm
 		VpOut.Close
 	End Sub
 	Private Sub BuildSpoilerList(VpJSONInfos As clsFullInfos)
-	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_spoiler_en.txt")
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_spoiler_en.txt")
 	Dim VpSubcosts() As String
 	Dim VpCost As String
 	Dim VpDone As New List(Of String)
@@ -2279,7 +2283,7 @@ Public Partial Class MainForm
 		VpOut.Close
 	End Sub
 	Private Sub BuildDoubles(VpJSONInfos As clsFullInfos)
-	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(" ", "") + "_doubles_en.txt")
+	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_doubles_en.txt")
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
 				If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then

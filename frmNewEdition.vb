@@ -621,6 +621,8 @@ Public Class clsMyCard
 			Return "H"
 		ElseIf VmType.Contains("Conspiracy") Then
 			Return "Y"
+		ElseIf VmType.Contains("Scheme") Then
+			Return "Z"
 		Else
 			Return ""
 		End If
@@ -657,10 +659,10 @@ Public Class clsMyCard
 	End Function
 	Public Function MyColor As String
 	Dim VpMyType As String
-		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'un jeton ou d'un arpenteur incolore
+		If VmColor = "" Then	'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'une machination, d'un arpenteur incolore ou d'un jeton
 			VpMyType = Me.MyType
 			Select Case VpMyType
-				Case "H", "Q", "Y", "P"
+				Case "H", "Q", "Y", "Z", "P"
 					Return "A"
 				Case "K"
 					Return "T"
