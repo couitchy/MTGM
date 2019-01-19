@@ -2607,7 +2607,7 @@ Public Partial Class MainForm
 		VpBuyer.Show
 		VpBuyer.BringToFront
 		If VpFullLoad Then
-			VpSQL = "Select Title, Items From " + VpSource + " Inner Join Card On Card.EncNbr = " + VpSource + ".EncNbr Where "
+			VpSQL = "Select Title, Items From " + VpSource + " Inner Join Card On Card.EncNbr = " + VpSource + ".EncNbr Where Reserve = " + Me.IsReserveSelected.ToString + " And "
 			VpSQL = VpSQL + Me.Restriction
 			VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
 			VgDBReader = VgDBCommand.ExecuteReader

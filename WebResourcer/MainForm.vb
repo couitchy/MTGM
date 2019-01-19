@@ -38,7 +38,7 @@ Public Partial Class MainForm
 	Private Const CmURL4 As String  		= "http://www.magiccorporation.com"
 	Private Const CmURL5 As String  		= "http://magiccards.info/###/^^.html"
 	Private Const CmURL6 As String  		= "http://magiccards.info/query?q=%2B%2Be%3A###%2Fen&v=spoiler&s=issue"
-	Private Const CmURL7 As String  		= "https://mtgjson.com/json/###-x.json"
+	Private Const CmURL7 As String  		= "https://mtgjson.com/json/###.json"
 	Private Const CmId As String  			= "#cardname#"
 	Private Const CmKey0 As String 			= "recherche_titre"
 	Private Const CmKey1 As String 			= "gathering-cartes-view"
@@ -1599,6 +1599,8 @@ Public Partial Class MainForm
 				Return "guildsofravnica#" + VpStr
 			Case "XP"
 				Return "explorersofixalan#" + VpStr
+			Case "UM"
+				Return "ultimatemasters#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1899,6 +1901,8 @@ Public Partial Class MainForm
 				Return "GR"
 			Case "explorersofixalan"
 				Return "XP"
+			Case "ultimatemasters"
+				Return "UM"
 			Case Else
 				Return ""
 		End Select
@@ -2179,7 +2183,7 @@ Public Partial Class MainForm
 		Call Me.AddToLog("*** Date de sortie : " + VpJSONInfos.releaseDate, eLogType.Information)
 		Call Me.AddToLog("*** Bordure des cartes : " + VpJSONInfos.border, eLogType.Information)
 		Call Me.AddToLog("*** Extension : " + VpJSONInfos.block, eLogType.Information)
-		Call Me.AddToLog("*** Code : " + VpJSONInfos.code, eLogType.Information)
+		Call Me.AddToLog("*** Code : " + VpJSONInfos.code.ToUpper, eLogType.Information)
 		'Construction des listings
 		Call Me.AddToLog("Construction du listing VO/VF...", eLogType.Information)
 		Application.DoEvents
@@ -2221,7 +2225,7 @@ Public Partial Class MainForm
 		VpJSONInfos.cards.Sort(New clsFullInfos.clsFullCardInfosComparer)
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
-				If .colors Is Nothing Then
+				If .colors Is Nothing OrElse .colors.Count = 0 Then
 					If .type <> "Land" AndAlso Not .type.StartsWith("Basic Land") Then
 						Call Me.AddToLog("Vérifier la couleur de la carte : " + .name, eLogType.Warning)
 					End If
@@ -2229,6 +2233,19 @@ Public Partial Class MainForm
 				Else
 					VpColors = ""
 					For Each VpColor As String In .colors
+						Select Case VpColor.ToUpper
+							Case "W"
+								VpColor = "White"
+							Case "U"
+								VpColor = "Blue"
+							Case "R"
+								VpColor = "Red"
+							Case "G"
+								VpColor = "Green"
+							Case "B"
+								VpColor = "Black"
+							Case Else
+						End Select
 						VpColors += "/" + VpColor 
 					Next VpColor
 				End If
@@ -2242,6 +2259,7 @@ Public Partial Class MainForm
 	Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_spoiler_en.txt")
 	Dim VpSubcosts() As String
 	Dim VpCost As String
+	Dim VpRarity As String
 	Dim VpDone As New List(Of String)
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
@@ -2273,7 +2291,21 @@ Public Partial Class MainForm
 						VpOut.WriteLine("Pow/Tgh: " + vbTab)
 					End If
 					VpOut.WriteLine("Rules Text: " + vbTab + If(.[text] Is Nothing, "", .[text].Replace("\n", vbCrLf)))
-					VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + .rarity)
+					Select Case .rarity
+						Case "land", "basic land"
+							VpRarity = "Land"
+						Case "common"
+							VpRarity = "Common"
+						Case "uncommon"
+							VpRarity = "Uncommon"
+						Case "rare"
+							VpRarity = "Rare"
+						Case "mythic", "mythic rare"
+							VpRarity = "Mythic Rare"
+						Case Else
+							VpRarity = .rarity
+					End Select
+					VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + VpRarity)
 					VpOut.WriteLine("")
 					VpDone.Add(.name)
 				End If
