@@ -358,8 +358,12 @@ Public Partial Class MainForm
 				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, 1V1, Multi) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ");"
 				VgDBCommand.ExecuteNonQuery
 			ElseIf VpCardData.Length = 9 Then
-				VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, Blocoff, 1V1, Multi, MTGO, MTGOoff) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (VpCardData(5).EndsWith("dk")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ", " + (Not VpCardData(8).EndsWith("no")).ToString + ", " + (VpCardData(8).EndsWith("dk")).ToString + ");"
-				VgDBCommand.ExecuteNonQuery
+				Try
+					VgDBCommand.CommandText = "Insert Into Autorisations (Title, T1, T1r, T15, M, T2, Bloc, Blocoff, 1V1, Multi, MTGO, MTGOoff) Values ('" + VpCardData(0).Replace("'", "''") + "', " + (Not VpCardData(1).EndsWith("no")).ToString + ", " + (VpCardData(1).EndsWith("r")).ToString + ", " + (Not VpCardData(2).EndsWith("no")).ToString + ", " + (Not VpCardData(3).EndsWith("no")).ToString + ", " + (Not VpCardData(4).EndsWith("no")).ToString + ", " + (Not VpCardData(5).EndsWith("no")).ToString + ", " + (VpCardData(5).EndsWith("dk")).ToString + ", " + (Not VpCardData(6).EndsWith("no")).ToString + ", " + (Not VpCardData(7).EndsWith("no")).ToString + ", " + (Not VpCardData(8).EndsWith("no")).ToString + ", " + (VpCardData(8).EndsWith("dk")).ToString + ");"
+					VgDBCommand.ExecuteNonQuery
+				Catch
+					Call clsModule.ShowWarning("Autorisation en doublon pour la carte : " + VpCardData(0))
+				End Try
 			End If
 			Me.prgAvance.Increment(1)
 			Application.DoEvents

@@ -41,7 +41,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer   			= 37149
+	Public Const CgCodeLines As Integer   			= 37283
 	Public Const CGNClasses As Integer   			= 87
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -142,7 +142,7 @@ Public Module clsModule
 	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes r19.log"
 	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF r19.log"
 	Public Const CgURL22 As String         			= "/Updates/MD_Multiverse r20.log"
-	Public Const CgURL23 As String         			= "https://mtgjson.com/json/AllSets-x.json.zip"
+	Public Const CgURL23 As String         			= "https://mtgjson.com/json/AllSets.json.zip"
 	Public Const CgURL24 As String					= "https://www.mkmapi.eu/ws/v1.1/output.json/products/card-name/1/1/false"
 	Public Const CgURL25 As String					= "https://www.mkmapi.eu/ws/v1.1/output.json/articles/"
 	Public Const CgURL26 As String					= "http://magic-ville.fr/fr/"
@@ -2878,6 +2878,7 @@ Public Class clsFullInfos
 	Public type As String
 	Public block As String
 	Public onlineOnly As Boolean
+	Public translations As Dictionary(Of String, String)
 	Public cards As List(Of clsFullCardInfos)
 	Public Class clsFullCardInfos
 		Public id As String
@@ -2898,9 +2899,9 @@ Public Class clsFullInfos
 		Public number As String
 		Public power As String
 		Public toughness As String
-		'Public loyalty As Integer
+		Public loyalty As Object
 		Public multiverseid As Long
-		Public variations As List(Of Long)
+		Public variations As List(Of String)
 		Public imageName As String
 		Public watermark As String
 		Public border As String
@@ -2911,12 +2912,13 @@ Public Class clsFullInfos
 		Public releaseDate As String
 		Public starter As Boolean
 		Public rulings As List(Of clsRulingsInfos)
-		Public foreignNames As List(Of clsForeignInfos)
+		Public foreignData As List(Of clsForeignInfos)
 		Public printings As List(Of String)
 		Public originalText As String
 		Public originalType As String
 		Public legalities As List(Of clsLegalityInfos)
 		Public source As String
+		Public uuid As String
 		Public Class clsRulingsInfos
 			Public [date] As String
 			Public [text] As String

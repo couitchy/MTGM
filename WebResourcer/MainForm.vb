@@ -146,13 +146,17 @@ Public Partial Class MainForm
 	'Retourne les prix pour la carte passée en paramètre
 	'---------------------------------------------------
 	Dim VpStr As String = ""
-	Dim VpStrFoil As String
-	Dim VpStrPlane As String
 	Dim VpStrs() As String
 	Dim VpPrices As String = ""
 	Dim VpIr As Integer
 	Dim VpVoid As String
 	Dim VpIn2 As String = VpIn.Replace(" ", "+").Replace("""", "").Replace("û", "u").Replace("á", "a").Replace("â", "a")
+	Dim VpItem As clsPriceInfos
+	Dim VpFoil As Boolean
+	Dim VpBigList As New SortedDictionary(Of String, List(Of clsPriceInfos))
+	Dim VpBigListFoil As New SortedDictionary(Of String, List(Of clsPriceInfos))
+	Dim VpList As List(Of clsPriceInfos)
+	Dim VpListFoil As List(Of clsPriceInfos)
 		Try
 			If VpIn2.StartsWith("Æ") Then
 				VpIn2 = VpIn2.Substring(1)
@@ -165,52 +169,62 @@ Public Partial Class MainForm
 			VpIr = Me.FindRightIndex(VpStrs, VpIn.Replace("û", "u"))
 			VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
 			VpStr = Me.HTMLfromRequest(VpStr)
-			VpStrFoil = VpStr
-			VpStrPlane = VpStr
-			VpStrs = VpStr.Split(New String() {CmKey2}, StringSplitOptions.None)
-			VpStr = VpStrs(0).Substring(VpStrs(0).LastIndexOf("""") + 2)
-			VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
-			VpPrices = VpStr
-			For VpI As Integer = 1 To VpStrs.Length - 1
-				VpStr = VpStrs(VpI).Substring(0, VpStrs(VpI).IndexOf("€") + 1)
-				VpStr = VpStr.Substring(VpStr.LastIndexOf(">") + 1)
-				VpPrices = VpPrices + "^" + VpStr
-				VpStr = VpStrs(VpI).Substring(VpStrs(VpI).LastIndexOf("""") + 2)
-				VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
-				VpPrices = VpPrices + "#" + VpStr
-			Next VpI
-			VpStrs = VpStrPlane.Split(New String() {CmKey2A}, StringSplitOptions.None)
-			VpStr = VpStrs(0).Substring(VpStrs(0).LastIndexOf("""") + 2)
-			VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
-			If VpStrs.Length > 1 Then
-				VpPrices = VpPrices + VpStr
-			End If
-			For VpI As Integer = 1 To VpStrs.Length - 1
-				VpStr = VpStrs(VpI).Substring(0, VpStrs(VpI).IndexOf("€") + 1)
-				VpStr = VpStr.Substring(VpStr.LastIndexOf(">") + 1)
-				VpPrices = VpPrices + "^" + VpStr
-				VpStr = VpStrs(VpI).Substring(VpStrs(VpI).LastIndexOf("""") + 2)
-				VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
-				VpPrices = VpPrices + "#" + VpStr
-			Next VpI
-			VpStrs = VpStrFoil.Split(New String() {CmKey2B}, StringSplitOptions.None)
-			VpStr = VpStrs(0).Substring(VpStrs(0).LastIndexOf("""") + 2)
-			VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
-			If VpStrs.Length > 1 AndAlso VpStrs(1).ToUpper.Contains(CmKey2C) Then
-				VpPrices = VpPrices + VpStr
-			End If
-			For VpI As Integer = 1 To VpStrs.Length - 1
-				If VpStrs(VpI).ToUpper.Contains(CmKey2C) Then
-					VpStr = VpStrs(VpI).Substring(0, VpStrs(VpI).IndexOf("€") + 1)
-					VpStr = VpStr.Substring(VpStr.LastIndexOf(">") + 1)
-					VpPrices = VpPrices + "PREMIUMFOILVO^" + VpStr
-					VpStr = VpStrs(VpI).Substring(VpStrs(VpI).LastIndexOf("""") + 2)
-					VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
+'			VpStr = (New StreamReader("C:\Users\Couitchy\Desktop\plains.html", Encoding.Default)).ReadToEnd
+			VpStr = VpStr.Substring(VpStr.IndexOf("Disponibilités"))
+			VpStrs = VpStr.Split(New String() {"/sigles/"}, StringSplitOptions.None)
+			For Each VpStr In VpStrs
+				VpItem = New clsPriceInfos
+				If VpStr.Contains(".png") Then
+					VpStr = VpStr.Substring(VpStr.IndexOf(".png"))
+					VpStr = VpStr.Substring(VpStr.IndexOf(">") + 1)
+					VpItem.Serie = VpStr.Substring(0, VpStr.IndexOf("<"))
+					VpStr = VpStr.Substring(VpStr.IndexOf("<td>") + 4)
+					VpItem.Condition = VpStr.Substring(0, VpStr.IndexOf("<"))
+					If VpStr.Contains("lang/vf.gif") Then
+						VpItem.Language = "VF"
+					ElseIf VpStr.Contains("lang/vo.gif") Then
+						VpItem.Language = "VO"
+					End If
+					VpFoil = VpStr.Contains("/logo_foil.png")
+					VpStr = VpStr.Substring(0, VpStr.IndexOf("€") + 1)
+					VpItem.Price = VpStr.Substring(VpStr.LastIndexOf(">") + 1)
+					If VpFoil Then
+						If VpBigListFoil.ContainsKey(VpItem.Serie) Then
+							VpListFoil = VpBigListFoil.Item(VpItem.Serie)
+						Else
+							VpListFoil = New List(Of clsPriceInfos)
+							VpBigListFoil.Add(VpItem.Serie, VpListFoil)
+						End If
+						VpListFoil.Add(VpItem)
+					Else
+						If VpBigList.ContainsKey(VpItem.Serie) Then
+							VpList = VpBigList.Item(VpItem.Serie)
+						Else
+							VpList = New List(Of clsPriceInfos)
+							VpBigList.Add(VpItem.Serie, VpList)
+						End If
+						VpList.Add(VpItem)
+					End If
 				End If
-				If VpStrs(VpI + 1).ToUpper.Contains(CmKey2C) Then
-					VpPrices = VpPrices + "#" + VpStr
+			Next VpStr
+			For Each VpList In VpBigList.Values
+				VpList.Sort(New clsPriceInfos.clsPriceInfosComparer)
+			Next VpList
+			For Each VpListFoil In VpBigListFoil.Values
+				VpListFoil.Sort(New clsPriceInfos.clsPriceInfosComparer)
+			Next VpListFoil
+			For Each VpList In VpBigList.Values
+				If VpList.Count > 0 Then
+					VpItem = VpList.Item(0)
+					VpPrices = VpPrices + VpItem.Serie + "^" + VpItem.Price + "#"
 				End If
-			Next VpI
+			Next VpList
+			For Each VpListFoil In VpBigListFoil.Values
+				If VpListFoil.Count > 0 Then
+					VpItem = VpListFoil.Item(0)
+					VpPrices = VpPrices + VpItem.Serie + "PREMIUMFOILVO^" + VpItem.Price + "#"
+				End If
+			Next VpListFoil
 		Catch
 		End Try
 		VpPrices = VpPrices.Trim
@@ -1601,6 +1615,20 @@ Public Partial Class MainForm
 				Return "explorersofixalan#" + VpStr
 			Case "UM"
 				Return "ultimatemasters#" + VpStr
+			Case "RG"
+				Return "ravnicaallegiance#" + VpStr
+			Case "UT"
+				Return "ultimateboxtopper#" + VpStr
+			Case "MY"
+				Return "mythicedition#" + VpStr
+			Case "PL"
+				Return "asiapacificlandprogram#" + VpStr
+			Case "EL"
+				Return "europeanlandprogram#" + VpStr
+			Case "GU"
+				Return "guru#" + VpStr
+			Case "CB"
+				Return "commanderanthologyvolumeii#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1903,6 +1931,20 @@ Public Partial Class MainForm
 				Return "XP"
 			Case "ultimatemasters"
 				Return "UM"
+			Case "ravnicaallegiance"
+				Return "RG"
+			Case "ultimateboxtopper"
+				Return "UT"
+			Case "mythicedition"
+				Return "MY"
+			Case "asiapacificlandprogram"
+				Return "PL"
+			Case "europeanlandprogram"
+				Return "EL"
+			Case "guru"
+				Return "GU"
+			Case "commanderanthologyvolumeii"
+				Return "CB"
 			Case Else
 				Return ""
 		End Select
@@ -2204,8 +2246,8 @@ Public Partial Class MainForm
 	Dim VpAlready As New List(Of String)
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
-				If Not VpAlready.Contains(.name) AndAlso .foreignNames IsNot Nothing Then
-					For Each VpForeign As clsFullInfos.clsFullCardInfos.clsForeignInfos In .foreignNames
+				If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing Then
+					For Each VpForeign As clsFullInfos.clsFullCardInfos.clsForeignInfos In .foreignData
 						If VpForeign.language = "French" Then
 							VpOut.WriteLine(.name + "#" + VpForeign.name)
 							Exit For
@@ -3129,6 +3171,57 @@ Public Partial Class MainForm
 			Return x.LastWriteTime.CompareTo(y.LastWriteTime)
 		End Function
 	End Class
+	Public Class clsPriceInfos
+		Public Serie As String
+		Public Condition As String
+		Public Language As String
+		Public Price As String
+		Public Class clsPriceInfosComparer
+			Implements IComparer(Of clsPriceInfos)
+			Private Function GetPoints(ByVal x As clsPriceInfos) As Integer
+				If x.Condition = "NM/MT" And x.Language = "VO" Then
+					Return 11
+				ElseIf x.Condition = "NM/MT" And x.Language = "VF" Then
+					Return 10
+				ElseIf x.Condition = "NM/MT" Then
+					Return 9
+				ElseIf x.Condition = "NM" And x.Language = "VO" Then
+					Return 8
+				ElseIf x.Condition = "NM" And x.Language = "VF" Then
+					Return 7
+				ElseIf x.Condition = "NM" Then
+					Return 6
+				ElseIf x.Condition = "EX" And x.Language = "VO" Then
+					Return 5
+				ElseIf x.Condition = "EX" And x.Language = "VF" Then
+					Return 4
+				ElseIf x.Condition = "EX" Then
+					Return 3
+				ElseIf x.Language = "VO" Then
+					Return 2
+				ElseIf x.Language = "VF" Then
+					Return 1
+				Else
+					Return 0
+				End If
+			End Function
+			Public Function Compare(ByVal x As clsPriceInfos, ByVal y As clsPriceInfos) As Integer Implements IComparer(Of clsPriceInfos).Compare
+				'Ordre de préférence :
+				'1) NM/MT VO
+				'2) NM/MT VF
+				'3) NM/MT
+				'4) NM VO
+				'5) NM VF
+				'6) NM
+				'7) EX VO
+				'8) EX VF
+				'9) EX
+				'10) VO
+				'11) VF
+				Return GetPoints(y).CompareTo(GetPoints(x))
+			End Function
+		End Class
+	End Class
 	<Serializable> _
 	Public Class clsFullInfos
 		Public name As String
@@ -3164,7 +3257,7 @@ Public Partial Class MainForm
 			Public toughness As String
 			Public loyalty As Object
 			Public multiverseid As Long
-			Public variations As List(Of Long)
+			Public variations As List(Of String)
 			Public imageName As String
 			Public watermark As String
 			Public border As String
@@ -3175,12 +3268,13 @@ Public Partial Class MainForm
 			Public releaseDate As String
 			Public starter As Boolean
 			Public rulings As List(Of clsRulingsInfos)
-			Public foreignNames As List(Of clsForeignInfos)
+			Public foreignData As List(Of clsForeignInfos)
 			Public printings As List(Of String)
 			Public originalText As String
 			Public originalType As String
 			Public legalities As List(Of clsLegalityInfos)
 			Public source As String
+			Public uuid As String
 			Public Class clsRulingsInfos
 				Public [date] As String
 				Public [text] As String

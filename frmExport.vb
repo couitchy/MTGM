@@ -506,7 +506,7 @@ Public Partial Class frmExport
 							VgDBCommand.CommandText = "Select Top 1 EncNbr From Card Where Title = '" + VpName.Replace("'", "''") + "';"
 							VpO = VgDBCommand.ExecuteScalar
 							If Not VpO Is Nothing Then
-								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
 							Else
 								VpNeedLog = True
 								'Partial match
@@ -514,7 +514,7 @@ Public Partial Class frmExport
 								VpO = VgDBCommand.ExecuteScalar
 								If Not VpO Is Nothing Then
 									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
-									VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString)
+									VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
 								Else
 									VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
 								End If
@@ -532,12 +532,14 @@ Public Partial Class frmExport
 				End If
 				'Une fois la conversion effectuée, on rappelle l'importation sur le fichier au bon format
 				Call Me.GoImport(VpPath.ToLower.Replace(clsModule.CgFExtL, clsModule.CgFExtO), VpSource, False)
-			'** Gestion format Magic Collection **
+			'** Gestion format Magic Collection ou Magic Arena **
 			Case clsModule.CgFExtC
 				VpLog = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtC, clsModule.CgPicLogExt))
 				VpConverted = New StreamWriter(VpPath.ToLower.Replace(clsModule.CgFExtC, clsModule.CgFExtO))
+				VpReserve = False
 				While Not VpIn.EndOfStream
 					VpStr = VpIn.ReadLine
+					'Cas 1 : Magic Collection
 					If VpStr.Contains(";") Then
 						VpStrs = VpStr.Split(";")
 						If VpStrs.Length >= 7 AndAlso IsNumeric(VpStrs(6)) Then
@@ -567,6 +569,42 @@ Public Partial Class frmExport
 								End If
 							End If
 						End If
+					'Cas 2 : Magic Arena
+					ElseIf VpStr.Contains(" ") Then
+						VpStrs = VpStr.Split(" ")
+						If VpStrs.Length >= 4 AndAlso IsNumeric(VpStrs(0)) Then
+							VpQte = CInt(Val(VpStrs(0)))
+							VpEdition = VpStrs(VpStrs.Length - 2).Replace("(", "").Replace(")", "")
+							VpName = ""
+							For VpI As Integer = 1 To VpStrs.Length - 3
+								VpName += VpStrs(VpI) + " "
+							Next VpI 
+							VpName = VpName.Trim
+							VpFoil = False	'à gérer ultérieurement
+							'Exact match
+							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MO = '" + VpEdition + "';"
+							VpO = VgDBCommand.ExecuteScalar
+							If VpO Is Nothing Then
+								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MW = '" + VpEdition + "';"
+								VpO = VgDBCommand.ExecuteScalar
+							End If
+							If Not VpO Is Nothing Then
+								VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+							Else
+								VpNeedLog = True
+								'Partial match
+								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And ( SeriesCD_MO = '" + VpEdition + "' Or SeriesCD_MW = '" + VpEdition + "' );"
+								VpO = VgDBCommand.ExecuteScalar
+								If Not VpO Is Nothing Then
+									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+									VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+								Else
+									VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+								End If
+							End If
+						End If
+					ElseIf VpStr = ""
+						VpReserve = True
 					End If
 				End While
 				VpConverted.Close
