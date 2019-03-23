@@ -28,6 +28,7 @@
 '------------------------------------------------------
 Imports System.IO
 Imports System.Xml
+Imports System.Text
 Imports System.Reflection
 Imports System.Web.Script.Serialization
 Imports ICSharpCode.SharpZipLib.Zip
@@ -242,7 +243,8 @@ Public Partial Class frmExport
 	Dim VpQteFoil As Integer
 	Dim VpNeedLog As Boolean = False
 		Cursor.Current = Cursors.WaitCursor
-		VpIn = New StreamReader(VpPath.ToLower.Replace(clsModule.CgFExtX, clsModule.CgFExtO))
+		VpIn = New StreamReader(VpPath.ToLower.Replace(clsModule.CgFExtX, clsModule.CgFExtO), Encoding.Default)
+		If VpIn.EndOfStream Then Return
 		'S'il s'agit d'un nouveau deck, l'inscrit en BDD
 		If VpIsNew Then
 			VpId = clsModule.GetNewDeckId
@@ -582,10 +584,10 @@ Public Partial Class frmExport
 							VpName = VpName.Trim
 							VpFoil = False	'à gérer ultérieurement
 							'Exact match
-							VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MO = '" + VpEdition + "';"
+							VgDBCommand.CommandText = "Select Card.EncNbr From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where (Title = '" + VpName.Replace("'", "''") + "' Or TitleFR = '" + VpName.Replace("'", "''") + "') And SeriesCD_MO = '" + VpEdition + "';"
 							VpO = VgDBCommand.ExecuteScalar
 							If VpO Is Nothing Then
-								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MW = '" + VpEdition + "';"
+								VgDBCommand.CommandText = "Select Card.EncNbr From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where (Title = '" + VpName.Replace("'", "''") + "' Or TitleFR = '" + VpName.Replace("'", "''") + "') And SeriesCD_MW = '" + VpEdition + "';"
 								VpO = VgDBCommand.ExecuteScalar
 							End If
 							If Not VpO Is Nothing Then
@@ -593,7 +595,7 @@ Public Partial Class frmExport
 							Else
 								VpNeedLog = True
 								'Partial match
-								VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And ( SeriesCD_MO = '" + VpEdition + "' Or SeriesCD_MW = '" + VpEdition + "' );"
+								VgDBCommand.CommandText = "Select Card.EncNbr From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%' Or '" + VpName.Replace("'", "''") + "' Like '%' + TitleFR + '%' Or TitleFR Like '%" + clsModule.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And ( SeriesCD_MO = '" + VpEdition + "' Or SeriesCD_MW = '" + VpEdition + "' );"
 								VpO = VgDBCommand.ExecuteScalar
 								If Not VpO Is Nothing Then
 									VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
