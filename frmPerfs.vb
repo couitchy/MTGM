@@ -517,7 +517,7 @@ Public Partial Class frmPerfs
 					For VpJ As Integer = VpI + 1 To VpM
 						VpJ1 = clsModule.GetAdvName(VpI)
 						VpJ2 = clsModule.GetAdvName(VpJ)
-						VpTournoi = new clsMagicTournament
+						VpTournoi = New clsMagicTournament
 						If clsModule.GetAdvDecksCount(VpJ1) > 0 And clsModule.GetAdvDecksCount(VpJ2) > 0 Then
 							.Cells(VpRow, 1) = VpJ1 + " vs. " + VpJ2
 							.Rows(VpRow).EntireRow.Font.Bold = True
@@ -525,13 +525,15 @@ Public Partial Class frmPerfs
 							For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
 								For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
 									If clsModule.GetDeckFormat(VpDeck1) = clsModule.GetDeckFormat(VpDeck2) Then
-										VpTournoi.CreateMatchup(VpDeck1, VpDeck2, clsPerformances.GetNPlayed(VpDeck1, VpDeck2), 0)
+										VpTournoi.CreateMatchup(VpDeck1, VpDeck2, clsPerformances.GetNVictoires(VpDeck1, VpDeck2), clsPerformances.GetNVictoires(VpDeck2, VpDeck1))
 									End If
 								Next VpDeck2
 							Next VpDeck1
 							For Each VpDuel As clsMatchup In VpTournoi.GetDuelList
 								.Cells(VpRow, 1) = VpDuel.Deck1 + " / " + VpDuel.Deck2
 								.Cells(VpRow, 2) = VpDuel.DeckConfrontations
+								.Cells(VpRow, 3) = VpDuel.Deck1Victory
+								.Cells(VpRow, 4) = VpDuel.Deck2Victory
 								VpRow += 1
 							Next VpDuel
 							VpRow += 1
@@ -539,7 +541,7 @@ Public Partial Class frmPerfs
 					Next VpJ
 				Next VpI
 				'Formatage particulier
-				For VpI As Integer = 1 To VpDecks1.Length + 1
+				For VpI As Integer = 1 To 4
 					.Columns(VpI).EntireColumn.AutoFit
 				Next VpI
 			End With

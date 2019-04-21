@@ -41,7 +41,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer				= 37289
+	Public Const CgCodeLines As Integer				= 37305
 	Public Const CGNClasses As Integer				= 87
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -113,7 +113,7 @@ Public Module clsModule
 	Public Const CgMdMultiverse As String			= "\MD_Multiverse.log"
 	Public Const CgShell As String					= "explorer.exe"
 	Public Const CgDefaultServer As String			= "http://couitchy.free.fr/upload/MTGM"
-	Public Const CgURL0 As String					= "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=#&type=card"
+	Public Const CgURL0 As String					= "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=#&type=card"
 	Public Const CgURL1 As String         			= "/Updates/TimeStamp r4.txt"
 	Public Const CgURL1B As String         			= "/Updates/Beta/TimeStamp.txt"
 	Public Const CgURL1C As String         			= "/Updates/PicturesStamp.txt"
@@ -1852,6 +1852,9 @@ Public Module clsModule
 		ElseIf MainForm.VgMe.IsMainReaderBusy Then
 			Exit Sub
 		ElseIf VpMultiverseId <> 0 AndAlso VgOptions.VgSettings.PicturesSource = ePicturesSource.Online Then
+			RemoveHandler VppicScanCard.LoadCompleted, AddressOf LoadScanCardCompleted
+			AddHandler VppicScanCard.LoadCompleted, AddressOf LoadScanCardCompleted
+			ServicePointManager.SecurityProtocol = &H00000C00	'TLS 1.2
 			VppicScanCard.LoadAsync(clsModule.CgURL0.Replace("#", VpMultiverseId.ToString))
 		ElseIf File.Exists(VgOptions.VgSettings.PicturesFile) Then
 			If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < CgImgMinLength Then
@@ -1925,6 +1928,17 @@ Public Module clsModule
 				Exit Sub
 			End If
 		End If
+	End Sub
+	Private Sub LoadScanCardCompleted(sender As Object, e As AsyncCompletedEventArgs)
+	'-------------------------------------------------------------------------------------------
+	'Vérifie que l'image retournée par le Gatherer n'est pas trop grande ou s'il faut la réduire
+	'-------------------------------------------------------------------------------------------
+	Dim VppicScanCard As PictureBox = sender
+		With VppicScanCard
+			If .Image.Height >= CgMTGCardHeight_px * 1.1 Then
+				.Image = New Bitmap(.Image, 223, 310)	'223x310 est déterminé empiriquement de façon à ne pas afficher trop de bordure
+			End If
+		End With
 	End Sub
 	Public Function HasBorder(VpPath As String) As Boolean
 	'-------------------------------------------------------------------------------------------------------
