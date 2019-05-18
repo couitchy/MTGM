@@ -1629,6 +1629,8 @@ Public Partial Class MainForm
 				Return "guru#" + VpStr
 			Case "CB"
 				Return "commanderanthologyvolumeii#" + VpStr
+			Case "WS"
+				Return "warofthespark#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1945,6 +1947,8 @@ Public Partial Class MainForm
 				Return "GU"
 			Case "commanderanthologyvolumeii"
 				Return "CB"
+			Case "warofthespark"
+				Return "WS"
 			Case Else
 				Return ""
 		End Select
