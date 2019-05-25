@@ -26,7 +26,7 @@ Imports Cells = SourceGrid2.Cells.Real
 Public Partial Class frmReserve
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
-	Private VmCanClose As Boolean = False   'Formulaire peut être fermé	
+	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
 	Private VmOwner As frmPlateau
 	Private VmRepartition As New Hashtable
 	Public Sub New(VpOwner As frmPlateau)
@@ -72,7 +72,7 @@ Public Partial Class frmReserve
 			Me.grdRepartition(VpRow, 2).DataModel = VpCellModel
 			Me.grdRepartition(VpRow, 3).DataModel = VpCellModel
 		Next VpNameVO
-		Me.grdRepartition.AutoSize		
+		Me.grdRepartition.AutoSize
 	End Sub
 	Private Sub ValidateRepartition
 	'-------------------------------------
@@ -95,11 +95,11 @@ Public Partial Class frmReserve
 						VpSideCount += 1
 					End If
 				End If
-			Next VpCard		
+			Next VpCard
 		Next VpNameVO
 	End Sub
 	Sub FrmReserveLoad(sender As Object, e As EventArgs)
-		Call Me.LoadRepartition		
+		Call Me.LoadRepartition
 	End Sub
 	Sub CellValidated(sender As Object, e As CellEventArgs)
 	Dim VpCell As Cells.Cell = e.Cell
@@ -130,23 +130,23 @@ Public Partial Class frmReserve
 	Sub CbarReserveMouseDown(sender As Object, e As MouseEventArgs)
 		VmFormMove = True
 		VmCanClose = True
-		VmMousePos = New Point(e.X, e.Y)		
+		VmMousePos = New Point(e.X, e.Y)
 	End Sub
 	Sub CbarReserveMouseMove(sender As Object, e As MouseEventArgs)
 		If VmFormMove Then
 			Me.Location = New Point(MousePosition.X - VmMousePos.X, MousePosition.Y - VmMousePos.Y)
-		End If		
+		End If
 	End Sub
 	Sub CbarReserveMouseUp(sender As Object, e As MouseEventArgs)
-		VmFormMove = False		
+		VmFormMove = False
 	End Sub
 	Sub CbarReserveVisibleChanged(sender As Object, e As EventArgs)
 		If VmCanClose AndAlso Not Me.cbarReserve.Visible Then
 			Me.Close
-		End If		
+		End If
 	End Sub
 	Sub FrmReserveFormClosing(sender As Object, e As FormClosingEventArgs)
-		Call Me.ValidateRepartition		
+		Call Me.ValidateRepartition
 	End Sub
 End Class
 Public Class clsRepartition

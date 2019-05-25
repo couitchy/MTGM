@@ -327,7 +327,7 @@ Public Class clsWordItem
 	End Property
 	Public ReadOnly Property FullText As String
 		Get
-			Return VmFullText			
+			Return VmFullText
 		End Get
 	End Property
 	Public ReadOnly Property Quant As Integer

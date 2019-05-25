@@ -24,7 +24,7 @@
 Public Partial Class frmSpecialCardUse
 	Private VmFormMove As Boolean = False	'Formulaire en déplacement
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
-	Private VmCanClose As Boolean = False   'Formulaire peut être fermé		
+	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
 	Private VmHelp As ToolTip				'Info-bulles d'aide à la saisie
 	Public Sub New(VpSource As String, VpRestriction As String)
 	Dim VpPartie As clsPartie
@@ -63,12 +63,12 @@ Public Partial Class frmSpecialCardUse
 	End Sub
 	Private Sub CbarSpecialCardMouseUp(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = False
-	End Sub		
+	End Sub
 	Private Sub CbarSpecialCardVisibleChanged(ByVal sender As Object, ByVal e As EventArgs)
 		If VmCanClose AndAlso Not Me.cbarSpecialCard.Visible Then
 			Me.Close
 		End If
-	End Sub		
+	End Sub
 	Sub ChkDefineSpecialCheckedChanged(sender As Object, e As EventArgs)
 		Me.lbl1.Enabled = Me.chkDefineSpecial.Checked
 		Me.lbl11.Enabled = Me.chkDefineSpecial.Checked
@@ -103,11 +103,11 @@ Public Partial Class frmSpecialCardUse
 			Me.txtEffort.Text = VpSpeciality.Effort
 			Me.txtEffet.Text = VpSpeciality.Effet
 			Me.cboEffort.Text = clsSpeciality.GetSpecTxt(VpSpeciality.EffortID)
-			Me.cboEffet.Text = clsSpeciality.GetSpecTxt(VpSpeciality.EffetID)	
+			Me.cboEffet.Text = clsSpeciality.GetSpecTxt(VpSpeciality.EffetID)
 			Me.chkInvocTapped.Checked = VpSpeciality.InvocTapped
 			Me.chkDoesntUntap.Checked = VpSpeciality.DoesntUntap
 		Else
-			Me.chkDefineSpecial.Checked = False			
+			Me.chkDefineSpecial.Checked = False
 		End If
 	End Sub
 	Sub TxtEffortEnter(ByVal sender As Object, ByVal e As EventArgs)
@@ -125,7 +125,7 @@ Public Partial Class frmSpecialCardUse
 		VmHelp.RemoveAll
 	End Sub
 	Sub CmdCancelClick(sender As Object, e As EventArgs)
-		Me.Close	
+		Me.Close
 	End Sub
 	Sub FrmSpecialCardUseLoad(sender As Object, e As EventArgs)
 		VmCanClose = True
@@ -158,7 +158,7 @@ Public Class clsSpeciality
 					VmSpecial = False
 				End If
 				.Close
-			End With		
+			End With
 		Catch
 			If Not VmModelOutOfDateErr Then
 				Call clsModule.ShowWarning(clsModule.CgErr1)
@@ -172,12 +172,12 @@ Public Class clsSpeciality
 	End Function
 	Public Shared Function GetSpecTxt(VpId As Integer) As String
 		VgDBCommand.CommandText = "Select Description From SpecialUse Where SpecID = " + VpId.ToString + ";"
-		Return VgDBCommand.ExecuteScalar		
+		Return VgDBCommand.ExecuteScalar
 	End Function
 	Public Shared Function GetSpecHlp(VpId As Integer) As String
 		VgDBCommand.CommandText = "Select Aide From SpecialUse Where SpecID = " + VpId.ToString + ";"
-		Return VgDBCommand.ExecuteScalar		
-	End Function		
+		Return VgDBCommand.ExecuteScalar
+	End Function
 	Public ReadOnly Property EffortID As Integer
 		Get
 			Return VmEffortID
@@ -187,7 +187,7 @@ Public Class clsSpeciality
 		Get
 			Return VmEffetID
 		End Get
-	End Property	
+	End Property
 	Public ReadOnly Property Effort As String
 		Get
 			Return VmEffort
@@ -197,20 +197,20 @@ Public Class clsSpeciality
 		Get
 			Return VmEffet
 		End Get
-	End Property	
+	End Property
 	Public ReadOnly Property InvocTapped As Boolean
 		Get
 			Return VmInvocTapped
-		End Get	
+		End Get
 	End Property
 	Public ReadOnly Property DoesntUntap As Boolean
 		Get
 			Return VmDoesntUntap
-		End Get	
+		End Get
 	End Property
 	Public ReadOnly Property IsSpecial As Boolean
 		Get
 			Return VmSpecial
-		End Get	
-	End Property	
+		End Get
+	End Property
 End Class

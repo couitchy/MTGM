@@ -33,7 +33,7 @@ Imports System.Windows.Forms
 
 ''' <summary>
 ''' This class adds the following functionality to RichTextBox:
-''' 
+'''
 ''' 1.	Allows plain text to be inserted or appended programmatically to RTF
 '''		content.
 ''' 2.	Allows the font, text color, and highlight color of plain text to be
@@ -47,10 +47,10 @@ Imports System.Windows.Forms
 ''' the image in the program.  This class is an attempt to make the process of
 ''' inserting images at runtime more flexible without the overhead of maintaining
 ''' the clipboard or the use of huge, cumbersome strings.
-''' 
+'''
 ''' RTF Specification v1.6 was used and is referred to many times in this document.
 ''' http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnrtfspec/html/rtfspec.asp
-''' 
+'''
 ''' For information about the RichEdit (Unmanaged RichTextBox) ...
 ''' http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/commctls/richedit/richeditcontrols/aboutricheditcontrols.asp
 ''' </remarks>
@@ -192,7 +192,7 @@ Public Class ExRichTextBox
 
 	' RTF HEADER
 '		 * ----------
-'		 * 
+'		 *
 '		 * \rtf[N]		- For text to be considered to be RTF, it must be enclosed in this tag.
 '		 *				  rtf1 is used because the RichTextBox conforms to RTF Specification
 '		 *				  version 1.
@@ -202,13 +202,13 @@ Public Class ExRichTextBox
 '		 * \deff[N]		- The default font. \deff0 means the default font is the first font
 '		 *				  found.
 '		 * \deflang[N]	- The default language. \deflang1033 specifies US English.
-'		 * 
+'		 *
 
 	Private Const RTF_HEADER As String = "{\rtf1\ansi\ansicpg1252\deff0\deflang1033"
 
 	' RTF DOCUMENT AREA
 '		 * -----------------
-'		 * 
+'		 *
 '		 * \viewkind[N]	- The type of view or zoom level.  \viewkind4 specifies normal view.
 '		 * \uc[N]		- The number of bytes corresponding to a Unicode character.
 '		 * \pard		- Resets to default paragraph properties
@@ -217,7 +217,7 @@ Public Class ExRichTextBox
 '		 * \f[N]		- Font number. \f0 refers to the font at index 0 in the font
 '		 *				  table.
 '		 * \fs[N]		- Font size in half-points.
-'		 * 
+'		 *
 
 	Private Const RTF_DOCUMENT_PRE As String = "\viewkind4\uc1\pard\cf1\f0\fs20"
 	Private Const RTF_DOCUMENT_POST As String = "\cf0\fs17}"
@@ -449,10 +449,10 @@ Public Class ExRichTextBox
 	''' text is wrapped in RTF codes so that the specified formatting is kept.
 	''' You can only assign valid RTF to the RichTextBox.Rtf property, else
 	''' an exception is thrown.  The RTF string should follow this format ...
-	''' 
+	'''
 	''' {\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{[FONTS]}{\colortbl ;[COLORS]}}
 	''' \viewkind4\uc1\pard\cf1\f0\fs20 [DOCUMENT AREA] }
-	''' 
+	'''
 	''' </summary>
 	''' <remarks>
 	''' NOTE: The text is inserted wherever the caret is at the time of the call,
@@ -489,7 +489,7 @@ Public Class ExRichTextBox
 	''' (in this case) consists of the text being added as RTF and all the
 	''' formatting specified in the Font object passed in. This should have the
 	''' form ...
-	''' 
+	'''
 	''' \viewkind4\uc1\pard\cf1\f0\fs20 [DOCUMENT AREA] }
 	'''
 	''' </summary>
@@ -592,7 +592,7 @@ Public Class ExRichTextBox
 	''' the RichTextBox (and even MS Word), wraps an image in a WMF before inserting
 	''' the image into a document.  The WMF is attached in HEX format (a string of
 	''' HEX numbers).
-	''' 
+	'''
 	''' The RTF Specification v1.6 says that you should be able to insert bitmaps,
 	''' .jpegs, .gifs, .pngs, and Enhanced Metafiles (.emf) directly into an RTF
 	''' document without the WMF wrapper. This works fine with MS Word,
@@ -635,47 +635,47 @@ Public Class ExRichTextBox
 	''' and its target dimensions, so if you want to control the size of the
 	''' image being inserted, this would be the place to do it. The prefix should
 	''' have the form ...
-	''' 
+	'''
 	''' {\pict\wmetafile8\picw[A]\pich[B]\picwgoal[C]\pichgoal[D]
-	''' 
+	'''
 	''' where ...
-	''' 
+	'''
 	''' A	= current width of the metafile in hundredths of millimeters (0.01mm)
 	'''		= Image Width in Inches * Number of (0.01mm) per inch
 	'''		= (Image Width in Pixels / Graphics Context's Horizontal Resolution) * 2540
 	'''		= (Image Width in Pixels / Graphics.DpiX) * 2540
-	''' 
+	'''
 	''' B	= current height of the metafile in hundredths of millimeters (0.01mm)
 	'''		= Image Height in Inches * Number of (0.01mm) per inch
 	'''		= (Image Height in Pixels / Graphics Context's Vertical Resolution) * 2540
 	'''		= (Image Height in Pixels / Graphics.DpiX) * 2540
-	''' 
+	'''
 	''' C	= target width of the metafile in twips
 	'''		= Image Width in Inches * Number of twips per inch
 	'''		= (Image Width in Pixels / Graphics Context's Horizontal Resolution) * 1440
 	'''		= (Image Width in Pixels / Graphics.DpiX) * 1440
-	''' 
+	'''
 	''' D	= target height of the metafile in twips
 	'''		= Image Height in Inches * Number of twips per inch
 	'''		= (Image Height in Pixels / Graphics Context's Horizontal Resolution) * 1440
 	'''		= (Image Height in Pixels / Graphics.DpiX) * 1440
-	'''	
+	'''
 	''' </summary>
 	''' <remarks>
 	''' The Graphics Context's resolution is simply the current resolution at which
 	''' windows is being displayed.  Normally it's 96 dpi, but instead of assuming
 	''' I just added the code.
-	''' 
+	'''
 	''' According to Ken Howe at pbdr.com, "Twips are screen-independent units
 	''' used to ensure that the placement and proportion of screen elements in
 	''' your screen application are the same on all display systems."
-	''' 
+	'''
 	''' Units Used
 	''' ----------
 	''' 1 Twip = 1/20 Point
 	''' 1 Point = 1/72 Inch
 	''' 1 Twip = 1/1440 Inch
-	''' 
+	'''
 	''' 1 Inch = 2.54 cm
 	''' 1 Inch = 25.4 mm
 	''' 1 Inch = 2540 (0.01)mm
@@ -714,7 +714,7 @@ Public Class ExRichTextBox
 	End Function
 
 	''' <summary>
-	''' Use the EmfToWmfBits function in the GDI+ specification to convert a 
+	''' Use the EmfToWmfBits function in the GDI+ specification to convert a
 	''' Enhanced Metafile to a Windows Metafile
 	''' </summary>
 	''' <param name="_hEmf">
@@ -800,7 +800,7 @@ Public Class ExRichTextBox
 			Dim _buffer As Byte() = New Byte(_bufferSize - 1) {}
 
 			' A call to EmfToWmfBits with a valid buffer copies the bits into the
-			' buffer an returns the number of bits in the WMF.  
+			' buffer an returns the number of bits in the WMF.
 			Dim _convertedSize As UInteger = GdipEmfToWmfBits(_hEmf, _bufferSize, _buffer, MM_ANISOTROPIC, EmfToWmfBitsFlags.EmfToWmfBitsFlagsDefault)
 
 			' Append the bits to the RTF string
@@ -827,12 +827,12 @@ Public Class ExRichTextBox
 	#Region "RTF Helpers"
 
 	''' <summary>
-	''' Creates a font table from a font object.  When an Insert or Append 
+	''' Creates a font table from a font object.  When an Insert or Append
 	''' operation is performed a font is either specified or the default font
 	''' is used.  In any case, on any Insert or Append, only one font is used,
 	''' thus the font table will always contain a single font.  The font table
 	''' should have the form ...
-	''' 
+	'''
 	''' {\fonttbl{\f0\[FAMILY]\fcharset0 [FONT_NAME];}
 	''' </summary>
 	''' <param name="_font"></param>
@@ -875,9 +875,9 @@ Public Class ExRichTextBox
 	''' the color table.  The second color is always the text color, and the third
 	''' is always the highlight color (color behind the text).  The color table
 	''' should have the form ...
-	''' 
+	'''
 	''' {\colortbl ;[TEXT_COLOR];[HIGHLIGHT_COLOR];}
-	''' 
+	'''
 	''' </summary>
 	''' <param name="_textColor"></param>
 	''' <param name="_backColor"></param>
@@ -910,7 +910,7 @@ Public Class ExRichTextBox
 	Private Function RemoveBadChars(_originalRtf As String) As String
 		Return _originalRtf.Replace(vbNullChar, "")
 	End Function
-	
+
 	Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
 	Const WM_MOUSEWHEEL As Integer = &H20A
 		If Not ( m.Msg = WM_MOUSEWHEEL AndAlso Control.ModifierKeys = Keys.Control ) Then
@@ -919,6 +919,6 @@ Public Class ExRichTextBox
 			Me.Font = New Font(Me.Font.Name, Me.Font.Size + Math.Sign(m.WParam.ToInt32))
 		End If
 	End Sub
-	
+
 	#End Region
 End Class

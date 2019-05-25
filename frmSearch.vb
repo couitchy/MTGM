@@ -350,7 +350,7 @@ Public Partial Class frmSearch
 		Me.chkClearPrev.Enabled = ( Me.chkShowExternal.Checked )
 		Me.chkMerge.Enabled = ( Me.chkShowExternal.Checked )
 		Me.optMergeOr.Enabled = Me.chkMerge.Enabled And Me.chkMerge.Checked
-		Me.optMergeAnd.Enabled = Me.chkMerge.Enabled And Me.chkMerge.Checked		
+		Me.optMergeAnd.Enabled = Me.chkMerge.Enabled And Me.chkMerge.Checked
 		If Me.chkShowExternal.Checked Then
 			Me.picScanCard.Visible = False
 			Me.Width = 390 * Me.CreateGraphics().DpiX / 96	'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
@@ -427,7 +427,7 @@ Public Partial Class frmSearch
 	Sub ChkMergeCheckedChanged(sender As Object, e As EventArgs)
 		Me.optMergeOr.Enabled = Me.chkMerge.Checked
 		Me.optMergeAnd.Enabled = Me.chkMerge.Checked
-	End Sub	
+	End Sub
 	Sub CboSearchTypeSelectedIndexChanged(sender As Object, e As EventArgs)
 		Select Case Me.cboSearchType.SelectedIndex
 			Case 4, 5, 6, 9

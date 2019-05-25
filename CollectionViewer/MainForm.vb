@@ -7,8 +7,8 @@ Imports ICSharpCode.SharpZipLib.Zip
 Public Partial Class MainForm
 	Private Const CmStrConn As String		= "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
 	Private Const CmTemp As String			= "\mtgmgr"
-	Private Const CmZipRes As String		= "\CollectionViewer.zip"	
-	Private Const CmCollection As String	= "Collection"	
+	Private Const CmZipRes As String		= "\CollectionViewer.zip"
+	Private Const CmCollection As String	= "Collection"
 	Private VmDB As OleDbConnection
 	Private VmDBCommand As New OleDbCommand
 	Private VmDBReader As OleDbDataReader
@@ -18,7 +18,7 @@ Public Partial Class MainForm
 	End Sub
 	Private Sub ShowWarning(VpStr As String)
 		MessageBox.Show(VpStr, "Problème", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
-	End Sub	
+	End Sub
 	Private Sub LoadDecks
 		Me.chklstDecksDispos.Items.Clear
 		Me.chklstDecksDispos.Items.Add(CmCollection)
@@ -60,7 +60,7 @@ Public Partial Class MainForm
 			If VpDeck = CmCollection Then
 				VmDBCommand.CommandText = "Select * From ((((((MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO;"
 			Else
-				VmDBCommand.CommandText = "Select * From (((((((MyGames Inner Join MyGamesID On MyGames.GameID = MyGamesID.GameID) Inner Join Card On MyGames.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where MyGamesID.GameName = '" + VpDeck.Replace("'", "''") + "';"				
+				VmDBCommand.CommandText = "Select * From (((((((MyGames Inner Join MyGamesID On MyGames.GameID = MyGamesID.GameID) Inner Join Card On MyGames.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where MyGamesID.GameName = '" + VpDeck.Replace("'", "''") + "';"
 			End If
 			VmDBReader = VmDBCommand.ExecuteReader
 			With VmDBReader
@@ -94,7 +94,7 @@ Public Partial Class MainForm
 			VpOut.Write(VpJSON)
 			VpOut.Flush
 			VpOut.Close
-		Next VpDeck	
+		Next VpDeck
 	End Sub
 	Private Sub CopyStream(VpIn As Stream, VpOut As Stream)
 	Dim VpBuffer() As Byte = New Byte(8 * 1024 - 1) {}
@@ -102,7 +102,7 @@ Public Partial Class MainForm
 		Do
 			VpLen = VpIn.Read(VpBuffer, 0, VpBuffer.Length)
 			If VpLen > 0 Then
-				VpOut.Write(VpBuffer, 0, VpLen)	
+				VpOut.Write(VpBuffer, 0, VpLen)
 			Else
 				Exit Do
 			End If
@@ -144,7 +144,7 @@ Public Partial Class MainForm
 	End Sub
 	Sub MnuHTMLExportClick(sender As Object, e As EventArgs)
 	Dim VpMyHTML As Stream = Assembly.GetExecutingAssembly.GetManifestResourceStream("MyHTML")
-	Dim VpZipStream As ZipInputStream	
+	Dim VpZipStream As ZipInputStream
 	Dim VpZipEntry As ZipEntry
 		If VmDB IsNot Nothing Then
 			Me.dlgBrowser.SelectedPath = ""
@@ -156,7 +156,7 @@ Public Partial Class MainForm
 				'Extrait le fichier ZIP des ressources dans le répertoire temporaire
 				Using VpFile As Stream = File.OpenWrite(Path.GetTempPath + CmTemp + CmZipRes)
 					Call Me.CopyStream(VpMyHTML, VpFile)
-				End Using	
+				End Using
 				'Puis le décompresse dans le répertoire final
 				VpZipStream = New ZipInputStream(File.OpenRead(Path.GetTempPath + CmTemp + CmZipRes))
 				Do
@@ -166,7 +166,7 @@ Public Partial Class MainForm
 							If VpZipEntry.Name <> "" Then
 								Using VpFile As Stream = File.OpenWrite(Me.dlgBrowser.SelectedPath + "\" + VpZipEntry.Name)
 									Call Me.CopyStream(VpZipStream, VpFile)
-								End Using									
+								End Using
 							End If
 						ElseIf VpZipEntry.IsDirectory Then
 							If Not Directory.Exists(Me.dlgBrowser.SelectedPath + "\" + VpZipEntry.Name) Then
@@ -187,15 +187,15 @@ Public Partial Class MainForm
 		Else
 			Call ShowWarning("Aucune base de données n'a été sélectionnée...")
 		End If
-	End Sub	
+	End Sub
 	Sub MnuAboutClick(sender As Object, e As EventArgs)
 	Dim VpAbout As New About
-		VpAbout.ShowDialog		
+		VpAbout.ShowDialog
 	End Sub
 End Class
 <Serializable> _
 Public Class clsCardInfos
-	Public MultiverseId As Long	
+	Public MultiverseId As Long
 	Public EncNbr As Long
 	Public Title As String
 	Public TitleFR As String

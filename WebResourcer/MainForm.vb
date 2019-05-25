@@ -414,7 +414,7 @@ Public Partial Class MainForm
 							VmDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where InStr(Series.SeriesNM_MtG, '" + VpEdition + "') > 0 And Card.Title = '" + VpCardName + "';"
 						Else
 							VmDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Series.SeriesNM_MtG = '" + VpEdition + "' And Card.Title = '" + VpCardName + "';"
-						End If	
+						End If
 						VpEncNbr = VmDBCommand.ExecuteScalar
 						If VpEncNbr <> 0 Then
 							If VpFoilTarget Then
@@ -2292,7 +2292,7 @@ Public Partial Class MainForm
 								VpColor = "Black"
 							Case Else
 						End Select
-						VpColors += "/" + VpColor 
+						VpColors += "/" + VpColor
 					Next VpColor
 				End If
 				VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
@@ -2365,7 +2365,7 @@ Public Partial Class MainForm
 		For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
 			With VpCard
 				If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then
-					VpOut.WriteLine(.names.Item(1) + "#" + .names.Item(0)) 
+					VpOut.WriteLine(.names.Item(1) + "#" + .names.Item(0))
 				End If
 			End With
 		Next VpCard
@@ -2480,7 +2480,7 @@ Public Partial Class MainForm
 							End If
 						End If
 					End If
-				End If						
+				End If
 			End While
 			Call Me.AddToLog("La modification interactive des traductions est terminée.", eLogType.Information, , True)
 		End If
@@ -2550,7 +2550,7 @@ Public Partial Class MainForm
 					Call Me.AddToLog("La vérification du fichier des traductions a été annulée.", eLogType.Warning, , True)
 				Else
 					Call Me.AddToLog("La vérification du fichier des traductions est terminée.", eLogType.Information, , True)
-				End If				
+				End If
 			End If
 		End If
 	End Sub

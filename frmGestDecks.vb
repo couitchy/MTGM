@@ -41,7 +41,7 @@ Public Partial Class frmGestDecks
 	'--------------------------------------------
 	'Chargement de la liste des decks disponibles
 	'--------------------------------------------
-	Dim VpRoot As New TreeNode("Liste des decks", 0, 0)	
+	Dim VpRoot As New TreeNode("Liste des decks", 0, 0)
 		Me.tvwDecks.Nodes.Clear
 		Me.cboFormat.Items.Clear
 		VgDBCommand.CommandText = "Select Distinct GameFormat From MyGamesID Where IsFolder = False;"
@@ -73,7 +73,7 @@ Public Partial Class frmGestDecks
 			VpCur.SelectedImageIndex = VpCur.ImageIndex
 			VpNode.Nodes.Add(VpCur)
 			Call Me.RecurLoadDecks(VpCur, " = " + VpChild.ToString)
-		Next VpChild		
+		Next VpChild
 	End Sub
 	Private Sub LoadDeckInfos
 	'----------------------------------------------------------------
@@ -145,7 +145,7 @@ Public Partial Class frmGestDecks
 		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = -1 Where GameID = " + VpId1 + ";"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update " + VpTable + " Set Parent = -1 Where Parent = " + VpId1 + ";"
-		VgDBCommand.ExecuteNonQuery		
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId1 + " Where GameID = " + VpId2 + ";"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update " + VpTable + " Set Parent = " + VpId1 + " Where Parent = " + VpId2 + ";"
@@ -162,10 +162,10 @@ Public Partial Class frmGestDecks
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = " + VpId2 + " Where GameID = -1;"
 		VgDBCommand.ExecuteNonQuery
-	End Sub	
+	End Sub
 	Private Sub ManageSwap(VpNode1 As TreeNode, VpNode2 As TreeNode)
 	Dim VpId1 As Integer = CType(VpNode1.Tag, clsInfoNode).Id
-	Dim VpId2 As Integer = CType(VpNode2.Tag, clsInfoNode).Id		
+	Dim VpId2 As Integer = CType(VpNode2.Tag, clsInfoNode).Id
 	Dim VpIdString1 As String = CType(VpNode1.Tag, clsInfoNode).IdString
 	Dim VpIdString2 As String = CType(VpNode2.Tag, clsInfoNode).IdString
 	Dim VpSelected As TreeNode = Me.tvwDecks.SelectedNode
@@ -175,9 +175,9 @@ Public Partial Class frmGestDecks
 		Me.tvwDecks.BeginUpdate
 		VpNode1.Tag = New clsInfoNode(VpId2, CType(VpNode1.Tag, clsInfoNode).IsFolder)
 		VpNode2.Tag = New clsInfoNode(VpId1, CType(VpNode2.Tag, clsInfoNode).IsFolder)
-		VpParent.Nodes.RemoveAt(VpNode2.Index)		
-		VpParent.Nodes.RemoveAt(VpNode1.Index)	
-		VpParent.Nodes.Insert(VpNode2.Index - 1, VpNode1)		
+		VpParent.Nodes.RemoveAt(VpNode2.Index)
+		VpParent.Nodes.RemoveAt(VpNode1.Index)
+		VpParent.Nodes.Insert(VpNode2.Index - 1, VpNode1)
 		VpParent.Nodes.Insert(VpNode1.Index, VpNode2)
 		Me.tvwDecks.EndUpdate
 		VpSelected.EnsureVisible
@@ -213,7 +213,7 @@ Public Partial Class frmGestDecks
 				Me.tvwDecks.SelectedNode = VpNew
 				VmMustReload = True
 			End If
-		End If		
+		End If
 	End Sub
 	Private Function RemoveDeck(VpDeckName As String) As Boolean
 	'-----------------------------------
@@ -261,7 +261,7 @@ Public Partial Class frmGestDecks
 	'Gestion de la suppression d'un dossier
 	'--------------------------------------
 		VgDBCommand.CommandText = "Delete * From MyGamesId Where GameID = " + VpFolderId + ";"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Sub CbarDecksManagerMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
 		VmFormMove = True
@@ -302,7 +302,7 @@ Public Partial Class frmGestDecks
 			Me.btDown.Enabled = e.Node IsNot e.Node.Parent.LastNode
 		End If
 		Call Me.LoadDeckInfos
-	End Sub	
+	End Sub
 	Sub FrmGestDecksFormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs)
 		If e.CloseReason = CloseReason.UserClosing Then
 			Me.Visible = False
@@ -314,7 +314,7 @@ Public Partial Class frmGestDecks
 	End Sub
 	Sub BtAddFolderActivate(sender As Object, e As EventArgs)
 		Call Me.AddDeckOrFolder(True)
-	End Sub	
+	End Sub
 	Sub BtAddActivate(sender As Object, e As EventArgs)
 		Call Me.AddDeckOrFolder(False)
 	End Sub
@@ -339,7 +339,7 @@ Public Partial Class frmGestDecks
 			VpParent.EnsureVisible
 			Me.tvwDecks.SelectedNode = VpParent
 			VmMustReload = True
-			Call VmOwner.LoadMnu			
+			Call VmOwner.LoadMnu
 		End If
 	End Sub
 	Sub BtRenameActivate(sender As Object, e As EventArgs)
@@ -350,7 +350,7 @@ Public Partial Class frmGestDecks
 		If VpName <> "" Then
 			If VpName.Length > 50 Then VpName = VpName.Substring(0, 50)
 			VpName = VpName.Replace("'", "''")
-			VpOldName = VpOldName.Replace("'", "''")			
+			VpOldName = VpOldName.Replace("'", "''")
 			If Me.DeckOrFolderExists(VpName, If(VpFolder, Me.tvwDecks.SelectedNode.Parent, Me.RootNode), VpFolder) Then
 				Call clsModule.ShowWarning("Un élément portant ce nom existe déjà...")
 			Else
@@ -383,13 +383,13 @@ Public Partial Class frmGestDecks
 	End Sub
 	Sub BtUpActivate(sender As Object, e As EventArgs)
 		Call Me.ManageSwap(Me.tvwDecks.SelectedNode.PrevNode, Me.tvwDecks.SelectedNode)
-	End Sub	
+	End Sub
 	Sub PickDateLeave(sender As Object, e As EventArgs)
 		Call Me.SaveDeckInfos
-	End Sub	
+	End Sub
 	Sub CboFormatLeave(sender As Object, e As EventArgs)
 		Call Me.SaveDeckInfos
-	End Sub	
+	End Sub
 	Sub TxtMemoLeave(sender As Object, e As EventArgs)
 		Call Me.SaveDeckInfos
 	End Sub
@@ -460,7 +460,7 @@ Public Partial Class frmGestDecks
 				Return Me.tvwDecks.SelectedNode
 			Else
 				Return Me.tvwDecks.SelectedNode.Parent
-			End If			
+			End If
 		End Get
 	End Property
 	Private ReadOnly Property RootNode As TreeNode

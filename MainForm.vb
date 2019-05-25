@@ -748,7 +748,7 @@ Public Partial Class MainForm
 				Call SecureDelete(Application.StartupPath + CgUpMultiverse)
 				Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
 			Else
-				Call clsModule.ShowWarning("Impossible de trouver le fichier '" + clsModule.CgUpMultiverse + "'") 
+				Call clsModule.ShowWarning("Impossible de trouver le fichier '" + clsModule.CgUpMultiverse + "'")
 			End If
 		End If
 	End Sub
@@ -804,7 +804,7 @@ Public Partial Class MainForm
 		VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText;"
 		'VgDBCommand.CommandText = "Update TextesFR Inner Join Card On Card.Title = TextesFR.CardName Set TextesFR.TexteFR = Card.CardText Where Card.Series = 'KD';"
 		VgDBCommand.ExecuteNonQuery
-		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"	'requête pas utile si on utilise la clause Where Card.Series = 
+		VgDBCommand.CommandText = "Delete * From TextesFR Where CardName Not In (Select Distinct Card.Title From Card);"	'requête pas utile si on utilise la clause Where Card.Series =
 		VgDBCommand.ExecuteNonQuery
 	End Sub
 	Public Function FixSubTypes As Boolean
@@ -969,7 +969,7 @@ Public Partial Class MainForm
 			Call SecureDelete(Application.StartupPath + CgUpMultiverse)
 			Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
 		Else
-			Call clsModule.ShowWarning("Impossible de trouver le fichier '" + clsModule.CgUpMultiverse + "'") 
+			Call clsModule.ShowWarning("Impossible de trouver le fichier '" + clsModule.CgUpMultiverse + "'")
 		End If
 	End Sub
 	Public Function FixMultiverse2 As Boolean
@@ -3323,7 +3323,7 @@ Public Partial Class MainForm
 			Call Me.FixOnlyVO
 			Call clsModule.ShowInformation("Terminé !")
 		End If
-	End Sub	
+	End Sub
 	Sub MnuFixCreaturesClick(sender As Object, e As EventArgs)
 		If clsModule.DBOK Then
 			Call Me.FixCreatures("*")

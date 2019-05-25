@@ -98,7 +98,7 @@ Public Partial Class frmGrapher
 					End If
 				Next VpY
 			End If
-		Next VpPlot		
+		Next VpPlot
 		Return VpExtremum
 	End Function
 	Private Function SaveBMP As Bitmap
@@ -106,14 +106,14 @@ Public Partial Class frmGrapher
 	'Capture d'écran
 	'---------------
 	Dim VpBMP As Bitmap
-	Dim VpGR As Graphics 
+	Dim VpGR As Graphics
 	Dim VpOrig As Point = Me.plotMain.PointToScreen(Me.plotMain.Location)
 		VpBMP = New Bitmap(Me.plotMain.Width, Me.plotMain.Height, Imaging.PixelFormat.Format32bppArgb)
-		VpGR = Graphics.FromImage(VpBMP)              
+		VpGR = Graphics.FromImage(VpBMP)
 		Application.DoEvents
 		VpGR.CopyFromScreen(VpOrig, New Point(0, 0), Me.Size, CopyPixelOperation.SourceCopy)
 		Return VpBMP
-	End Function	
+	End Function
 	Public ReadOnly Property GraphsCount As Integer
 		Get
 			Return VmPlots.Count
@@ -122,7 +122,7 @@ Public Partial Class frmGrapher
 	Sub PlotMainMouseDown(sender As Object, e As MouseEventArgs)
 		If e.Button = System.Windows.Forms.MouseButtons.Right Then
 			Me.plotMain.OriginalDimensions
-		End If		
+		End If
 	End Sub
 	Sub FrmGrapherFormClosing(sender As Object, e As FormClosingEventArgs)
 		If e.CloseReason = CloseReason.UserClosing Then
@@ -134,7 +134,7 @@ Public Partial Class frmGrapher
 			Me.plotMain.Clear
 			VmPlots.Clear
 		End If
-	End Sub	
+	End Sub
 	Sub BtCaptureClick(sender As Object, e As EventArgs)
 	Dim VpBMP As Bitmap = Me.SaveBMP
 		Me.dlgCapture.FileName = ""
@@ -145,7 +145,7 @@ Public Partial Class frmGrapher
 	End Sub
 	Sub BtEditClick(sender As Object, e As EventArgs)
 		Me.splitH.Panel2Collapsed = Not Me.btEdit.Checked
-	End Sub	
+	End Sub
 	Sub BtClearClick(sender As Object, e As EventArgs)
 		VmPlots.Clear
 		Me.propCurves.SelectedObject = Nothing
@@ -156,13 +156,13 @@ Public Partial Class frmGrapher
 			Me.propCurves.SelectedObject = VmPlots.Item(Me.chklstCurves.SelectedIndex)
 		Else
 			Me.propCurves.SelectedObject = Nothing
-		End If		
+		End If
 	End Sub
 	Sub ChklstCurvesItemCheck(sender As Object, e As ItemCheckEventArgs)
 		If Not VmBusy AndAlso Me.chklstCurves.SelectedIndex >= 0 Then
 			VmPlots.Item(Me.chklstCurves.SelectedIndex).myVisible = e.NewValue
 			Call Me.RefreshAllPlots(False)
-		End If		
+		End If
 	End Sub
 	Sub BtCoordsClick(sender As Object, e As EventArgs)
 		Me.btCoords.Checked = Not Me.btCoords.Checked

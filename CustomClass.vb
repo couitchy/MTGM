@@ -154,7 +154,7 @@ Public Class CustomClass
 End Class
 
 ''' <summary>
-''' Custom property class 
+''' Custom property class
 ''' </summary>
 Public Class CustomProperty
 	Private sName As String = String.Empty
@@ -190,7 +190,7 @@ Public Class CustomProperty
 			Return sName
 		End Get
 	End Property
-	
+
 	Public Property Category() As String
 		Get
 			Return sCategory
@@ -198,8 +198,8 @@ Public Class CustomProperty
 		Set
 			sCategory = value
 		End Set
-	End Property	
-	
+	End Property
+
 	Public ReadOnly Property Visible() As Boolean
 		Get
 			Return bVisible

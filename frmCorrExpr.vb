@@ -46,8 +46,8 @@ Public Partial Class frmCorrExpr
 			Me.chkAllNone.CheckState = CheckState.Unchecked
 		Else
 			Me.chkAllNone.CheckState = CheckState.Indeterminate
-		End If		
-		VmBusy = False				
+		End If
+		VmBusy = False
 	End Sub
 	Sub CbarExprMouseDown(sender As Object, e As MouseEventArgs)
 		VmFormMove = True
@@ -117,6 +117,6 @@ Public Partial Class frmCorrExpr
 				End If
 			Next VpI
 			Call Me.SetCheckState
-		End If			
+		End If
 	End Sub
 End Class

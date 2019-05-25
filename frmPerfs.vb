@@ -353,9 +353,9 @@ Public Partial Class frmPerfs
 	Dim VpJ1 As String
 	Dim VpJ2 As String
 	Dim VpJn1 As Integer
-	Dim VpJn2 As Integer	
+	Dim VpJn2 As Integer
 	Dim VpJv1 As Integer
-	Dim VpJv2 As Integer		
+	Dim VpJv2 As Integer
 	Dim VpDecks1() As String = clsPerformances.GetAllDecks
 	Dim VpDecks2() As String = clsPerformances.GetActiveDecks
 	Dim VpMat1() As Single = clsPerformances.GetSimpleRatioMatrix(VpDecks1)
@@ -399,9 +399,9 @@ Public Partial Class frmPerfs
 							VpPrice = clsPerformances.GetPrice(VpDecks1(VpI))
 							If VpPrice <> -1 Then
 								VpEfficiencies.Add(New clsEfficiency(VpDecks1(VpI), VpPrice, VpMat1(VpI), VpMat2(VpJ), VpRef * VpMat2(VpJ), Math.Min(VpPrice / VpRef, 100), (VpPrice / VpMat2(VpJ)) / VpRef))
-							End If							
+							End If
 						End If
-					Next VpJ					
+					Next VpJ
 				Next VpI
 				VpEfficiencies.Sort(New clsEfficiency.clsEfficiencyComparer)
 				For Each VpEfficiency As clsEfficiency In VpEfficiencies
@@ -804,7 +804,7 @@ Public Class clsPerformances
 			.Close
 		End With
 		Return VpGames.ToArray
-	End Function	
+	End Function
 	Public Shared Function GetAdvDecks(VpAdvName As String) As String()
 	'---------------------------------------------------------
 	'Retourne le nom des decks du joueur spécifié en paramètre
@@ -878,8 +878,8 @@ Public Class clsPerformances
 		For VpI As Integer = 0 To VpN - 1
 			VpMat(VpI) = 100 * clsPerformances.GetRatio(VpGames(VpI))
 		Next VpI
-		Return VpMat		
-	End Function	
+		Return VpMat
+	End Function
 	Public Shared Function GetRatioMatrix(VpGames As String()) As Single(,)
 	'-------------------------------------------------------------------------------------------------------------------
 	'Retourne la fraction de parties gagnées par le jeu i contre le jeu j, 1<(i,j)<N, N nombre total de jeux en présence

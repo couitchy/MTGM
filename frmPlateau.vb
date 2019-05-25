@@ -320,7 +320,7 @@ Public Partial Class frmPlateau
 	Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
 		If Me.btReserve.Checked AndAlso VpDestination Is VmPlateauPartie.Regard Then
 			Call clsModule.ShowWarning(clsModule.CgErr9)
-		Else	
+		Else
 			If VpCard.SendTo(VpDestination, Me.CalcNewPosition(New Point(VpEventArgs.X, VpEventArgs.Y), VpDestinationPanel, VpDestination)) Then
 				Call Me.ManageReDraw(VpSource, VpDestination)
 			End If
@@ -329,7 +329,7 @@ Public Partial Class frmPlateau
 	End Sub
 	Private Sub NewPartie
 	'------------------------------
-	'Réinitialise le plateau de jeu		
+	'Réinitialise le plateau de jeu
 	'------------------------------
 		Me.btLives.Text = "Vies"
 		Me.btPoisons.Text = "Poisons"
@@ -337,7 +337,7 @@ Public Partial Class frmPlateau
 		VmPlateauPartie.Mulligan = 0
 		Me.btReserve.Checked = False
 		Call VmPlateauPartie.BeginPlateauPartie
-		Call Me.ManageReDraw			
+		Call Me.ManageReDraw
 	End Sub
 	#End Region
 	#Region "Evènements"
@@ -757,7 +757,7 @@ Public Class clsPlateauPartie
 			While .Read
 				If VpSource = clsModule.CgSDecks Then
 					VpReserve = .GetBoolean(5)
-				End If				
+				End If
 				'Carte normale
 				If Not .GetBoolean(4) Then
 					Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0), VpReserve)

@@ -72,7 +72,7 @@ Public Partial Class frmNewEdition
 				.SeriesCD_MW = VpInfos(33)
 			Else
 				.SeriesCD_MO = VpInfos(1)
-				.SeriesCD_MW = VpInfos(1)				
+				.SeriesCD_MW = VpInfos(1)
 			End If
 			.Border = .SetBorder(VpInfos(8))
 			.Release = Date.Parse(VpInfos(9), New CultureInfo("fr-FR", True), DateTimeStyles.NoCurrentDateDefault)

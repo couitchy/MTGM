@@ -377,7 +377,7 @@ Public Class clsXLItem
 		'Force / Endurance
 		If VpChk.GetItemChecked(2) Then
 			VmForceEndurance = If(VpForce = "" And VpEndurance = "", "", "'" + VpForce + " / " + VpEndurance)
-		End If		
+		End If
 		'Coût d'invocation
 		If VpChk.GetItemChecked(3) Then
 			VmInvoc = VpInvoc
@@ -419,7 +419,7 @@ Public Class clsXLItem
 		Get
 			Return VmFoil
 		End Get
-	End Property	
+	End Property
 	Public ReadOnly Property Color As String
 		Get
 			Return VmColor
@@ -472,5 +472,5 @@ Public Class clsXLItem
 		Set (VpReserve As Boolean)
 			VmReserve = VpReserve
 		End Set
-	End Property	
+	End Property
 End Class

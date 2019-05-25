@@ -209,7 +209,7 @@ Public Partial Class frmStats
 			Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(4)
 		Else
 			Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(5)
-		End If		
+		End If
 	End Sub
 	Private Function GetAutorisation(VpTournoiType As String, Optional ByRef VpHas1ItemRestr As Boolean = False) As Boolean
 	'------------------------------------------------------------------------------------------------------------------------
@@ -359,11 +359,11 @@ Public Partial Class frmStats
 	'en prenant en compte le nombre de rééditions des cartes (plus une carte est rééditée, moins elle est rare
 	'---------------------------------------------------------------------------------------------------------
 	Dim VpSQL As String
-	Dim VpO As Object	
+	Dim VpO As Object
 		VpSQL = "Select Rares.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join (Select Card.Title, Count(Card.Title) As Nb From Card Where InStr(UCase(Rarity), " + clsModule.CgRarities(VpLevel) + ") > 0 Group By Card.Title) As Rares On Card.Title = Rares.Title Where "
 		VpSQL = VpSQL + VmRestriction
 		VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + " Order By Rares.Nb;"
-		VpO = VgDBCommand.ExecuteScalar	
+		VpO = VgDBCommand.ExecuteScalar
 		If VpO Is Nothing Then
 			Return Me.GetRarest(VpLevel + 1)
 		Else
@@ -382,7 +382,7 @@ Public Partial Class frmStats
 	Dim VpP As Double
 	Dim VpT As Double
 	Dim VpMaxNoFoil As Double
-	Dim VpMaxFoil As Double		
+	Dim VpMaxFoil As Double
 		'Trappe d'erreur (si pas de créatures dans la sélection ou pas de cartes invocables)
 		Try
 			VpC = Me.QueryInfo("Sum(myCost * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")

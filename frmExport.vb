@@ -102,7 +102,7 @@ Public Partial Class frmExport
 	End Sub
 	Private Sub GoExportWeb(VpPath As String, VpSources As List(Of String))
 	Dim VpMyHTML As Stream = Assembly.GetExecutingAssembly.GetManifestResourceStream("MyHTML")
-	Dim VpZipStream As ZipInputStream	
+	Dim VpZipStream As ZipInputStream
 	Dim VpZipEntry As ZipEntry
 		If Not Directory.Exists(Path.GetTempPath + clsModule.CgTemp) Then
 			Directory.CreateDirectory(Path.GetTempPath + clsModule.CgTemp)
@@ -151,7 +151,7 @@ Public Partial Class frmExport
 			If VpDeck = clsModule.CgCollection Then
 				VgDBCommand.CommandText = "Select * From ((((((MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO;"
 			Else
-				VgDBCommand.CommandText = "Select * From (((((((MyGames Inner Join MyGamesID On MyGames.GameID = MyGamesID.GameID) Inner Join Card On MyGames.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where MyGamesID.GameName = '" + VpDeck.Replace("'", "''") + "';"				
+				VgDBCommand.CommandText = "Select * From (((((((MyGames Inner Join MyGamesID On MyGames.GameID = MyGamesID.GameID) Inner Join Card On MyGames.EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO Where MyGamesID.GameName = '" + VpDeck.Replace("'", "''") + "';"
 			End If
 			VgDBReader = VgDBCommand.ExecuteReader
 			With VgDBReader
@@ -185,7 +185,7 @@ Public Partial Class frmExport
 			VpOut.Write(VpJSON)
 			VpOut.Flush
 			VpOut.Close
-		Next VpDeck	
+		Next VpDeck
 	End Sub
 	Private Function JSONBypass(VpStr As String, VpSection As String) As Dictionary(Of String, Integer)
 	'--------------------------------------------------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ Public Partial Class frmExport
 			VpId = clsModule.GetNewDeckId
 			VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpSource.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '', Null, False);"
 			VgDBCommand.ExecuteNonQuery
-		End If 
+		End If
 		Select Case VpPath.Substring(VpPath.LastIndexOf(".")).ToLower
 			'** Gestion formats MTGM **
 			Case clsModule.CgFExtO, clsModule.CgFExtN
@@ -580,7 +580,7 @@ Public Partial Class frmExport
 							VpName = ""
 							For VpI As Integer = 1 To VpStrs.Length - 3
 								VpName += VpStrs(VpI) + " "
-							Next VpI 
+							Next VpI
 							VpName = VpName.Trim
 							VpFoil = False	'à gérer ultérieurement
 							'Exact match

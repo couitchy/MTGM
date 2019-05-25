@@ -1016,7 +1016,7 @@ Public Class clsRemoteCard
 	End Function
 	Public Shared Function GetTotal(VpToSell As List(Of clsRemoteCard)) As Single
 	'---------------------------------------------------------------------------------------------
-	'Retourne le total des coûts d'acquisition (hors frais de port) auprès des vendeurs sollicités 
+	'Retourne le total des coûts d'acquisition (hors frais de port) auprès des vendeurs sollicités
 	'---------------------------------------------------------------------------------------------
 	Dim VpTotal As Single = 0
 		For Each VpRemoteCard As clsRemoteCard In VpToSell

@@ -114,7 +114,7 @@ Public Partial Class frmGestAdv
 		If Me.lvwAdv.SelectedIndices.Count > 0 Then
 			Me.btRemove.Enabled = ( Me.lvwAdv.SelectedIndices(0) > 0 )
 		Else
-			Me.btRemove.Enabled = False			
+			Me.btRemove.Enabled = False
 		End If
 		Me.btRename.Enabled = Me.btRemove.Enabled
 	End Sub
@@ -126,7 +126,7 @@ Public Partial Class frmGestAdv
 			VgDBCommand.CommandText = "Update MyGamesID Set AdvID = 0 Where AdvId = " + VpAdvId.ToString + ";"
 			VgDBCommand.ExecuteNonQuery
 			VgDBCommand.CommandText = "Delete * From MyAdversairesID Where AdvID = " + VpAdvId.ToString + ";"
-			VgDBCommand.ExecuteNonQuery		
+			VgDBCommand.ExecuteNonQuery
 			Call Me.ReloadListes
 		End If
 	End Sub

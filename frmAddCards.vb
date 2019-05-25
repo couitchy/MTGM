@@ -31,7 +31,7 @@ Public Partial Class frmAddCards
 	Private VmCanClose As Boolean = False  			'Formulaire peut être fermé
 	Private VmChangesCommited As Boolean = False	'Modifications en cours sur ComboBoxes
 	Private VmFR As Boolean							'Vrai si saisie depuis la combobox FR, faux si saisie depuis la combobox EN
-	Private VmKeyChange As Boolean = False	
+	Private VmKeyChange As Boolean = False
 	Private VmOwner As MainForm
 	#End Region
 	#Region "Méthodes"
@@ -104,7 +104,7 @@ Public Partial Class frmAddCards
 			Return VpO.ToString
 		Else
 			Return Me.lblEncNbr.Text
-		End If		
+		End If
 	End Function
 	Private Function FindDateSerie(VpSerie As String) As String
 	'--------------------------------------------------------------
@@ -174,7 +174,7 @@ Public Partial Class frmAddCards
 					Me.cmdDestination.Tag = clsModule.GetDeckIdFromName(VpSource)
 					Me.lblDest.Text = VpSource
 					Exit For
-				End If				
+				End If
 			Next VpItem
 		Else
 			Me.mnuDropToCollection.Checked = True
@@ -195,7 +195,7 @@ Public Partial Class frmAddCards
 	End Sub
 	Sub ChkFoilCheckedChanged(sender As Object, e As EventArgs)
 		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked, Me.chkReserve.Checked)
-	End Sub	
+	End Sub
 	Sub ChkReserveCheckedChanged(sender As Object, e As EventArgs)
 		Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked, Me.chkReserve.Checked)
 	End Sub
@@ -301,7 +301,7 @@ Public Partial Class frmAddCards
 			Else
 				Me.txtNbItems.Text = (Val(Me.txtNbItems.Text) + 1).ToString
 			End If
-		End If		
+		End If
 	End Sub
 	Sub CmdDestinationMouseDown(sender As Object, e As MouseEventArgs)
 		Me.cmnuDestination.Show(Me.cmdDestination, e.Location)
@@ -320,7 +320,7 @@ Public Partial Class frmAddCards
 	End Sub
 	Sub FrmAddCardsLoad(sender As Object, e As EventArgs)
 		VmCanClose = True
-	End Sub	
+	End Sub
 	Sub FrmAddCardsActivated(sender As Object, e As EventArgs)
 		Me.cboTitleFR.Focus
 	End Sub
@@ -334,7 +334,7 @@ Public Partial Class frmAddCards
 		VmFR = False
 	End Sub
 	Sub CboSerieLeave(sender As Object, e As EventArgs)
-		Me.chkFoil.Enabled = ( Me.cboSerie.Items.Contains(Me.cboSerie.Text) )	
+		Me.chkFoil.Enabled = ( Me.cboSerie.Items.Contains(Me.cboSerie.Text) )
 	End Sub
 	#End Region
 End Class

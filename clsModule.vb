@@ -91,7 +91,7 @@ Public Module clsModule
 	Public Const CgUpdater As String      			= "\Updater.exe"
 	Public Const CgMTGMWebResourcer As String		= "\WebResourcer.exe"
 	Public Const CgHTMLCollectionViewer As String	= "\CollectionViewer.exe"
-	Public Const CgColViewerZipRes As String		= "\CollectionViewer.zip"	
+	Public Const CgColViewerZipRes As String		= "\CollectionViewer.zip"
 	Public Const CgUpDFile As String      			= "\Magic The Gathering Manager.new"
 	Public Const CgDownDFile As String     			= "\Magic The Gathering Manager.bak"
 	Public Const CgUpMultiverse As String			= "\AllSets-x.json"
@@ -1390,7 +1390,7 @@ Public Module clsModule
 		Do
 			VpLen = VpIn.Read(VpBuffer, 0, VpBuffer.Length)
 			If VpLen > 0 Then
-				VpOut.Write(VpBuffer, 0, VpLen)	
+				VpOut.Write(VpBuffer, 0, VpLen)
 			Else
 				Exit Do
 			End If
@@ -1552,7 +1552,7 @@ Public Module clsModule
 			Try
 				VgClient.DownloadFile(VpURI, Path.GetTempPath + VpOutput)
             	VpCopy = New Process
-            	VpCopy.StartInfo.FileName = "cmd.exe" 
+            	VpCopy.StartInfo.FileName = "cmd.exe"
             	VpCopy.StartInfo.Arguments = "/c copy """ + Path.GetTempPath + VpOutput + """ """ + Application.StartupPath + """"
             	VpCopy.StartInfo.UseShellExecute = True
             	VpCopy.StartInfo.Verb = "runas"
@@ -2949,7 +2949,7 @@ Public Class clsFullInfos
 End Class
 <Serializable> _
 Public Class clsCardInfos
-	Public MultiverseId As Long	
+	Public MultiverseId As Long
 	Public EncNbr As Long
 	Public Title As String
 	Public TitleFR As String

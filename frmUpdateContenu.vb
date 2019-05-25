@@ -70,7 +70,7 @@ Public Partial Class frmUpdateContenu
 			'Gestion cas 11
 
 			'Gestion cas 12
-			
+
 			Return VpStamps
 		Catch
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
@@ -98,7 +98,7 @@ Public Partial Class frmUpdateContenu
 			'Gestion cas 11
 
 			'Gestion cas 12
-			
+
 			Return VpSizes
 		Catch
 			Call clsModule.ShowWarning(clsModule.CgDL3b)
@@ -276,9 +276,9 @@ Public Partial Class frmUpdateContenu
 				Next VpI
 				VmPassiveUpdate = EgPassiveUpdate.NotNow
 			Case clsMAJContenu.EgMAJContenu.NewSerie
-				
+
 			Case clsMAJContenu.EgMAJContenu.NewTrad
-				
+
 			Case Else
 		End Select
 		Return True
@@ -451,7 +451,7 @@ Public Class clsMAJContenu
 			VmServeur = VpServeurDate.ToShortDateString
 		ElseIf VpLocale = "" AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
 			VmLocale = VpLocale
-			VmServeur = VpServeurDate.ToShortDateString			
+			VmServeur = VpServeurDate.ToShortDateString
 		Else
 			VmLocale = VpLocale
 			VmServeur = VpServeur

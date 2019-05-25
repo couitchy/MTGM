@@ -33,19 +33,19 @@ Public Partial Class frmDeleteEdition
 	'-------------------------------------------------
 	Dim VpCD As String = Me.cboSerie.Text.Substring(1, 2)
 		VgDBCommand.CommandText = "Delete CardDouble.* From CardDouble Inner Join Card On CardDouble.EncNbrDownFace = Card.EncNbr Where Card.Series = '" + VpCD + "';"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete CardDouble.* From CardDouble Inner Join Card On CardDouble.EncNbrTopFace = Card.EncNbr Where Card.Series = '" + VpCD + "';"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete PricesHistory.* From PricesHistory Inner Join Card On PricesHistory.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete CardFR.* From CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete MyCollection.* From MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete MyGames.* From MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr Where Card.Series = '" + VpCD + "';"
 		VgDBCommand.ExecuteNonQuery
 		VgDBCommand.CommandText = "Delete * From Card Where Series = '" + VpCD + "';"
-		VgDBCommand.ExecuteNonQuery	
+		VgDBCommand.ExecuteNonQuery
 		If Me.chkHeader.Checked Then
 			VgDBCommand.CommandText = "Delete * From Series Where SeriesCD = '" + VpCD + "';"
 			VgDBCommand.ExecuteNonQuery
@@ -54,7 +54,7 @@ Public Partial Class frmDeleteEdition
 		End If
 	End Sub
 	Sub FrmDeleteEditionLoad(ByVal sender As Object, ByVal e As EventArgs)
-		Call clsModule.LoadEditions(Me.cboSerie)		
+		Call clsModule.LoadEditions(Me.cboSerie)
 	End Sub
 	Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpCD As String = Me.cboSerie.Text.Substring(1, 2)
