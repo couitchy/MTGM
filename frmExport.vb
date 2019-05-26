@@ -25,6 +25,7 @@
 '| - gestion cartes foils				   19/12/2010 |
 '| - formats MMaster, MWS, MagicOnline	   08/09/2013 |
 '| - format Web HTML (ex CollectionViewer) 23/07/2016 |
+'| - format MTG Arena					   26/05/2019 |
 '------------------------------------------------------
 Imports System.IO
 Imports System.Xml
@@ -37,7 +38,7 @@ Public Partial Class frmExport
 	Private VmMousePos As Point				'Position initiale de la souris sur la barre de titre
 	Private VmCanClose As Boolean = False   'Formulaire peut être fermé
 	Private VmMustReload As Boolean = False	'Rechargement des menus obligatoires dans le père
-	Private VmFormat As clsModule.eFormat	'Format de fichier choisi pour l'export
+	Private VmFormat As clsModule.eFormat	'Format de fichier choisi pour l'export en cours
 	Private VmOwner As MainForm
 	Public Sub New(VpOwner As MainForm)
 		Me.InitializeComponent()
@@ -65,7 +66,7 @@ Public Partial Class frmExport
 	'------------------------------------------------------
 	'Exporte la table spécifiée dans le répertoire spécifié
 	'------------------------------------------------------
-	Dim VpOut As New StreamWriter(VpPath + "\" + clsModule.AvoidForbiddenChr(VpSource, clsModule.eForbiddenCharset.Full) + Me.GetExtension)
+	Dim VpOut As New StreamWriter(VpPath)
 	Dim VpIsCollection As Boolean = ( VpSource = clsModule.CgCollection )
 		'En-tête
 		Select Case VmFormat
@@ -78,7 +79,7 @@ Public Partial Class frmExport
 				VpOut.WriteLine("")
 			Case Else
 		End Select
-		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Series.SeriesCD_MW, Foil" + If(VpIsCollection, "", ", Reserve") + " From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join " + If(VpIsCollection, "MyCollection On MyCollection.EncNbr = Card.EncNbr;", "MyGames On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIdFromName(VpSource) + ";")
+		VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Series.SeriesCD_MW, Foil, Series.SeriesCD_MW, Card.CardNbr" + If(VpIsCollection, "", ", Reserve") + " From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join " + If(VpIsCollection, "MyCollection On MyCollection.EncNbr = Card.EncNbr;", "MyGames On MyGames.EncNbr = Card.EncNbr Where GameID = " + clsModule.GetDeckIdFromName(VpSource) + ";")
 		VgDBReader = VgDBCommand.ExecuteReader
 		'Corps
 		With VgDBReader
@@ -86,12 +87,14 @@ Public Partial Class frmExport
 				Select Case VmFormat
 					Case clsModule.eFormat.Apprentice
 						VpOut.WriteLine("        " + .GetValue(1).ToString + " " + .GetString(2))
+					Case clsModule.eFormat.MTGArena
+						VpOut.WriteLine(.GetValue(1).ToString + " " + .GetString(2) + " (" + .GetString(6) + ") " + .GetValue(7).ToString)
 					Case clsModule.eFormat.MTGM
 						VpOut.WriteLine(.GetValue(0).ToString + "#" + .GetValue(1).ToString)
 					Case clsModule.eFormat.MTGMv2
-						VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString + "#" + .GetValue(5).ToString + If(VpIsCollection, "", "#" + .GetValue(6).ToString))
+						VpOut.WriteLine(.GetValue(2).ToString + "#" + .GetValue(3).ToString + "#" + .GetValue(1).ToString + "#" + .GetValue(5).ToString + If(VpIsCollection, "", "#" + .GetValue(8).ToString))
 					Case clsModule.eFormat.MWS
-						VpOut.WriteLine(If(VpIsCollection, "", If(.GetBoolean(6), "SB:", "")) + "    " + .GetValue(1).ToString + " [" + .GetValue(4).ToString + "] " + .GetValue(2).ToString)
+						VpOut.WriteLine(If(VpIsCollection, "", If(.GetBoolean(8), "SB:", "")) + "    " + .GetValue(1).ToString + " [" + .GetValue(4).ToString + "] " + .GetValue(2).ToString)
 					Case Else
 				End Select
 			End While
@@ -631,6 +634,8 @@ Public Partial Class frmExport
 				Return clsModule.CgFExtO
 			Case clsModule.eFormat.MTGMv2
 				Return clsModule.CgFExtN
+			Case clsModule.eFormat.MTGArena
+				Return clsModule.CgFExtC
 			Case clsModule.eFormat.MWS
 				Return clsModule.CgFExtW
 			Case clsModule.eFormat.Web
@@ -649,6 +654,8 @@ Public Partial Class frmExport
 	End Sub
 	Sub CmdExportClick(ByVal sender As Object, ByVal e As EventArgs)
 	Dim VpSources As List(Of String)
+	Dim VpPath As String = ""
+	Dim VpInfo As String = ""
 		If Me.lstchkSources.CheckedItems.Count > 0 Then
 			Me.dlgBrowser.ShowDialog
 			If Me.dlgBrowser.SelectedPath <> "" Then
@@ -661,10 +668,16 @@ Public Partial Class frmExport
 					Call Me.GoExportWeb(Me.dlgBrowser.SelectedPath, VpSources)
 				Else
 					For Each VpSource As String In Me.lstchkSources.CheckedItems
-						Call Me.GoExport(Me.dlgBrowser.SelectedPath, VpSource)
+						VpPath = Me.dlgBrowser.SelectedPath + "\" + clsModule.AvoidForbiddenChr(VpSource, clsModule.eForbiddenCharset.Full) + Me.GetExtension
+						Call Me.GoExport(VpPath, VpSource)
 					Next VpSource
+					If VmFormat = clsModule.eFormat.MTGArena AndAlso Me.lstchkSources.CheckedItems.Count = 1 AndAlso File.Exists(VpPath) Then
+						Clipboard.SetDataObject((New StreamReader(VpPath)).ReadToEnd)
+						VpInfo += "La liste a été copiée dans le presse-papier." + vbCrLf + vbCrLf
+					End If
 				End If
-				Call clsModule.ShowInformation("Exportation terminée.")
+				VpInfo += "Exportation terminée."
+				Call clsModule.ShowInformation(VpInfo)
 				Me.Close
 			End If
 		End If

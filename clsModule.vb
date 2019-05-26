@@ -40,7 +40,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer				= 37308
+	Public Const CgCodeLines As Integer				= 37337
 	Public Const CGNClasses As Integer				= 87
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -140,7 +140,7 @@ Public Module clsModule
 	Public Const CgURL19 As String         			= "/Updates/Rulings.xml"
 	Public Const CgURL20 As String         			= "/Updates/MD_SubTypes r19.log"
 	Public Const CgURL21 As String         			= "/Updates/MD_SubTypesVF r19.log"
-	Public Const CgURL22 As String         			= "/Updates/MD_Multiverse r20.log"
+	Public Const CgURL22 As String         			= "/Updates/MD_Multiverse r21.log"
 	Public Const CgURL23 As String         			= "https://mtgjson.com/json/AllSets.json.zip"
 	Public Const CgURL24 As String					= "https://api.cardmarket.com/ws/v1.1/output.json/products/card-name/1/1/false"
 	Public Const CgURL25 As String					= "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
@@ -236,6 +236,7 @@ Public Module clsModule
 	Public Enum eFormat
 		MTGMv2 = 0
 		MTGM
+		MTGArena
 		Apprentice
 		MWS
 		Web

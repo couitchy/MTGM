@@ -946,7 +946,10 @@ Public Partial Class MainForm
 	'---------------------------------------
 	Dim VpSerializer As JavaScriptSerializer
 	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
+	Dim VpSerieCD As String
 		VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
+		VgDBCommand.ExecuteNonQuery
+		VgDBCommand.CommandText = "Update Card Set CardNbr = 0 Where CardNbr Is Null;"
 		VgDBCommand.ExecuteNonQuery
 		'Essaie de télécharger le fichier JSON général depuis Internet
 		If Not File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
@@ -958,10 +961,20 @@ Public Partial Class MainForm
 			VpSerializer.MaxJsonLength = Integer.MaxValue
 			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd)
 			For Each VpSerie As String In VpJSONInfos.Keys
+				VpSerieCD = VpSerie
+				If VpSerie.Length = 4 Then	'code d'add-on d'extension, seules les 3 dernières lettres comptent
+					VpSerieCD = VpSerie.Substring(1)
+				End If
 				For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
 					Try
-						VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.MultiverseId = " + VpCard.multiverseid.ToString + " Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
-						VgDBCommand.ExecuteNonQuery
+						If VpCard.multiverseid <> 0 Then
+							VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.MultiverseId = " + VpCard.multiverseid.ToString + " Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerieCD + "';"
+							VgDBCommand.ExecuteNonQuery
+						End If
+						If VpCard.number <> 0 Then
+							VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.CardNbr = " + VpCard.number.ToString + " Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerieCD + "';"
+							VgDBCommand.ExecuteNonQuery
+						End If
 					Catch
 					End Try
 				Next VpCard
@@ -984,6 +997,8 @@ Public Partial Class MainForm
 			While Not VpLog.EndOfStream
 				VpStrs = VpLog.ReadLine.Split("#")
 				VgDBCommand.CommandText = "Update Card Set MultiverseId = " + VpStrs(2) + " Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
+				VgDBCommand.ExecuteNonQuery
+				VgDBCommand.CommandText = "Update Card Set CardNbr = " + VpStrs(3) + " Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
 				VgDBCommand.ExecuteNonQuery
 	    	End While
 			VpLog.Close

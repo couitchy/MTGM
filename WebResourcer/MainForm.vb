@@ -857,14 +857,14 @@ Public Partial Class MainForm
 		Me.dlgSave.ShowDialog
 		If Me.dlgSave.FileName <> "" Then
 			VpOut = New StreamWriter(Me.dlgSave.FileName)
-	    	Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes a commencé...", eLogType.Information, True)
-	    	Me.prgAvance.Style = ProgressBarStyle.Marquee
-	    	VmDBCommand.CommandText = "Select Title, Series, MultiverseId From Card Order By Title;"
-	    	VmDBReader = VmDBCommand.ExecuteReader
+			Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes a commencé...", eLogType.Information, True)
+			Me.prgAvance.Style = ProgressBarStyle.Marquee
+			VmDBCommand.CommandText = "Select Title, Series, MultiverseId, CardNbr From Card Order By Title;"
+			VmDBReader = VmDBCommand.ExecuteReader
 			With VmDBReader
 				While .Read
 					Application.DoEvents
-					VpOut.WriteLine(.GetString(0) + "#" + .GetString(1) + "#" + CLng(.GetValue(2)).ToString)
+					VpOut.WriteLine(.GetString(0) + "#" + .GetString(1) + "#" + CLng(.GetValue(2)).ToString + "#" + CLng(.GetValue(3)).ToString)
 					Me.txtCur.Text = .GetString(0)
 					If Me.btCancel.Tag Then Exit While
 				End While
