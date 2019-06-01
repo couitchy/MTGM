@@ -1667,7 +1667,9 @@ Public Partial Class MainForm
 		VpMatrix.Add(clsModule.CgCollection, Me.CalcUse(VpCard, clsModule.CgSCollection, clsModule.CgCollection, False))
 		'Calcul des présences dans tous les decks
 		For Each VpSource As String In Me.GetAllSources
-			VpMatrix.Add(VpSource, Me.CalcUse(VpCard, clsModule.CgSDecks, VpSource, True))
+			If Not VpMatrix.ContainsKey(VpSource) Then
+				VpMatrix.Add(VpSource, Me.CalcUse(VpCard, clsModule.CgSDecks, VpSource, True))
+			End If
 		Next VpSource
 		'Détermine les colonnes de la grille
 		VpColumns.Add("Source")

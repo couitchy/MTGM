@@ -1631,6 +1631,8 @@ Public Partial Class MainForm
 				Return "commanderanthologyvolumeii#" + VpStr
 			Case "WS"
 				Return "warofthespark#" + VpStr
+			Case "GK"
+				Return "GuildsofRavnicaGuildKits#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1949,6 +1951,8 @@ Public Partial Class MainForm
 				Return "CB"
 			Case "warofthespark"
 				Return "WS"
+			Case "GuildsofRavnicaGuildKits"
+				Return "GK"
 			Case Else
 				Return ""
 		End Select
