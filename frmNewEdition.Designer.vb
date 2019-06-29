@@ -267,7 +267,7 @@ Partial Class frmNewEdition
 		Me.lnklblAssist.Size = New System.Drawing.Size(297, 13)
 		Me.lnklblAssist.TabIndex = 7
 		Me.lnklblAssist.TabStop = true
-		Me.lnklblAssist.Text = "Fichiers de description des éditions (site Wizards of the Coast)"
+		Me.lnklblAssist.Text = "Fichiers de description des éditions"
 		AddHandler Me.lnklblAssist.LinkClicked, AddressOf Me.LnklblAssistLinkClicked
 		'
 		'lblAssist3

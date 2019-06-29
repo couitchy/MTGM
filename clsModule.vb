@@ -40,7 +40,7 @@ Public Module clsModule
 	Public Declare Function OpenIcon 				Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SetForegroundWindow		Lib "user32" (ByVal hwnd As Long) As Long
 	Public Declare Function SendMessageA 			Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-	Public Const CgCodeLines As Integer				= 37403
+	Public Const CgCodeLines As Integer				= 37421
 	Public Const CGNClasses As Integer				= 87
 	Public Const CgLastUpdateAut As String			= "18/10/2016"
 	Public Const CgLastUpdateSimu As String			= "19/10/2016"
@@ -124,7 +124,7 @@ Public Module clsModule
 	Public Const CgURL3B As String         			= "/Updates/Patch r13.mdb"
 	Public Const CgURL4 As String					= "/Listes%20des%20editions/"
 	Public Const CgURL5 As String					= "/Logos%20des%20editions/"
-	Public Const CgURL6 As String					= "http://gatherer.wizards.com/Pages/Default.aspx"
+	Public Const CgURL6 As String					= "https://mtgjson.com/json/"
 	Public Const CgURL7 As String         			= "/Updates/Historique.txt"
 	Public Const CgURL8 As String         			= "/Lib/"
 	Public Const CgURL9 As String         			= "/Updates/LastPrices.txt"
@@ -2298,6 +2298,7 @@ Public Class clsManas
 	Private VmM As Short = 0						'Mana de n'importe quelle couleur
 	Private VmA As Short = 0						'Mana sans couleur
 	Private VmC As Short = 0						'Mana seulement sans couleur
+	Private VmS As Short = 0						'Mana neigeux
 	Private VmB As Short = 0						'Mana noir
 	Private VmG As Short = 0						'Mana vert
 	Private VmU As Short = 0						'Mana bleu
@@ -2528,6 +2529,9 @@ Public Class clsManas
 					Case "C"
 						VmImgIndexes.Add(56)
 						VmC = VmC + 1
+					Case "S"
+						VmImgIndexes.Add(55)
+						VmS = VmS + 1
 					Case Else
 						VmImgIndexes.Add(1)
 				End Select
@@ -2547,6 +2551,7 @@ Public Class clsManas
 		VmM = VmM + VpManas.cM * VpSub
 		VmA = VmA + VpManas.cA * VpSub
 		VmC = VmC + VpManas.cC * VpSub
+		VmS = VmS + VpManas.cS * VpSub
 		VmB = VmB + VpManas.cB * VpSub
 		VmG = VmG + VpManas.cG * VpSub
 		VmU = VmU + VpManas.cU * VpSub
@@ -2585,6 +2590,7 @@ Public Class clsManas
 							VmR >= VpManas.cR And _
 							VmW >= VpManas.cW And _
 							VmC >= VpManas.cC And _
+							VmS >= VpManas.cS And _
 							VmBG >= VpManas.cBG And _
 							VmBR >= VpManas.cBR And _
 							VmGU >= VpManas.cGU And _
@@ -2638,7 +2644,7 @@ Public Class clsManas
 	End Property
 	Public ReadOnly Property Potentiel As Integer
 		Get
-			Return ( VmX + VmM + VmA + VmC + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB + Vm2R + Vm2G + Vm2U + Vm2W + Vm2B)
+			Return ( VmX + VmM + VmA + VmC + VmS + VmB + VmG + VmU + VmR + VmW + VmBG + VmBR + VmGU + VmGW + VmRG + VmRW + VmUB + VmUR + VmWB + VmWU + VmPR + VmPG + VmPU + VmPW + VmPB + Vm2R + Vm2G + Vm2U + Vm2W + Vm2B)
 		End Get
 	End Property
 	Public ReadOnly Property HasBlack As Boolean
@@ -2688,6 +2694,14 @@ Public Class clsManas
 		End Get
 		Set (VpC As Short)
 			VmC = VpC
+		End Set
+	End Property
+	Public Property cS As Short
+		Get
+			Return VmS
+		End Get
+		Set (VpS As Short)
+			VmS = VpS
 		End Set
 	End Property
 	Public ReadOnly Property cB As Short

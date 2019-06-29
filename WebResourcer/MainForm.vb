@@ -1633,6 +1633,8 @@ Public Partial Class MainForm
 				Return "warofthespark#" + VpStr
 			Case "GK"
 				Return "GuildsofRavnicaGuildKits#" + VpStr
+			Case "MH"
+				Return "modernhorizons#" + VpStr
 			Case Else
 				Return "#" + VpStr
 		End Select
@@ -1953,6 +1955,8 @@ Public Partial Class MainForm
 				Return "WS"
 			Case "GuildsofRavnicaGuildKits"
 				Return "GK"
+			Case "modernhorizons"
+				Return "MH"
 			Case Else
 				Return ""
 		End Select
