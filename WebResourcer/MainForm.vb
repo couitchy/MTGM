@@ -2010,23 +2010,55 @@ Public Partial Class MainForm
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey3))
 				VpStr = VpStr.Substring(CmKey3.Length)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
-				Call VpClient.DownloadFile(CmURL3 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
+				VpClient.DownloadFile(CmURL3 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
 			ElseIf VpStr.Contains(CmKey4) Then
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4) + 5)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
-				Call VpClient.DownloadFile(VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
+				VpClient.DownloadFile(VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
 			ElseIf VpStr.Contains(CmKey4B) Then
 				VpStr = VpStr.Substring(VpStr.IndexOf(CmKey4B) + 6)
 				VpStr = VpStr.Substring(0, VpStr.IndexOf(""""))
-				Call VpClient.DownloadFile(CmURL4 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
+				VpClient.DownloadFile(CmURL4 + VpStr, Me.dlgBrowse.SelectedPath + "\" + VpIn.Replace(":", "").Replace("/", "").Replace("""", "").Replace("?", "") + ".jpg")
 			End If
 		Catch
 		End Try
 	End Sub
+	Private Sub DownloadSymbolsOrThumbs(VpURL As String, VpDesc As String, VpDesc1 As String)
+	'----------------------------------------------------------------
+	'Télécharge les symboles ou les miniatures de toutes les éditions
+	'----------------------------------------------------------------
+	Dim VpClient As New WebClient
+		Me.dlgBrowse.SelectedPath = ""
+		Me.dlgBrowse.ShowDialog
+		If Me.dlgBrowse.SelectedPath <> "" Then
+			Call Me.AddToLog("La récupération des " + VpDesc + " des éditions a commencé...", eLogType.Information, True)
+	    	VmDBCommand.CommandText = "Select SeriesCD_MO, SeriesNM From Series;"
+	    	VmDBReader = VmDBCommand.ExecuteReader
+			With VmDBReader
+				While .Read
+					Try
+						ServicePointManager.SecurityProtocol = &H00000C00
+						VpClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0")
+						VpClient.DownloadFile(VpURL.Replace("#id#", .GetString(0).ToLower), Me.dlgBrowse.SelectedPath + "\" + .GetString(0) + ".png")
+					Catch
+						Call Me.AddToLog("Impossible de récupérer " + VpDesc1 + " de l'édition : " + .GetString(1), eLogType.Warning)
+					End Try
+					Application.DoEvents
+					If Me.btCancel.Tag Then Exit While
+				End While
+				.Close
+			End With
+			If Me.btCancel.Tag Then
+				Call Me.AddToLog("La récupération des " + VpDesc + " des éditions a été annulée.", eLogType.Warning, , True)
+			Else
+				Call Me.AddToLog("La récupération des " + VpDesc + " des éditions est terminée.", eLogType.Information, , True)
+			End If
+		End If
+	End Sub
 	Private Sub DownloadPictures
-	'----------------------------------------------------------------------------
-	'Télécharge les images  associées aux cartes listées dans le fichier spécifié
-	'----------------------------------------------------------------------------
+	'---------------------------------------------------------------------------
+	'Télécharge les images associées aux cartes listées dans le fichier spécifié
+	'---------------------------------------------------------------------------
 	Dim VpListe As List(Of String)
 		Me.dlgOpen4.FileName = ""
 		Me.dlgOpen4.ShowDialog
@@ -3084,6 +3116,16 @@ Public Partial Class MainForm
 	Sub MnuSeriesGenR16Click(sender As Object, e As EventArgs)
 		If Not VmDB Is Nothing Then
 			Call Me.BuildHeaders(False)
+		End If
+	End Sub
+	Sub MnuPicturesSymbolsClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.DownloadSymbolsOrThumbs("https://www.mtgpics.com/graph/sets/symbols/#id#-c.png", "symboles", "le symbole")
+		End If
+	End Sub
+	Sub MnuPicturesThumbsClick(sender As Object, e As EventArgs)
+		If Not VmDB Is Nothing Then
+			Call Me.DownloadSymbolsOrThumbs("https://www.mtgpics.com/graph/sets/logos/#id#.png", "miniatures", "la miniature")
 		End If
 	End Sub
 	Sub MnuPicturesUpdateClick(sender As Object, e As EventArgs)

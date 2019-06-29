@@ -1167,8 +1167,8 @@ Public Class clsNumericComparer
 	End Function
 End Class
 Public Class OAuthHeader
-	Private VmAppToken As String = "NYbYnf8ZTmqIOofE"						'Clé publique
-	Private VmAppSecret As String = "mviFO4ULHXSsPjMxV4KPqCiiP4pHv99r"		'Clé privée
+	Private VmAppToken As String = "SNHYNcu9fbXAORqY"						'Clé publique
+	Private VmAppSecret As String = "66rhX6mLKuoRHbNV4vJlz5JFv7Sgn3aP"		'Clé privée
 	Private VmAccessToken As String = ""									'Non utilisé
 	Private VmAccessSecret As String = ""									'Non utilisé
 	Private VmSignatureMethod As String = "HMAC-SHA1"						'Méthode de hashage

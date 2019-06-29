@@ -79,6 +79,8 @@ Partial Class MainForm
 		Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuBuildPatch = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPictures = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesSymbols = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuPicturesThumbs = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesUpdate = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesRemove = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuPicturesFix = New System.Windows.Forms.ToolStripMenuItem()
@@ -445,10 +447,24 @@ Partial Class MainForm
 		'
 		'mnuPictures
 		'
-		Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesUpdate, Me.mnuPicturesRemove, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP})
+		Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesSymbols, Me.mnuPicturesThumbs, Me.mnuPicturesUpdate, Me.mnuPicturesRemove, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP})
 		Me.mnuPictures.Name = "mnuPictures"
 		Me.mnuPictures.Size = New System.Drawing.Size(152, 22)
 		Me.mnuPictures.Text = "Images"
+		'
+		'mnuPicturesSymbols
+		'
+		Me.mnuPicturesSymbols.Name = "mnuPicturesSymbols"
+		Me.mnuPicturesSymbols.Size = New System.Drawing.Size(316, 22)
+		Me.mnuPicturesSymbols.Text = "Récupérer les symboles des éditions"
+		AddHandler Me.mnuPicturesSymbols.Click, AddressOf Me.MnuPicturesSymbolsClick
+		'
+		'mnuPicturesThumbs
+		'
+		Me.mnuPicturesThumbs.Name = "mnuPicturesThumbs"
+		Me.mnuPicturesThumbs.Size = New System.Drawing.Size(316, 22)
+		Me.mnuPicturesThumbs.Text = "Récupérer les miniatures des éditions"
+		AddHandler Me.mnuPicturesThumbs.Click, AddressOf Me.MnuPicturesThumbsClick
 		'
 		'mnuPicturesUpdate
 		'
@@ -827,6 +843,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuPicturesThumbs As System.Windows.Forms.ToolStripMenuItem
+	Private mnuPicturesSymbols As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsRulingsFilter As System.Windows.Forms.ToolStripMenuItem
 	Private mnuCardsExtractMultiverseId As System.Windows.Forms.ToolStripMenuItem
 	Private mnuPricesHistoryRebuild As System.Windows.Forms.ToolStripMenuItem
