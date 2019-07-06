@@ -940,12 +940,13 @@ Public Partial Class MainForm
 		VgDBCommand.CommandText = "Update Card Set Rarity = 'D' Where Rarity = 'L' Or Rarity = 'S';"
 		VgDBCommand.ExecuteNonQuery
 	End Sub
-	Private Sub FixMultiverse
+	Private Sub FixMultiverse(Optional VpCode As String = "")
 	'---------------------------------------
 	'Mise à jour des identifiants Multiverse
 	'---------------------------------------
 	Dim VpSerializer As JavaScriptSerializer
 	Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
+	Dim VpJSONInfo As clsFullInfos = Nothing
 	Dim VpSerieCD As String
 		VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
 		VgDBCommand.ExecuteNonQuery
@@ -953,13 +954,19 @@ Public Partial Class MainForm
 		VgDBCommand.ExecuteNonQuery
 		'Essaie de télécharger le fichier JSON général depuis Internet
 		If Not File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
-			Call clsModule.DownloadUnzip(New Uri(CgURL23), clsModule.CgUpMultiverse2, clsModule.CgUpMultiverse)
+			Call clsModule.DownloadUnzip(New Uri(If(VpCode = "", CgURL23, CgURL23.Replace("AllSets", VpCode))), clsModule.CgUpMultiverse2, clsModule.CgUpMultiverse)
 		End If
 		'Si ça a réussi on peut passer à la mise à jour effective
 		If File.Exists(Application.StartupPath + clsModule.CgUpMultiverse) Then
 			VpSerializer = New JavaScriptSerializer
 			VpSerializer.MaxJsonLength = Integer.MaxValue
-			VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd)
+			If VpCode <> "" Then
+				VpJSONInfo = VpSerializer.Deserialize(Of clsFullInfos)((New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd)
+				VpJSONInfos = New Dictionary(Of String, clsFullInfos)
+				VpJSONInfos.Add(VpCode, VpJSONInfo)
+			Else
+				VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + clsModule.CgUpMultiverse)).ReadToEnd)
+			End If
 			For Each VpSerie As String In VpJSONInfos.Keys
 				VpSerieCD = VpSerie
 				If VpSerie.Length = 4 Then	'code d'add-on d'extension, seules les 3 dernières lettres comptent
@@ -3369,10 +3376,20 @@ Public Partial Class MainForm
 			Call clsModule.ShowInformation("Terminé !")
 		End If
 	End Sub
-	Sub MnuFixMultiverseIdActivate(ByVal sender As Object, ByVal e As EventArgs)
+	Sub MnuFixMultiverseIdAllClick(ByVal sender As Object, ByVal e As EventArgs)
 		If clsModule.DBOK Then
 			If MessageBox.Show("Cette opération peut prendre beaucoup de temps..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
 				Call Me.FixMultiverse
+				Call clsModule.ShowInformation("Terminé !")
+			End If
+		End If
+	End Sub
+	Sub MnuFixMultiverseIdOneClick(sender As Object, e As EventArgs)
+	Dim VpCode As String
+		If clsModule.DBOK Then
+			VpCode = InputBox("Quel est le code de l'édition dont il manque les identifiants Multiverse ?", "Récupération des identifiants Multiverse", "(code)")
+			If VpCode <> "" Then
+				Call Me.FixMultiverse(VpCode.ToUpper)
 				Call clsModule.ShowInformation("Terminé !")
 			End If
 		End If

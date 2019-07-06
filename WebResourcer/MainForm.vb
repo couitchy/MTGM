@@ -2119,135 +2119,6 @@ Public Partial Class MainForm
 		Return VpListe
 	End Function
 	Private Sub DownloadSpoilers(VpCode As String)
-	'----------------------------------------------------------------------------------------------------------
-	'Récupère les fichiers (listing avec traduction, checklist, spoilerlist) nécessaires à l'ajout de l'édition
-	'----------------------------------------------------------------------------------------------------------
-	Dim VpStr As String = ""
-	Dim VpStrs() As String
-	Dim VpListeEN As List(Of String)
-	Dim VpListeFR As List(Of String)
-	Dim VpOut As StreamWriter
-	Dim VpCount As Integer
-	Dim VpItem As String
-	Dim VpNewItem As String
-	Dim VpItemColorlessOnly As Boolean
-		'Récupération des traductions
-		Call Me.AddToLog("Récupération du listing VO/VF...", eLogType.Information)
-		VpListeEN = Me.GetListing(VpCode, "en")
-		VpListeFR = Me.GetListing(VpCode, "fr")
-		If VpListeFR.Count > 0 AndAlso VpListeFR.Count = VpListeEN.Count Then
-			VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_titles_fr.txt", False, Encoding.Default)
-			For VpI As Integer = 0 To VpListeEN.Count - 1
-				VpOut.WriteLine(VpListeEN.Item(VpI) + "#" + VpListeFR.Item(VpI))
-			Next VpI
-			VpOut.Flush
-			VpOut.Close
-		Else
-			Call Me.AddToLog("Traduction VF indisponible.", eLogType.Warning)
-		End If
-		'Récupération de la checklist
-		Call Me.AddToLog("Récupération de la checklist...", eLogType.Information)
-		VpStr = Me.HTMLfromRequest(CmURL5.Replace("###", VpCode).Replace("^^", "en"))
-		VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_checklist_en.txt", False, Encoding.Default)
-		VpOut.WriteLine("# 	Name 	Artist 	Color 	Rarity 	Set")
-		VpCount = 0
-		For Each VpCard As String In VpListeEN
-			VpStr = VpStr.Substring(VpStr.IndexOf(VpCard))
-			VpStrs = VpStr.Split(New String() {CmKey7}, StringSplitOptions.None)
-			For VpI As Integer = 1 To 5
-				While VpStrs(VpI).LastIndexOf(CmKey7B) >= 0
-					VpStrs(VpI) = VpStrs(VpI).Substring(0, VpStrs(VpI).LastIndexOf(CmKey7B))
-				End While
-			Next VpI
-			VpItem = ""
-			VpItemColorlessOnly = False
-			For VpI As Integer = 0 To VpStrs(2).Length - 1
-				Select Case VpStrs(2).Substring(VpI, 1)
-					Case "W"
-						VpNewItem = "White"
-					Case "B"
-						VpNewItem = "Black"
-					Case "U"
-						VpNewItem = "Blue"
-					Case "R"
-						VpNewItem = "Red"
-					Case "G"
-						VpNewItem = "Green"
-					Case "C"
-						VpItemColorlessOnly = True
-						VpNewItem = ""
-					Case Else
-						VpNewItem = ""
-				End Select
-				If VpNewItem <> "" AndAlso Not VpItem.Contains(VpNewItem) Then
-					VpItem += If(VpItem <> "", "/", "") + VpNewItem
-				End If
-			Next VpI
-			If VpItem = "" And VpItemColorlessOnly Then
-				VpItem = "Colorless"
-			ElseIf VpItem = "" AndAlso (VpStrs.Length < 8 OrElse Not VpStrs(7).Contains("Artifact")) Then
-				Call Me.AddToLog("Vérifier la couleur de la carte : " + VpCard, eLogType.Warning)
-			End If
-			Select Case VpStrs(3)
-				Case "Mythic Rare"
-					VpStrs(3) = "M"
-				Case "Rare"
-					VpStrs(3) = "R"
-				Case "Uncommon"
-					VpStrs(3) = "U"
-				Case "Common"
-					VpStrs(3) = "C"
-				Case "Special"
-					VpStrs(3) = "X"
-				Case Else
-					VpStrs(3) = ""
-			End Select
-			VpStrs(5) = VpStrs(5).Replace(CmKey7C, "")
-			VpCount += 1
-			VpOut.WriteLine(VpCount.ToString + vbTab + VpCard + vbTab + VpStrs(4) + vbTab + VpItem + vbTab + VpStrs(3) + vbTab + VpStrs(5))
-		Next VpCard
-		VpOut.Flush
-		VpOut.Close
-		'Récupération de la spoilerlist
-		Call Me.AddToLog("Récupération de la spoilerlist...", eLogType.Information)
-		VpStr = Me.HTMLfromRequest(CmURL6.Replace("###", VpCode))
-		VpOut = New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpCode + "_spoiler_en.txt", False, Encoding.Default)
-		For Each VpCard As String In VpListeEN
-			VpStr = VpStr.Substring(VpStr.IndexOf(">" + VpCard))
-			VpStrs = VpStr.Split(New String() {CmKey8}, StringSplitOptions.None)
-			VpOut.WriteLine("Name: " + vbTab + VpCard)
-			VpItem = VpStrs(2).Substring(VpStrs(2).IndexOf(vbLf) + 1)
-			If VpItem.Contains("(") Then
-				VpItem = VpItem.Substring(0, VpItem.LastIndexOf("("))
-			Else
-				VpItem = ""
-			End If
-			VpOut.WriteLine("Cost: " + vbTab + VpItem.Trim)
-			VpItem = VpStrs(2).Substring(1)
-			VpItem = VpItem.Substring(0, VpItem.IndexOf(","))
-			If VpItem.Contains("Loyalty:") Then
-				VpNewItem = "(0/" + VpItem.Substring(VpItem.IndexOf("Loyalty:") + 9)
-				VpItem = VpItem.Substring(0, VpItem.IndexOf("Loyalty:") - 2)
-			ElseIf VpItem.Contains(" ") And VpItem.Contains("/") Then
-				VpNewItem = "(" + VpItem.Substring(VpItem.LastIndexOf(" ") + 1) + ")"
-				VpItem = VpItem.Substring(0, VpItem.LastIndexOf(" "))
-			Else
-				VpNewItem = ""
-			End If
-			VpOut.WriteLine("Type: " + vbTab + VpItem)
-			VpOut.WriteLine("Pow/Tgh: " + vbTab + VpNewItem)
-			VpItem = VpStrs(3).Substring(VpStrs(3).IndexOf(CmKey8B) + 3)
-			VpItem = VpItem.Replace(CmKey8C, "").Replace(CmKey8D, vbCrLf)
-			VpOut.WriteLine("Rules Text: " + vbTab + VpItem.Trim)
-			VpItem = VpStrs(1).Substring(1).Replace(CmKey7C, "").Replace(CmKey8E, " ").Replace(CmKey8F, "").Trim
-			VpOut.WriteLine("Set/Rarity: " + vbTab + VpItem)
-			VpOut.WriteLine("")
-		Next VpCard
-		VpOut.Flush
-		VpOut.Close
-		Call Me.AddToLog("La récupération des fichiers spoilers est terminée.", eLogType.Information)
-	End Sub
-	Private Sub DownloadSpoilers2(VpCode As String)
 	'-----------------------------------------------------------------------------------------------------------
 	'Construit les fichiers (listing avec traduction, checklist, spoilerlist) nécessaires à l'ajout de l'édition
 	'-----------------------------------------------------------------------------------------------------------
@@ -3214,8 +3085,7 @@ Public Partial Class MainForm
 			Me.dlgBrowse.SelectedPath = ""
 			Me.dlgBrowse.ShowDialog
 			If Me.dlgBrowse.SelectedPath <> "" Then
-				'Call Me.DownloadSpoilers(VpCode)
-				Call Me.DownloadSpoilers2(VpCode)
+				Call Me.DownloadSpoilers(VpCode)
 			End If
 		End If
 	End Sub

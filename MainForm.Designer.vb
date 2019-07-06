@@ -104,6 +104,8 @@ Partial Class MainForm
 		Me.mnuFixPrices = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixFR = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixMultiverseId = New System.Windows.Forms.ToolStripMenuItem
+		Me.mnuFixMultiverseIdAll = New System.Windows.Forms.ToolStripMenuItem()
+		Me.mnuFixMultiverseIdOne = New System.Windows.Forms.ToolStripMenuItem()
 		Me.mnuFixCreatures = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixSerie = New System.Windows.Forms.ToolStripMenuItem
 		Me.mnuFixSerie2 = New System.Windows.Forms.ToolStripMenuItem
@@ -901,10 +903,24 @@ Partial Class MainForm
 		'
 		'mnuFixMultiverseId
 		'
+		Me.mnuFixMultiverseId.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixMultiverseIdAll, Me.mnuFixMultiverseIdOne})
 		Me.mnuFixMultiverseId.Name = "mnuFixMultiverseId"
 		Me.mnuFixMultiverseId.Size = New System.Drawing.Size(206, 22)
 		Me.mnuFixMultiverseId.Text = "Identifiants Multiverse manquants"
-		AddHandler Me.mnuFixMultiverseId.Click, AddressOf Me.MnuFixMultiverseIdActivate
+		'
+		'mnuFixMultiverseIdAll
+		'
+		Me.mnuFixMultiverseIdAll.Name = "mnuFixMultiverseIdAll"
+		Me.mnuFixMultiverseIdAll.Size = New System.Drawing.Size(152, 22)
+		Me.mnuFixMultiverseIdAll.Text = "Tous"
+		AddHandler Me.mnuFixMultiverseIdAll.Click, AddressOf Me.MnuFixMultiverseIdAllClick
+		'
+		'mnuFixMultiverseIdOne
+		'
+		Me.mnuFixMultiverseIdOne.Name = "mnuFixMultiverseIdOne"
+		Me.mnuFixMultiverseIdOne.Size = New System.Drawing.Size(152, 22)
+		Me.mnuFixMultiverseIdOne.Text = "Edition"
+		AddHandler Me.mnuFixMultiverseIdOne.Click, AddressOf Me.MnuFixMultiverseIdOneClick
 		'
 		'mnuFixCreatures
 		'
@@ -2040,6 +2056,8 @@ Partial Class MainForm
 		Me.ResumeLayout(false)
 		Me.PerformLayout
 	End Sub
+	Private mnuFixMultiverseIdOne As System.Windows.Forms.ToolStripMenuItem
+	Private mnuFixMultiverseIdAll As System.Windows.Forms.ToolStripMenuItem
 	Private mnuClipTitle As System.Windows.Forms.ToolStripMenuItem
 	Private mnuUpdateMultiverseId As System.Windows.Forms.ToolStripMenuItem
 	Private picAutMulti As System.Windows.Forms.PictureBox

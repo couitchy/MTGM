@@ -20,7 +20,7 @@
 '| Auteur         |                          Couitchy |
 '|----------------------------------------------------|
 '| Modifications :                                    |
-'| - support passif depuis drag&drop	   27/09/2010 |
+'| - support passif depuis drag & drop	   27/09/2010 |
 '| - format v2 avec ref. éditions		   01/10/2010 |
 '| - gestion cartes foils				   19/12/2010 |
 '| - formats MMaster, MWS, MagicOnline	   08/09/2013 |
@@ -246,7 +246,7 @@ Public Partial Class frmExport
 	Dim VpQteFoil As Integer
 	Dim VpNeedLog As Boolean = False
 		Cursor.Current = Cursors.WaitCursor
-		VpIn = New StreamReader(VpPath.ToLower.Replace(clsModule.CgFExtX, clsModule.CgFExtO), Encoding.Default)
+		VpIn = New StreamReader(VpPath.ToLower.Replace(clsModule.CgFExtX, clsModule.CgFExtO), Encoding.UTF8)
 		If VpIn.EndOfStream Then Return
 		'S'il s'agit d'un nouveau deck, l'inscrit en BDD
 		If VpIsNew Then
