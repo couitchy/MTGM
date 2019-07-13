@@ -1,6 +1,6 @@
 '------------------------------------------------------
 '| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |  		Perso                     |
+'| Contexte       |         Perso                     |
 '| Date           |                        30/03/2008 |
 '| Release 1      |                        12/04/2008 |
 '| Release 2      |                        30/08/2008 |
@@ -86,7 +86,7 @@ Public Class FileDialogFilterAttribute
     ''' <remarks>The following is an example of a filter string: "Text files (*.txt)|*.txt|All files (*.*)|*.*"
     ''' </remarks>
     ''' <history>
-    ''' 	[Vadim] 	30/12/2003	Created
+    '''     [Vadim]     30/12/2003  Created
     ''' </history>
     '''-----------------------------------------------------------------------------
     Public ReadOnly Property Filter() As String
@@ -102,7 +102,7 @@ Public Class FileDialogFilterAttribute
     ''' <param name="filter">The filter to use in the file dialog in UIFilenameEditor. The following is an example of a filter string: "Text files (*.txt)|*.txt|All files (*.*)|*.*"</param>
     ''' <remarks></remarks>
     ''' <history>
-    ''' 	[Vadim] 	30/12/2003	Created
+    '''     [Vadim]     30/12/2003  Created
     ''' </history>
     '''-----------------------------------------------------------------------------
     Public Sub New(ByVal filter As String)

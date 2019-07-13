@@ -1,6 +1,6 @@
 '------------------------------------------------------
 '| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |  		Perso                     |
+'| Contexte       |         Perso                     |
 '| Date           |                        30/03/2008 |
 '| Release 1      |                        12/04/2008 |
 '| Release 2      |                        30/08/2008 |
@@ -22,18 +22,18 @@
 '| Modifications :                                    |
 '------------------------------------------------------
 Public Partial Class frmExceptionBox
-	Private VmException As String
-	Public Sub New(VpException As String)
-		Me.InitializeComponent()
-		VmException = VpException
-	End Sub
-	Sub CmdContinueClick(ByVal sender As Object, ByVal e As EventArgs)
-		Me.Close
-	End Sub
-	Sub CmdExitClick(ByVal sender As Object, ByVal e As EventArgs)
-		Application.Exit
-	End Sub
-	Sub CmdSendClick(ByVal sender As Object, ByVal e As EventArgs)
-		Process.Start("mailto:couitchy@free.fr?subject=[Bug] Magic The Gathering Manager&body=MTGM " + Application.ProductVersion.ToString + " " + Environment.OSVersion.ToString + " " + VmException)
-	End Sub
+    Private VmException As String
+    Public Sub New(VpException As String)
+        Me.InitializeComponent()
+        VmException = VpException
+    End Sub
+    Sub CmdContinueClick(ByVal sender As Object, ByVal e As EventArgs)
+        Me.Close
+    End Sub
+    Sub CmdExitClick(ByVal sender As Object, ByVal e As EventArgs)
+        Application.Exit
+    End Sub
+    Sub CmdSendClick(ByVal sender As Object, ByVal e As EventArgs)
+        Process.Start("mailto:couitchy@free.fr?subject=[Bug] Magic The Gathering Manager&body=MTGM " + Application.ProductVersion.ToString + " " + Environment.OSVersion.ToString + " " + VmException)
+    End Sub
 End Class
