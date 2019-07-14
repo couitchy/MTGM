@@ -14,7 +14,7 @@
     <OptionStrict>Off</OptionStrict>
     <OptionCompare>Binary</OptionCompare>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <BaseAddress>4194304</BaseAddress>
@@ -25,16 +25,18 @@
     <OptionInfer>Off</OptionInfer>
     <ApplicationIcon>..\Ressources\MTGM_bleu_hd.ico</ApplicationIcon>
     <TargetFrameworkProfile />
+    <IntermediateOutputPath>_obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>bin\Debug-x86\</OutputPath>
+    <OutputPath>_bin\Debug-x86\</OutputPath>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>Full</DebugType>
     <Optimize>False</Optimize>
     <DefineConstants>DEBUG=1,TRACE=1</DefineConstants>
+    <BaseIntermediateOutputPath>_obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>bin\Release-x86\</OutputPath>
+    <OutputPath>_bin\Release-x86\</OutputPath>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
