@@ -2292,7 +2292,7 @@ Public Partial Class MainForm
     '---------------------------------------------------------------------------------------------------------------------------------------------
     'Gère la suppression d'une carte ou son transfert dans un autre deck/collection, ou encore son simple ajout, ou enfin son changement d'édition
     '---------------------------------------------------------------------------------------------------------------------------------------------
-    Dim VpPreciseTransfert As frmTransfert
+    Dim VpPreciseTransfert As frmTransfer
     Dim VpTransfertResult As New clsTransferResult
     Dim VpCardName As String = VpNode.Tag.Value
     Dim VpSource As String
@@ -2315,12 +2315,12 @@ Public Partial Class MainForm
             'Présence réserve éventuelle
             .ReserveFrom = Me.IsReserveSelected
             'Gestion des cas multiples / foils
-            If frmTransfert.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType, VpFoil) Then
-                VpPreciseTransfert = New frmTransfert(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
+            If frmTransfer.NeedsPrecision(Me, VpCardName, VpSource, VpSource2, VpTransfertType, VpFoil) Then
+                VpPreciseTransfert = New frmTransfer(Me, VpCardName, VpSource, VpSource2, VpTransfertResult)
                 VpPreciseTransfert.ShowDialog
             Else
                 .NCartes = 1
-                .IDSerieFrom = frmTransfert.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
+                .IDSerieFrom = frmTransfer.GetMatchingEdition(Me, VpCardName, VpSource, VpSource2)
                 .IDSerieTo = .IDSerieFrom
                 .FoilFrom = VpFoil
                 .FoilTo = VpFoil
@@ -2342,10 +2342,10 @@ Public Partial Class MainForm
                 End If
                 'Opération effective
                 If .TFrom <> .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy Then
-                    Call frmTransfert.CommitAction(VpTransfertResult)
+                    Call frmTransfer.CommitAction(VpTransfertResult)
                     Return Me.IsInAdvSearch AndAlso Me.IsInRestrictedAdvSearch
                 ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransferResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
-                    Call frmTransfert.CommitAction(VpTransfertResult)
+                    Call frmTransfer.CommitAction(VpTransfertResult)
                     Return True
                 Else
                     Call clsModule.ShowWarning("La source et la destination sont identiques !")
@@ -2430,9 +2430,9 @@ Public Partial Class MainForm
                 'Opération effective
                 If .NCartes > 0 Then
                     If .TFrom <> .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy Then
-                        Call frmTransfert.CommitAction(VpTransfertResult)
+                        Call frmTransfer.CommitAction(VpTransfertResult)
                     ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransferResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
-                        Call frmTransfert.CommitAction(VpTransfertResult)
+                        Call frmTransfer.CommitAction(VpTransfertResult)
                         VpMustReload = True
                     Else
                         Call clsModule.ShowWarning("La source et la destination sont identiques !")
@@ -3249,10 +3249,10 @@ Public Partial Class MainForm
         Call clsModule.CheckForUpdates(True, ( clsModule.ShowQuestion("Souhaitez-vous plutôt rechercher les mises à jour bêta (moins stables) ?") = System.Windows.Forms.DialogResult.Yes ), True)
     End Sub
     Public Sub MnuContenuUpdateClick(sender As Object, e As EventArgs)
-    Dim VpContenuUpdate As frmUpdateContenu
+    Dim VpContenuUpdate As frmUpdateContent
         If clsModule.DBOK Then
             If VmMyChildren.DoesntExist(VmMyChildren.ContenuUpdater) Then
-                VpContenuUpdate = New frmUpdateContenu
+                VpContenuUpdate = New frmUpdateContent
                 VmMyChildren.ContenuUpdater = VpContenuUpdate
             Else
                 VpContenuUpdate = VmMyChildren.ContenuUpdater
@@ -3343,13 +3343,13 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuPlateauClick(sender As Object, e As EventArgs)
-    Dim VpPlateau As frmPlateau
+    Dim VpPlateau As frmBoard
     Dim VpN As Integer
         If clsModule.DBOK Then
             VpN = Me.GetNCards(Me.MySource, clsModule.eCountMode.All)
             If VpN <= clsModule.CgMaxVignettes Then
                 If VpN >= clsModule.CgNMain Then
-                    VpPlateau = New frmPlateau(Me)
+                    VpPlateau = New frmBoard(Me)
                     VpPlateau.Show
                 Else
                     Call clsModule.ShowWarning("Il faut avoir au moins " + clsModule.CgNMain.ToString + " cartes saisies pour tirer une main...")
@@ -3373,10 +3373,10 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuGestDecksActivate(ByVal sender As Object, ByVal e As EventArgs)
-    Dim VpGestDecks As frmGestDecks
+    Dim VpGestDecks As frmManageDecks
         If clsModule.DBOK Then
             If VmMyChildren.DoesntExist(VmMyChildren.DecksManager) Then
-                VpGestDecks = New frmGestDecks(Me)
+                VpGestDecks = New frmManageDecks(Me)
                 VmMyChildren.DecksManager = VpGestDecks
             Else
                 VpGestDecks = VmMyChildren.DecksManager
@@ -3386,10 +3386,10 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuGestAdvClick(sender As Object, e As EventArgs)
-    Dim VpGestAdv As frmGestAdv
+    Dim VpGestAdv As frmManageAdv
         If clsModule.DBOK Then
             If VmMyChildren.DoesntExist(VmMyChildren.AdversairesManager) Then
-                VpGestAdv = New frmGestAdv
+                VpGestAdv = New frmManageAdv
                 VmMyChildren.AdversairesManager = VpGestAdv
             Else
                 VpGestAdv = VmMyChildren.AdversairesManager

@@ -1,4 +1,4 @@
-Public Partial Class frmTransfert
+Public Partial Class frmTransfer
     Private VmCardName As String
     Private VmOwner As MainForm
     Private VmSource As String

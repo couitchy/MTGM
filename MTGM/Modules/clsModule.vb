@@ -1443,7 +1443,7 @@ Public Module clsModule
     Dim VpAnswer As Stream
     Dim VpBuf(0 To 18) As Byte
     Dim VpOldText As String
-    Dim VpContenuUpdate As frmUpdateContenu
+    Dim VpContenuUpdate As frmUpdateContent
     Dim VpNewContenu As New List(Of clsUpdateContent)
         VpOldText = MainForm.VgMe.StatusTextGet
         Call MainForm.VgMe.StatusText(CgDL1)
@@ -1476,7 +1476,7 @@ Public Module clsModule
             'Recherche automatique des mises à jour de contenu
             ElseIf DBOK Then
                 If MainForm.VgMe.MyChildren.DoesntExist(MainForm.VgMe.MyChildren.ContenuUpdater) Then
-                    VpContenuUpdate = New frmUpdateContenu
+                    VpContenuUpdate = New frmUpdateContent
                     MainForm.VgMe.MyChildren.ContenuUpdater = VpContenuUpdate
                 Else
                     VpContenuUpdate = MainForm.VgMe.MyChildren.ContenuUpdater

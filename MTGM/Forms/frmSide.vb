@@ -1,12 +1,12 @@
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
-Public Partial Class frmReserve
+Public Partial Class frmSide
     Private VmFormMove As Boolean = False   'Formulaire en déplacement
     Private VmMousePos As Point             'Position initiale de la souris sur la barre de titre
     Private VmCanClose As Boolean = False   'Formulaire peut être fermé
-    Private VmOwner As frmPlateau
+    Private VmOwner As frmBoard
     Private VmRepartition As New Hashtable
-    Public Sub New(VpOwner As frmPlateau)
+    Public Sub New(VpOwner As frmBoard)
         Call Me.InitializeComponent
         VmOwner = VpOwner
     End Sub

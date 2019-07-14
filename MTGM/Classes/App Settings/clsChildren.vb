@@ -1,11 +1,11 @@
 ﻿Public Class clsChildren
     Private VmDeleteEdition As frmDeleteEdition = Nothing
-    Private VmGestDecks As frmGestDecks = Nothing
-    Private VmGestAdv As frmGestAdv = Nothing
+    Private VmGestDecks As frmManageDecks = Nothing
+    Private VmGestAdv As frmManageAdv = Nothing
     Private VmCardsBuyer As frmBuyCards = Nothing
     Private VmSearcher As frmSearch = Nothing
     Private VmPerfs As frmPerfs = Nothing
-    Private VmUpdateContenu As frmUpdateContenu = Nothing
+    Private VmUpdateContenu As frmUpdateContent = Nothing
     Private VmPricesHistory As frmGrapher = Nothing
     Private VmImportExport As frmExport = Nothing
     Public Function DoesntExist(VpForm As Form) As Boolean
@@ -19,19 +19,19 @@
             VmDeleteEdition = VpDeleteEdition
         End Set
     End Property
-    Public Property DecksManager As frmGestDecks
+    Public Property DecksManager As frmManageDecks
         Get
             Return VmGestDecks
         End Get
-        Set (VpGestDecks As frmGestDecks)
+        Set (VpGestDecks As frmManageDecks)
             VmGestDecks = VpGestDecks
         End Set
     End Property
-    Public Property AdversairesManager As frmGestAdv
+    Public Property AdversairesManager As frmManageAdv
         Get
             Return VmGestAdv
         End Get
-        Set (VpGestAdv As frmGestAdv)
+        Set (VpGestAdv As frmManageAdv)
             VmGestAdv = VpGestAdv
         End Set
     End Property
@@ -59,11 +59,11 @@
             VmPerfs = VpPerfs
         End Set
     End Property
-    Public Property ContenuUpdater As frmUpdateContenu
+    Public Property ContenuUpdater As frmUpdateContent
         Get
             Return VmUpdateContenu
         End Get
-        Set (VpUpdateContenu As frmUpdateContenu)
+        Set (VpUpdateContenu As frmUpdateContent)
             VmUpdateContenu = VpUpdateContenu
         End Set
     End Property

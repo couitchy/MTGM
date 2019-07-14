@@ -144,14 +144,14 @@
       <DependentUpon>frmExport.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmExport.vb" />
-    <Compile Include="Forms\frmGestAdv.Designer.vb">
-      <DependentUpon>frmGestAdv.vb</DependentUpon>
+    <Compile Include="Forms\frmManageAdv.Designer.vb">
+      <DependentUpon>frmManageAdv.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmGestAdv.vb" />
-    <Compile Include="Forms\frmGestDecks.Designer.vb">
-      <DependentUpon>frmGestDecks.vb</DependentUpon>
+    <Compile Include="Forms\frmManageAdv.vb" />
+    <Compile Include="Forms\frmManageDecks.Designer.vb">
+      <DependentUpon>frmManageDecks.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmGestDecks.vb" />
+    <Compile Include="Forms\frmManageDecks.vb" />
     <Compile Include="Forms\frmGrapher.Designer.vb">
       <DependentUpon>frmGrapher.vb</DependentUpon>
     </Compile>
@@ -164,14 +164,14 @@
       <DependentUpon>frmPerfs.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmPerfs.vb" />
-    <Compile Include="Forms\frmPlateau.Designer.vb">
-      <DependentUpon>frmPlateau.vb</DependentUpon>
+    <Compile Include="Forms\frmBoard.Designer.vb">
+      <DependentUpon>frmBoard.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmPlateau.vb" />
-    <Compile Include="Forms\frmReserve.Designer.vb">
-      <DependentUpon>frmReserve.vb</DependentUpon>
+    <Compile Include="Forms\frmBoard.vb" />
+    <Compile Include="Forms\frmSide.Designer.vb">
+      <DependentUpon>frmSide.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmReserve.vb" />
+    <Compile Include="Forms\frmSide.vb" />
     <Compile Include="Forms\frmSearch.Designer.vb">
       <DependentUpon>frmSearch.vb</DependentUpon>
     </Compile>
@@ -188,18 +188,18 @@
       <DependentUpon>frmStats.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmStats.vb" />
-    <Compile Include="Forms\frmTransfert.Designer.vb">
-      <DependentUpon>frmTransfert.vb</DependentUpon>
+    <Compile Include="Forms\frmTransfer.Designer.vb">
+      <DependentUpon>frmTransfer.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmTransfert.vb" />
+    <Compile Include="Forms\frmTransfer.vb" />
     <Compile Include="Forms\frmTranslate.Designer.vb">
       <DependentUpon>frmTranslate.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmTranslate.vb" />
-    <Compile Include="Forms\frmUpdateContenu.Designer.vb">
-      <DependentUpon>frmUpdateContenu.vb</DependentUpon>
+    <Compile Include="Forms\frmUpdateContent.Designer.vb">
+      <DependentUpon>frmUpdateContent.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmUpdateContenu.vb" />
+    <Compile Include="Forms\frmUpdateContent.vb" />
     <Compile Include="Forms\frmWord.Designer.vb">
       <DependentUpon>frmWord.vb</DependentUpon>
     </Compile>
@@ -248,11 +248,11 @@
     <EmbeddedResource Include="Forms\frmExport.resx">
       <DependentUpon>frmExport.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmGestAdv.resx">
-      <DependentUpon>frmGestAdv.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmManageAdv.resx">
+      <DependentUpon>frmManageAdv.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmGestDecks.resx">
-      <DependentUpon>frmGestDecks.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmManageDecks.resx">
+      <DependentUpon>frmManageDecks.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmGrapher.resx">
       <DependentUpon>frmGrapher.vb</DependentUpon>
@@ -263,11 +263,11 @@
     <EmbeddedResource Include="Forms\frmPerfs.resx">
       <DependentUpon>frmPerfs.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmPlateau.resx">
-      <DependentUpon>frmPlateau.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmBoard.resx">
+      <DependentUpon>frmBoard.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmReserve.resx">
-      <DependentUpon>frmReserve.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmSide.resx">
+      <DependentUpon>frmSide.vb</DependentUpon>
     </EmbeddedResource>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
@@ -331,14 +331,14 @@
     <EmbeddedResource Include="Forms\frmStats.resx">
       <DependentUpon>frmStats.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmTransfert.resx">
-      <DependentUpon>frmTransfert.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmTransfer.resx">
+      <DependentUpon>frmTransfer.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmTranslate.resx">
       <DependentUpon>frmTranslate.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmUpdateContenu.resx">
-      <DependentUpon>frmUpdateContenu.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmUpdateContent.resx">
+      <DependentUpon>frmUpdateContent.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmWord.resx">
       <DependentUpon>frmWord.vb</DependentUpon>

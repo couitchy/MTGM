@@ -1,5 +1,5 @@
 Imports System.IO
-Public Partial Class frmPlateau
+Public Partial Class frmBoard
     #Region "Déclarations"
     Private VmSource As String
     Private VmRestriction As String
@@ -683,9 +683,9 @@ Public Partial Class frmPlateau
         End If
     End Sub
     Sub BtReserveSwapClick(sender As Object, e As EventArgs)
-    Dim VpReserveManager As frmReserve
+    Dim VpReserveManager As frmSide
         If clsModule.ShowQuestion("Cette opération va interrompre la partie en cours..." + vbCrLf + "Continuer ?") = System.Windows.Forms.DialogResult.Yes Then
-            VpReserveManager = New frmReserve(Me)
+            VpReserveManager = New frmSide(Me)
             VpReserveManager.ShowDialog
             Call Me.NewPartie
         End If

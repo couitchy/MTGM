@@ -6,7 +6,7 @@
 '
 ' Pour changer ce modèle utiliser Outils | Options | Codage | Editer les en-têtes standards.
 '
-Partial Class frmPlateau
+Partial Class frmBoard
     Inherits System.Windows.Forms.Form
 
     ''' <summary>
@@ -34,7 +34,7 @@ Partial Class frmPlateau
     ''' </summary>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPlateau))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBoard))
         Me.toolStrip = New System.Windows.Forms.ToolStrip
         Me.btNewPartie = New System.Windows.Forms.ToolStripButton
         Me.btMulligan = New System.Windows.Forms.ToolStripButton

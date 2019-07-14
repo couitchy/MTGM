@@ -1,7 +1,7 @@
 Imports System.Text
 Imports System.Net
 Imports System.IO
-Public Partial Class frmUpdateContenu
+Public Partial Class frmUpdateContent
     Private VmFormMove As Boolean = False               'Formulaire en déplacement
     Private VmMousePos As Point                         'Position initiale de la souris sur la barre de titre
     Private VmCanClose As Boolean = False               'Formulaire peut être fermé

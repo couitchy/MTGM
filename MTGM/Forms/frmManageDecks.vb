@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Public Partial Class frmGestDecks
+Public Partial Class frmManageDecks
     Private VmOwner As MainForm
     Private VmFormMove As Boolean = False   'Formulaire en déplacement
     Private VmMousePos As Point             'Position initiale de la souris sur la barre de titre

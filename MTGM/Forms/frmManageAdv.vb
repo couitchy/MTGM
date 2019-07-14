@@ -1,4 +1,4 @@
-Public Partial Class frmGestAdv
+Public Partial Class frmManageAdv
     Public Sub New
         Call Me.InitializeComponent
     End Sub

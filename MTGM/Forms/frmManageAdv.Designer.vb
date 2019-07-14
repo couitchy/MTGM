@@ -6,7 +6,7 @@
 '
 ' Pour changer ce modèle utiliser Outils | Options | Codage | Editer les en-têtes standards.
 '
-Partial Class frmGestAdv
+Partial Class frmManageAdv
     Inherits System.Windows.Forms.Form
 
     ''' <summary>
@@ -33,7 +33,7 @@ Partial Class frmGestAdv
     ''' not be able to load this method if it was changed manually.
     ''' </summary>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmGestAdv))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmManageAdv))
         Me.cbarAdvManager = New TD.SandBar.ContainerBar
         Me.pnlAdvManager = New TD.SandBar.ContainerBarClientPanel
         Me.splitH = New System.Windows.Forms.SplitContainer

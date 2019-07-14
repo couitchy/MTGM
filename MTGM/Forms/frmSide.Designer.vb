@@ -6,7 +6,7 @@
 '
 ' Pour changer ce modèle utiliser Outils | Options | Codage | Editer les en-têtes standards.
 '
-Partial Class frmReserve
+Partial Class frmSide
     Inherits System.Windows.Forms.Form
 
     ''' <summary>
@@ -33,7 +33,7 @@ Partial Class frmReserve
     ''' not be able to load this method if it was changed manually.
     ''' </summary>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmReserve))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSide))
         Me.cbarReserve = New TD.SandBar.ContainerBar()
         Me.pnlReserve = New TD.SandBar.ContainerBarClientPanel()
         Me.grdRepartition = New SourceGrid2.Grid()

@@ -6,7 +6,7 @@
 '
 ' To change this template use Tools | Options | Coding | Edit Standard Headers.
 '
-Partial Class frmGestDecks
+Partial Class frmManageDecks
     Inherits System.Windows.Forms.Form
 
     ''' <summary>
@@ -34,7 +34,7 @@ Partial Class frmGestDecks
     ''' </summary>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmGestDecks))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmManageDecks))
         Me.cbarDecksManager = New TD.SandBar.ContainerBar()
         Me.pnlDecksManager = New TD.SandBar.ContainerBarClientPanel()
         Me.splitV = New System.Windows.Forms.SplitContainer()
