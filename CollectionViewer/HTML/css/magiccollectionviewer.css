@@ -1,0 +1,13 @@
+@CHARSET "ISO-8859-1";
+
+.desc {
+	background-image:url('../img/desc.png');
+	background-repeat:no-repeat;
+	background-position:right; 
+}
+
+.asc {
+	background-image:url('../img/asc.png');
+	background-repeat:no-repeat;
+	background-position:right; 
+}
