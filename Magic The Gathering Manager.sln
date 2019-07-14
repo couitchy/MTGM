@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 # SharpDevelop 4.4
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Magic The Gathering Manager", "Magic The Gathering Manager.vbproj", "{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Magic The Gathering Manager", "MTGM\Magic The Gathering Manager.vbproj", "{0CC9A8BB-B90D-47D8-B1DA-B046FD1C196A}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Updater", "Updater\Updater.vbproj", "{8E4CCD77-65AF-4A59-943C-EF72C3D77ACD}"
 EndProject
