@@ -6,7 +6,7 @@
 '
 ' To change this template use Tools | Options | Coding | Edit Standard Headers.
 '
-Partial Class About
+Partial Class frmAbout
     Inherits System.Windows.Forms.Form
 
     ''' <summary>
@@ -33,7 +33,7 @@ Partial Class About
     ''' not be able to load this method if it was changed manually.
     ''' </summary>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(About))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAbout))
         Me.lnkMail = New System.Windows.Forms.LinkLabel
         Me.lbl2 = New System.Windows.Forms.Label
         Me.label1 = New System.Windows.Forms.Label

@@ -25,20 +25,20 @@ Name: "fre"; MessagesFile: "compiler:Languages\French.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Magic The Gathering Manager.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Ressources\*.*"; DestDir: "{app}\Ressources"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Cartes\Magic DB.mdb"; DestDir: "{app}\Cartes"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\MTGM.pdf"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Historique.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\ChartFX.Lite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\NPlot.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\TreeViewMS.dll"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\Win7Taskbar.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\SandBar.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\SourceGrid2.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\bin\Release-x86\SourceLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\Magic The Gathering Manager.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\Ressources\*.*"; DestDir: "{app}\Ressources"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\Cartes\Magic DB.mdb"; DestDir: "{app}\Cartes"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\MTGM.pdf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\Historique.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\ChartFX.Lite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\NPlot.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\TreeViewMS.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\Win7Taskbar.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\SandBar.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\SourceGrid2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Programmation\VB .NET\Magic The Gathering Manager\MTGM\_bin\Release-x86\SourceLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Programmation\VB .NET\__LIBRAIRIES\isxdl.dll"; Flags: dontcopy
 
 [UninstallDelete]

@@ -1,31 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - téléchargement auto des dépendances   10/10/2009 |
-'| - prévention des exécutions multiples   31/01/2010 |
-'| - gestion cartes foils                  19/12/2010 |
-'| - gestion des coûts partiels en PV      02/05/2011 |
-'| - téléchargement images avec Multi. Id  10/07/2016 |
-'------------------------------------------------------
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.Text
@@ -227,7 +199,7 @@ Public Module clsModule
     Public VgDBReader As OleDbDataReader
     Public VgImgSeries As New ImageList
     Public VgRemoteDate As Date
-    Public VgOptions As New Options
+    Public VgOptions As New frmOptions
     Public VgSessionSettings As New clsSessionSettings
     Public VgRandom As New Random(Now.Millisecond)
     Public WithEvents VgTray As NotifyIcon

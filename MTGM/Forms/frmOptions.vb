@@ -6,7 +6,7 @@ Imports System.Xml.Serialization
 Imports System.IO
 Imports System.Text
 #End Region
-Public Partial Class Options
+Public Partial Class frmOptions
     Public VgSettings As New clsSettings
     Public Sub New
         Call Me.InitializeComponent

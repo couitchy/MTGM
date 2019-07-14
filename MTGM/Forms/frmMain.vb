@@ -2812,7 +2812,7 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuAboutActivate(ByVal sender As Object, ByVal e As EventArgs)
-    Dim VpAbout As New About
+    Dim VpAbout As New frmAbout
         VpAbout.ShowDialog
     End Sub
     Sub MnuWebsiteClick(sender As Object, e As EventArgs)

@@ -1,6 +1,6 @@
 Imports System.IO
 Imports System.Text
-Public Partial Class About
+Public Partial Class frmAbout
     Public Sub New
         Call Me.InitializeComponent
     End Sub
