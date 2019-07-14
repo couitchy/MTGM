@@ -1,31 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - levée de l'ambiguité sur les sources  03/10/2009 |
-'| - gestion des autorisations tournois    17/04/2010 |
-'| - gestion cartes foils                  19/12/2010 |
-'| - considère nb. rééditions pour raretés 27/05/2012 |
-'| - nouveaux formats tournois             05/05/2014 |
-'------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports SoftwareFX.ChartFX.Lite
@@ -35,7 +7,7 @@ Public Partial Class frmStats
     Private VmRestriction As String
     Private VmOwner As MainForm
     Public Sub New(VpOwner As MainForm)
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmSource = VpOwner.MySource
         VmRestriction = VpOwner.Restriction
         If VmSource = clsModule.CgSDecks Then
@@ -502,10 +474,4 @@ Public Partial Class frmStats
         Call Me.ShowCardsPrices(Me.GetGrapher, sender.Tag)
         Application.UseWaitCursor = False
     End Sub
-End Class
-Public Class clsNumComparer
-    Implements IComparer(Of String)
-    Public Function Compare(ByVal x As String, ByVal y As String) As Integer Implements IComparer(Of String).Compare
-        Return CInt(x) - CInt(y)
-    End Function
 End Class

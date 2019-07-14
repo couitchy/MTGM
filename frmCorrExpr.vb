@@ -1,26 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'------------------------------------------------------
 Public Partial Class frmCorrExpr
     Private VmFormMove As Boolean = False   'Formulaire en déplacement
     Private VmMousePos As Point             'Position initiale de la souris sur la barre de titre
@@ -28,7 +5,7 @@ Public Partial Class frmCorrExpr
     Private VmOwner As frmSimu
     Private VmBusy As Boolean = False
     Public Sub New(VpOwner As frmSimu)
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmOwner = VpOwner
     End Sub
     Private Sub SetCheckState
@@ -84,7 +61,7 @@ Public Partial Class frmCorrExpr
         Me.Close
     End Sub
     Sub FrmCorrExprLoad(sender As Object, e As EventArgs)
-        VmOwner.Expressions.Sort(New clsCorrelationComparer)
+        VmOwner.Expressions.Sort(New clsCorrelation.clsCorrelationComparer)
         For Each VpCorr As clsCorrelation In VmOwner.Expressions
             If VpCorr.Seq.Trim <> "" AndAlso Not Me.chklstExpr.Items.Contains(VpCorr.Seq) Then
                 Me.chklstExpr.Items.Add(VpCorr.Seq, True)

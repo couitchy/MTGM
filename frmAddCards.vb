@@ -1,29 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - verrouillage de l'édition de saisie   27/03/2010 |
-'| - gestion améliorée Ae / Æ              03/10/2010 |
-'| - gestion cartes foils                  19/12/2010 |
-'------------------------------------------------------
 Public Partial Class frmAddCards
     #Region "Déclarations"
     Private VmFormMove As Boolean = False           'Formulaire en déplacement
@@ -152,7 +126,7 @@ Public Partial Class frmAddCards
     End Function
     Public Sub New(VpOwner As MainForm)
     Dim VpSource As String
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmOwner = VpOwner
         Me.cboSerie.Tag = ""
         Me.lblNbItems.Tag = 0

@@ -1,26 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'------------------------------------------------------
 Public Partial Class frmSpecialCardUse
     Private VmFormMove As Boolean = False   'Formulaire en déplacement
     Private VmMousePos As Point             'Position initiale de la souris sur la barre de titre
@@ -28,7 +5,7 @@ Public Partial Class frmSpecialCardUse
     Private VmHelp As ToolTip               'Info-bulles d'aide à la saisie
     Public Sub New(VpSource As String, VpRestriction As String)
     Dim VpPartie As clsPartie
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VpPartie = New clsPartie(VpSource, VpRestriction)
         For Each VpCard As clsCard In VpPartie.CardsInFullDeck
             If Not Me.cboCard.Items.Contains(VpCard.CardName) Then
@@ -130,87 +107,4 @@ Public Partial Class frmSpecialCardUse
     Sub FrmSpecialCardUseLoad(sender As Object, e As EventArgs)
         VmCanClose = True
     End Sub
-End Class
-Public Class clsSpeciality
-    Private VmEffortID As Integer = -1
-    Private VmEffetID As Integer = -1
-    Private VmEffort As String = ""
-    Private VmEffet As String = ""
-    Private VmInvocTapped As Boolean = False
-    Private VmDoesntUntap As Boolean = False
-    Private VmSpecial As Boolean = False
-    Private Shared VmModelOutOfDateErr As Boolean = False
-    Public Sub New(VpCard As String)
-        VgDBCommand.CommandText = "Select EffortID, Effort, EffetID, Effet, InvocTapped, DoesntUntap From MySpecialUses Where Card = '" + VpCard.Replace("'", "''") + "';"
-        Try
-            VgDBReader = VgDBCommand.ExecuteReader
-            With VgDBReader
-                .Read
-                If .HasRows Then
-                    VmSpecial = True
-                    VmEffortID = .GetValue(0)
-                    VmEffetID = .GetValue(2)
-                    VmEffort = .GetValue(1).ToString
-                    VmEffet = .GetValue(3).ToString
-                    VmInvocTapped = .GetBoolean(4)
-                    VmDoesntUntap = .GetBoolean(5)
-                Else
-                    VmSpecial = False
-                End If
-                .Close
-            End With
-        Catch
-            If Not VmModelOutOfDateErr Then
-                Call clsModule.ShowWarning(clsModule.CgErr1)
-                VmModelOutOfDateErr = True
-            End If
-        End Try
-    End Sub
-    Public Shared Function GetSpecId(VpSpec As String) As Integer
-        VgDBCommand.CommandText = "Select SpecID From SpecialUse Where Description = '" + VpSpec.Replace("'", "''") + "';"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Shared Function GetSpecTxt(VpId As Integer) As String
-        VgDBCommand.CommandText = "Select Description From SpecialUse Where SpecID = " + VpId.ToString + ";"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Shared Function GetSpecHlp(VpId As Integer) As String
-        VgDBCommand.CommandText = "Select Aide From SpecialUse Where SpecID = " + VpId.ToString + ";"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public ReadOnly Property EffortID As Integer
-        Get
-            Return VmEffortID
-        End Get
-    End Property
-    Public ReadOnly Property EffetID As Integer
-        Get
-            Return VmEffetID
-        End Get
-    End Property
-    Public ReadOnly Property Effort As String
-        Get
-            Return VmEffort
-        End Get
-    End Property
-    Public ReadOnly Property Effet As String
-        Get
-            Return VmEffet
-        End Get
-    End Property
-    Public ReadOnly Property InvocTapped As Boolean
-        Get
-            Return VmInvocTapped
-        End Get
-    End Property
-    Public ReadOnly Property DoesntUntap As Boolean
-        Get
-            Return VmDoesntUntap
-        End Get
-    End Property
-    Public ReadOnly Property IsSpecial As Boolean
-        Get
-            Return VmSpecial
-        End Get
-    End Property
 End Class

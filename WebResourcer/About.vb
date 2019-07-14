@@ -22,8 +22,8 @@
 '| Modifications :                                             |
 '---------------------------------------------------------------
 Public Partial Class About
-    Public Sub New()
-        Me.InitializeComponent()
+    Public Sub New
+        Call Me.InitializeComponent
     End Sub
     Sub Button1Click(sender As Object, e As System.EventArgs)
         Me.DialogResult = System.Windows.Forms.DialogResult.OK

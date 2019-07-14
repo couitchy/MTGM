@@ -1,29 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - intégration possible des coûts invoc. 26/05/2012 |
-'| - intégration possible A/D et texte     03/08/2013 |
-'| - gestion présence bordure / taille     01/10/2017 |
-'------------------------------------------------------
 Imports System.IO
 Public Partial Class frmWord
     Private VmFormMove As Boolean = False   'Formulaire en déplacement
@@ -39,7 +13,7 @@ Public Partial Class frmWord
     Private Const CmTxtPerRowWithFullTxt As Integer = 4
     Public Sub New(VpOwner As MainForm)
     Dim VpPath As String = Path.GetTempPath + clsModule.CgTemp
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmSource = VpOwner.MySource
         VmRestriction = VpOwner.Restriction
         VmRestrictionTXT = VpOwner.Restriction(True)
@@ -289,50 +263,4 @@ Public Partial Class frmWord
         Me.grpVignettes.Visible = False
         Me.grpOptions.Visible = True
     End Sub
-End Class
-Public Class clsWordItem
-    Private VmTitleVO As String
-    Private VmTitle As String
-    Private VmCost As String
-    Private VmQuant As Integer
-    Private VmAD As String
-    Private VmFullText As String
-    Public Sub New(VpTitle As String, VpTitleVO As String, VpCost As String, VpA As String, VpD As String, VpFullText As String, VpQuant As Integer)
-        VmTitle = VpTitle
-        VmTitleVO = VpTitleVO
-        VmCost = VpCost
-        VmQuant = VpQuant
-        VmAD = VpA + "/" + VpD
-        VmFullText = VpFullText
-    End Sub
-    Public ReadOnly Property Title As String
-        Get
-            Return VmTitle
-        End Get
-    End Property
-    Public ReadOnly Property TitleVO As String
-        Get
-            Return VmTitleVO
-        End Get
-    End Property
-    Public ReadOnly Property Cost As String
-        Get
-            Return VmCost
-        End Get
-    End Property
-    Public ReadOnly Property AD As String
-        Get
-            Return If(VmAD = "/", "", VmAD)
-        End Get
-    End Property
-    Public ReadOnly Property FullText As String
-        Get
-            Return VmFullText
-        End Get
-    End Property
-    Public ReadOnly Property Quant As Integer
-        Get
-            Return VmQuant
-        End Get
-    End Property
 End Class

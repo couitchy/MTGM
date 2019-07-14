@@ -2,7 +2,7 @@ Imports Microsoft.VisualBasic.ApplicationServices
 Namespace My
     ' This file controls the behaviour of the application.
     Partial Class MyApplication
-        Public Sub New()
+        Public Sub New
             MyBase.New(AuthenticationMode.Windows)
             Me.IsSingleInstance = False
             Me.EnableVisualStyles = True

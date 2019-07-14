@@ -78,8 +78,8 @@ Public Partial Class MainForm
         Warning
         MyError
     End Enum
-    Public Sub New()
-        Me.InitializeComponent()
+    Public Sub New
+        Call Me.InitializeComponent
         Me.wbMV.ScriptErrorsSuppressed = True
     End Sub
     Private Sub AddToLog(VpText As String, VpType As eLogType, Optional VpNewOp As Boolean = False, Optional VpEndOp As Boolean = False)

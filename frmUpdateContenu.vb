@@ -1,34 +1,6 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - gestion des règles spécifiques        18/02/2012 |
-'| - gestion formats dates internationaux  04/01/2015 |
-'| - gestion mise à jour des sous-types    16/01/2015 |
-'| - gestion mise à jour des multiverse id 10/07/2016 |
-'------------------------------------------------------
 Imports System.Text
 Imports System.Net
 Imports System.IO
-imports System.Globalization
 Public Partial Class frmUpdateContenu
     Private VmFormMove As Boolean = False           'Formulaire en déplacement
     Private VmMousePos As Point                     'Position initiale de la souris sur la barre de titre
@@ -37,15 +9,9 @@ Public Partial Class frmUpdateContenu
     Private VmBusy As Boolean
     Private VmCancel As Boolean
     Private VmAnswered As Boolean
-    Private VmPassiveUpdate As EgPassiveUpdate = EgPassiveUpdate.NotNow
-    Public Enum EgPassiveUpdate
-        NotNow = 0
-        InProgress
-        Done
-        Failed
-    End Enum
-    Public Sub New()
-        Me.InitializeComponent()
+    Private VmPassiveUpdate As clsModule.ePassiveUpdate = clsModule.ePassiveUpdate.NotNow
+    Public Sub New
+        Call Me.InitializeComponent
     End Sub
     Private Function GetStamps As String()
     '----------------------------
@@ -236,17 +202,17 @@ Public Partial Class frmUpdateContenu
                 End If
             Case clsMAJContenu.EgMAJContenu.NewRulings
                 'Appel silencieux pour mise à jour texte des règles spécifiques
-                VmPassiveUpdate = EgPassiveUpdate.InProgress
+                VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
                 Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL19), clsModule.CgUpRulings)
-                While VmPassiveUpdate = EgPassiveUpdate.InProgress
+                While VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
                     Application.DoEvents
                 End While
-                If VmPassiveUpdate = EgPassiveUpdate.Failed Then
+                If VmPassiveUpdate = clsModule.ePassiveUpdate.Failed Then
                     Return False
                 Else
                     VgOptions.VgSettings.LastUpdateRulings = VpElement.Serveur
                 End If
-                VmPassiveUpdate = EgPassiveUpdate.NotNow
+                VmPassiveUpdate = clsModule.ePassiveUpdate.NotNow
             Case clsMAJContenu.EgMAJContenu.NewPrix
                 'Appel silencieux pour mise à jour prix
                 Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL9), clsModule.CgUpPrices)
@@ -260,21 +226,21 @@ Public Partial Class frmUpdateContenu
                 'Appel silencieux (multiple) pour mise(s) à jour d'images
                 If MainForm.VgMe.IsInImgDL Then Return False
                 For VpI As Integer = 1 + CInt(VpElement.Locale.Replace("SP", "")) To CInt(VpElement.Serveur.Replace("SP", ""))
-                    VmPassiveUpdate = EgPassiveUpdate.InProgress
+                    VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
                     'Téléchargement du fichier accompagnateur
                     Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + clsModule.CgPicLogExt), clsModule.CgUpPic + clsModule.CgPicLogExt)
                     Application.DoEvents
                     'Téléchargement du service pack d'images
                     MainForm.VgMe.IsInImgDL = True
                     Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + clsModule.CgPicUpExt), clsModule.CgUpPic + clsModule.CgPicUpExt, , True)
-                    While VmPassiveUpdate = EgPassiveUpdate.InProgress
+                    While VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
                         Application.DoEvents
                     End While
-                    If VmPassiveUpdate = EgPassiveUpdate.Failed Then    'dès que l'application d'un service pack a merdé, il faut sortir sans poursuivre avec les suivants
+                    If VmPassiveUpdate = clsModule.ePassiveUpdate.Failed Then    'dès que l'application d'un service pack a merdé, il faut sortir sans poursuivre avec les suivants
                         Return False
                     End If
                 Next VpI
-                VmPassiveUpdate = EgPassiveUpdate.NotNow
+                VmPassiveUpdate = clsModule.ePassiveUpdate.NotNow
             Case clsMAJContenu.EgMAJContenu.NewSerie
 
             Case clsMAJContenu.EgMAJContenu.NewTrad
@@ -400,11 +366,11 @@ Public Partial Class frmUpdateContenu
             End If
         End If
     End Sub
-    Public Property PassiveUpdate As EgPassiveUpdate
+    Public Property PassiveUpdate As clsModule.ePassiveUpdate
         Get
             Return VmPassiveUpdate
         End Get
-        Set (VpPassiveUpdate As EgPassiveUpdate)
+        Set (VpPassiveUpdate As clsModule.ePassiveUpdate)
             VmPassiveUpdate = VpPassiveUpdate
         End Set
     End Property
@@ -416,104 +382,5 @@ Public Partial Class frmUpdateContenu
             VmBusy = VpBusy
             Me.prgWait.Style = If(VpBusy, ProgressBarStyle.Marquee, ProgressBarStyle.Blocks)
         End Set
-    End Property
-End Class
-Public Class clsMAJContenu
-    Private VmType As EgMAJContenu
-    Private VmLocale As String
-    Private VmServeur As String
-    Private VmSize As Integer
-    Public Enum EgMAJContenu
-        NewPict = 0
-        NewPrix
-        NewAut
-        NewSimu
-        NewTxtVF
-        NewRulings
-        PatchPict
-        PatchTrad
-        PatchSubTypes
-        PatchSubTypesVF
-        PatchMultiverseId
-        NewSerie
-        NewTrad
-    End Enum
-    Public Sub New(VpType As EgMAJContenu, VpLocale As String, VpServeur As String, VpSize As Integer)
-    Dim VpLocaleDate As Date
-    Dim VpServeurDate As Date
-        VmType = VpType
-        'Si on reconnait une date, il faut passer par une double conversion pour s'affranchir des problèmes de format
-        If Date.TryParseExact(VpLocale, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpLocaleDate) AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
-            VmLocale = VpLocaleDate.ToShortDateString
-            VmServeur = VpServeurDate.ToShortDateString
-        ElseIf Date.TryParse(VpLocale, VpLocaleDate) AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
-            VmLocale = VpLocaleDate.ToShortDateString
-            VmServeur = VpServeurDate.ToShortDateString
-        ElseIf VpLocale = "" AndAlso Date.TryParseExact(VpServeur, "dd/MM/yyyy", New CultureInfo("fr-FR"), DateTimeStyles.None, VpServeurDate) Then
-            VmLocale = VpLocale
-            VmServeur = VpServeurDate.ToShortDateString
-        Else
-            VmLocale = VpLocale
-            VmServeur = VpServeur
-        End If
-        VmSize = VpSize
-    End Sub
-    Public ReadOnly Property TypeContenu As EgMAJContenu
-        Get
-            Return VmType
-        End Get
-    End Property
-    Public ReadOnly Property TypeContenuStr As String
-        Get
-            Select Case VmType
-                Case clsMAJContenu.EgMAJContenu.NewPrix
-                    Return "Mise à jour des prix"
-                Case clsMAJContenu.EgMAJContenu.NewAut
-                    Return "Mise à jour des autorisations tournois"
-                Case clsMAJContenu.EgMAJContenu.NewSimu
-                    Return "Mise à jour des modèles et/ou historiques"
-                Case clsMAJContenu.EgMAJContenu.NewTxtVF
-                    Return "Mise à jour des textes des cartes en français"
-                Case clsMAJContenu.EgMAJContenu.NewRulings
-                    Return "Mise à jour des règles spécifiques des cartes"
-                Case clsMAJContenu.EgMAJContenu.PatchPict
-                    Return "Correctif d'images de cartes"
-                Case clsMAJContenu.EgMAJContenu.PatchTrad
-                    Return "Correctif des libellés de cartes en français"
-                Case clsMAJContenu.EgMAJContenu.PatchSubTypes
-                    Return "Correctif des sous-types de cartes"
-                Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
-                    Return "Correctif des traductions des sous-types"
-                Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
-                    Return "Mise à jour des identifiants Multiverse"
-                Case clsMAJContenu.EgMAJContenu.NewPict
-                    Return "Service pack d'images de cartes"
-                Case clsMAJContenu.EgMAJContenu.NewSerie
-                    Return "Nouvelle édition Magic The Gathering"
-                Case clsMAJContenu.EgMAJContenu.NewTrad
-                    Return "Mise à jour des libellés de cartes en français"
-                Case Else
-                    Return ""
-            End Select
-        End Get
-    End Property
-    Public ReadOnly Property Locale As String
-        Get
-            If VmLocale = "" Then
-                Return "N/C"
-            Else
-                Return VmLocale
-            End If
-        End Get
-    End Property
-    Public ReadOnly Property Serveur As String
-        Get
-            Return VmServeur
-        End Get
-    End Property
-    Public ReadOnly Property SizeDL As Integer
-        Get
-            Return VmSize
-        End Get
     End Property
 End Class

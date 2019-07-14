@@ -1,37 +1,12 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - checkedlistbox et propertygrid        23/10/2010 |
-'------------------------------------------------------
 Imports NPlot
 Imports System.Drawing
-Imports System.ComponentModel
 Public Partial Class frmGrapher
     Private VmColors() As String
     Private VmPlots As New List(Of clsGrapherSettings)
     Private VmBusy As Boolean = False
     Private Const CmColorBase As Integer = 46
-    Public Sub New()
-        Me.InitializeComponent()
+    Public Sub New
+        Call Me.InitializeComponent
         VmColors = [Enum].GetNames(GetType(KnownColor))
         Me.splitH.Panel2Collapsed = True
     End Sub
@@ -168,81 +143,4 @@ Public Partial Class frmGrapher
         Me.btCoords.Checked = Not Me.btCoords.Checked
         Me.plotMain.ShowCoordinates = Me.btCoords.Checked
     End Sub
-End Class
-Public Class clsGrapherSettings
-    Private VmOwner As frmGrapher
-    Private VmLegende As String
-    Private VmColor As Color
-    Private VmStyle As Drawing2D.DashStyle
-    Private VmThickness As Single
-    Private VmRefPlot As LinePlot
-    Private VmVisible As Boolean
-    Public Sub New(VpOwner As frmGrapher, VpLegende As String, VpColor As Color, VpStyle As Drawing2D.DashStyle, VpThickness As Single, VpVisible As Boolean, VpPlot As LinePlot)
-        VmOwner = VpOwner
-        VmLegende = VpLegende
-        VmColor = VpColor
-        VmStyle = VpStyle
-        VmThickness = VpThickness
-        VmVisible = VpVisible
-        VmRefPlot = VpPlot
-    End Sub
-    <DisplayName("Légende"), Description("Texte apparaissant dans la légende du graphique")> _
-    Public Property Legende As String
-        Get
-            Return VmLegende
-        End Get
-        Set (VpLegende As String)
-            VmLegende = VpLegende
-            VmRefPlot.Label = VpLegende
-            Call VmOwner.RefreshAllPlots(False)
-        End Set
-    End Property
-    <DisplayName("Couleur"), Description("Couleur de la courbe")> _
-    Public Property myColor As Color
-        Get
-            Return VmColor
-        End Get
-        Set (VpColor As Color)
-            VmColor = VpColor
-            VmRefPlot.Color = VpColor
-            Call VmOwner.RefreshAllPlots(False)
-        End Set
-    End Property
-    <DisplayName("Style"), DefaultValue(Drawing2D.DashStyle.Solid), Description("Style du tracé de la courbe")> _
-    Public Property myStyle As Drawing2D.DashStyle
-        Get
-            Return VmStyle
-        End Get
-        Set (VpStyle As Drawing2D.DashStyle)
-            VmStyle = VpStyle
-            VmRefPlot.Pen.DashStyle = VpStyle
-            Call VmOwner.RefreshAllPlots(False)
-        End Set
-    End Property
-    <DisplayName("Epaisseur"), DefaultValue(1), Description("Epaisseur de la courbe")> _
-    Public Property Thickness As Single
-        Get
-            Return VmThickness
-        End Get
-        Set (VpThickness As Single)
-            VmThickness = VpThickness
-            VmRefPlot.Pen.Width = VpThickness
-            Call VmOwner.RefreshAllPlots(False)
-        End Set
-    End Property
-    <Browsable(False)> _
-    Public Property myVisible As Boolean
-        Get
-            Return VmVisible
-        End Get
-        Set (VpVisible As Boolean)
-            VmVisible = VpVisible
-        End Set
-    End Property
-    <Browsable(False)> _
-    Public ReadOnly Property RefPlot As LinePlot
-        Get
-            Return VmRefPlot
-        End Get
-    End Property
 End Class

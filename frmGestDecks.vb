@@ -1,31 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - gestion de la suppression             09/01/2009 |
-'| - renvoi cartes vers collection         29/08/2010 |
-'| - gestion suppressions multiples        09/05/2011 |
-'| - gestion d'infos personnalisées        08/04/2012 |
-'| - gestion d'une arborescence de decks   06/06/2014 |
-'------------------------------------------------------
 Imports System.Collections.Generic
 Public Partial Class frmGestDecks
     Private VmOwner As MainForm
@@ -34,7 +6,7 @@ Public Partial Class frmGestDecks
     Private VmCanClose As Boolean = False   'Formulaire peut être fermé
     Private VmMustReload As Boolean = False
     Public Sub New(VpOwner As MainForm)
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmOwner = VpOwner
     End Sub
     Private Sub LoadDecks
@@ -466,54 +438,6 @@ Public Partial Class frmGestDecks
     Private ReadOnly Property RootNode As TreeNode
         Get
             Return tvwDecks.Nodes(0)
-        End Get
-    End Property
-End Class
-Public Class clsItemRecup
-    Private VmEncNbr As Long
-    Private VmQuant As Integer
-    Private VmFoil As Boolean
-    Public Sub New(VpEncNbr As Long, VpQuant As Integer, VpFoil As Boolean)
-        VmEncNbr = VpEncNbr
-        VmQuant = VpQuant
-        VmFoil = VpFoil
-    End Sub
-    Public ReadOnly Property EncNbr As Long
-        Get
-            Return VmEncNbr
-        End Get
-    End Property
-    Public ReadOnly Property Quant As Integer
-        Get
-            Return VmQuant
-        End Get
-    End Property
-    Public ReadOnly Property Foil As Boolean
-        Get
-            Return VmFoil
-        End Get
-    End Property
-End Class
-Public Class clsInfoNode
-    Private VmId As Integer
-    Private VmFolder As Boolean
-    Public Sub New(VpId As Integer, VpFolder As Boolean)
-        VmId = VpId
-        VmFolder = VpFolder
-    End Sub
-    Public ReadOnly Property Id As Integer
-        Get
-            Return VmId
-        End Get
-    End Property
-    Public ReadOnly Property IdString As String
-        Get
-            Return If(VmId = -1, "Null", VmId.ToString)
-        End Get
-    End Property
-    Public ReadOnly Property IsFolder As Boolean
-        Get
-            Return VmFolder
         End Get
     End Property
 End Class

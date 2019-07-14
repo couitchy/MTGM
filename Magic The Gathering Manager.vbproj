@@ -107,9 +107,60 @@
     </Compile>
     <Compile Include="About.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="clsArticleRequest.vb" />
+    <Compile Include="clsBackupTransaction.vb" />
+    <Compile Include="clsCapsuleCards.vb" />
+    <Compile Include="clsCaracOther.vb" />
+    <Compile Include="clsCaracSerie.vb" />
+    <Compile Include="clsCard.vb" />
+    <Compile Include="clsCardInfos.vb" />
+    <Compile Include="clsChildren.vb" />
+    <Compile Include="clsComboSequence.vb" />
+    <Compile Include="clsCorrelation.vb" />
+    <Compile Include="clsDateComparer.vb" />
+    <Compile Include="clsDeck.vb" />
+    <Compile Include="clsEditionHeader.vb" />
+    <Compile Include="clsEfficiency.vb" />
+    <Compile Include="clsElement.vb" />
+    <Compile Include="clsEsperance.vb" />
+    <Compile Include="clsFullInfos.vb" />
+    <Compile Include="clsGame.vb" />
+    <Compile Include="clsGameCounter.vb" />
+    <Compile Include="clsGrapherSettings.vb" />
+    <Compile Include="clsInfoNode.vb" />
+    <Compile Include="clsItemRecup.vb" />
+    <Compile Include="clsLocalCard.vb" />
     <Compile Include="clsMagicTournament.vb" />
+    <Compile Include="clsMAJContenu.vb" />
+    <Compile Include="clsManas.vb" />
+    <Compile Include="clsMatchCounter.vb" />
+    <Compile Include="clsMatchup.vb" />
     <Compile Include="clsModule.vb" />
+    <Compile Include="clsMyCard.vb" />
+    <Compile Include="clsNumComparer.vb" />
+    <Compile Include="clsNumericComparer.vb" />
+    <Compile Include="clsPartie.vb" />
+    <Compile Include="clsPerformances.vb" />
+    <Compile Include="clsPlateauCard.vb" />
+    <Compile Include="clsPlateauDrawings.vb" />
+    <Compile Include="clsPlateauPartie.vb" />
+    <Compile Include="clsProductRequest.vb" />
+    <Compile Include="clsRemoteCard.vb" />
+    <Compile Include="clsRepartition.vb" />
+    <Compile Include="clsSearch.vb" />
+    <Compile Include="clsSeller.vb" />
+    <Compile Include="clsSessionSettings.vb" />
+    <Compile Include="clsSettings.vb" />
+    <Compile Include="clsSpeciality.vb" />
+    <Compile Include="clsTag.vb" />
+    <Compile Include="clsTransfertResult.vb" />
+    <Compile Include="clsTxtFR.vb" />
+    <Compile Include="clsUrzaGathererInfos.vb" />
+    <Compile Include="clsWordItem.vb" />
+    <Compile Include="clsXLItem.vb" />
     <Compile Include="CustomClass.vb" />
+    <Compile Include="CustomProperty.vb" />
+    <Compile Include="CustomPropertyDescriptor.vb" />
     <Compile Include="ExRichTextBox.vb" />
     <Compile Include="frmAddCards.Designer.vb">
       <DependentUpon>frmAddCards.vb</DependentUpon>
@@ -215,6 +266,7 @@
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
     <Compile Include="MainForm.vb" />
+    <Compile Include="OAuthHeader.vb" />
     <Compile Include="Options.Designer.vb">
       <DependentUpon>Options.vb</DependentUpon>
     </Compile>

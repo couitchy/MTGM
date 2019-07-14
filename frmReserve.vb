@@ -1,26 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'------------------------------------------------------
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Public Partial Class frmReserve
@@ -30,7 +7,7 @@ Public Partial Class frmReserve
     Private VmOwner As frmPlateau
     Private VmRepartition As New Hashtable
     Public Sub New(VpOwner As frmPlateau)
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmOwner = VpOwner
     End Sub
     Private Sub LoadRepartition
@@ -148,35 +125,4 @@ Public Partial Class frmReserve
     Sub FrmReserveFormClosing(sender As Object, e As FormClosingEventArgs)
         Call Me.ValidateRepartition
     End Sub
-End Class
-Public Class clsRepartition
-    Private VmNameVF As String
-    Private VmDeckCount As Integer
-    Private VmSideCount As Integer
-    Public Sub New(VpNameVF As String, VpReserve As Boolean)
-        VmNameVF = VpNameVF
-        VmDeckCount = If(VpReserve, 0, 1)
-        VmSideCount = If(VpReserve, 1, 0)
-    End Sub
-    Public Property DeckCount As Integer
-        Get
-            Return VmDeckCount
-        End Get
-        Set (VpDeckCount As Integer)
-            VmDeckCount = VpDeckCount
-        End Set
-    End Property
-    Public Property SideCount As Integer
-        Get
-            Return VmSideCount
-        End Get
-        Set (VpSideCount As Integer)
-            VmSideCount = VpSideCount
-        End Set
-    End Property
-    Public ReadOnly Property NameVF As String
-        Get
-            Return VmNameVF
-        End Get
-    End Property
 End Class

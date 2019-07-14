@@ -1,48 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - MAJ semi-auto base d'images           18/01/2009 |
-'| - images des cartes sur le mainform     09/02/2009 |
-'| - mémorisation de la taille du mainform 03/10/2009 |
-'| - sélection multiple dans le treeview   10/10/2009 |
-'| - MAJ auto prix                         14/10/2009 |
-'| - MAJ auto images                       18/10/2009 |
-'| - compatibilité Aéro (Vista / 7)        21/11/2009 |
-'| - barre d'outils                        28/11/2009 |
-'| - annul. / estimation téléchargements   06/03/2010 |
-'| - correction auto images                10/04/2010 |
-'| - gestion des autorisations tournois    15/04/2010 |
-'| - gestion cartes foils                  19/12/2010 |
-'| - infos restreintes aux ancêtres        06/03/2011 |
-'| - délocalisation du filtrage            09/07/2011 |
-'| - gestion des cartes transformables     29/10/2011 |
-'| - icônes des symboles dans le texte     12/11/2011 |
-'| - gestion des règles spécifiques        18/02/2012 |
-'| - gestion des "Planes" et "Phenomenons" 22/06/2012 |
-'| - refonte affichage propriétés (grids)  23/08/2012 |
-'| - menu dédié 'Résultats de recherche'   02/11/2012 |
-'| - nouveaux formats tournois             05/05/2014 |
-'| - gestion du Multiverse Id              23/06/2016 |
-'------------------------------------------------------
 #Region "Importations"
 Imports TD.SandBar
 Imports TreeViewMS
@@ -50,7 +5,6 @@ Imports System.IO
 'Imports Win7Taskbar
 Imports System.Resources
 Imports System.Reflection
-Imports System.ComponentModel
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.Xml
@@ -60,132 +14,6 @@ Imports System.Text
 Imports System.Web.Script.Serialization
 #End Region
 Public Partial Class MainForm
-    #Region "Sous-classes"
-    Private Class clsTag
-        Private VmKey As String = ""            'Champ référent en base de données
-        Private VmValue As String = ""          'Valeur de ce champ
-        Private VmValue2 As String = ""         'Titre VF
-        Private VmValue3 As Boolean = False     'Double carte
-        Private VmMultiverseId As Long = 0      'Identifiant universel
-        Private VmDescendance As String = ""    'Requête SQL permettant de générer la descendance du noeud courant
-        Public Sub New
-        End Sub
-        Public Sub New(VpValue As String)
-            Value = VpValue
-        End Sub
-        Public Property Key As String
-            Get
-                Return VmKey
-            End Get
-            Set (VpKey As String)
-                VmKey = VpKey
-            End Set
-        End Property
-        Public Property Value As String
-            Get
-                Return VmValue
-            End Get
-            Set (VpValue As String)
-                VmValue = VpValue
-            End Set
-        End Property
-        Public Property Value2 As String
-            Get
-                Return VmValue2
-            End Get
-            Set (VpValue2 As String)
-                VmValue2 = VpValue2
-            End Set
-        End Property
-        Public Property Value3 As Boolean
-            Get
-                Return VmValue3
-            End Get
-            Set (VpValue3 As Boolean)
-                VmValue3 = VpValue3
-            End Set
-        End Property
-        Public Property MultiverseId As Long
-            Get
-                Return VmMultiverseId
-            End Get
-            Set (VpMultiverseId As Long)
-                VmMultiverseId = VpMultiverseId
-            End Set
-        End Property
-        Public Property Descendance As String
-            Get
-                Return VmDescendance
-            End Get
-            Set (VpDescendance As String)
-                VmDescendance = VpDescendance
-            End Set
-        End Property
-    End Class
-    Private Class clsCaracOther
-        Private VmTotalCards As String
-        Private VmMyTotalCards As String
-        Private VmMyTotalDistinctCards As String
-        Private VmTotalPricing As String
-        <DisplayName("Total cartes existantes"), Description("Nombre total de cartes existantes répondant aux critères de filtrage pour le niveau courant dans l'arborescence")> _
-        Public Property TotalCards As String
-            Get
-                Return VmTotalCards
-            End Get
-            Set (VpTotalCards As String)
-                VmTotalCards = VpTotalCards
-            End Set
-        End Property
-        <DisplayName("Total cartes possédées"), Description("Nombre total de cartes possédées répondant aux critères de filtrage pour le niveau courant dans l'arborescence")> _
-        Public Property MyTotalCards As String
-            Get
-                Return VmMyTotalCards
-            End Get
-            Set (VpMyTotalCards As String)
-                VmMyTotalCards = VpMyTotalCards
-            End Set
-        End Property
-        <DisplayName("Total cartes possédées (distinctes)"), Description("Nombre total de cartes possédées et distinctes répondant aux critères de filtrage pour le niveau courant dans l'arborescence")> _
-        Public Property MyTotalDistinctCards As String
-            Get
-                Return VmMyTotalDistinctCards
-            End Get
-            Set (VpMyTotalDistinctCards As String)
-                VmMyTotalDistinctCards = VpMyTotalDistinctCards
-            End Set
-        End Property
-        <DisplayName("Cote totale des cartes possédées"), Description("Coût estimé de toutes les cartes possédées répondant aux critères de filtrage pour le niveau courant dans l'arborescence")> _
-        Public Property TotalPricing As String
-            Get
-                Return VmTotalPricing
-            End Get
-            Set (VpTotalPricing As String)
-                VmTotalPricing = VpTotalPricing
-            End Set
-        End Property
-    End Class
-    Private Class clsCaracSerie
-        Inherits clsCaracOther
-        Private VmSerieDate As String
-        Public Sub New(VpCaracOther As clsCaracOther)
-            With VpCaracOther
-                MyBase.MyTotalCards = .MyTotalCards
-                MyBase.MyTotalDistinctCards = .MyTotalDistinctCards
-                MyBase.TotalCards = .TotalCards
-                MyBase.TotalPricing = .TotalPricing
-            End With
-        End Sub
-        <DisplayName("Date de sortie"), Description("Date de parution de l'édition sélectionnée dans l'arborescence")> _
-        Public Property SerieDate As String
-            Get
-                Return VmSerieDate
-            End Get
-            Set (VpSerieDate As String)
-                VmSerieDate = VpSerieDate
-            End Set
-        End Property
-    End Class
-    #End Region
     #Region "Déclarations"
     Private VmMyChildren As New clsChildren
     Private VmFilterCriteria As New frmExploSettings(Me)
@@ -210,7 +38,7 @@ Public Partial Class MainForm
             Process.GetCurrentProcess.Kill
             Exit Sub
         Else
-            Me.InitializeComponent()
+            Call Me.InitializeComponent
             clsModule.VgTray = New NotifyIcon(Me.components)
             clsModule.VgTray.Icon = Me.Icon
             clsModule.VgTray.Text = "Magic The Gathering Manager"
@@ -435,7 +263,7 @@ Public Partial Class MainForm
         If Not VpSilent Then
             Call clsModule.ShowInformation("Mise à jour des règles spécifiques terminée !")
         Else
-            VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.Done
+            VmMyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.Done
         End If
         Me.prgAvance.Visible = False
         Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpRulings)
@@ -560,7 +388,7 @@ Public Partial Class MainForm
                 Call clsModule.SecureDelete(VpLogFile)
             End If
             If Not VmMyChildren.DoesntExist(VmMyChildren.ContenuUpdater) Then
-                VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.Done
+                VmMyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.Done
             Else
                 Call clsModule.ShowInformation("Mise à jour des images des cartes terminée !" + vbCrLf + "(" + VpCount.ToString + " cartes ajoutées)" + vbCrLf + vbCrLf + "Il se peut qu'il y ait besoin de relancer la mise à jour encore une fois pour compléter...")
             End If
@@ -568,8 +396,8 @@ Public Partial Class MainForm
 '           VgBar.ShowInTaskbar = False
         Catch
             If Not VmMyChildren.DoesntExist(VmMyChildren.ContenuUpdater) Then
-                If VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.InProgress Then
-                    VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.Failed
+                If VmMyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.InProgress Then
+                    VmMyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.Failed
                 Else
                     Call clsModule.ShowWarning("Une erreur est survenue pendant la mise à jour des images...")
                 End If
@@ -3635,8 +3463,8 @@ Public Partial Class MainForm
             If ShowQuestion("Êtes-vous sûr de vouloir annuler le téléchargement en cours ?") = DialogResult.Yes Then
                 clsModule.VgClient.CancelAsync
                 If Not VmMyChildren.DoesntExist(VmMyChildren.ContenuUpdater) Then
-                    If VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.InProgress Then
-                        VmMyChildren.ContenuUpdater.PassiveUpdate = frmUpdateContenu.EgPassiveUpdate.Failed
+                    If VmMyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.InProgress Then
+                        VmMyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.Failed
                     End If
                 End If
                 Me.IsDownloadInProgress = False

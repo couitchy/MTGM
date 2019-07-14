@@ -1,33 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - affichage de la carte numérisée       23/09/2008 |
-'| - nouveaux critères de recherche        15/08/2009 |
-'| - nouveaux critères de recherche        20/12/2009 |
-'| - nouveau critère de recherche          02/09/2010 |
-'| - taille dropdownlist pour vue totale   27/04/2012 |
-'| - [recents] par ordre décroissant       13/05/2012 |
-'| - insensibilité aux signes diacritiques 26/05/2012 |
-'------------------------------------------------------
 Imports System.IO
 Public Partial Class frmSearch
     Private VmOwner As MainForm             'Formulaire parent
@@ -37,7 +7,7 @@ Public Partial Class frmSearch
     Private VmPrevSearchs As New List(Of String)
     Private VmKeyChange As Boolean = False
     Public Sub New(VpOwner As MainForm)
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmOwner = VpOwner
         Me.cboSearchType.SelectedIndex = CInt(VgOptions.VgSettings.DefaultSearchCriterion)
     End Sub

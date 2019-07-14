@@ -1,30 +1,3 @@
-'------------------------------------------------------
-'| Projet         |  Magic The Gathering Manager      |
-'| Contexte       |         Perso                     |
-'| Date           |                        30/03/2008 |
-'| Release 1      |                        12/04/2008 |
-'| Release 2      |                        30/08/2008 |
-'| Release 3      |                        08/11/2008 |
-'| Release 4      |                        29/08/2009 |
-'| Release 5      |                        21/03/2010 |
-'| Release 6      |                        17/04/2010 |
-'| Release 7      |                        29/07/2010 |
-'| Release 8      |                        03/10/2010 |
-'| Release 9      |                        05/02/2011 |
-'| Release 10     |                        10/09/2011 |
-'| Release 11     |                        24/01/2012 |
-'| Release 12     |                        01/10/2012 |
-'| Release 13     |                        09/05/2014 |
-'| Release 14     |                        09/05/2015 |
-'| Release 15     |                        15/01/2017 |
-'| Auteur         |                          Couitchy |
-'|----------------------------------------------------|
-'| Modifications :                                    |
-'| - gestion cartes foils                  19/12/2010 |
-'| - gestion transferts type 'copie'       26/02/2011 |
-'| - quantité à copier ajustable           09/05/2011 |
-'| - gestion transferts type 'swap'        21/05/2011 |
-'------------------------------------------------------
 Public Partial Class frmTransfert
     Private VmCardName As String
     Private VmOwner As MainForm
@@ -32,7 +5,7 @@ Public Partial Class frmTransfert
     Private VmSource2 As String
     Private VmTransfertResult As clsTransfertResult
     Public Sub New(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertResult As clsTransfertResult)
-        Me.InitializeComponent()
+        Call Me.InitializeComponent
         VmCardName = VpCardName
         VmSource = VpSource
         VmSource2 = VpSource2
@@ -260,26 +233,4 @@ Public Partial Class frmTransfert
     Sub SldQuantScroll(ByVal sender As Object, ByVal e As EventArgs)
         Me.lblQuant.Text = Me.sldQuant.Value.ToString
     End Sub
-End Class
-Public Class clsTransfertResult
-    Public Enum EgTransfertType
-        Deletion
-        Move
-        Copy
-        Swap
-    End Enum
-    Public TransfertType As EgTransfertType = EgTransfertType.Move      'Type d'opération
-    Public NCartes As Integer = 0                                       'Nombre de cartes concernées
-    Public IDSerieFrom As String = ""                                   'Edition source
-    Public IDSerieTo As String = ""                                     'Edition destination
-    Public EncNbrFrom As Integer = 0                                    'Numéro encyclopédique source
-    Public EncNbrTo As Integer = 0                                      'Numéro encyclopédique destination
-    Public FoilFrom As Boolean = False                                  'Mention éventuelle foil source
-    Public FoilTo As Boolean = False                                    'Mention éventuelle foil destination
-    Public ReserveFrom As Boolean = False                               'Mention éventuelle réserve source
-    Public ReserveTo As Boolean = False                                 'Mention éventuelle réserve destination
-    Public TFrom As String = ""                                         'Deck source
-    Public TTo As String = ""                                           'Deck destination
-    Public SFrom As String = ""                                         'Nom de la table source
-    Public STo As String = ""                                           'Nom de la table destination
 End Class
