@@ -91,10 +91,174 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="frmBuySettings.resx">
+    <Compile Include="Classes\App Settings\clsSettings.vb" />
+    <Compile Include="Classes\Card Management\clsCaracOther.vb" />
+    <Compile Include="Classes\Card Management\clsCaracSerie.vb" />
+    <Compile Include="Classes\Card Management\clsTag.vb" />
+    <Compile Include="Classes\Online Buying\OAuthHeader.vb" />
+    <Compile Include="Forms\About.Designer.vb">
+      <DependentUpon>About.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\About.vb" />
+    <Compile Include="Forms\frmAddCards.Designer.vb">
+      <DependentUpon>frmAddCards.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmAddCards.vb" />
+    <Compile Include="Forms\frmBuyCards.Designer.vb">
+      <DependentUpon>frmBuyCards.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmBuyCards.vb" />
+    <Compile Include="Forms\frmBuySettings.Designer.vb">
+      <DependentUpon>frmBuySettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmBuySettings.vb" />
+    <Compile Include="Forms\frmCalendar.Designer.vb">
+      <DependentUpon>frmCalendar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmCalendar.vb" />
+    <Compile Include="Forms\frmCorrExpr.Designer.vb">
+      <DependentUpon>frmCorrExpr.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmCorrExpr.vb" />
+    <Compile Include="Forms\frmDeleteEdition.Designer.vb">
+      <DependentUpon>frmDeleteEdition.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmDeleteEdition.vb" />
+    <Compile Include="Forms\frmExceptionBox.Designer.vb">
+      <DependentUpon>frmExceptionBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmExceptionBox.vb" />
+    <Compile Include="Forms\frmExploSettings.Designer.vb">
+      <DependentUpon>frmExploSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmExploSettings.vb" />
+    <Compile Include="Forms\frmExport.Designer.vb">
+      <DependentUpon>frmExport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmExport.vb" />
+    <Compile Include="Forms\frmGestAdv.Designer.vb">
+      <DependentUpon>frmGestAdv.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmGestAdv.vb" />
+    <Compile Include="Forms\frmGestDecks.Designer.vb">
+      <DependentUpon>frmGestDecks.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmGestDecks.vb" />
+    <Compile Include="Forms\frmGrapher.Designer.vb">
+      <DependentUpon>frmGrapher.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmGrapher.vb" />
+    <Compile Include="Forms\frmNewEdition.Designer.vb">
+      <DependentUpon>frmNewEdition.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmNewEdition.vb" />
+    <Compile Include="Forms\frmPerfs.Designer.vb">
+      <DependentUpon>frmPerfs.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPerfs.vb" />
+    <Compile Include="Forms\frmPlateau.Designer.vb">
+      <DependentUpon>frmPlateau.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPlateau.vb" />
+    <Compile Include="Forms\frmReserve.Designer.vb">
+      <DependentUpon>frmReserve.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmReserve.vb" />
+    <Compile Include="Forms\frmSearch.Designer.vb">
+      <DependentUpon>frmSearch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmSearch.vb" />
+    <Compile Include="Forms\frmSimu.Designer.vb">
+      <DependentUpon>frmSimu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmSimu.vb" />
+    <Compile Include="Forms\frmSpecialCardUse.Designer.vb">
+      <DependentUpon>frmSpecialCardUse.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmSpecialCardUse.vb" />
+    <Compile Include="Forms\frmStats.Designer.vb">
+      <DependentUpon>frmStats.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmStats.vb" />
+    <Compile Include="Forms\frmTransfert.Designer.vb">
+      <DependentUpon>frmTransfert.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmTransfert.vb" />
+    <Compile Include="Forms\frmTranslate.Designer.vb">
+      <DependentUpon>frmTranslate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmTranslate.vb" />
+    <Compile Include="Forms\frmUpdateContenu.Designer.vb">
+      <DependentUpon>frmUpdateContenu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmUpdateContenu.vb" />
+    <Compile Include="Forms\frmWord.Designer.vb">
+      <DependentUpon>frmWord.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmWord.vb" />
+    <Compile Include="Forms\frmXL.Designer.vb">
+      <DependentUpon>frmXL.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmXL.vb" />
+    <Compile Include="Forms\MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.vb" />
+    <Compile Include="Forms\Options.Designer.vb">
+      <DependentUpon>Options.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Options.vb" />
+    <Compile Include="User Controls\ExRichTextBox.vb" />
+    <Compile Include="User Controls\UIFilenameEditor.vb" />
+    <EmbeddedResource Include="Forms\About.resx">
+      <DependentUpon>About.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAddCards.resx">
+      <DependentUpon>frmAddCards.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBuyCards.resx">
+      <DependentUpon>frmBuyCards.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBuySettings.resx">
       <DependentUpon>frmBuySettings.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmReserve.resx">
+    <EmbeddedResource Include="Forms\frmCalendar.resx">
+      <DependentUpon>frmCalendar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmCorrExpr.resx">
+      <DependentUpon>frmCorrExpr.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmDeleteEdition.resx">
+      <DependentUpon>frmDeleteEdition.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmExceptionBox.resx">
+      <DependentUpon>frmExceptionBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmExploSettings.resx">
+      <DependentUpon>frmExploSettings.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmExport.resx">
+      <DependentUpon>frmExport.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmGestAdv.resx">
+      <DependentUpon>frmGestAdv.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmGestDecks.resx">
+      <DependentUpon>frmGestDecks.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmGrapher.resx">
+      <DependentUpon>frmGrapher.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmNewEdition.resx">
+      <DependentUpon>frmNewEdition.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPerfs.resx">
+      <DependentUpon>frmPerfs.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPlateau.resx">
+      <DependentUpon>frmPlateau.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmReserve.resx">
       <DependentUpon>frmReserve.vb</DependentUpon>
     </EmbeddedResource>
     <Import Include="Microsoft.VisualBasic" />
@@ -104,252 +268,88 @@
     <Import Include="System.Diagnostics" />
     <Import Include="System.Drawing" />
     <Import Include="System.Windows.Forms" />
-    <Compile Include="About.Designer.vb">
-      <DependentUpon>About.vb</DependentUpon>
-    </Compile>
-    <Compile Include="About.vb" />
     <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="clsArticleRequest.vb" />
-    <Compile Include="clsBackupTransaction.vb" />
-    <Compile Include="clsCapsuleCards.vb" />
-    <Compile Include="clsCaracOther.vb" />
-    <Compile Include="clsCaracSerie.vb" />
-    <Compile Include="clsCard.vb" />
-    <Compile Include="clsCardInfos.vb" />
-    <Compile Include="clsChildren.vb" />
-    <Compile Include="clsComboSequence.vb" />
-    <Compile Include="clsCorrelation.vb" />
-    <Compile Include="clsDateComparer.vb" />
-    <Compile Include="clsDeck.vb" />
-    <Compile Include="clsEditionHeader.vb" />
-    <Compile Include="clsEfficiency.vb" />
-    <Compile Include="clsElement.vb" />
-    <Compile Include="clsEsperance.vb" />
-    <Compile Include="clsFullInfos.vb" />
-    <Compile Include="clsGame.vb" />
-    <Compile Include="clsGameCounter.vb" />
-    <Compile Include="clsGrapherSettings.vb" />
-    <Compile Include="clsInfoNode.vb" />
-    <Compile Include="clsItemRecup.vb" />
-    <Compile Include="clsLocalCard.vb" />
-    <Compile Include="clsMagicTournament.vb" />
-    <Compile Include="clsMAJContenu.vb" />
-    <Compile Include="clsManas.vb" />
-    <Compile Include="clsMatchCounter.vb" />
-    <Compile Include="clsMatchup.vb" />
-    <Compile Include="clsModule.vb" />
-    <Compile Include="clsMyCard.vb" />
-    <Compile Include="clsNumComparer.vb" />
-    <Compile Include="clsNumericComparer.vb" />
-    <Compile Include="clsPartie.vb" />
-    <Compile Include="clsPerformances.vb" />
-    <Compile Include="clsPlateauCard.vb" />
-    <Compile Include="clsPlateauDrawings.vb" />
-    <Compile Include="clsPlateauPartie.vb" />
-    <Compile Include="clsProductRequest.vb" />
-    <Compile Include="clsRemoteCard.vb" />
-    <Compile Include="clsRepartition.vb" />
-    <Compile Include="clsSearch.vb" />
-    <Compile Include="clsSeller.vb" />
-    <Compile Include="clsSessionSettings.vb" />
-    <Compile Include="clsSettings.vb" />
-    <Compile Include="clsSpeciality.vb" />
-    <Compile Include="clsTag.vb" />
-    <Compile Include="clsTransfertResult.vb" />
-    <Compile Include="clsTxtFR.vb" />
-    <Compile Include="clsUrzaGathererInfos.vb" />
-    <Compile Include="clsWordItem.vb" />
-    <Compile Include="clsXLItem.vb" />
-    <Compile Include="CustomClass.vb" />
-    <Compile Include="CustomProperty.vb" />
-    <Compile Include="CustomPropertyDescriptor.vb" />
-    <Compile Include="ExRichTextBox.vb" />
-    <Compile Include="frmAddCards.Designer.vb">
-      <DependentUpon>frmAddCards.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmAddCards.vb" />
-    <Compile Include="frmBuyCards.Designer.vb">
-      <DependentUpon>frmBuyCards.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmBuyCards.vb" />
-    <Compile Include="frmBuySettings.Designer.vb">
-      <DependentUpon>frmBuySettings.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmBuySettings.vb" />
-    <Compile Include="frmCalendar.Designer.vb">
-      <DependentUpon>frmCalendar.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmCalendar.vb" />
-    <Compile Include="frmCorrExpr.Designer.vb">
-      <DependentUpon>frmCorrExpr.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmCorrExpr.vb" />
-    <Compile Include="frmDeleteEdition.Designer.vb">
-      <DependentUpon>frmDeleteEdition.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmDeleteEdition.vb" />
-    <Compile Include="frmExceptionBox.Designer.vb">
-      <DependentUpon>frmExceptionBox.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmExceptionBox.vb" />
-    <Compile Include="frmExploSettings.Designer.vb">
-      <DependentUpon>frmExploSettings.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmExploSettings.vb" />
-    <Compile Include="frmExport.Designer.vb">
-      <DependentUpon>frmExport.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmExport.vb" />
-    <Compile Include="frmGestAdv.Designer.vb">
-      <DependentUpon>frmGestAdv.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmGestAdv.vb" />
-    <Compile Include="frmGestDecks.Designer.vb">
-      <DependentUpon>frmGestDecks.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmGestDecks.vb" />
-    <Compile Include="frmGrapher.Designer.vb">
-      <DependentUpon>frmGrapher.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmGrapher.vb" />
-    <Compile Include="frmNewEdition.Designer.vb">
-      <DependentUpon>frmNewEdition.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmNewEdition.vb" />
-    <Compile Include="frmPerfs.Designer.vb">
-      <DependentUpon>frmPerfs.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmPerfs.vb" />
-    <Compile Include="frmPlateau.Designer.vb">
-      <DependentUpon>frmPlateau.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmPlateau.vb" />
-    <Compile Include="frmReserve.Designer.vb">
-      <DependentUpon>frmReserve.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmReserve.vb" />
-    <Compile Include="frmSearch.Designer.vb">
-      <DependentUpon>frmSearch.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmSearch.vb" />
-    <Compile Include="frmSimu.Designer.vb">
-      <DependentUpon>frmSimu.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmSimu.vb" />
-    <Compile Include="frmSpecialCardUse.Designer.vb">
-      <DependentUpon>frmSpecialCardUse.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmSpecialCardUse.vb" />
-    <Compile Include="frmStats.Designer.vb">
-      <DependentUpon>frmStats.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmStats.vb" />
-    <Compile Include="frmTransfert.Designer.vb">
-      <DependentUpon>frmTransfert.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmTransfert.vb" />
-    <Compile Include="frmTranslate.Designer.vb">
-      <DependentUpon>frmTranslate.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmTranslate.vb" />
-    <Compile Include="frmUpdateContenu.Designer.vb">
-      <DependentUpon>frmUpdateContenu.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmUpdateContenu.vb" />
-    <Compile Include="frmWord.Designer.vb">
-      <DependentUpon>frmWord.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmWord.vb" />
-    <Compile Include="frmXL.Designer.vb">
-      <DependentUpon>frmXL.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmXL.vb" />
-    <Compile Include="MainForm.Designer.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.vb" />
-    <Compile Include="OAuthHeader.vb" />
-    <Compile Include="Options.Designer.vb">
-      <DependentUpon>Options.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Options.vb" />
-    <Compile Include="UIFilenameEditor.vb" />
-    <EmbeddedResource Include="About.resx">
-      <DependentUpon>About.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmAddCards.resx">
-      <DependentUpon>frmAddCards.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmBuyCards.resx">
-      <DependentUpon>frmBuyCards.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmCalendar.resx">
-      <DependentUpon>frmCalendar.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmCorrExpr.resx">
-      <DependentUpon>frmCorrExpr.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmDeleteEdition.resx">
-      <DependentUpon>frmDeleteEdition.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmExceptionBox.resx">
-      <DependentUpon>frmExceptionBox.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmExploSettings.resx">
-      <DependentUpon>frmExploSettings.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmExport.resx">
-      <DependentUpon>frmExport.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmGestAdv.resx">
-      <DependentUpon>frmGestAdv.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmGestDecks.resx">
-      <DependentUpon>frmGestDecks.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmGrapher.resx">
-      <DependentUpon>frmGrapher.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmNewEdition.resx">
-      <DependentUpon>frmNewEdition.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmPerfs.resx">
-      <DependentUpon>frmPerfs.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmPlateau.resx">
-      <DependentUpon>frmPlateau.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmSearch.resx">
+    <Compile Include="Classes\App Settings\clsChildren.vb" />
+    <Compile Include="Classes\App Settings\clsGrapherSettings.vb" />
+    <Compile Include="Classes\App Settings\clsSessionSettings.vb" />
+    <Compile Include="Classes\Board\clsPlateauCard.vb" />
+    <Compile Include="Classes\Board\clsPlateauDrawings.vb" />
+    <Compile Include="Classes\Board\clsPlateauPartie.vb" />
+    <Compile Include="Classes\Board\clsRepartition.vb" />
+    <Compile Include="Classes\Card Management\clsInfoNode.vb" />
+    <Compile Include="Classes\Card Management\clsItemRecup.vb" />
+    <Compile Include="Classes\Card Management\clsSearch.vb" />
+    <Compile Include="Classes\Card Management\clsTransfertResult.vb" />
+    <Compile Include="Classes\Edition Management\clsEditionHeader.vb" />
+    <Compile Include="Classes\Edition Management\clsFullInfos.vb" />
+    <Compile Include="Classes\Edition Management\clsMyCard.vb" />
+    <Compile Include="Classes\Import Export\clsCardInfos.vb" />
+    <Compile Include="Classes\Import Export\clsUrzaGathererInfos.vb" />
+    <Compile Include="Classes\Import Export\clsWordItem.vb" />
+    <Compile Include="Classes\Import Export\clsXLItem.vb" />
+    <Compile Include="Classes\Online Buying\clsArticleRequest.vb" />
+    <Compile Include="Classes\Online Buying\clsBackupTransaction.vb" />
+    <Compile Include="Classes\Online Buying\clsCapsuleCards.vb" />
+    <Compile Include="Classes\Online Buying\clsLocalCard.vb" />
+    <Compile Include="Classes\Online Buying\clsProductRequest.vb" />
+    <Compile Include="Classes\Online Buying\clsRemoteCard.vb" />
+    <Compile Include="Classes\Online Buying\clsSeller.vb" />
+    <Compile Include="Classes\Simulation\Common\clsCard.vb" />
+    <Compile Include="Classes\Simulation\Common\clsManas.vb" />
+    <Compile Include="Classes\Simulation\Common\clsPartie.vb" />
+    <Compile Include="Classes\Simulation\Common\clsSpeciality.vb" />
+    <Compile Include="Classes\Simulation\Probability\clsComboSequence.vb" />
+    <Compile Include="Classes\Simulation\Probability\clsElement.vb" />
+    <Compile Include="Classes\Simulation\Probability\clsEsperance.vb" />
+    <Compile Include="Classes\Simulation\Suggestions\clsCorrelation.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsDeck.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsEfficiency.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsGame.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsGameCounter.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsMagicTournament.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsMatchCounter.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsMatchup.vb" />
+    <Compile Include="Classes\Stats\Matchup\clsPerformances.vb" />
+    <Compile Include="Classes\Toolbox\clsDateComparer.vb" />
+    <Compile Include="Classes\Toolbox\clsNumComparer.vb" />
+    <Compile Include="Classes\Toolbox\clsNumericComparer.vb" />
+    <Compile Include="Classes\Toolbox\CustomClass.vb" />
+    <Compile Include="Classes\Toolbox\CustomProperty.vb" />
+    <Compile Include="Classes\Toolbox\CustomPropertyDescriptor.vb" />
+    <Compile Include="Classes\Updates\clsMAJContenu.vb" />
+    <Compile Include="Classes\Updates\clsTxtFR.vb" />
+    <Compile Include="Modules\clsModule.vb" />
+    <EmbeddedResource Include="Forms\frmSearch.resx">
       <DependentUpon>frmSearch.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSimu.resx">
+    <EmbeddedResource Include="Forms\frmSimu.resx">
       <DependentUpon>frmSimu.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSpecialCardUse.resx">
+    <EmbeddedResource Include="Forms\frmSpecialCardUse.resx">
       <DependentUpon>frmSpecialCardUse.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmStats.resx">
+    <EmbeddedResource Include="Forms\frmStats.resx">
       <DependentUpon>frmStats.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmTransfert.resx">
+    <EmbeddedResource Include="Forms\frmTransfert.resx">
       <DependentUpon>frmTransfert.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmTranslate.resx">
+    <EmbeddedResource Include="Forms\frmTranslate.resx">
       <DependentUpon>frmTranslate.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmUpdateContenu.resx">
+    <EmbeddedResource Include="Forms\frmUpdateContenu.resx">
       <DependentUpon>frmUpdateContenu.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmWord.resx">
+    <EmbeddedResource Include="Forms\frmWord.resx">
       <DependentUpon>frmWord.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmXL.resx">
+    <EmbeddedResource Include="Forms\frmXL.resx">
       <DependentUpon>frmXL.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Options.resx">
+    <EmbeddedResource Include="Forms\Options.resx">
       <DependentUpon>Options.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Licenses.licx" />
@@ -359,5 +359,25 @@
       <Link>CollectionViewer.zip</Link>
       <LogicalName>MyHTML</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes" />
+    <Folder Include="Classes\Import Export" />
+    <Folder Include="Classes\App Settings" />
+    <Folder Include="Classes\Edition Management" />
+    <Folder Include="Classes\Card Management" />
+    <Folder Include="Classes\Board" />
+    <Folder Include="Classes\Updates" />
+    <Folder Include="Classes\Stats" />
+    <Folder Include="Classes\Stats\Matchup" />
+    <Folder Include="Classes\Toolbox" />
+    <Folder Include="Classes\Simulation" />
+    <Folder Include="Classes\Online Buying" />
+    <Folder Include="Classes\Simulation\Common" />
+    <Folder Include="Classes\Simulation\Suggestions" />
+    <Folder Include="Classes\Simulation\Probability" />
+    <Folder Include="Modules" />
+    <Folder Include="Forms" />
+    <Folder Include="User Controls" />
   </ItemGroup>
 </Project>
