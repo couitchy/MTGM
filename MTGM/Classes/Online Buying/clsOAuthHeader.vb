@@ -1,6 +1,6 @@
 ﻿Imports System.Text
 Imports System.Security.Cryptography
-Public Class OAuthHeader
+Public Class clsOAuthHeader
     Private VmAppToken As String = "SNHYNcu9fbXAORqY"                       'Clé publique
     Private VmAppSecret As String = "66rhX6mLKuoRHbNV4vJlz5JFv7Sgn3aP"      'Clé privée
     Private VmAccessToken As String = ""                                    'Non utilisé

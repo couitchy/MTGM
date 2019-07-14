@@ -1,4 +1,4 @@
-﻿Public Class clsElement
+﻿Public Class clsItem
     Public Enum eElementType
         Card
         Type

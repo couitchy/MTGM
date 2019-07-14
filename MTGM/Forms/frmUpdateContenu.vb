@@ -2,10 +2,10 @@ Imports System.Text
 Imports System.Net
 Imports System.IO
 Public Partial Class frmUpdateContenu
-    Private VmFormMove As Boolean = False           'Formulaire en déplacement
-    Private VmMousePos As Point                     'Position initiale de la souris sur la barre de titre
-    Private VmCanClose As Boolean = False           'Formulaire peut être fermé
-    Private VmNewContenu As List(Of clsMAJContenu)  'Eléments de mise à jour
+    Private VmFormMove As Boolean = False               'Formulaire en déplacement
+    Private VmMousePos As Point                         'Position initiale de la souris sur la barre de titre
+    Private VmCanClose As Boolean = False               'Formulaire peut être fermé
+    Private VmNewContenu As List(Of clsUpdateContent)   'Eléments de mise à jour
     Private VmBusy As Boolean
     Private VmCancel As Boolean
     Private VmAnswered As Boolean
@@ -71,37 +71,37 @@ Public Partial Class frmUpdateContenu
             Return Nothing
         End Try
     End Function
-    Private Function CompareStamp(VpType As clsMAJContenu.EgMAJContenu, VpStamp As String, VpSize As Integer) As clsMAJContenu
+    Private Function CompareStamp(VpType As clsUpdateContent.EgMAJContenu, VpStamp As String, VpSize As Integer) As clsUpdateContent
     '-----------------------------------------
     'Comparaison des versions locale / serveur
     '-----------------------------------------
-    Dim VpMAJContenu As clsMAJContenu = Nothing
+    Dim VpMAJContenu As clsUpdateContent = Nothing
     Dim VpPictFileSize As Long
     Dim VpCur As String
         Select Case VpType
-            Case clsMAJContenu.EgMAJContenu.NewAut
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateAut, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.PatchPict
+            Case clsUpdateContent.EgMAJContenu.NewAut
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateAut, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.PatchPict
                 If File.Exists(VgOptions.VgSettings.PicturesFile) Then
-                    VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdatePictPatch, VpStamp, VpSize)
+                    VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdatePictPatch, VpStamp, VpSize)
                 End If
-            Case clsMAJContenu.EgMAJContenu.NewSimu
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSimu, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.PatchTrad
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTradPatch, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.PatchSubTypes
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSubTypesPatch, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateSubTypesVFPatch, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateMultiverseIdPatch, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.NewTxtVF
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateTxtVF, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.NewRulings
-                VpMAJContenu = New clsMAJContenu(VpType, VgOptions.VgSettings.LastUpdateRulings, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.NewPrix
-                VpMAJContenu = New clsMAJContenu(VpType, clsModule.GetLastPricesDate.ToShortDateString, VpStamp, VpSize)
-            Case clsMAJContenu.EgMAJContenu.NewPict
+            Case clsUpdateContent.EgMAJContenu.NewSimu
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateSimu, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.PatchTrad
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateTradPatch, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.PatchSubTypes
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateSubTypesPatch, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.PatchSubTypesVF
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateSubTypesVFPatch, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateMultiverseIdPatch, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.NewTxtVF
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateTxtVF, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.NewRulings
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateRulings, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.NewPrix
+                VpMAJContenu = New clsUpdateContent(VpType, clsModule.GetLastPricesDate.ToShortDateString, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.NewPict
                 If File.Exists(VgOptions.VgSettings.PicturesFile) Then
                     VpPictFileSize = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length
                     If VpPictFileSize <> 0 AndAlso VpStamp.Contains(VpPictFileSize.ToString) Then
@@ -113,11 +113,11 @@ Public Partial Class frmUpdateContenu
                         End If
                         VpStamp = VpStamp.Substring(VpStamp.LastIndexOf("SP"))
                         VpStamp = VpStamp.Substring(0, VpStamp.IndexOf("#"))
-                        VpMAJContenu = New clsMAJContenu(VpType, VpCur, VpStamp, VpSize)
+                        VpMAJContenu = New clsUpdateContent(VpType, VpCur, VpStamp, VpSize)
                     End If
                 End If
-            Case clsMAJContenu.EgMAJContenu.NewSerie
-            Case clsMAJContenu.EgMAJContenu.NewTrad
+            Case clsUpdateContent.EgMAJContenu.NewSerie
+            Case clsUpdateContent.EgMAJContenu.NewTrad
             Case Else
         End Select
         If VpMAJContenu Is Nothing Then Return Nothing
@@ -127,12 +127,12 @@ Public Partial Class frmUpdateContenu
             Return VpMAJContenu
         End If
     End Function
-    Private Function UpdateItem(VpElement As clsMAJContenu) As Boolean
+    Private Function UpdateItem(VpElement As clsUpdateContent) As Boolean
     '--------------------------------------------------------
     'Procède à la mise à jour de l'élément passé en paramètre
     '--------------------------------------------------------
         Select Case VpElement.TypeContenu
-            Case clsMAJContenu.EgMAJContenu.NewAut
+            Case clsUpdateContent.EgMAJContenu.NewAut
                 'Appel silencieux pour mise à jour autorisations en tournoi
                 Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL15), clsModule.CgUpAutorisations)
                 If File.Exists(Application.StartupPath + clsModule.CgUpAutorisations) Then
@@ -142,7 +142,7 @@ Public Partial Class frmUpdateContenu
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.PatchPict
+            Case clsUpdateContent.EgMAJContenu.PatchPict
                 'Appel silencieux pour correctif d'images
                 If File.Exists(VgOptions.VgSettings.PicturesFile) And Not MainForm.VgMe.IsInImgDL Then
                     If MainForm.VgMe.FixPictures Then
@@ -153,7 +153,7 @@ Public Partial Class frmUpdateContenu
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.NewSimu
+            Case clsUpdateContent.EgMAJContenu.NewSimu
                 'Appel silencieux pour mise à jour modèles et historiques
                 Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL3B), clsModule.CgUpDDBb)
                 If File.Exists(Application.StartupPath + clsModule.CgUpDDBb) Then
@@ -163,35 +163,35 @@ Public Partial Class frmUpdateContenu
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.PatchTrad
+            Case clsUpdateContent.EgMAJContenu.PatchTrad
                 'Appel silencieux pour correctif de titres de cartes
                 If MainForm.VgMe.FixFR2 Then
                     VgOptions.VgSettings.LastUpdateTradPatch = VpElement.Serveur
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.PatchSubTypes
+            Case clsUpdateContent.EgMAJContenu.PatchSubTypes
                 'Appel silencieux pour correctif des sous-types de cartes
                 If MainForm.VgMe.FixSubTypes Then
                     VgOptions.VgSettings.LastUpdateSubTypesPatch = VpElement.Serveur
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
+            Case clsUpdateContent.EgMAJContenu.PatchSubTypesVF
                 'Appel silencieux pour correctif des traductions des sous-types de cartes
                 If MainForm.VgMe.FixSubTypesVF Then
                     VgOptions.VgSettings.LastUpdateSubTypesVFPatch = VpElement.Serveur
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
+            Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
                 'Appel silencieux pour mise à jour des identifiants Multiverse des cartes
                 If MainForm.VgMe.FixMultiverse2 Then
                     VgOptions.VgSettings.LastUpdateMultiverseIdPatch = VpElement.Serveur
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.NewTxtVF
+            Case clsUpdateContent.EgMAJContenu.NewTxtVF
                 'Appel silencieux pour mise à jour texte des cartes en français
                 Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL11), clsModule.CgUpTXTFR)
                 If File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
@@ -200,7 +200,7 @@ Public Partial Class frmUpdateContenu
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.NewRulings
+            Case clsUpdateContent.EgMAJContenu.NewRulings
                 'Appel silencieux pour mise à jour texte des règles spécifiques
                 VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
                 Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL19), clsModule.CgUpRulings)
@@ -213,7 +213,7 @@ Public Partial Class frmUpdateContenu
                     VgOptions.VgSettings.LastUpdateRulings = VpElement.Serveur
                 End If
                 VmPassiveUpdate = clsModule.ePassiveUpdate.NotNow
-            Case clsMAJContenu.EgMAJContenu.NewPrix
+            Case clsUpdateContent.EgMAJContenu.NewPrix
                 'Appel silencieux pour mise à jour prix
                 Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL9), clsModule.CgUpPrices)
                 If File.Exists(Application.StartupPath + clsModule.CgUpPrices) Then
@@ -222,7 +222,7 @@ Public Partial Class frmUpdateContenu
                 Else
                     Return False
                 End If
-            Case clsMAJContenu.EgMAJContenu.NewPict
+            Case clsUpdateContent.EgMAJContenu.NewPict
                 'Appel silencieux (multiple) pour mise(s) à jour d'images
                 If MainForm.VgMe.IsInImgDL Then Return False
                 For VpI As Integer = 1 + CInt(VpElement.Locale.Replace("SP", "")) To CInt(VpElement.Serveur.Replace("SP", ""))
@@ -241,15 +241,15 @@ Public Partial Class frmUpdateContenu
                     End If
                 Next VpI
                 VmPassiveUpdate = clsModule.ePassiveUpdate.NotNow
-            Case clsMAJContenu.EgMAJContenu.NewSerie
+            Case clsUpdateContent.EgMAJContenu.NewSerie
 
-            Case clsMAJContenu.EgMAJContenu.NewTrad
+            Case clsUpdateContent.EgMAJContenu.NewTrad
 
             Case Else
         End Select
         Return True
     End Function
-    Public Function CheckForContenu(ByRef VpNewContenu As List(Of clsMAJContenu)) As Boolean
+    Public Function CheckForContenu(ByRef VpNewContenu As List(Of clsUpdateContent)) As Boolean
     '----------------------------------------------------------------------
     'Regarde s'il existe des mises à jour disponibles pour :
     '- les prix (bdd)
@@ -271,7 +271,7 @@ Public Partial Class frmUpdateContenu
             For VpI As Integer = 0 To VpStamps.Length - 1
                 VpNewContenu.Add(Me.CompareStamp(VpI, VpStamps(VpI), VpSizes(VpI)))
             Next VpI
-            For Each VpMAJContenu As clsMAJContenu In VpNewContenu
+            For Each VpMAJContenu As clsUpdateContent In VpNewContenu
                 If Not VpMAJContenu Is Nothing Then
                     Return True
                 End If
@@ -336,7 +336,7 @@ Public Partial Class frmUpdateContenu
         End If
     End Sub
     Sub FrmUpdateContenuActivated(sender As Object, e As EventArgs)
-    Dim VpNewContenu As New List(Of clsMAJContenu)
+    Dim VpNewContenu As New List(Of clsUpdateContent)
     Dim VpItem As ListViewItem
         If Me.chklstContenus.Items.Count = 0 Then
             Me.chklstContenus.Items.Add("Vérification en cours...")
@@ -344,7 +344,7 @@ Public Partial Class frmUpdateContenu
             If Me.CheckForContenu(VpNewContenu) Then
                 Me.chklstContenus.Items.Clear
                 Me.chklstContenus.CheckBoxes = True
-                For Each VpMAJContenu As clsMAJContenu In VpNewContenu
+                For Each VpMAJContenu As clsUpdateContent In VpNewContenu
                     If Not VpMAJContenu Is Nothing Then
                         VpItem = New ListViewItem(VpMAJContenu.TypeContenuStr)
                         VpItem.SubItems.Add(VpMAJContenu.Locale)

@@ -14,15 +14,15 @@ Public Partial Class frmReserve
     '----------------------------------------------
     'Chargement de la grille des cartes disponibles
     '----------------------------------------------
-    Dim VpItem As clsRepartition
+    Dim VpItem As clsDistribution
     Dim VpRow As Integer
     Dim VpCellModel As DataModels.IDataModel
         'Construction de la grille
         Call clsModule.InitGrid(Me.grdRepartition, New String() {"Nom VF", "Nom VO", "Quantité Deck", "Quantité Réserve"})
         'Enumération
-        For Each VpCard As clsPlateauCard In VmOwner.PlateauPartie.CardsInDeck
+        For Each VpCard As clsBoardCard In VmOwner.PlateauPartie.CardsInDeck
             If Not VmRepartition.Contains(VpCard.NameVO) Then
-                VmRepartition.Add(VpCard.NameVO, New clsRepartition(VpCard.NameVF, VpCard.InReserve))
+                VmRepartition.Add(VpCard.NameVO, New clsDistribution(VpCard.NameVF, VpCard.InReserve))
             Else
                 VpItem = VmRepartition.Item(VpCard.NameVO)
                 If VpCard.InReserve Then
@@ -55,14 +55,14 @@ Public Partial Class frmReserve
     '-------------------------------------
     'Validation de la nouvelle répartition
     '-------------------------------------
-    Dim VpItem As clsRepartition
+    Dim VpItem As clsDistribution
     Dim VpDeckCount As Integer
     Dim VpSideCount As Integer
         For Each VpNameVO As String In VmRepartition.Keys
             VpItem = VmRepartition.Item(VpNameVO)
             VpDeckCount = 0
             VpSideCount = 0
-            For Each VpCard As clsPlateauCard In VmOwner.PlateauPartie.CardsInDeck
+            For Each VpCard As clsBoardCard In VmOwner.PlateauPartie.CardsInDeck
                 If VpCard.NameVO = VpNameVO Then
                     If VpDeckCount < VpItem.DeckCount Then
                         VpCard.InReserve = False
@@ -81,7 +81,7 @@ Public Partial Class frmReserve
     Sub CellValidated(sender As Object, e As CellEventArgs)
     Dim VpCell As Cells.Cell = e.Cell
     Dim VpGrid As Grid = VpCell.Grid
-    Dim VpItem As clsRepartition = CType(VpGrid(VpCell.Row, 0).Tag, clsRepartition)
+    Dim VpItem As clsDistribution = CType(VpGrid(VpCell.Row, 0).Tag, clsDistribution)
     Dim VpSideCountChanging As Boolean = (VpCell.Column = 3) 'un peu crade, mais une modification sur la dernière colonne indique qu'on a touché au nombre dans le side
     Dim VpValue As Integer = CInt(VpCell.Value)
     Dim VpTotal As Integer

@@ -1366,7 +1366,7 @@ Public Partial Class MainForm
     'Charge des informations sur {édition, couleur, type} sélectionné(e) dans le treeview
     '------------------------------------------------------------------------------------
     Dim VpCaracOther As New clsCaracOther
-    Dim VpCaracSerie As clsCaracSerie
+    Dim VpCaracSerie As clsCaracEdition
     Dim VpO As Object
     Dim VpSource As String = Me.MySource
     Dim VpElderCriteria As String
@@ -1403,7 +1403,7 @@ Public Partial Class MainForm
         'Cas particuliers
         Select Case VpModeCarac
             Case clsModule.eModeCarac.Serie
-                VpCaracSerie = New clsCaracSerie(VpCaracOther)
+                VpCaracSerie = New clsCaracEdition(VpCaracOther)
                 'Date de sortie
                 VgDBCommand.CommandText = "Select Release From Series Where SeriesCD = '" + VpCritere + "';"
                 VpCaracSerie.SerieDate = CDate(VgDBCommand.ExecuteScalar).ToShortDateString
@@ -1558,29 +1558,29 @@ Public Partial Class MainForm
     '------------------------------------------
     'Chargement des détails du deck sélectionné
     '------------------------------------------
-    Dim VpProps As CustomClass
+    Dim VpProps As clsCustomClass
     Dim VpOK As Integer = 0
     Dim VpMissing As Integer = 0
         'Texte descriptif associé au deck
         Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIdFromName(Me.GetSelectedSource)), "")
         'Création dynamique d'un property grid pour voir si les cartes du deck sont aussi en collection
-        VpProps = New CustomClass
+        VpProps = New clsCustomClass
         VgDBCommand.CommandText = "Select Card.Title, Sum(IIf(IsNull(MyCollection.Items), 0, MyCollection.Items)), Sum(MyGames.Items) From (Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr) Left Join MyCollection On Card.EncNbr = MyCollection.EncNbr Where MyGames.GameID = " + clsModule.GetDeckIdFromName(VpDeck) + " Group By Card.Title"
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
             While .Read
                 If CInt(.GetValue(1)) >= CInt(.GetValue(2)) Then
                     VpOK += CInt(.GetValue(2))
-                    VpProps.Add(New CustomProperty(.GetString(0), "Cartes possédées", CInt(.GetValue(2)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
+                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes possédées", CInt(.GetValue(2)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
                 Else
                     VpMissing += CInt(.GetValue(2))
-                    VpProps.Add(New CustomProperty(.GetString(0), "Cartes manquantes", CInt(.GetValue(1)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
+                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes manquantes", CInt(.GetValue(1)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
                 End If
             End While
             .Close
         End With
         'Synthèse en %
-        For Each VpProp As CustomProperty In VpProps
+        For Each VpProp As clsCustomProperty In VpProps
             If VpProp.Category = "Cartes possédées" Then
                 VpProp.Category += " (" + Format(100 * VpOK / (VpOK + VpMissing), "0") + " %)"
             Else
@@ -1820,7 +1820,7 @@ Public Partial Class MainForm
             Me.pnlCard2.Controls.Remove(VpControl)
         Next VpControl
     End Sub
-    Private Sub PutInRichText(VpRich As ExRichTextBox, VpImg As ImageList, VpTxt As String, VpSubType As String)
+    Private Sub PutInRichText(VpRich As ucExRichTextBox, VpImg As ImageList, VpTxt As String, VpSubType As String)
     '--------------------------------------------------------------------------------------------------
     'Inscrit en RTF (avec images) le texte passé en paramètre dans la zone de texte passée en paramètre
     '--------------------------------------------------------------------------------------------------
@@ -2288,12 +2288,12 @@ Public Partial Class MainForm
                 Return 0
         End Select
     End Function
-    Private Function ManageTransfert(VpNode As TreeNode, VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "") As Boolean
+    Private Function ManageTransfert(VpNode As TreeNode, VpTransfertType As clsTransferResult.EgTransfertType, Optional VpTo As String = "") As Boolean
     '---------------------------------------------------------------------------------------------------------------------------------------------
     'Gère la suppression d'une carte ou son transfert dans un autre deck/collection, ou encore son simple ajout, ou enfin son changement d'édition
     '---------------------------------------------------------------------------------------------------------------------------------------------
     Dim VpPreciseTransfert As frmTransfert
-    Dim VpTransfertResult As New clsTransfertResult
+    Dim VpTransfertResult As New clsTransferResult
     Dim VpCardName As String = VpNode.Tag.Value
     Dim VpSource As String
     Dim VpSource2 As String
@@ -2333,18 +2333,18 @@ Public Partial Class MainForm
                 'Lieux des modifications
                 .TFrom = Me.GetSelectedSource
                 .SFrom = VpSource
-                If .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+                If .TransfertType = clsTransferResult.EgTransfertType.Swap Then
                     .TTo = .TFrom
                     .STo = .SFrom
-                ElseIf .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+                ElseIf .TransfertType = clsTransferResult.EgTransfertType.Move Or .TransfertType = clsTransferResult.EgTransfertType.Copy Then
                     .TTo = VpTo
                     .STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
                 End If
                 'Opération effective
-                If .TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+                If .TFrom <> .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy Then
                     Call frmTransfert.CommitAction(VpTransfertResult)
                     Return Me.IsInAdvSearch AndAlso Me.IsInRestrictedAdvSearch
-                ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
+                ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransferResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
                     Call frmTransfert.CommitAction(VpTransfertResult)
                     Return True
                 Else
@@ -2354,7 +2354,7 @@ Public Partial Class MainForm
             End If
         End With
     End Function
-    Private Sub ManageMultipleTransferts(VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "")
+    Private Sub ManageMultipleTransferts(VpTransfertType As clsTransferResult.EgTransfertType, Optional VpTo As String = "")
     '-------------------------------------------------------------------------------------------------------------
     'Gère les transferts / suppression en ajoutant le cas où plusieurs éléments sont sélectionnés dans le treeview
     '-------------------------------------------------------------------------------------------------------------
@@ -2375,7 +2375,7 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
-    Private Sub ManageDescendanceTransferts(VpTransfertType As clsTransfertResult.EgTransfertType, Optional VpTo As String = "")
+    Private Sub ManageDescendanceTransferts(VpTransfertType As clsTransferResult.EgTransfertType, Optional VpTo As String = "")
     '------------------------------------------------------------------------------------------------------------------------------
     'Gère les transferts / suppression dans le cas où l'utilisateur n'a pas choisi des cartes mais un niveau hiérarchique supérieur
     '------------------------------------------------------------------------------------------------------------------------------
@@ -2383,7 +2383,7 @@ Public Partial Class MainForm
     Dim VpTag As clsTag = VpNode.Tag
     Dim VpSQL As String = VpTag.Descendance
     Dim VpSource As String = Me.MySource
-    Dim VpTransfertResult As clsTransfertResult
+    Dim VpTransfertResult As clsTransferResult
     Dim VpDBCommand As New OleDbCommand
     Dim VpDBReader As OleDbDataReader
     Dim VpMustReload As Boolean = False
@@ -2411,7 +2411,7 @@ Public Partial Class MainForm
         VpDBReader = VpDBcommand.ExecuteReader
         While VpDBReader.Read
             'On crée un nouvel objet de transfert pour chaque ligne retournée
-            VpTransfertResult = New clsTransfertResult
+            VpTransfertResult = New clsTransferResult
             With VpTransfertResult
                 .TransfertType = VpTransfertType
                 .EncNbrFrom = VpDBReader.GetInt32(0)
@@ -2423,15 +2423,15 @@ Public Partial Class MainForm
                 .NCartes = If(Me.IsInAdvSearch, VpQuant, VpDBReader.GetInt32(1))
                 .TFrom = Me.GetSelectedSource
                 .SFrom = VpSource
-                If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+                If .TransfertType = clsTransferResult.EgTransfertType.Move Or .TransfertType = clsTransferResult.EgTransfertType.Copy Then
                     .TTo = VpTo
                     .STo = If(VpTo = clsModule.CgCollection, clsModule.CgSCollection, clsModule.CgSDecks)
                 End If
                 'Opération effective
                 If .NCartes > 0 Then
-                    If .TFrom <> .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+                    If .TFrom <> .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy Then
                         Call frmTransfert.CommitAction(VpTransfertResult)
-                    ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransfertResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransfertResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
+                    ElseIf (.TFrom <> .TTo Or (.TFrom = .TTo And .TransfertType = clsTransferResult.EgTransfertType.Copy)) Or (.TransfertType = clsTransferResult.EgTransfertType.Swap And (.EncNbrFrom <> .EncNbrTo Or .ReserveFrom <> .ReserveTo Or .FoilFrom <> .FoilTo)) Then
                         Call frmTransfert.CommitAction(VpTransfertResult)
                         VpMustReload = True
                     Else
@@ -2959,7 +2959,7 @@ Public Partial Class MainForm
             Call Me.FindNextCard
         ElseIf e.KeyCode = Keys.Delete And Me.tvwExplore.SelectedNode IsNot Nothing And Not Me.IsInAdvSearch Then
             If clsModule.ShowQuestion("Êtes-vous sûr de vouloir supprimer '" + Me.tvwExplore.SelectedNode.Text + "' ?")  = System.Windows.Forms.DialogResult.Yes Then
-                Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Deletion)
+                Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Deletion)
             End If
         End If
     End Sub
@@ -3278,16 +3278,16 @@ Public Partial Class MainForm
         Clipboard.SetDataObject(Me.tvwExplore.SelectedNode.Text)
     End Sub
     Sub MnuMoveACardActivate(ByVal sender As Object, ByVal e As EventArgs)
-        Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Move, sender.Text)
+        Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Move, sender.Text)
     End Sub
     Sub MnuDeleteACardClick(ByVal sender As Object, ByVal e As EventArgs)
-        Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Deletion)
+        Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Deletion)
     End Sub
     Sub MnuCopyACardActivate(sender As Object, e As EventArgs)
-        Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Copy, sender.Text)
+        Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Copy, sender.Text)
     End Sub
     Sub MnuSwapSerieClick(sender As Object, e As EventArgs)
-        Call Me.ManageMultipleTransferts(clsTransfertResult.EgTransfertType.Swap)
+        Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Swap)
     End Sub
     Sub MnuTransformClick(sender As Object, e As EventArgs)
     Dim VpNode As TreeNode = Me.tvwExplore.SelectedNode

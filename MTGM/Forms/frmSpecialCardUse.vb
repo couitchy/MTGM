@@ -4,9 +4,9 @@ Public Partial Class frmSpecialCardUse
     Private VmCanClose As Boolean = False   'Formulaire peut être fermé
     Private VmHelp As ToolTip               'Info-bulles d'aide à la saisie
     Public Sub New(VpSource As String, VpRestriction As String)
-    Dim VpPartie As clsPartie
+    Dim VpPartie As clsSimulGame
         Call Me.InitializeComponent
-        VpPartie = New clsPartie(VpSource, VpRestriction)
+        VpPartie = New clsSimulGame(VpSource, VpRestriction)
         For Each VpCard As clsCard In VpPartie.CardsInFullDeck
             If Not Me.cboCard.Items.Contains(VpCard.CardName) Then
                 Me.cboCard.Items.Add(VpCard.CardName)
@@ -62,7 +62,7 @@ Public Partial Class frmSpecialCardUse
         VgDBCommand.CommandText = "Delete * From MySpecialUses Where Card = '" + Me.cboCard.Text.Replace("'", "''") + "';"
         VgDBCommand.ExecuteNonQuery
         If Me.chkDefineSpecial.Checked And Me.cboEffet.Text <> "" And Me.cboEffort.Text <> "" Then
-            VgDBCommand.CommandText = "Insert Into MySpecialUses Values (" + clsSpeciality.GetSpecId(Me.cboEffort.Text).ToString + ", " + clsSpeciality.GetSpecId(Me.cboEffet.Text).ToString + ", '" + Me.cboCard.Text.Replace("'", "''") + "', '" + Me.txtEffort.Text + "', '" + Me.txtEffet.Text + "', " + Me.chkInvocTapped.Checked.ToString + ", " + Me.chkDoesntUntap.Checked.ToString + ");"
+            VgDBCommand.CommandText = "Insert Into MySpecialUses Values (" + clsSpecialty.GetSpecId(Me.cboEffort.Text).ToString + ", " + clsSpecialty.GetSpecId(Me.cboEffet.Text).ToString + ", '" + Me.cboCard.Text.Replace("'", "''") + "', '" + Me.txtEffort.Text + "', '" + Me.txtEffet.Text + "', " + Me.chkInvocTapped.Checked.ToString + ", " + Me.chkDoesntUntap.Checked.ToString + ");"
             Try
                 VgDBCommand.ExecuteNonQuery
                 Call clsModule.ShowInformation("Cet effet sera pris en compte dès la prochaine simulation.")
@@ -74,13 +74,13 @@ Public Partial Class frmSpecialCardUse
         End If
     End Sub
     Sub CboCardSelectedIndexChanged(sender As Object, e As EventArgs)
-    Dim VpSpeciality As New clsSpeciality(Me.cboCard.Text)
+    Dim VpSpeciality As New clsSpecialty(Me.cboCard.Text)
         If VpSpeciality.IsSpecial Then
             Me.chkDefineSpecial.Checked = True
             Me.txtEffort.Text = VpSpeciality.Effort
             Me.txtEffet.Text = VpSpeciality.Effet
-            Me.cboEffort.Text = clsSpeciality.GetSpecTxt(VpSpeciality.EffortID)
-            Me.cboEffet.Text = clsSpeciality.GetSpecTxt(VpSpeciality.EffetID)
+            Me.cboEffort.Text = clsSpecialty.GetSpecTxt(VpSpeciality.EffortID)
+            Me.cboEffet.Text = clsSpecialty.GetSpecTxt(VpSpeciality.EffetID)
             Me.chkInvocTapped.Checked = VpSpeciality.InvocTapped
             Me.chkDoesntUntap.Checked = VpSpeciality.DoesntUntap
         Else
@@ -89,11 +89,11 @@ Public Partial Class frmSpecialCardUse
     End Sub
     Sub TxtEffortEnter(ByVal sender As Object, ByVal e As EventArgs)
         VmHelp = New ToolTip
-        VmHelp.Show(clsSpeciality.GetSpecHlp(clsSpeciality.GetSpecId(Me.cboEffort.Text)), Me, Me.txtEffort.Left, Me.txtEffort.Top + Me.grpUse.Top - Me.txtEffort.Height)
+        VmHelp.Show(clsSpecialty.GetSpecHlp(clsSpecialty.GetSpecId(Me.cboEffort.Text)), Me, Me.txtEffort.Left, Me.txtEffort.Top + Me.grpUse.Top - Me.txtEffort.Height)
     End Sub
     Sub TxtEffetEnter(ByVal sender As Object, ByVal e As EventArgs)
         VmHelp = New ToolTip
-        VmHelp.Show(clsSpeciality.GetSpecHlp(clsSpeciality.GetSpecId(Me.cboEffet.Text)), Me, Me.txtEffet.Left, Me.txtEffet.Top + Me.grpUse.Top - Me.txtEffet.Height)
+        VmHelp.Show(clsSpecialty.GetSpecHlp(clsSpecialty.GetSpecId(Me.cboEffet.Text)), Me, Me.txtEffet.Left, Me.txtEffet.Top + Me.grpUse.Top - Me.txtEffet.Height)
     End Sub
     Sub TxtEffortLeave(ByVal sender As Object, ByVal e As EventArgs)
         VmHelp.RemoveAll

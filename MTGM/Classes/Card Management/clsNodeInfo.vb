@@ -1,4 +1,4 @@
-﻿Public Class clsInfoNode
+﻿Public Class clsNodeInfo
     Private VmId As Integer
     Private VmFolder As Boolean
     Public Sub New(VpId As Integer, VpFolder As Boolean)

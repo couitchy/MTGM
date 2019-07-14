@@ -1,11 +1,11 @@
-﻿Public Class clsPlateauPartie
-    Private VmDeck As New List(Of clsPlateauCard)
-    Private VmBibli As New List(Of clsPlateauCard)
-    Private VmRegard As New List(Of clsPlateauCard)
-    Private VmMain As New List(Of clsPlateauCard)
-    Private VmField As New List(Of clsPlateauCard)
-    Private VmGraveyard As New List(Of clsPlateauCard)
-    Private VmExil As New List(Of clsPlateauCard)
+﻿Public Class clsBoardGame
+    Private VmDeck As New List(Of clsBoardCard)
+    Private VmBibli As New List(Of clsBoardCard)
+    Private VmRegard As New List(Of clsBoardCard)
+    Private VmMain As New List(Of clsBoardCard)
+    Private VmField As New List(Of clsBoardCard)
+    Private VmGraveyard As New List(Of clsBoardCard)
+    Private VmExil As New List(Of clsBoardCard)
     Private VmMulligan As Integer = 0
     Private VmLives As Integer
     Private VmPoisons As Integer
@@ -42,7 +42,7 @@
     'Construction du deck
     '--------------------
         For VpI As Integer = 1 To VpCount
-            VmDeck.Add(New clsPlateauCard(VmDeck, VpName, VpNameFR, VpType, VpTransformable, VpTransformedCardName, VpReserve))
+            VmDeck.Add(New clsBoardCard(VmDeck, VpName, VpNameFR, VpType, VpTransformable, VpTransformedCardName, VpReserve))
         Next VpI
     End Sub
     Public Sub BeginPlateauPartie
@@ -55,7 +55,7 @@
         VmField.Clear
         VmGraveyard.Clear
         VmExil.Clear
-        For Each VpCard As clsPlateauCard In VmDeck
+        For Each VpCard As clsBoardCard In VmDeck
             If Not VpCard.InReserve Then
                 Call VpCard.ReInit(VmBibli)
                 VmBibli.Add(VpCard)
@@ -66,7 +66,7 @@
         Call Shuffle(VmBibli)
         VmMain.AddRange(VmBibli.GetRange(0, clsModule.CgNMain - VmMulligan))
         VmBibli.RemoveRange(0, clsModule.CgNMain - VmMulligan)
-        For Each VpCard As clsPlateauCard In VmMain
+        For Each VpCard As clsBoardCard In VmMain
             VpCard.Hidden = False
             VpCard.Owner = VmMain
         Next VpCard
@@ -74,25 +74,25 @@
         VmPoisons = 0
         VmTours = 0
     End Sub
-    Public Function GetReserve As List(Of clsPlateauCard)
+    Public Function GetReserve As List(Of clsBoardCard)
     '---------------------------------
     'Retourne les cartes de la réserve
     '---------------------------------
-    Dim VpReserve As New List(Of clsPlateauCard)
-        For Each VpCard As clsPlateauCard In VmDeck
+    Dim VpReserve As New List(Of clsBoardCard)
+        For Each VpCard As clsBoardCard In VmDeck
             If VpCard.InReserve Then
                 VpReserve.Add(VpCard)
             End If
         Next VpCard
         Return VpReserve
     End Function
-    Public Shared Sub Shuffle(ByRef VpListe As List(Of clsPlateauCard))
+    Public Shared Sub Shuffle(ByRef VpListe As List(Of clsBoardCard))
     '----------------------------------------
     'Mélange la sélection passée en paramètre
     '----------------------------------------
     Dim VpI As Integer
     Dim VpRandomPos As New SortedList(VpListe.Count)
-    Dim VpShuffled As New List(Of clsPlateauCard)(VpListe.Count)
+    Dim VpShuffled As New List(Of clsBoardCard)(VpListe.Count)
         'Génère un tableau trié de nombres aléatoires
         For VpI = 0 To VpListe.Count - 1
             VpRandomPos.Add(clsModule.VgRandom.NextDouble, VpI)
@@ -107,55 +107,55 @@
         VpListe = VpShuffled
     End Sub
     #Region "Propriétés"
-    Public Property Bibli As List(Of clsPlateauCard)
+    Public Property Bibli As List(Of clsBoardCard)
         Get
             Return VmBibli
         End Get
-        Set (VpBibli As List(Of clsPlateauCard))
+        Set (VpBibli As List(Of clsBoardCard))
             VmBibli = VpBibli
         End Set
     End Property
-    Public Property Regard As List(Of clsPlateauCard)
+    Public Property Regard As List(Of clsBoardCard)
         Get
             Return VmRegard
         End Get
-        Set (VpRegard As List(Of clsPlateauCard))
+        Set (VpRegard As List(Of clsBoardCard))
             VmRegard = VpRegard
         End Set
     End Property
-    Public Property Main As List(Of clsPlateauCard)
+    Public Property Main As List(Of clsBoardCard)
         Get
             Return VmMain
         End Get
-        Set (VpMain As List(Of clsPlateauCard))
+        Set (VpMain As List(Of clsBoardCard))
             VmMain = VpMain
         End Set
     End Property
-    Public Property Field As List(Of clsPlateauCard)
+    Public Property Field As List(Of clsBoardCard)
         Get
             Return VmField
         End Get
-        Set (VpField As List(Of clsPlateauCard))
+        Set (VpField As List(Of clsBoardCard))
             VmField = VpField
         End Set
     End Property
-    Public Property Graveyard As List(Of clsPlateauCard)
+    Public Property Graveyard As List(Of clsBoardCard)
         Get
             Return VmGraveyard
         End Get
-        Set (VpGraveyard As List(Of clsPlateauCard))
+        Set (VpGraveyard As List(Of clsBoardCard))
             VmGraveyard = VpGraveyard
         End Set
     End Property
-    Public Property Exil As List(Of clsPlateauCard)
+    Public Property Exil As List(Of clsBoardCard)
         Get
             Return VmExil
         End Get
-        Set (VpExil As List(Of clsPlateauCard))
+        Set (VpExil As List(Of clsBoardCard))
             VmExil = VpExil
         End Set
     End Property
-    Public ReadOnly Property BibliTop As clsPlateauCard
+    Public ReadOnly Property BibliTop As clsBoardCard
         Get
             If VmBibli.Count > 0 Then
                 Return VmBibli.Item(0)
@@ -164,7 +164,7 @@
             End If
         End Get
     End Property
-    Public ReadOnly Property GraveyardTop As clsPlateauCard
+    Public ReadOnly Property GraveyardTop As clsBoardCard
         Get
             If VmGraveyard.Count > 0 Then
                 Return VmGraveyard.Item(VmGraveyard.Count - 1)
@@ -173,7 +173,7 @@
             End If
         End Get
     End Property
-    Public ReadOnly Property ExilTop As clsPlateauCard
+    Public ReadOnly Property ExilTop As clsBoardCard
         Get
             If VmExil.Count > 0 Then
                 Return VmExil.Item(VmExil.Count - 1)
@@ -214,7 +214,7 @@
             VmTours = VpTours
         End Set
     End Property
-    Public ReadOnly Property CardsInDeck As List(Of clsPlateauCard)
+    Public ReadOnly Property CardsInDeck As List(Of clsBoardCard)
         Get
             Return VmDeck
         End Get

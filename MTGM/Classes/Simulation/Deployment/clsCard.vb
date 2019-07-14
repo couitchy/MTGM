@@ -6,7 +6,7 @@
     Private VmManasGen As clsManas = Nothing        'Manas générables par la carte
     Private VmTapped As Boolean = False             'Carte engagée ?
     Private VmTagged As Boolean = False             'Carte marquée ? (utilisation interne)
-    Private VmSpeciality As clsSpeciality = Nothing 'Carte destinée à une utilisation spéciale (pour la simulation de déploiement uniquement) ?
+    Private VmSpeciality As clsSpecialty = Nothing  'Carte destinée à une utilisation spéciale (pour la simulation de déploiement uniquement) ?
     Private VmCardText As String
     Private VmSubType As String
     Private VmMyCost As String
@@ -121,11 +121,11 @@
             VmTagged = VpTagged
         End Set
     End Property
-    Public Property Speciality As clsSpeciality
+    Public Property Speciality As clsSpecialty
         Get
             Return VmSpeciality
         End Get
-        Set (VpSpeciality As clsSpeciality)
+        Set (VpSpeciality As clsSpecialty)
             VmSpeciality = VpSpeciality
             VmManasGen = Nothing            'Si la carte a une spécialité, on efface le parsing par défaut qui avait eu lieu précédemment
         End Set

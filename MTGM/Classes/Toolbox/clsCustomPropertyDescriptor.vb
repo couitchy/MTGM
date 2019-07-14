@@ -2,10 +2,10 @@
 ''' <summary>
 ''' Custom PropertyDescriptor
 ''' </summary>
-Public Class CustomPropertyDescriptor
+Public Class clsCustomPropertyDescriptor
     Inherits PropertyDescriptor
-    Private m_Property As CustomProperty
-    Public Sub New(ByRef myProperty As CustomProperty, attrs As Attribute())
+    Private m_Property As clsCustomProperty
+    Public Sub New(ByRef myProperty As clsCustomProperty, attrs As Attribute())
         MyBase.New(myProperty.Name, attrs)
         m_Property = myProperty
     End Sub

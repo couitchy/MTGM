@@ -1,5 +1,5 @@
 ﻿Imports System.ComponentModel
-Public Class clsCaracSerie
+Public Class clsCaracEdition
     Inherits clsCaracOther
     Private VmSerieDate As String
     Public Sub New(VpCaracOther As clsCaracOther)

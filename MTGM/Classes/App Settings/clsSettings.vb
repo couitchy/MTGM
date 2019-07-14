@@ -142,7 +142,7 @@ Public Class clsSettings
             VmBannedSellers = VpBannedSellers
         End Set
     End Property
-    <DisplayName("Base par défaut"), Category("Emplacements des fichiers"), Description("Base de données à ouvrir par défaut"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), UIFilenameEditor.FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
+    <DisplayName("Base par défaut"), Category("Emplacements des fichiers"), Description("Base de données à ouvrir par défaut"), Editor(GetType(ucFilenameEditor), GetType(Drawing.Design.UITypeEditor)), ucFilenameEditor.FileDialogFilter("Fichiers de base de données Microsoft Access (*.mdb)|*.mdb")> _
     Public Property DefaultBase As String
         Get
             Return VmDefaultBase
@@ -245,7 +245,7 @@ Public Class clsSettings
             VmShowAllSeries = VpShowAllSeries
         End Set
     End Property
-    <DisplayName("Base des images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), UIFilenameEditor.FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
+    <DisplayName("Base des images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(ucFilenameEditor), GetType(Drawing.Design.UITypeEditor)), ucFilenameEditor.FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
     Public Property PicturesFile As String
         Get
             Return VmPicturesFile
@@ -254,7 +254,7 @@ Public Class clsSettings
             VmPicturesFile = VpPicturesFile
         End Set
     End Property
-    <DisplayName("Image de fond"), Category("Emplacements des fichiers"), Description("Image de fond à afficher par défaut dans le panneau latéral"), Editor(GetType(UIFilenameEditor), GetType(Drawing.Design.UITypeEditor)), UIFilenameEditor.FileDialogFilter("Images JPEG (*.jpg)|*.jpg")> _
+    <DisplayName("Image de fond"), Category("Emplacements des fichiers"), Description("Image de fond à afficher par défaut dans le panneau latéral"), Editor(GetType(ucFilenameEditor), GetType(Drawing.Design.UITypeEditor)), ucFilenameEditor.FileDialogFilter("Images JPEG (*.jpg)|*.jpg")> _
     Public Property MagicBack As String
         Get
             Return VmMagicBack

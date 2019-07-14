@@ -23,7 +23,7 @@ Public Partial Class frmSimu
     '----------------------------------------------------------------------
     'Charge la liste des cartes possédant une utilisation spéciale associée
     '----------------------------------------------------------------------
-    Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve)
+    Dim VpPartie As New clsSimulGame(VmSource, VmRestrictionSQL + VmRestrictionReserve)
         Me.lstUserCombos.Items.Clear
         VgDBCommand.CommandText = "Select Card From MySpecialUses;"
         VgDBReader = VgDBCommand.ExecuteReader
@@ -36,10 +36,10 @@ Public Partial Class frmSimu
             .Close
         End With
     End Sub
-    Private Sub AddToSequence(VpSequence As clsComboSequence, VpGrid As Grid, VpElementType As clsElement.eElementType)
+    Private Sub AddToSequence(VpSequence As clsComboSequence, VpGrid As Grid, VpElementType As clsItem.eElementType)
         For VpI As Integer = 1 To VpGrid.RowsCount - 1
             For VpJ As Integer = 1 To CInt(VpGrid(VpI, 2).Value)
-                VpSequence.Add(New clsElement(VpElementType, VpGrid(VpI, 0).Tag))
+                VpSequence.Add(New clsItem(VpElementType, VpGrid(VpI, 0).Tag))
             Next VpJ
         Next VpI
     End Sub
@@ -114,8 +114,8 @@ Public Partial Class frmSimu
     '----------------------------------------------------------------------------------------------
     'Estime les probabilités simple et combinée d'apparition des cartes sélectionnées au nième tour
     '----------------------------------------------------------------------------------------------
-    Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)
-    Dim VpEspCumul As New clsEsperance(Me.txtN.Text)
+    Dim VpPartie As New clsSimulGame(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)
+    Dim VpEspCumul As New clsAppearance(Me.txtN.Text)
         Me.prgSimu.Maximum = CInt(Me.txtN.Text)
         Me.prgSimu.Value = 0
         'Simulation des N parties
@@ -156,13 +156,13 @@ Public Partial Class frmSimu
     'Estime l'espérance du nombre de manas disponibles au nième tour
     '---------------------------------------------------------------
     Dim VpVerbose As Boolean = Me.chkVerbosity.Checked
-    Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True, VpVerbose, VmSimuOut)    'Partie en simulation
-    Dim VpEspDeploy As New clsEsperance(Me.txtN2.Text)                                      'Résultats
-    Dim VpEspInvoc As New clsEsperance(Me.txtN2.Text)                                       'Références
-    Dim VpTmpInPlay As New List(Of clsCard)                                                 'Support liste temporaire 1
-    Dim VpTmpInRound As New List(Of clsCard)                                                'Support liste temporaire 2
-    Dim VpSomething As Boolean                                                              'Au moins une action spéciale exécutée
-    Dim VpPrevious As Integer                                                               'Réserve de manas au tour précédent
+    Dim VpPartie As New clsSimulGame(VmSource, VmRestrictionSQL + VmRestrictionReserve, True, VpVerbose, VmSimuOut) 'partie en simulation
+    Dim VpEspDeploy As New clsAppearance(Me.txtN2.Text)                                                             'résultats
+    Dim VpEspInvoc As New clsAppearance(Me.txtN2.Text)                                                              'références
+    Dim VpTmpInPlay As New List(Of clsCard)                                                                         'support liste temporaire 1
+    Dim VpTmpInRound As New List(Of clsCard)                                                                        'support liste temporaire 2
+    Dim VpSomething As Boolean                                                                                      'au moins une action spéciale exécutée
+    Dim VpPrevious As Integer                                                                                       'réserve de manas au tour précédent
         If VpPartie.CardsCount < clsModule.CgNMain Then Exit Sub
         Me.prgSimu2.Maximum = CInt(Me.txtN2.Text)
         Me.prgSimu2.Value = 0
@@ -252,7 +252,7 @@ Public Partial Class frmSimu
             Process.Start(Me.dlgVerbose.FileName)
         End If
     End Sub
-    Private Sub ManualSpec(VpPartie As clsPartie, VpCollection As ICollection, VpAdd As Boolean)
+    Private Sub ManualSpec(VpPartie As clsSimulGame, VpCollection As ICollection, VpAdd As Boolean)
     '--------------------------------------------
     'Gestion de l'attribut d'effet spécial manuel
     '--------------------------------------------
@@ -260,7 +260,7 @@ Public Partial Class frmSimu
             For Each VpSpecial As String In VpCollection
                 If VpCard.CardName = VpSpecial Then
                     If VpAdd Then
-                        VpCard.Speciality = New clsSpeciality(VpSpecial)
+                        VpCard.Speciality = New clsSpecialty(VpSpecial)
                     Else
                         VpCard.Speciality = Nothing
                     End If
@@ -282,7 +282,7 @@ Public Partial Class frmSimu
     '------------------------------------------
     'Essaie d'analyser le thème du jeu en cours
     '------------------------------------------
-    Dim VpPartie As New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)
+    Dim VpPartie As New clsSimulGame(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)
     Dim VpCards As List(Of clsCard)
     Dim VpX() As String
     Dim VpY() As String
@@ -411,7 +411,7 @@ Public Partial Class frmSimu
             .Close
         End With
         'Supprime les cartes déjà présentes dans le jeu
-        For Each VpCard As clsCard In (New clsPartie(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)).GetDistinctCards
+        For Each VpCard As clsCard In (New clsSimulGame(VmSource, VmRestrictionSQL + VmRestrictionReserve, True)).GetDistinctCards
             For Each VpSuggested As clsCorrelation In VpSuggest
                 If VpCard.CardName = VpSuggested.Card1 Then
                     VpAlready.Add(VpSuggested)
@@ -488,17 +488,17 @@ Public Partial Class frmSimu
         If Me.chklstSequencesDispos.SelectedIndex >= 0 Then
             VpSequence = Me.chklstSequencesDispos.SelectedItem
             Call Me.Clear
-            For Each VpElement As clsElement In VpSequence.Elements
+            For Each VpElement As clsItem In VpSequence.Elements
                 Select Case VpElement.ElementType
-                    Case clsElement.eElementType.Card
+                    Case clsItem.eElementType.Card
                         Call Me.IncrementRow(Me.grdCardsDispos, VpElement.ElementValue)
-                    Case clsElement.eElementType.Color
+                    Case clsItem.eElementType.Color
                         Call Me.IncrementRow(Me.grdColorsDispos, VpElement.ElementValue)
-                    Case clsElement.eElementType.Cost
+                    Case clsItem.eElementType.Cost
                         Call Me.IncrementRow(Me.grdCostsDispos, VpElement.ElementValue)
-                    Case clsElement.eElementType.SubType
+                    Case clsItem.eElementType.SubType
                         Call Me.IncrementRow(Me.grdSubTypesDispos, VpElement.ElementValue)
-                    Case clsElement.eElementType.Type
+                    Case clsItem.eElementType.Type
                         Call Me.IncrementRow(Me.grdTypesDispos, VpElement.ElementValue)
                     Case Else
                 End Select
@@ -516,11 +516,11 @@ Public Partial Class frmSimu
     End Sub
     Sub BtAddSequenceClick(sender As Object, e As EventArgs)
     Dim VpSequence As New clsComboSequence
-        Call Me.AddToSequence(VpSequence, Me.grdCardsDispos, clsElement.eElementType.Card)
-        Call Me.AddToSequence(VpSequence, Me.grdTypesDispos, clsElement.eElementType.Type)
-        Call Me.AddToSequence(VpSequence, Me.grdSubTypesDispos, clsElement.eElementType.SubType)
-        Call Me.AddToSequence(VpSequence, Me.grdCostsDispos, clsElement.eElementType.Cost)
-        Call Me.AddToSequence(VpSequence, Me.grdColorsDispos, clsElement.eElementType.Color)
+        Call Me.AddToSequence(VpSequence, Me.grdCardsDispos, clsItem.eElementType.Card)
+        Call Me.AddToSequence(VpSequence, Me.grdTypesDispos, clsItem.eElementType.Type)
+        Call Me.AddToSequence(VpSequence, Me.grdSubTypesDispos, clsItem.eElementType.SubType)
+        Call Me.AddToSequence(VpSequence, Me.grdCostsDispos, clsItem.eElementType.Cost)
+        Call Me.AddToSequence(VpSequence, Me.grdColorsDispos, clsItem.eElementType.Color)
         If VpSequence.Elements.Count > 0 Then
             Me.chklstSequencesDispos.Items.Add(VpSequence, True)
             Call Me.Clear

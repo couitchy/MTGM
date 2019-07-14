@@ -1,4 +1,4 @@
-﻿Public Class clsEsperance
+﻿Public Class clsAppearance
     Private VmEsp As New SortedList
     Private VmOccurences As Integer
     Public Sub New(VpOccurences As String)

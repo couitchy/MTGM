@@ -1,4 +1,4 @@
-﻿Public Class clsSpeciality
+﻿Public Class clsSpecialty
     Private VmEffortID As Integer = -1
     Private VmEffetID As Integer = -1
     Private VmEffort As String = ""

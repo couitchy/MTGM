@@ -1,4 +1,4 @@
-﻿Public Class clsTransfertResult
+﻿Public Class clsTransferResult
     Public Enum EgTransfertType
         Deletion
         Move

@@ -5,7 +5,7 @@ Imports System.ComponentModel
 Imports System.ComponentModel.Design
 Imports System.Windows.Forms
 
-Public Class UIFilenameEditor
+Public Class ucFilenameEditor
     Inherits System.Drawing.Design.UITypeEditor
 
     Public Overloads Overrides Function GetEditStyle(ByVal context As _

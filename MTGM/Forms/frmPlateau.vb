@@ -4,8 +4,8 @@ Public Partial Class frmPlateau
     Private VmSource As String
     Private VmRestriction As String
     Private VmRestrictionTXT As String
-    Private VmPlateauPartie As clsPlateauPartie
-    Private VmPlateau As New clsPlateauDrawings
+    Private VmPlateauPartie As clsBoardGame
+    Private VmPlateau As New clsBoardDrawings
     #End Region
     #Region "Méthodes"
     Public Sub New(VpOwner As MainForm)
@@ -23,7 +23,7 @@ Public Partial Class frmPlateau
         End If
         Call clsModule.ExtractPictures(VpPath.Replace("\\", "\"), VmSource, VmRestriction, True)
         'Nouvelle partie
-        VmPlateauPartie = New clsPlateauPartie(VmSource, VmRestriction)
+        VmPlateauPartie = New clsBoardGame(VmSource, VmRestriction)
         Call VmPlateauPartie.BeginPlateauPartie
     End Sub
     Private Sub ManageReDraw(VpBibli As Boolean, VpGraveyard As Boolean, VpExil As Boolean, VpRegard As Boolean, VpMain As Boolean, VpField As Boolean)
@@ -31,7 +31,7 @@ Public Partial Class frmPlateau
     'Actualisation du plateau de jeu
     '-------------------------------
     Dim VpToRemove As New List(Of PictureBox)
-    Dim VpCard As clsPlateauCard
+    Dim VpCard As clsBoardCard
         If VmPlateauPartie Is Nothing Then Exit Sub
         With VmPlateauPartie
             'Efface les anciennes images (celles à redessiner)
@@ -78,17 +78,17 @@ Public Partial Class frmPlateau
     Private Sub ManageReDraw
         Call Me.ManageReDraw(True, True, True, True, True, True)
     End Sub
-    Private Sub ManageReDraw(VpSource As List(Of clsPlateauCard), VpDestination As List(Of clsPlateauCard))
+    Private Sub ManageReDraw(VpSource As List(Of clsBoardCard), VpDestination As List(Of clsBoardCard))
         With VmPlateauPartie
             Call Me.ManageReDraw(VpSource Is .Bibli Or VpDestination Is .Bibli, VpSource Is .Graveyard Or VpDestination Is .Graveyard, VpSource Is .Exil Or VpDestination Is .Exil, VpSource Is .Regard Or VpDestination Is .Regard, VpSource Is .Main Or VpDestination Is .Main, VpSource Is .Field Or VpDestination Is .Field)
         End With
     End Sub
-    Private Sub ManageReDraw(VpDestination As List(Of clsPlateauCard))
+    Private Sub ManageReDraw(VpDestination As List(Of clsBoardCard))
         With VmPlateauPartie
             Call Me.ManageReDraw(VpDestination Is .Bibli, VpDestination Is .Graveyard, VpDestination Is .Exil, VpDestination Is .Regard, VpDestination Is .Main, VpDestination Is .Field)
         End With
     End Sub
-    Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpIndexH As Integer, VpCount As Integer, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+    Private Sub DrawPicture(VpCard As clsBoardCard, VpUntap As Boolean, VpParent As Control, VpIndexH As Integer, VpCount As Integer, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
     '---------------------------------
     'Dessin d'une carte sur le plateau
     '---------------------------------
@@ -125,7 +125,7 @@ Public Partial Class frmPlateau
             End If
         End If
     End Sub
-    Private Sub EffectiveDraw(VpCard As clsPlateauCard, VpW As Integer, VpW0 As Integer, VpH As Integer, VpIndexH As Integer, VpCount As Integer, VpIndexV As Integer, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+    Private Sub EffectiveDraw(VpCard As clsBoardCard, VpW As Integer, VpW0 As Integer, VpH As Integer, VpIndexH As Integer, VpCount As Integer, VpIndexV As Integer, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
     Dim VpPicture As PictureBox
         VpPicture = New PictureBox
         With VpPicture
@@ -145,36 +145,36 @@ Public Partial Class frmPlateau
         VpParent.Controls.Add(VpPicture)
         VmPlateau.Pictures.Add(VpPicture)       'conserve la référence
     End Sub
-    Private Sub DrawPicture(VpCard As clsPlateauCard, VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+    Private Sub DrawPicture(VpCard As clsBoardCard, VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
         Call Me.DrawPicture(VpCard, VpUntap, VpParent, 0, 1, VpDoubleClickHandler, VpMouseUpHandler)
     End Sub
-    Private Sub DrawPictures(VpCards As List(Of clsPlateauCard), VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
+    Private Sub DrawPictures(VpCards As List(Of clsBoardCard), VpUntap As Boolean, VpParent As Control, VpDoubleClickHandler As EventHandler, VpMouseUpHandler As MouseEventHandler)
     Dim VpCount As Integer = 0
     Dim VpIndex As Integer = 0
         'On est obligé de faire une première passe pour déterminer VpCount
-        For Each VpCard As clsPlateauCard In VpCards
+        For Each VpCard As clsBoardCard In VpCards
             If Not VpCard.IsAttached Then
                 VpCount += 1
             End If
         Next VpCard
-        For Each VpCard As clsPlateauCard In VpCards
+        For Each VpCard As clsBoardCard In VpCards
             If Not VpCard.IsAttached Then
                 Call Me.DrawPicture(VpCard, VpUntap, VpParent, VpIndex, VpCount, VpDoubleClickHandler, VpMouseUpHandler)
                 VpIndex += 1
             End If
         Next VpCard
     End Sub
-    Private Sub SearchIn(VpListe As List(Of clsPlateauCard), VpPosition As Integer)
+    Private Sub SearchIn(VpListe As List(Of clsBoardCard), VpPosition As Integer)
     '-----------------------------------------------------------------------------------------------------------------------------
     'Recherche une carte demandée par l'utilisateur afin de la placer au sommet de la collection (zone) à laquelle elle appartient
     '-----------------------------------------------------------------------------------------------------------------------------
     Dim VpStr As String = InputBox("Rechercher dans la zone (VO ou VF) :", "Recherche", clsModule.CgCard)
     Dim VpFound As Boolean = False
-    Dim VpTmp As clsPlateauCard = Nothing
+    Dim VpTmp As clsBoardCard = Nothing
     Dim VpIndex As Integer
         If VpStr.Trim <> "" Then
             'Cherche dans la zone la carte spécifiée par l'utilisateur
-            For Each VpCard As clsPlateauCard In VpListe
+            For Each VpCard As clsBoardCard In VpListe
                 If VpCard.NameVF.ToLower.Contains(VpStr.ToLower) Or VpCard.NameVO.ToLower.Contains(VpStr.ToLower) Then
                     VpIndex = VpListe.IndexOf(VpCard)
                     VpTmp = VpCard
@@ -192,7 +192,7 @@ Public Partial Class frmPlateau
         End If
     End Sub
     Private Sub UntapAll
-        For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
+        For Each VpCard As clsBoardCard In VmPlateauPartie.Field
             VpCard.Tapped = False
         Next VpCard
         Call Me.ManageReDraw(VmPlateauPartie.Field)
@@ -201,7 +201,7 @@ Public Partial Class frmPlateau
     '------------------------------------------------------------------
     'Gestion de l'orientation de la carte (engagée @ 90°, dégagée @ 0°)
     '------------------------------------------------------------------
-    Dim VpCard As clsPlateauCard = VpPicture.Tag
+    Dim VpCard As clsBoardCard = VpPicture.Tag
         If VpCard.Tapped And Not VpStatic Then
             VpPicture.Image.RotateFlip(RotateFlipType.Rotate90FlipNone)
             VpPicture.Size = New Size(VpPicture.Height, VpPicture.Width)
@@ -244,7 +244,7 @@ Public Partial Class frmPlateau
             'Liste des autres cartes auxquelles on pourrait potentiellement attacher la carte courante
             Me.cmnuAttachTo.DropDownItems.Clear
             If .Attachments.Count = 0 Then                                  'on peut s'attacher à une autre carte que si personne n'est attaché à soi
-                For Each VpCard As clsPlateauCard In VmPlateauPartie.Field
+                For Each VpCard As clsBoardCard In VmPlateauPartie.Field
                     If Not VpCard Is VmPlateau.CurrentCard AndAlso Not VpCard.IsAttached Then   'on ne peut ni s'attacher à soi-même ni à une carte déjà attachée à une autre carte
                         VpDropDown = Me.cmnuAttachTo.DropDownItems.Add(VpCard.NameVF, Nothing, AddressOf CmnuAttachToClick)
                         VpDropDown.Tag = VpCard                                     'conserve la référence de l'hôte potentiel
@@ -275,7 +275,7 @@ Public Partial Class frmPlateau
         Me.Size = New Size(VpScreen.Width, VpScreen.Height / 2)
         Return VpScreen
     End Function
-    Private Function CalcNewPosition(VpMouseLocation As Point, VpDestinationPanel As Panel, VpDestination As List(Of clsPlateauCard)) As Integer
+    Private Function CalcNewPosition(VpMouseLocation As Point, VpDestinationPanel As Panel, VpDestination As List(Of clsBoardCard)) As Integer
     Dim VpPos As Integer
         If VpDestination.Count > 0 And ( VpDestination Is VmPlateauPartie.Regard Or VpDestination Is VmPlateauPartie.Main Or VpDestination Is VmPlateauPartie.Field ) Then
             VpPos = VpDestination.Count
@@ -287,12 +287,12 @@ Public Partial Class frmPlateau
             Return -1
         End If
     End Function
-    Private Sub ManageDrop(VpEventArgs As DragEventArgs, VpDestinationPanel As Panel, VpDestination As List(Of clsPlateauCard))
+    Private Sub ManageDrop(VpEventArgs As DragEventArgs, VpDestinationPanel As Panel, VpDestination As List(Of clsBoardCard))
     '---------------------------------------------
     'Gestion de la fin de l'opération de drag&drop
     '---------------------------------------------
-    Dim VpCard As clsPlateauCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
-    Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
+    Dim VpCard As clsBoardCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
+    Dim VpSource As List(Of clsBoardCard) = VpCard.Owner
         If Me.btReserve.Checked AndAlso VpDestination Is VmPlateauPartie.Regard Then
             Call clsModule.ShowWarning(clsModule.CgErr9)
         Else
@@ -320,7 +320,7 @@ Public Partial Class frmPlateau
     '--------------------------------------------------------------
     'Dessine les éventuels marqueurs présents sur la carte courante
     '--------------------------------------------------------------
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
     Dim VpDiameter As Single
     Dim VpLeftToDraw As Integer
     Dim VpLevel As Integer
@@ -437,7 +437,7 @@ Public Partial Class frmPlateau
     End Sub
     Sub CmnuSendToClick(sender As Object, e As EventArgs)
     Dim VpRedraw As Boolean
-    Dim VpSource As List(Of clsPlateauCard)
+    Dim VpSource As List(Of clsBoardCard)
         With VmPlateau.CurrentCard
             VpSource = .Owner
             Select Case CType(sender, ToolStripMenuItem).Name
@@ -473,7 +473,7 @@ Public Partial Class frmPlateau
         End With
     End Sub
     Sub CmnuAttachToClick(sender As Object, e As EventArgs)
-    Dim VpHost As clsPlateauCard = sender.Tag
+    Dim VpHost As clsBoardCard = sender.Tag
         Call VmPlateau.CurrentCard.AttachTo(VpHost)
         Call Me.ManageReDraw(VmPlateauPartie.Field)
     End Sub
@@ -488,31 +488,31 @@ Public Partial Class frmPlateau
         End With
     End Sub
     Sub BtBibliShuffleClick(sender As Object, e As EventArgs)
-        Call clsPlateauPartie.Shuffle(VmPlateauPartie.Bibli)
+        Call clsBoardGame.Shuffle(VmPlateauPartie.Bibli)
         Call Me.ManageReDraw(VmPlateauPartie.Bibli)
     End Sub
     Sub BtMainShuffleClick(sender As Object, e As EventArgs)
-        Call clsPlateauPartie.Shuffle(VmPlateauPartie.Main)
+        Call clsBoardGame.Shuffle(VmPlateauPartie.Main)
         Call Me.ManageReDraw(VmPlateauPartie.Main)
     End Sub
     Sub BtRegardShuffleClick(sender As Object, e As EventArgs)
-        Call clsPlateauPartie.Shuffle(VmPlateauPartie.Regard)
+        Call clsBoardGame.Shuffle(VmPlateauPartie.Regard)
         Call Me.ManageReDraw(VmPlateauPartie.Regard)
     End Sub
     Sub CardBibliDoubleClick(sender As Object, e As EventArgs)
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
         If VpCard.SendTo(VmPlateauPartie.Main) Then
             Call Me.ManageReDraw(VmPlateauPartie.Bibli, VmPlateauPartie.Main)
         End If
     End Sub
     Sub CardGraveyardDoubleClick(sender As Object, e As EventArgs)
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
         If VpCard.SendTo(VmPlateauPartie.Exil) Then
             Call Me.ManageReDraw(VmPlateauPartie.Graveyard, VmPlateauPartie.Exil)
         End If
     End Sub
     Sub CardExilDoubleClick(sender As Object, e As EventArgs)
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
         If Not Me.btReserve.Checked Then
             If VpCard.SendTo(VmPlateauPartie.Regard) Then
                 Call Me.ManageReDraw(VmPlateauPartie.Exil, VmPlateauPartie.Regard)
@@ -522,15 +522,15 @@ Public Partial Class frmPlateau
         End If
     End Sub
     Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
         If VpCard.SendTo(VmPlateauPartie.Main) Then
             Call Me.ManageReDraw(VmPlateauPartie.Regard, VmPlateauPartie.Main)
         End If
     End Sub
     Sub CardMainDoubleClick(sender As Object, e As EventArgs)
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
     Dim VpRedraw As Boolean
-    Dim VpSource As List(Of clsPlateauCard) = VpCard.Owner
+    Dim VpSource As List(Of clsBoardCard) = VpCard.Owner
         If VpCard.IsAPermanent Then
             VpRedraw = VpCard.SendTo(VmPlateauPartie.Field)
         Else
@@ -541,7 +541,7 @@ Public Partial Class frmPlateau
         End If
     End Sub
     Sub CardFieldDoubleClick(sender As Object, e As EventArgs)
-    Dim VpCard As clsPlateauCard = sender.Tag
+    Dim VpCard As clsBoardCard = sender.Tag
         If VpCard.SendTo(VmPlateauPartie.Graveyard) Then
             Call Me.ManageReDraw(VmPlateauPartie.Field, VmPlateauPartie.Graveyard)
         End If
@@ -566,7 +566,7 @@ Public Partial Class frmPlateau
     End Sub
     Sub CardRegardMouseUp(sender As Object, e As MouseEventArgs)
     Dim VpPicture As PictureBox = sender
-    Dim VpCard As clsPlateauCard = VpPicture.Tag
+    Dim VpCard As clsBoardCard = VpPicture.Tag
         If e.Button = MouseButtons.Left Then
             VpPicture.BringToFront
         Else
@@ -615,7 +615,7 @@ Public Partial Class frmPlateau
     Sub PanelDragOver(sender As Object, e As DragEventArgs)
     Dim VpOrigPicture As PictureBox = e.Data.GetData(GetType(PictureBox))
     Dim VpImg As Image
-        With clsPlateauDrawings.DraggedPicture
+        With clsBoardDrawings.DraggedPicture
             If .Image Is Nothing Then
                 VpImg = VpOrigPicture.Image
                 .Image = New Bitmap(VpImg.Width, VpImg.Height)
@@ -624,7 +624,7 @@ Public Partial Class frmPlateau
                 End Using
                 .Size = VpOrigPicture.Size
             End If
-            sender.Controls.Add(clsPlateauDrawings.DraggedPicture)
+            sender.Controls.Add(clsBoardDrawings.DraggedPicture)
             .Location = sender.PointToClient(New Point(e.X - .Width / 2, e.Y - .Height / 2))
         End With
     End Sub
@@ -670,7 +670,7 @@ Public Partial Class frmPlateau
         Else
             Me.btReserve.Checked = Not Me.btReserve.Checked
             With VmPlateauPartie
-                For Each VpCard As clsPlateauCard In .GetReserve
+                For Each VpCard As clsBoardCard In .GetReserve
                     If Not VpCard.PlayedFromReserve And Me.btReserve.Checked Then
                         VpCard.Hidden = False
                         .Regard.Add(VpCard)
@@ -698,7 +698,7 @@ Public Partial Class frmPlateau
     End Sub
     #End Region
     #Region "Propriétés"
-    Public ReadOnly Property PlateauPartie As clsPlateauPartie
+    Public ReadOnly Property PlateauPartie As clsBoardGame
         Get
             Return VmPlateauPartie
         End Get

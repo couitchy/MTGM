@@ -3,8 +3,8 @@ Public Partial Class frmTransfert
     Private VmOwner As MainForm
     Private VmSource As String
     Private VmSource2 As String
-    Private VmTransfertResult As clsTransfertResult
-    Public Sub New(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertResult As clsTransfertResult)
+    Private VmTransfertResult As clsTransferResult
+    Public Sub New(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertResult As clsTransferResult)
         Call Me.InitializeComponent
         VmCardName = VpCardName
         VmSource = VpSource
@@ -12,7 +12,7 @@ Public Partial Class frmTransfert
         VmOwner = VpOwner
         VmTransfertResult = VpTransfertResult
         Call Me.GetEditionsDispo(Me.cboSerie)
-        If VpTransfertResult.TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+        If VpTransfertResult.TransfertType = clsTransferResult.EgTransfertType.Swap Then
             Call Me.GetEditionsDispo(Me.cboSerie2, True)
             Me.cboSerie2.Text = Me.cboSerie2.Items(0)
             For Each VpEdition As String In Me.cboSerie2.Items
@@ -65,14 +65,14 @@ Public Partial Class frmTransfert
             .Close
         End With
     End Sub
-    Public Shared Function NeedsPrecision(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertType As clsTransfertResult.EgTransfertType, ByRef VpFoil As Boolean) As Boolean
+    Public Shared Function NeedsPrecision(VpOwner As MainForm, VpCardName As String, VpSource As String, VpSource2 As String, VpTransfertType As clsTransferResult.EgTransfertType, ByRef VpFoil As Boolean) As Boolean
     '----------------------------------------------------------------------------------
     'Vérifie si l'opération demandée nécessité des précisions (édition, foil, quantité)
     '----------------------------------------------------------------------------------
     Dim VpSQL As String
     Dim VpRet As Boolean
         'Si on fait un échange d'édition, on a systématiquement besoin d'afficher le formulaire de transfert
-        If VpTransfertType = clsTransfertResult.EgTransfertType.Swap Then
+        If VpTransfertType = clsTransferResult.EgTransfertType.Swap Then
             Return True
         End If
         'Cas 1 : plusieurs éditions disponibles ou bien même édition mais avec foil(s) et non foil(s)
@@ -93,7 +93,7 @@ Public Partial Class frmTransfert
             End If
         End If
         'Si c'est une copie que l'on fait, on n'a pas besoin de savoir combien d'items il y a (ie. pas besoin d'évaluer le cas 2 ci-dessous), cela dépend si l'utilisateur a choisi dans les options de pouvoir régler manuellement le nombre de cartes à copier
-        If VpTransfertType = clsTransfertResult.EgTransfertType.Copy Then
+        If VpTransfertType = clsTransferResult.EgTransfertType.Copy Then
             Return If(VgOptions.VgSettings.CopyRange > 1, True, VpRet)
         End If
         'Cas 2 : Si une seule édition mais plusieurs items
@@ -114,7 +114,7 @@ Public Partial Class frmTransfert
         VgDBCommand.CommandText = VpSQL
         Return VgDBCOmmand.ExecuteScalar
     End Function
-    Public Shared Sub CommitAction(VpTransfertResult As clsTransfertResult)
+    Public Shared Sub CommitAction(VpTransfertResult As clsTransferResult)
     '-----------------------------------------------------------------------------------
     'Modifie les enregistrements de la BDD pour assurer le transfert décrit en paramètre
     '-----------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ Public Partial Class frmTransfert
     Dim VpNItemsAtDest As Integer
         With VpTransfertResult
             'Dans le cas d'un déplacement ou d'une suppression ou d'un swap : suppression à la source
-            If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Deletion Or .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+            If .TransfertType = clsTransferResult.EgTransfertType.Move Or .TransfertType = clsTransferResult.EgTransfertType.Deletion Or .TransfertType = clsTransferResult.EgTransfertType.Swap Then
                 'Nombre d'items déjà présents à la source
                 VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
                 VpNItemsAtSource = VgDBCommand.ExecuteScalar
@@ -136,7 +136,7 @@ Public Partial Class frmTransfert
                 End If
             End If
             'Dans le cas d'un déplacement ou d'une copie ou d'un swap : ajout à destination
-            If .TransfertType = clsTransfertResult.EgTransfertType.Move Or .TransfertType = clsTransfertResult.EgTransfertType.Copy Or .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+            If .TransfertType = clsTransferResult.EgTransfertType.Move Or .TransfertType = clsTransferResult.EgTransfertType.Copy Or .TransfertType = clsTransferResult.EgTransfertType.Swap Then
                 'Nombre d'items déjà présents à la destination
                 VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
                 VpNItemsAtDest = VgDBCommand.ExecuteScalar
@@ -181,7 +181,7 @@ Public Partial Class frmTransfert
         Call Me.ChangeLogo(Me.cboSerie, Me.picSerie, VpEdition, VpFoil)
         Me.chkFoil.Checked = VpFoil
         'Réajuste le nombre de cartes disponibles dans l'édition sélectionnée
-        If VmTransfertResult.TransfertType = clsTransfertResult.EgTransfertType.Copy Then
+        If VmTransfertResult.TransfertType = clsTransferResult.EgTransfertType.Copy Then
             Me.sldQuant.Maximum = VgOptions.VgSettings.CopyRange
         Else
             VpSQL = "Select " + VmSource + ".Items From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where " + If(VmSource = clsModule.CgSDecks, " Reserve = " + VmTransfertResult.ReserveFrom.ToString + " And ", "") + "Card.Title = '" + VmCardName.Replace("'", "''") + "' And Foil = " + VpFoil.ToString + " And Card.Series = '" + VpEdition + "' And "
@@ -217,7 +217,7 @@ Public Partial Class frmTransfert
                     .IDSerieFrom = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
                     .FoilFrom = False
                 End If
-                If .TransfertType = clsTransfertResult.EgTransfertType.Swap Then
+                If .TransfertType = clsTransferResult.EgTransfertType.Swap Then
                     .IDSerieTo = clsModule.GetSerieCodeFromName(Me.cboSerie2.Text)
                     .FoilTo = Me.chkFoil.Checked
                     .ReserveTo = Me.chkReserve.Checked

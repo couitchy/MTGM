@@ -1,5 +1,5 @@
 ﻿Imports System.Globalization
-Public Class clsMAJContenu
+Public Class clsUpdateContent
     Private VmType As EgMAJContenu
     Private VmLocale As String
     Private VmServeur As String
@@ -47,31 +47,31 @@ Public Class clsMAJContenu
     Public ReadOnly Property TypeContenuStr As String
         Get
             Select Case VmType
-                Case clsMAJContenu.EgMAJContenu.NewPrix
+                Case clsUpdateContent.EgMAJContenu.NewPrix
                     Return "Mise à jour des prix"
-                Case clsMAJContenu.EgMAJContenu.NewAut
+                Case clsUpdateContent.EgMAJContenu.NewAut
                     Return "Mise à jour des autorisations tournois"
-                Case clsMAJContenu.EgMAJContenu.NewSimu
+                Case clsUpdateContent.EgMAJContenu.NewSimu
                     Return "Mise à jour des modèles et/ou historiques"
-                Case clsMAJContenu.EgMAJContenu.NewTxtVF
+                Case clsUpdateContent.EgMAJContenu.NewTxtVF
                     Return "Mise à jour des textes des cartes en français"
-                Case clsMAJContenu.EgMAJContenu.NewRulings
+                Case clsUpdateContent.EgMAJContenu.NewRulings
                     Return "Mise à jour des règles spécifiques des cartes"
-                Case clsMAJContenu.EgMAJContenu.PatchPict
+                Case clsUpdateContent.EgMAJContenu.PatchPict
                     Return "Correctif d'images de cartes"
-                Case clsMAJContenu.EgMAJContenu.PatchTrad
+                Case clsUpdateContent.EgMAJContenu.PatchTrad
                     Return "Correctif des libellés de cartes en français"
-                Case clsMAJContenu.EgMAJContenu.PatchSubTypes
+                Case clsUpdateContent.EgMAJContenu.PatchSubTypes
                     Return "Correctif des sous-types de cartes"
-                Case clsMAJContenu.EgMAJContenu.PatchSubTypesVF
+                Case clsUpdateContent.EgMAJContenu.PatchSubTypesVF
                     Return "Correctif des traductions des sous-types"
-                Case clsMAJContenu.EgMAJContenu.PatchMultiverseId
+                Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
                     Return "Mise à jour des identifiants Multiverse"
-                Case clsMAJContenu.EgMAJContenu.NewPict
+                Case clsUpdateContent.EgMAJContenu.NewPict
                     Return "Service pack d'images de cartes"
-                Case clsMAJContenu.EgMAJContenu.NewSerie
+                Case clsUpdateContent.EgMAJContenu.NewSerie
                     Return "Nouvelle édition Magic The Gathering"
-                Case clsMAJContenu.EgMAJContenu.NewTrad
+                Case clsUpdateContent.EgMAJContenu.NewTrad
                     Return "Mise à jour des libellés de cartes en français"
                 Case Else
                     Return ""

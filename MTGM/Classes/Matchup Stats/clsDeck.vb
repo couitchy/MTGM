@@ -8,7 +8,7 @@
         m_NbGames = 0
         m_Favor = 0
     End Sub
-    Public Property Name() As String
+    Public Property Name As String
         Get
             Return m_Name
         End Get
@@ -16,7 +16,7 @@
             m_Name = Value
         End Set
     End Property
-    Public Property NbGamesHisto() As Integer
+    Public Property NbGamesHisto As Integer
         Get
             Return m_NbGamesHisto
         End Get
@@ -24,7 +24,7 @@
             m_NbGamesHisto = Value
         End Set
     End Property
-    Public Property NbGames() As Integer
+    Public Property NbGames As Integer
         Get
             Return m_NbGames
         End Get
@@ -32,7 +32,7 @@
             m_NbGames = Value
         End Set
     End Property
-    Public Property Favor() As Integer
+    Public Property Favor As Integer
         Get
             Return m_Favor
         End Get

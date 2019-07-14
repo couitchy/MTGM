@@ -30,7 +30,7 @@ Imports System.Windows.Forms
 ''' For information about the RichEdit (Unmanaged RichTextBox) ...
 ''' http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/commctls/richedit/richeditcontrols/aboutricheditcontrols.asp
 ''' </remarks>
-Public Class ExRichTextBox
+Public Class ucExRichTextBox
     Inherits System.Windows.Forms.RichTextBox
     #Region "My Enums"
 

@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' Custom property class
 ''' </summary>
-Public Class CustomProperty
+Public Class clsCustomProperty
     Private sName As String = String.Empty
     Private sCategory As String = String.Empty
     Private bReadOnly As Boolean = False

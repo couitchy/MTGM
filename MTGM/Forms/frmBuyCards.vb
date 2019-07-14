@@ -221,7 +221,7 @@ Public Partial Class frmBuyCards
         VpRequest = HttpWebRequest.Create(VpURL)
         VpRequest.Method = "GET"
         VpRequest.Headers.Clear
-        VpRequest.Headers.Add(HttpRequestHeader.Authorization, (New OAuthHeader).GetAuthorizationHeader(VpRequest.Method, VpURL))
+        VpRequest.Headers.Add(HttpRequestHeader.Authorization, (New clsOAuthHeader).GetAuthorizationHeader(VpRequest.Method, VpURL))
         VpWebResponse = VpRequest.GetResponse
         Return VpSerializer.Deserialize(Of tRequest)((New StreamReader(VpWebResponse.GetResponseStream)).ReadToEnd)
     End Function
@@ -512,8 +512,8 @@ Public Partial Class frmBuyCards
                 Me.grdBasket(0, 4) = New Cells.ColumnHeader("Etat")
                 Me.grdBasket(0, 5) = New Cells.ColumnHeader("Quantité")
                 Me.grdBasket(0, 6) = New Cells.ColumnHeader("Prix unitaire")
-                CType(Me.grdBasket(0, 5), Cells.ColumnHeader).Comparer = New clsNumericComparer
-                CType(Me.grdBasket(0, 6), Cells.ColumnHeader).Comparer = New clsNumericComparer
+                CType(Me.grdBasket(0, 5), Cells.ColumnHeader).Comparer = New clsGridNumericComparer
+                CType(Me.grdBasket(0, 6), Cells.ColumnHeader).Comparer = New clsGridNumericComparer
                 'Remplissage offres
                 For VpI As Integer = 0 To VmToSell.Count - 1
                     Application.DoEvents

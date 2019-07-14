@@ -1,4 +1,4 @@
-﻿Public Class clsRepartition
+﻿Public Class clsDistribution
     Private VmNameVF As String
     Private VmDeckCount As Integer
     Private VmSideCount As Integer

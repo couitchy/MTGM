@@ -93,9 +93,9 @@
   <ItemGroup>
     <Compile Include="Classes\App Settings\clsSettings.vb" />
     <Compile Include="Classes\Card Management\clsCaracOther.vb" />
-    <Compile Include="Classes\Card Management\clsCaracSerie.vb" />
+    <Compile Include="Classes\Card Management\clsCaracEdition.vb" />
     <Compile Include="Classes\Card Management\clsTag.vb" />
-    <Compile Include="Classes\Online Buying\OAuthHeader.vb" />
+    <Compile Include="Classes\Online Buying\clsOAuthHeader.vb" />
     <Compile Include="Classes\Matchup Stats\clsDeck.vb" />
     <Compile Include="Classes\Matchup Stats\clsEfficiency.vb" />
     <Compile Include="Classes\Matchup Stats\clsGame.vb" />
@@ -216,8 +216,8 @@
       <DependentUpon>frmOptions.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmOptions.vb" />
-    <Compile Include="User Controls\ExRichTextBox.vb" />
-    <Compile Include="User Controls\UIFilenameEditor.vb" />
+    <Compile Include="User Controls\ucExRichTextBox.vb" />
+    <Compile Include="User Controls\ucFilenameEditor.vb" />
     <EmbeddedResource Include="Forms\frmAbout.resx">
       <DependentUpon>frmAbout.vb</DependentUpon>
     </EmbeddedResource>
@@ -280,14 +280,14 @@
     <Compile Include="Classes\App Settings\clsChildren.vb" />
     <Compile Include="Classes\App Settings\clsGrapherSettings.vb" />
     <Compile Include="Classes\App Settings\clsSessionSettings.vb" />
-    <Compile Include="Classes\Board\clsPlateauCard.vb" />
-    <Compile Include="Classes\Board\clsPlateauDrawings.vb" />
-    <Compile Include="Classes\Board\clsPlateauPartie.vb" />
-    <Compile Include="Classes\Board\clsRepartition.vb" />
-    <Compile Include="Classes\Card Management\clsInfoNode.vb" />
+    <Compile Include="Classes\Board\clsBoardCard.vb" />
+    <Compile Include="Classes\Board\clsBoardDrawings.vb" />
+    <Compile Include="Classes\Board\clsBoardGame.vb" />
+    <Compile Include="Classes\Board\clsDistribution.vb" />
+    <Compile Include="Classes\Card Management\clsNodeInfo.vb" />
     <Compile Include="Classes\Card Management\clsItemRecup.vb" />
     <Compile Include="Classes\Card Management\clsSearch.vb" />
-    <Compile Include="Classes\Card Management\clsTransfertResult.vb" />
+    <Compile Include="Classes\Card Management\clsTransferResult.vb" />
     <Compile Include="Classes\Edition Management\clsEditionHeader.vb" />
     <Compile Include="Classes\Edition Management\clsFullInfos.vb" />
     <Compile Include="Classes\Edition Management\clsMyCard.vb" />
@@ -304,19 +304,19 @@
     <Compile Include="Classes\Online Buying\clsSeller.vb" />
     <Compile Include="Classes\Simulation\Deployment\clsCard.vb" />
     <Compile Include="Classes\Simulation\Deployment\clsManas.vb" />
-    <Compile Include="Classes\Simulation\Deployment\clsPartie.vb" />
-    <Compile Include="Classes\Simulation\Deployment\clsSpeciality.vb" />
+    <Compile Include="Classes\Simulation\Deployment\clsSimulGame.vb" />
+    <Compile Include="Classes\Simulation\Deployment\clsSpecialty.vb" />
     <Compile Include="Classes\Simulation\Probability\clsComboSequence.vb" />
-    <Compile Include="Classes\Simulation\Probability\clsElement.vb" />
-    <Compile Include="Classes\Simulation\Probability\clsEsperance.vb" />
+    <Compile Include="Classes\Simulation\Probability\clsItem.vb" />
+    <Compile Include="Classes\Simulation\Probability\clsAppearance.vb" />
     <Compile Include="Classes\Simulation\Suggestions\clsCorrelation.vb" />
     <Compile Include="Classes\Toolbox\clsDateComparer.vb" />
-    <Compile Include="Classes\Toolbox\clsNumComparer.vb" />
     <Compile Include="Classes\Toolbox\clsNumericComparer.vb" />
-    <Compile Include="Classes\Toolbox\CustomClass.vb" />
-    <Compile Include="Classes\Toolbox\CustomProperty.vb" />
-    <Compile Include="Classes\Toolbox\CustomPropertyDescriptor.vb" />
-    <Compile Include="Classes\Updates\clsMAJContenu.vb" />
+    <Compile Include="Classes\Toolbox\clsGridNumericComparer.vb" />
+    <Compile Include="Classes\Toolbox\clsCustomClass.vb" />
+    <Compile Include="Classes\Toolbox\clsCustomProperty.vb" />
+    <Compile Include="Classes\Toolbox\clsCustomPropertyDescriptor.vb" />
+    <Compile Include="Classes\Updates\clsUpdateContent.vb" />
     <Compile Include="Classes\Updates\clsTxtFR.vb" />
     <Compile Include="Modules\clsModule.vb" />
     <EmbeddedResource Include="Forms\frmSearch.resx">

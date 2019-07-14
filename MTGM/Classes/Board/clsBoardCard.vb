@@ -1,6 +1,6 @@
 ﻿Imports System.IO
-Public Class clsPlateauCard
-    Private VmOwner As List(Of clsPlateauCard)
+Public Class clsBoardCard
+    Private VmOwner As List(Of clsBoardCard)
     Private VmCardName As String
     Private VmTransformedCardName As String
     Private VmCardNameFR As String
@@ -10,12 +10,12 @@ Public Class clsPlateauCard
     Private VmTransformable As Boolean
     Private VmTransformed As Boolean
     Private VmCounters As Integer
-    Private VmAttachedTo As clsPlateauCard
-    Private VmAttachments As New List(Of clsPlateauCard)
+    Private VmAttachedTo As clsBoardCard
+    Private VmAttachments As New List(Of clsBoardCard)
     Private VmMissingImg As Boolean
     Private VmReserve As Boolean
     Private VmReserveInPlay As Boolean
-    Public Sub New(VpOwner As List(Of clsPlateauCard), VpName As String, VpNameFR As String, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String, VpReserve As Boolean)
+    Public Sub New(VpOwner As List(Of clsBoardCard), VpName As String, VpNameFR As String, VpType As String, VpTransformable As Boolean, VpTransformedCardName As String, VpReserve As Boolean)
         VmCardName = VpName
         VmCardNameFR = VpNameFR
         VmCardType = VpType
@@ -24,7 +24,7 @@ Public Class clsPlateauCard
         VmReserve = VpReserve
         Call Me.ReInit(VpOwner)
     End Sub
-    Public Sub ReInit(VpOwner As List(Of clsPlateauCard))
+    Public Sub ReInit(VpOwner As List(Of clsBoardCard))
         VmOwner = VpOwner
         VmTapped = False
         VmTransformed = False
@@ -34,13 +34,13 @@ Public Class clsPlateauCard
         VmAttachedTo = Nothing
         VmAttachments.Clear
     End Sub
-    Public Function SendTo(VpNewOwner As List(Of clsPlateauCard), Optional VpIndex As Integer = -1) As Boolean
+    Public Function SendTo(VpNewOwner As List(Of clsBoardCard), Optional VpIndex As Integer = -1) As Boolean
     '-----------------------
     'Change la carte de zone
     '-----------------------
         If Not VmOwner Is VpNewOwner Then
             'On doit tout d'abord enlever tout ce qui était attaché / ce à quoi on était attaché
-            For Each VpAttachment As clsPlateauCard In VmAttachments
+            For Each VpAttachment As clsBoardCard In VmAttachments
                 Call VpAttachment.AttachTo(Nothing, True)
             Next VpAttachment
             VmAttachments.Clear
@@ -64,7 +64,7 @@ Public Class clsPlateauCard
         End If
         Return False
     End Function
-    Public Sub AttachTo(VpHost As clsPlateauCard, Optional VpHostReadOnly As Boolean = False)
+    Public Sub AttachTo(VpHost As clsBoardCard, Optional VpHostReadOnly As Boolean = False)
     '---------------------------------------------------------------------
     'Attache la carte à une autre (équipement, enchantement, empreinte...)
     '---------------------------------------------------------------------
@@ -81,11 +81,11 @@ Public Class clsPlateauCard
     Public Overrides Function ToString() As String
         Return VmCardNameFR + " (" + VmCardName + ")"
     End Function
-    Public Property Owner As List(Of clsPlateauCard)
+    Public Property Owner As List(Of clsBoardCard)
         Get
             Return VmOwner
         End Get
-        Set (VpOwner As List(Of clsPlateauCard))
+        Set (VpOwner As List(Of clsBoardCard))
             VmOwner = VpOwner
         End Set
     End Property
@@ -193,11 +193,11 @@ Public Class clsPlateauCard
             Return VmAttachedTo IsNot Nothing
         End Get
     End Property
-    Public Property Attachments As List(Of clsPlateauCard)
+    Public Property Attachments As List(Of clsBoardCard)
         Get
             Return VmAttachments
         End Get
-        Set (VpAttachments As List(Of clsPlateauCard))
+        Set (VpAttachments As List(Of clsBoardCard))
             VmAttachments = VpAttachments
         End Set
     End Property

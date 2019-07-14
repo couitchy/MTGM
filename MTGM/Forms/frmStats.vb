@@ -60,7 +60,7 @@ Public Partial Class frmStats
             .Close
         End With
         If Me.cboCriterion.ComboBox.SelectedIndex = 3 Then  'Mana curve (un peu crade à cet endroit)
-            VpValues.Sort(New clsNumComparer)
+            VpValues.Sort(New clsNumericComparer)
         End If
         'Nombre d'items correspondant
         With Me.grdDetails

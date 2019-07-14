@@ -1,5 +1,5 @@
 ﻿Imports System.IO
-Public Class clsPartie
+Public Class clsSimulGame
     Private VmVerbose As Boolean                    'Verbosité
     Private VmSimuOut As StreamWriter               'Sortie de verbosité
     Private VmDeck As New List(Of clsCard)          'Bibliothèque
@@ -98,7 +98,7 @@ Public Class clsPartie
     '-------------------------------------------------------------
     'Renvoie vrai si toutes les cartes spécifiées ont été piochées
     '-------------------------------------------------------------
-        For Each VpItem As clsElement In VpSequence.Elements
+        For Each VpItem As clsItem In VpSequence.Elements
             If Not Me.IsDrawn(VpItem) Then
                 Return False
             End If
@@ -508,22 +508,22 @@ Public Class clsPartie
         Next VpCard
         Return VpPot
     End Function
-    Private Function IsDrawnMatching(VpCard As clsCard, VpElement As clsElement) As Boolean
+    Private Function IsDrawnMatching(VpCard As clsCard, VpElement As clsItem) As Boolean
         Select Case VpElement.ElementType
-            Case clsElement.eElementType.Card
+            Case clsItem.eElementType.Card
                 Return VpCard.CardName = VpElement.ElementValue
-            Case clsElement.eElementType.Type
+            Case clsItem.eElementType.Type
                 Return VpCard.CardType = VpElement.ElementValue
-            Case clsElement.eElementType.SubType
+            Case clsItem.eElementType.SubType
                 Return VpCard.CardSubType = VpElement.ElementValue
-            Case clsElement.eElementType.Cost
+            Case clsItem.eElementType.Cost
                 Return VpCard.CardMyCost = VpElement.ElementValue
-            Case clsElement.eElementType.Color
+            Case clsItem.eElementType.Color
                 Return VpCard.CardColor = VpElement.ElementValue
             Case Else
         End Select
     End Function
-    Private Function IsDrawn(VpElement As clsElement) As Boolean
+    Private Function IsDrawn(VpElement As clsItem) As Boolean
     '-----------------------------------------------
     'Renvoie vrai si l'élément spécifié a été pioché
     '-----------------------------------------------

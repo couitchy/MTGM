@@ -2,14 +2,14 @@ Imports System.ComponentModel
 ''' <summary>
 ''' CustomClass (Which is binding to property grid)
 ''' </summary>
-Public Class CustomClass
+Public Class clsCustomClass
     Inherits CollectionBase
     Implements ICustomTypeDescriptor
     ''' <summary>
     ''' Add CustomProperty to Collectionbase List
     ''' </summary>
     ''' <param name="Value"></param>
-    Public Sub Add(Value As CustomProperty)
+    Public Sub Add(Value As clsCustomProperty)
         MyBase.List.Add(Value)
     End Sub
 
@@ -18,7 +18,7 @@ Public Class CustomClass
     ''' </summary>
     ''' <param name="Name"></param>
     Public Sub Remove(Name As String)
-        For Each prop As CustomProperty In MyBase.List
+        For Each prop As clsCustomProperty In MyBase.List
             If prop.Name = Name Then
                 MyBase.List.Remove(prop)
                 Return
@@ -29,12 +29,12 @@ Public Class CustomClass
     ''' <summary>
     ''' Indexer
     ''' </summary>
-    Public Default Property Item(index As Integer) As CustomProperty
+    Public Default Property Item(index As Integer) As clsCustomProperty
         Get
-            Return DirectCast(MyBase.List(index), CustomProperty)
+            Return DirectCast(MyBase.List(index), clsCustomProperty)
         End Get
         Set
-            MyBase.List(index) = DirectCast(value, CustomProperty)
+            MyBase.List(index) = DirectCast(value, clsCustomProperty)
         End Set
     End Property
 
@@ -108,8 +108,8 @@ Public Class CustomClass
     Public Function GetProperties(attributes As Attribute()) As PropertyDescriptorCollection Implements ICustomTypeDescriptor.GetProperties
         Dim newProps As PropertyDescriptor() = New PropertyDescriptor(Me.Count - 1) {}
         For i As Integer = 0 To Me.Count - 1
-            Dim prop As CustomProperty = DirectCast(Me(i), CustomProperty)
-            newProps(i) = New CustomPropertyDescriptor(prop, attributes)
+            Dim prop As clsCustomProperty = DirectCast(Me(i), clsCustomProperty)
+            newProps(i) = New clsCustomPropertyDescriptor(prop, attributes)
         Next
 
         Return New PropertyDescriptorCollection(newProps)

@@ -1,4 +1,4 @@
-﻿Public Class clsPlateauDrawings
+﻿Public Class clsBoardDrawings
     Private VmPictures As New List(Of PictureBox)
     Private VmCurrentPicture As PictureBox
     Private Shared VmDragMode As Boolean
@@ -18,9 +18,9 @@
         End With
         VmAttrib.SetColorMatrix(VpColorMatrix)
     End Sub
-    Public Function GetRightBorder(VpCard As clsPlateauCard) As Integer
+    Public Function GetRightBorder(VpCard As clsBoardCard) As Integer
         For Each VpPicture As PictureBox In VmPictures
-            If CType(VpPicture.Tag, clsPlateauCard) Is VpCard Then
+            If CType(VpPicture.Tag, clsBoardCard) Is VpCard Then
                 Return VpPicture.Left + VpPicture.Width
             End If
         Next VpPicture
@@ -46,7 +46,7 @@
             VmCurrentPicture = VpCurrentPicture
         End Set
     End Property
-    Public ReadOnly Property CurrentCard As clsPlateauCard
+    Public ReadOnly Property CurrentCard As clsBoardCard
         Get
             Return VmCurrentPicture.Tag
         End Get

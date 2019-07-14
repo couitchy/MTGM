@@ -182,10 +182,10 @@ Partial Class MainForm
         Me.pnlCard3 = New System.Windows.Forms.Panel
         Me.lblPowerTough = New System.Windows.Forms.Label
         Me.picPowerTough = New System.Windows.Forms.PictureBox
-        Me.txtRichCard = New Magic_The_Gathering_Manager.ExRichTextBox
+        Me.txtRichCard = New Magic_The_Gathering_Manager.ucExRichTextBox
         Me.pnlAlternate = New System.Windows.Forms.Panel
         Me.propAlternate = New System.Windows.Forms.PropertyGrid
-        Me.txtRichOther = New Magic_The_Gathering_Manager.ExRichTextBox
+        Me.txtRichOther = New Magic_The_Gathering_Manager.ucExRichTextBox
         Me.grpAutorisations = New System.Windows.Forms.GroupBox
         Me.picAutMulti = New System.Windows.Forms.PictureBox
         Me.picAutT1 = New System.Windows.Forms.PictureBox
@@ -1688,7 +1688,7 @@ Partial Class MainForm
         Me.txtRichCard.BackColor = System.Drawing.Color.White
         Me.txtRichCard.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.txtRichCard.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtRichCard.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
+        Me.txtRichCard.HiglightColor = Magic_The_Gathering_Manager.ucExRichTextBox.eRtfColor.White
         Me.txtRichCard.Location = New System.Drawing.Point(0, 0)
         Me.txtRichCard.Name = "txtRichCard"
         Me.txtRichCard.ReadOnly = true
@@ -1696,7 +1696,7 @@ Partial Class MainForm
         Me.txtRichCard.Size = New System.Drawing.Size(469, 90)
         Me.txtRichCard.TabIndex = 17
         Me.txtRichCard.Text = ""
-        Me.txtRichCard.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
+        Me.txtRichCard.TextColor = Magic_The_Gathering_Manager.ucExRichTextBox.eRtfColor.Black
         '
         'pnlAlternate
         '
@@ -1723,7 +1723,7 @@ Partial Class MainForm
         Me.txtRichOther.BackColor = System.Drawing.Color.White
         Me.txtRichOther.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.txtRichOther.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtRichOther.HiglightColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.White
+        Me.txtRichOther.HiglightColor = Magic_The_Gathering_Manager.ucExRichTextBox.eRtfColor.White
         Me.txtRichOther.Location = New System.Drawing.Point(0, 0)
         Me.txtRichOther.Name = "txtRichOther"
         Me.txtRichOther.ReadOnly = true
@@ -1731,7 +1731,7 @@ Partial Class MainForm
         Me.txtRichOther.Size = New System.Drawing.Size(469, 76)
         Me.txtRichOther.TabIndex = 18
         Me.txtRichOther.Text = ""
-        Me.txtRichOther.TextColor = Magic_The_Gathering_Manager.ExRichTextBox.eRtfColor.Black
+        Me.txtRichOther.TextColor = Magic_The_Gathering_Manager.ucExRichTextBox.eRtfColor.Black
         '
         'grpAutorisations
         '
@@ -2069,8 +2069,8 @@ Partial Class MainForm
     Private btHistPricesFoil As System.Windows.Forms.ToolStripMenuItem
     Private cmnuCbar As System.Windows.Forms.ContextMenuStrip
     Private btSimu As System.Windows.Forms.ToolStripButton
-    Private txtRichCard As Magic_The_Gathering_Manager.ExRichTextBox
-    Private txtRichOther As Magic_The_Gathering_Manager.ExRichTextBox
+    Private txtRichCard As Magic_The_Gathering_Manager.ucExRichTextBox
+    Private txtRichOther As Magic_The_Gathering_Manager.ucExRichTextBox
     Private pnlCard3 As System.Windows.Forms.Panel
     Private lblPowerTough As System.Windows.Forms.Label
     Private picPowerTough As System.Windows.Forms.PictureBox
