@@ -365,6 +365,10 @@ Public Partial Class frmSearch
             sender.Text = "Ae "
             sender.SelectionStart = 3
             VmKeyChange = True
+        ElseIf e.KeyCode = Keys.Back And VpRef.EndsWith("œ") And Not VpRef.Replace("oe", "").Length <= VpRef.Length - 2  Then   'lourdingue mais il y a un bug dans .NET : oe et œ sont des strings considérées identiques pour un EndsWith par exemple alors que la différence de taille est bien prise en compte (1 contre 2)
+            sender.Text = VpRef.Substring(0, VpRef.Length - 1) + "oe "
+            sender.SelectionStart = sender.Text.Length
+            VmKeyChange = True
         End If
     End Sub
     Sub CboFindKeyUp(sender As Object, e As KeyEventArgs)
@@ -372,6 +376,9 @@ Public Partial Class frmSearch
         If VpRef = "ae" And Not VmKeyChange Then
             sender.Text = "Æ"
             sender.SelectionStart = 1
+        ElseIf VpRef.EndsWith("oe") And VpRef.Replace("oe", "").Length <= VpRef.Length - 2 And Not VmKeyChange Then 'lourdingue mais il y a un bug dans .NET : oe et œ sont des strings considérées identiques pour un EndsWith par exemple alors que la différence de taille est bien prise en compte (1 contre 2)
+            sender.Text = VpRef.Substring(0, VpRef.Length - 2) + "œ"
+            sender.SelectionStart = sender.Text.Length
         End If
         VmKeyChange = False
     End Sub

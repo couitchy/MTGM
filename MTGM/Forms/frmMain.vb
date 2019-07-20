@@ -1559,32 +1559,44 @@ Public Partial Class MainForm
     'Chargement des détails du deck sélectionné
     '------------------------------------------
     Dim VpProps As clsCustomClass
-    Dim VpOK As Integer = 0
-    Dim VpMissing As Integer = 0
+    Dim VpOwned As Integer
+    Dim VpRequired As Integer
+    Dim VpOwnedTot As Integer = 0
+    Dim VpRequiredTot As Integer = 0
         'Texte descriptif associé au deck
         Call Me.PutInRichText(Me.txtRichOther, Me.imglstCarac, clsModule.GetDeckDescription(clsModule.GetDeckIdFromName(Me.GetSelectedSource)), "")
         'Création dynamique d'un property grid pour voir si les cartes du deck sont aussi en collection
         VpProps = New clsCustomClass
-        VgDBCommand.CommandText = "Select Card.Title, Sum(IIf(IsNull(MyCollection.Items), 0, MyCollection.Items)), Sum(MyGames.Items) From (Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr) Left Join MyCollection On Card.EncNbr = MyCollection.EncNbr Where MyGames.GameID = " + clsModule.GetDeckIdFromName(VpDeck) + " Group By Card.Title"
+        VgDBCommand.CommandText = "Select TGames.Title, IIf(TCollection.Total Is Null, 0, TCollection.Total), TGames.Total From (Select Card.Title, Sum(MyGames.Items) As Total From Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where MyGames.GameID = " + clsModule.GetDeckIdFromName(VpDeck) + " Group By Card.Title) As TGames Left Join (Select Card.Title, Sum(MyCollection.Items) As Total From Card Inner Join MyCollection On Card.EncNbr = MyCollection.EncNbr Group By Card.Title) As TCollection On TGames.Title = TCollection.Title"
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
+            'Pour chaque carte
             While .Read
-                If CInt(.GetValue(1)) >= CInt(.GetValue(2)) Then
-                    VpOK += CInt(.GetValue(2))
-                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes possédées", CInt(.GetValue(2)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
+                VpOwned = CInt(.GetValue(1))
+                VpRequired = CInt(.GetValue(2))
+                'Cas 1 : on possède tous les exemplaires requis
+                If VpOwned >= VpRequired Then
+                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes possédées", VpRequired.ToString + " / " + VpRequired.ToString, GetType(String), False, True))
+                    VpOwnedTot += VpRequired
+                'Cas 2 : on n'en possède aucun
+                ElseIf VpOwned = 0 Then
+                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes manquantes", "0 / " + VpRequired.ToString, GetType(String), False, True))
+                'Cas 3 : possession partielle
                 Else
-                    VpMissing += CInt(.GetValue(2))
-                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes manquantes", CInt(.GetValue(1)).ToString + " / " + CInt(.GetValue(2)).ToString, GetType(String), False, True))
+                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes possédées", VpOwned.ToString + " / " + VpRequired.ToString, GetType(String), False, True))
+                    VpProps.Add(New clsCustomProperty(.GetString(0), "Cartes manquantes", VpOwned.ToString + " / " + VpRequired.ToString, GetType(String), False, True))
+                    VpOwnedTot += VpOwned
                 End If
+                VpRequiredTot += VpRequired
             End While
             .Close
         End With
         'Synthèse en %
         For Each VpProp As clsCustomProperty In VpProps
             If VpProp.Category = "Cartes possédées" Then
-                VpProp.Category += " (" + Format(100 * VpOK / (VpOK + VpMissing), "0") + " %)"
+                VpProp.Category += " (" + Format(100 * VpOwnedTot / VpRequiredTot, "0") + " %)"
             Else
-                VpProp.Category += " (" + Format(100 * VpMissing / (VpOK + VpMissing), "0") + " %)"
+                VpProp.Category += " (" + Format(100 * (VpRequiredTot - VpOwnedTot) / VpRequiredTot, "0") + " %)"
             End If
         Next VpProp
         Me.propAlternate.PropertySort = PropertySort.CategorizedAlphabetical
@@ -2933,6 +2945,7 @@ Public Partial Class MainForm
             End If
         Else
             Call Me.ClearCarac
+            'Sélection d'un élément de type 'deck'
             If VmDeckMode Then
                 Call Me.LoadCaracDeck(Me.GetSelectedSource)
                 Me.tvwExplore.Focus

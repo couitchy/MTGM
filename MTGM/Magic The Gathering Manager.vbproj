@@ -218,6 +218,7 @@
     <Compile Include="Forms\frmOptions.vb" />
     <Compile Include="User Controls\ucExRichTextBox.vb" />
     <Compile Include="User Controls\ucFilenameEditor.vb" />
+    <Compile Include="User Controls\ucReadOnlyPropertyGrid.vb" />
     <EmbeddedResource Include="Forms\frmAbout.resx">
       <DependentUpon>frmAbout.vb</DependentUpon>
     </EmbeddedResource>

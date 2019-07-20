@@ -184,7 +184,7 @@ Partial Class MainForm
         Me.picPowerTough = New System.Windows.Forms.PictureBox
         Me.txtRichCard = New Magic_The_Gathering_Manager.ucExRichTextBox
         Me.pnlAlternate = New System.Windows.Forms.Panel
-        Me.propAlternate = New System.Windows.Forms.PropertyGrid
+        Me.propAlternate = New ucReadOnlyPropertyGrid
         Me.txtRichOther = New Magic_The_Gathering_Manager.ucExRichTextBox
         Me.grpAutorisations = New System.Windows.Forms.GroupBox
         Me.picAutMulti = New System.Windows.Forms.PictureBox
@@ -2077,7 +2077,7 @@ Partial Class MainForm
     Private splitV3 As System.Windows.Forms.SplitContainer
     Private btHistPrices As TD.SandBar.ButtonItem
     Private btShowAll As TD.SandBar.ButtonItem
-    Private propAlternate As System.Windows.Forms.PropertyGrid
+    Private propAlternate As ucReadOnlyPropertyGrid
     Private pnlAlternate As System.Windows.Forms.Panel
     Private pnlCard1 As System.Windows.Forms.Panel
     Private picCost As System.Windows.Forms.PictureBox
