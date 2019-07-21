@@ -216,7 +216,7 @@ Public Partial Class frmNewEdition
         'Parcours de la checklist
         Do While Not VpFile.EndOfStream
             VpLine = VpFile.ReadLine.Trim
-            VpFLine = VpLine.Replace("  ", " ")
+            VpFLine = VpLine.Replace(vbTab, " ")
             'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
             If VpFLine.Contains(" " + VpCarac(0) + " ") Then
                 VpIndex = VpLine.IndexOf(VpCarac(0))
@@ -232,7 +232,7 @@ Public Partial Class frmNewEdition
             End If
             If VpFound Then
                 'à la recherche du nom de l'auteur, de la couleur et de la rareté de la carte (attention, remplacement des tabulations)
-                VpLine = VpLine.Substring(VpIndex + VpLen).Replace("    ", "  ").Trim
+                VpLine = VpLine.Substring(VpIndex + VpLen).Replace(vbTab, "  ").Trim
                 While VpLine.Contains("  ")
                     VpComplement.Add(VpLine.Substring(0, VpLine.IndexOf("  ")))
                     VpLine = VpLine.Substring(VpLine.IndexOf("  ") + 2)

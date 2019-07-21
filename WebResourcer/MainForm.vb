@@ -1635,6 +1635,10 @@ Public Partial Class MainForm
                 Return "GuildsofRavnicaGuildKits#" + VpStr
             Case "MH"
                 Return "modernhorizons#" + VpStr
+            Case "ST"
+                Return "SignatureSpellbookGideon#" + VpStr
+            Case "M0"
+                Return "magic2020#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -1957,6 +1961,10 @@ Public Partial Class MainForm
                 Return "GK"
             Case "modernhorizons"
                 Return "MH"
+            Case "SignatureSpellbookGideon"
+                Return "ST"
+            Case "magic2020"
+                Return "M0"
             Case Else
                 Return ""
         End Select
