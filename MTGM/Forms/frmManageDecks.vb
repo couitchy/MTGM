@@ -38,9 +38,9 @@ Public Partial Class frmManageDecks
     End Sub
     Private Sub RecurLoadDecks(VpNode As TreeNode, VpParent As String)
     Dim VpCur As TreeNode
-        For Each VpChild As Integer In clsModule.GetChildrenDecksIds(VpParent)
-            VpCur = New TreeNode(clsModule.GetDeckNameFromId(VpChild))
-            VpCur.Tag = New clsNodeInfo(VpChild, clsModule.IsDeckFolder(VpChild))
+        For Each VpChild As Integer In mdlToolbox.GetChildrenDecksIds(VpParent)
+            VpCur = New TreeNode(mdlToolbox.GetDeckNameFromId(VpChild))
+            VpCur.Tag = New clsNodeInfo(VpChild, mdlToolbox.IsDeckFolder(VpChild))
             VpCur.ImageIndex = If(CType(VpCur.Tag, clsNodeInfo).IsFolder, 1, 2)
             VpCur.SelectedImageIndex = VpCur.ImageIndex
             VpNode.Nodes.Add(VpCur)
@@ -162,18 +162,18 @@ Public Partial Class frmManageDecks
     Dim VpParent As TreeNode
     Dim VpNew As TreeNode
         If Me.tvwDecks.SelectedNode Is Nothing Then Exit Sub
-        VpName = InputBox("Entrer le nom de l'élément :", "Nouvel élément", If(VpFolder, clsModule.CgDefaultFolderName, clsModule.CgDefaultDeckName))
+        VpName = InputBox("Entrer le nom de l'élément :", "Nouvel élément", If(VpFolder, mdlConstGlob.CgDefaultFolderName, mdlConstGlob.CgDefaultDeckName))
         If VpName <> "" Then
             If VpName.Length > 50 Then VpName = VpName.Substring(0, 50)
             VpParent = Me.SelectedParent
             If Me.DeckOrFolderExists(VpName, If(VpFolder, VpParent, Me.RootNode), VpFolder) Then
-                Call clsModule.ShowWarning("Un élément portant ce nom existe déjà...")
+                Call mdlToolbox.ShowWarning("Un élément portant ce nom existe déjà...")
             Else
-                VpId = clsModule.GetNewDeckId
+                VpId = mdlToolbox.GetNewDeckId
                 If VpFolder Then
                     VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpName.Replace("'", "''") + "', 0, " + CType(VpParent.Tag, clsNodeInfo).IdString + ", True);"
                 Else
-                    VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpName.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + clsModule.CgDefaultFormat + "', '', " + CType(VpParent.Tag, clsNodeInfo).IdString + ", False);"
+                    VgDBCommand.CommandText = "Insert Into MyGamesID(GameID, GameName, AdvID, GameDate, GameFormat, GameDescription, Parent, IsFolder) Values (" + VpId.ToString + ", '" + VpName.Replace("'", "''") + "', 0, '" + Now.ToShortDateString + "', '" + mdlConstGlob.CgDefaultFormat + "', '', " + CType(VpParent.Tag, clsNodeInfo).IdString + ", False);"
                 End If
                 VgDBCommand.ExecuteNonQuery
                 VpNew = New TreeNode(VpName)
@@ -191,8 +191,8 @@ Public Partial Class frmManageDecks
     '-----------------------------------
     'Gestion de la suppression d'un deck
     '-----------------------------------
-    Dim VpDeckId As Integer = clsModule.GetDeckIdFromName(VpDeckName)
-    Dim VpQuestion As DialogResult = clsModule.ShowQuestion("Le deck " + VpDeckName + " va être supprimé." + vbCrLf + "Souhaitez-vous déplacer les cartes qu'il contenait vers la collection ?", MessageBoxButtons.YesNoCancel)
+    Dim VpDeckId As Integer = mdlToolbox.GetDeckIdFromName(VpDeckName)
+    Dim VpQuestion As DialogResult = mdlToolbox.ShowQuestion("Le deck " + VpDeckName + " va être supprimé." + vbCrLf + "Souhaitez-vous déplacer les cartes qu'il contenait vers la collection ?", MessageBoxButtons.YesNoCancel)
     Dim VpContenu As List(Of clsItemRecup)
     Dim VpO As Object
         If VpQuestion = System.Windows.Forms.DialogResult.Cancel Then Return False
@@ -299,7 +299,7 @@ Public Partial Class frmManageDecks
                 Call Me.RemoveFolder(CType(Me.tvwDecks.SelectedNode.Tag, clsNodeInfo).IdString)
                 VpDeleted = True
             Else
-                Call clsModule.ShowWarning("Ce dossier n'est pas vide...")
+                Call mdlToolbox.ShowWarning("Ce dossier n'est pas vide...")
             End If
         Else
             If Me.RemoveDeck(Me.tvwDecks.SelectedNode.Text) Then
@@ -324,7 +324,7 @@ Public Partial Class frmManageDecks
             VpName = VpName.Replace("'", "''")
             VpOldName = VpOldName.Replace("'", "''")
             If Me.DeckOrFolderExists(VpName, If(VpFolder, Me.tvwDecks.SelectedNode.Parent, Me.RootNode), VpFolder) Then
-                Call clsModule.ShowWarning("Un élément portant ce nom existe déjà...")
+                Call mdlToolbox.ShowWarning("Un élément portant ce nom existe déjà...")
             Else
                 If Not VpFolder Then
                     VgDBCommand.CommandText = "Select * From MyScores Where JeuLocal = '" + VpOldName + "' Or JeuAdverse = '" + VpOldName + "';"
@@ -332,7 +332,7 @@ Public Partial Class frmManageDecks
                     VgDBReader.Read
                     If VgDBReader.HasRows Then
                         VgDBReader.Close
-                        If clsModule.ShowQuestion("Ce deck est lié à des parties saisies dans le comptage Victoires / Défaites." + vbCrlf + "Renommer également le label des parties en question ?") = System.Windows.Forms.DialogResult.Yes Then
+                        If mdlToolbox.ShowQuestion("Ce deck est lié à des parties saisies dans le comptage Victoires / Défaites." + vbCrlf + "Renommer également le label des parties en question ?") = System.Windows.Forms.DialogResult.Yes Then
                             VgDBCommand.CommandText = "Update MyScores Set JeuLocal = '" + VpName + "' Where JeuLocal = '" + VpOldName + "';"
                             VgDBCommand.ExecuteNonQuery
                             VgDBCommand.CommandText = "Update MyScores Set JeuAdverse = '" + VpName + "' Where JeuAdverse = '" + VpOldName + "';"
@@ -416,9 +416,9 @@ Public Partial Class frmManageDecks
     Sub TvwDecksDragOver(sender As Object, e As DragEventArgs)
     Dim VpPoint As Point = Me.tvwDecks.PointToClient(Cursor.Position)
         If VpPoint.Y + 20 > Me.tvwDecks.Height Then
-            Call clsModule.SendMessageA(Me.tvwDecks.Handle, 277, CType(1, IntPtr), IntPtr.Zero)
+            Call mdlToolbox.SendMessageA(Me.tvwDecks.Handle, 277, CType(1, IntPtr), IntPtr.Zero)
         ElseIf VpPoint.Y < 20 Then
-            Call clsModule.SendMessageA(Me.tvwDecks.Handle, 277, CType(0, IntPtr), IntPtr.Zero)
+            Call mdlToolbox.SendMessageA(Me.tvwDecks.Handle, 277, CType(0, IntPtr), IntPtr.Zero)
         End If
     End Sub
     Private ReadOnly Property IsDeckNode As Boolean

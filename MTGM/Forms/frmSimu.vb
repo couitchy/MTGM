@@ -17,7 +17,7 @@ Public Partial Class frmSimu
         VmRestrictionReserve = If(VpOwner.IsInDeckMode, " Reserve = False And ", " ")
         VmRestrictionSQL = VpOwner.Restriction
         VmRestrictionTXT = VpOwner.Restriction(True)
-        Me.Text = clsModule.CgSimus + VmRestrictionTXT
+        Me.Text = mdlConstGlob.CgSimus + VmRestrictionTXT
     End Sub
     Private Sub LoadSpecialUses
     '----------------------------------------------------------------------
@@ -91,12 +91,12 @@ Public Partial Class frmSimu
             VpGrid(0, 1) = New Cells.ColumnHeader("Disponibles")
             VpGrid(0, 2) = New Cells.ColumnHeader("Demandé(s)")
             VpSQL = VpSQL + VmRestrictionSQL
-            VpSQL = clsModule.TrimQuery(VpSQL, , VpGroupBy)
+            VpSQL = mdlToolbox.TrimQuery(VpSQL, , VpGroupBy)
             VgDBCommand.CommandText = VpSQL
             VgDBReader = VgDBCommand.ExecuteReader
             With VgDBReader
                 While .Read
-                    Call Me.InsertRow(VpGrid, clsModule.FormatTitle(VpCategorie, .GetValue(0).ToString, , False), .GetValue(0).ToString, CInt(.GetValue(1)), VpCellModel, VpCellBehavior)
+                    Call Me.InsertRow(VpGrid, mdlToolbox.FormatTitle(VpCategorie, .GetValue(0).ToString, , False), .GetValue(0).ToString, CInt(.GetValue(1)), VpCellModel, VpCellBehavior)
                 End While
                 .Close
             End With
@@ -123,10 +123,10 @@ Public Partial Class frmSimu
             'Mélange le jeu
             Call VpPartie.DeckShuffle
             'Gestion des n tours
-            For VpJ As Integer = 0 To VpPartie.CardsCount - clsModule.CgNMain
+            For VpJ As Integer = 0 To VpPartie.CardsCount - mdlConstGlob.CgNMain
                 'Au premier tour on pioche 7 cartes
                 If VpJ = 0 Then
-                    Call VpPartie.Draw(clsModule.CgNMain)
+                    Call VpPartie.Draw(mdlConstGlob.CgNMain)
                 'Les suivants une seule
                 Else
                     Call VpPartie.Draw
@@ -163,7 +163,7 @@ Public Partial Class frmSimu
     Dim VpTmpInRound As New List(Of clsCard)                                                                        'support liste temporaire 2
     Dim VpSomething As Boolean                                                                                      'au moins une action spéciale exécutée
     Dim VpPrevious As Integer                                                                                       'réserve de manas au tour précédent
-        If VpPartie.CardsCount < clsModule.CgNMain Then Exit Sub
+        If VpPartie.CardsCount < mdlConstGlob.CgNMain Then Exit Sub
         Me.prgSimu2.Maximum = CInt(Me.txtN2.Text)
         Me.prgSimu2.Value = 0
         'Retire la spécification automatique pour les cartes spéciales
@@ -176,13 +176,13 @@ Public Partial Class frmSimu
             'Mélange le jeu
             Call VpPartie.DeckShuffle
             'Gestion des n tours
-            For VpJ As Integer = 0 To VpPartie.CardsCount - clsModule.CgNMain
-                Call clsModule.VerboseSimu(VpVerbose, "Tour " + VpJ.ToString, VmSimuOut)
+            For VpJ As Integer = 0 To VpPartie.CardsCount - mdlConstGlob.CgNMain
+                Call mdlToolbox.VerboseSimu(VpVerbose, "Tour " + VpJ.ToString, VmSimuOut)
                 'Phase de dégagement
                 Call VpPartie.UntapAll
                 'Au premier tour on pioche 7 cartes
                 If VpJ = 0 Then
-                    Call VpPartie.Draw(clsModule.CgNMain)
+                    Call VpPartie.Draw(mdlConstGlob.CgNMain)
                 'Les suivants une seule
                 Else
                     Call VpPartie.Draw
@@ -204,14 +204,14 @@ Public Partial Class frmSimu
                         Call VpPartie.Reserve.AddSubManas(VpCard.ManasInvoc, -1)
                         If VpCard.CardType = "I" Or VpCard.CardType = "N" Or VpCard.CardType = "S" Then
                             VpTmpInRound.Add(VpCard)
-                            Call clsModule.VerboseSimu(VpVerbose, "Sort joué : " + VpCard.CardName, VmSimuOut)
+                            Call mdlToolbox.VerboseSimu(VpVerbose, "Sort joué : " + VpCard.CardName, VmSimuOut)
                         Else
                             'Si la carte arrive en jeu engagée ou est soumise au mal d'invocation
                             If VpCard.IsSpecial AndAlso VpCard.Speciality.InvocTapped Then
                                 VpCard.Tapped = True
-                                Call clsModule.VerboseSimu(VpVerbose, "Carte posée (engagée) : " + VpCard.CardName, VmSimuOut)
+                                Call mdlToolbox.VerboseSimu(VpVerbose, "Carte posée (engagée) : " + VpCard.CardName, VmSimuOut)
                             Else
-                                Call clsModule.VerboseSimu(VpVerbose, "Carte posée : " + VpCard.CardName, VmSimuOut)
+                                Call mdlToolbox.VerboseSimu(VpVerbose, "Carte posée : " + VpCard.CardName, VmSimuOut)
                             End If
                             VpTmpInPlay.Add(VpCard)
                         End If
@@ -231,7 +231,7 @@ Public Partial Class frmSimu
                 '- ce qui a été apporté par les éphémères du tour courant)
                 VpPrevious = VpPartie.Reserve.Potentiel + VpPartie.ManasPotentielIn(VpPartie.CardsInPlay) + VpPartie.ManasPotentielIn(VpPartie.CardsInRound)
                 Call VpEspDeploy.AddForRound(VpJ, VpPrevious)
-                Call clsModule.VerboseSimu(VpVerbose, "Fin du tour, manas disponibles : " + VpPrevious.ToString, VmSimuOut)
+                Call mdlToolbox.VerboseSimu(VpVerbose, "Fin du tour, manas disponibles : " + VpPrevious.ToString, VmSimuOut)
             Next VpJ
             Me.prgSimu2.Value = VpI
             Application.DoEvents
@@ -248,7 +248,7 @@ Public Partial Class frmSimu
         If Me.cboTourDeploy2.Items.Count > 0 Then Me.cboTourDeploy2.SelectedIndex = 0
         'Finalisation verbosité
         If Me.chkVerbosity.Checked Then
-            Call clsModule.VerboseSimu(True, "", VmSimuOut, True)
+            Call mdlToolbox.VerboseSimu(True, "", VmSimuOut, True)
             Process.Start(Me.dlgVerbose.FileName)
         End If
     End Sub
@@ -275,7 +275,7 @@ Public Partial Class frmSimu
     Dim VpSQL As String
         VpSQL = "Select " + VpQuery + " From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title" + VpClause
         VpSQL = VpSQL + VmRestrictionSQL
-        VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
+        VgDBCommand.CommandText = mdlToolbox.TrimQuery(VpSQL)
         Return VgDBCommand.ExecuteScalar
     End Function
     Private Function DetectTheme As Boolean
@@ -290,8 +290,8 @@ Public Partial Class frmSimu
     Dim VpSQL As String
     Dim VpM As Single
     Dim VpV As Single
-        If VpPartie.CardsCount < clsModule.CgNMain Then
-            Call clsModule.ShowWarning("Il faut avoir au moins 2 cartes saisies pour déterminer des suggestions...")
+        If VpPartie.CardsCount < mdlConstGlob.CgNMain Then
+            Call mdlToolbox.ShowWarning("Il faut avoir au moins 2 cartes saisies pour déterminer des suggestions...")
             Return False
         End If
         'Extraction des paramètres primaires du jeu (couleurs, prix moyen, coûts d'invocation, éditions)
@@ -301,7 +301,7 @@ Public Partial Class frmSimu
         Me.txtEditions.Tag = ""
         VpSQL = "Select Card.Series, Spell.Color From (Card Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
         VpSQL = VpSQL + VmRestrictionSQL
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
@@ -309,12 +309,12 @@ Public Partial Class frmSimu
                 ' - couleurs
                 If Not Me.txtColors.Tag.Contains(.GetValue(1).ToString) Then
                     Me.txtColors.Tag = Me.txtColors.Tag + .GetValue(1).ToString + ";"
-                    Me.txtColors.Text = Me.txtColors.Text + clsModule.FormatTitle("Spell.Color", .GetValue(1)) + ";"
+                    Me.txtColors.Text = Me.txtColors.Text + mdlToolbox.FormatTitle("Spell.Color", .GetValue(1)) + ";"
                 End If
                 ' - éditions
                 If Not Me.txtEditions.Tag.Contains(.GetValue(0).ToString) Then
                     Me.txtEditions.Tag = Me.txtEditions.Tag + .GetValue(0).ToString + ";"
-                    Me.txtEditions.Text = Me.txtEditions.Text + clsModule.FormatTitle("Card.Series", .GetValue(0)) + ";"
+                    Me.txtEditions.Text = Me.txtEditions.Text + mdlToolbox.FormatTitle("Card.Series", .GetValue(0)) + ";"
                 End If
             End While
             .Close
@@ -388,7 +388,7 @@ Public Partial Class frmSimu
         If Me.chkInvoc.Checked Then
             VpSQL = VpSQL + "((Spell.myCost > " + (Val(Me.txtInvoc.Text) - CSng(Me.txtInvoc.Tag)).ToString.Replace(",", ".") + " And Spell.myCost < " + (Val(Me.txtInvoc.Text) + CSng(Me.txtInvoc.Tag)).ToString.Replace(",", ".") + ") Or Spell.myCost = 0) And "
         End If
-        VpSQL = clsModule.TrimQuery(VpSQL, False)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL, False)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         VpCorrCoeff = clsCorrelation.GetMean(VpS)
@@ -398,7 +398,7 @@ Public Partial Class frmSimu
                 For Each VpCorr As clsCorrelation In VpS
                     VpN = VpCorr.Seq.Split(" ").Length
                     'Si la séquence commune entre la carte courante et la séquence courante vaut la taille de cette dernière (à 1 près), on conserve cette carte
-                    If CSng(VpN) > VpCorrCoeff * (Me.sldPertin.Value / clsModule.CgPertinCoeff) Then
+                    If CSng(VpN) > VpCorrCoeff * (Me.sldPertin.Value / mdlConstGlob.CgPertinCoeff) Then
                         VpSeq = clsCorrelation.LongestSequence(VpX, VpCorr.Seq.Split(" "))
                         If VpN - VpSeq.Split(" ").Length <= 1 Then
                             If Not clsCorrelation.MyContains(VpSuggest, .GetString(0)) Then
@@ -422,12 +422,12 @@ Public Partial Class frmSimu
             VpSuggest.Remove(VpToRemove)
         Next VpToRemove
         'Affichage dans le treeview
-        Call clsModule.ShowInformation(VpSuggest.Count.ToString + " occurence(s) trouvée(s).")
+        Call mdlToolbox.ShowInformation(VpSuggest.Count.ToString + " occurence(s) trouvée(s).")
         With MainForm.VgMe
             .Suggestions = VpSuggest
             .mnuDispAdvSearch.Enabled = True
             Call .ManageDispMenu(.mnuDispAdvSearch.Text, False)
-            Call .LoadTvw("(" + VpSQL + ") As " + clsModule.CgSFromSearch)
+            Call .LoadTvw("(" + VpSQL + ") As " + mdlConstGlob.CgSFromSearch)
         End With
     End Sub
     Private Sub GestVisible(Optional VpCombos As Boolean = False, Optional VpDeploy As Boolean = False, Optional VpSuggest As Boolean = False)
@@ -481,7 +481,7 @@ Public Partial Class frmSimu
         End If
     End Sub
     Sub CellMouseClick(sender As Object, e As PositionEventArgs)
-        Call clsModule.LoadScanCard(e.Cell.GetValue(e.Position), 0, Me.picScanCard2)
+        Call mdlToolbox.LoadScanCard(e.Cell.GetValue(e.Position), 0, Me.picScanCard2)
     End Sub
     Sub ChklstSequencesDisposSelectedIndexChanged(sender As Object, e As EventArgs)
     Dim VpSequence As clsComboSequence
@@ -525,7 +525,7 @@ Public Partial Class frmSimu
             Me.chklstSequencesDispos.Items.Add(VpSequence, True)
             Call Me.Clear
         Else
-            Call clsModule.ShowWarning("Une séquence doit contenir au moins une carte.")
+            Call mdlToolbox.ShowWarning("Une séquence doit contenir au moins une carte.")
         End If
     End Sub
     Sub BtCombosActivate(ByVal sender As Object, ByVal e As EventArgs)
@@ -545,7 +545,7 @@ Public Partial Class frmSimu
         If Me.chklstSequencesDispos.CheckedItems.Count > 0 Then
             Call Me.CombosSimu
         Else
-            Call clsModule.ShowWarning("Créer au moins une séquence avant de lancer le calcul.")
+            Call mdlToolbox.ShowWarning("Créer au moins une séquence avant de lancer le calcul.")
         End If
     End Sub
     Sub CboTourCumulSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
@@ -575,16 +575,16 @@ Public Partial Class frmSimu
     Sub BtAddPlotClick(sender As Object, e As EventArgs)
     Dim VpEspCumul As SortedList = Me.cboTourCumul.Tag
         VmGraphCount = VmGraphCount + 1
-        VmGrapher.AddNewPlot(VpEspCumul, "(" + VmGraphCount.ToString + ") " + clsModule.CgSimus3 + VmRestrictionTXT)
+        VmGrapher.AddNewPlot(VpEspCumul, "(" + VmGraphCount.ToString + ") " + mdlConstGlob.CgSimus3 + VmRestrictionTXT)
         VmGrapher.Show
         VmGrapher.BringToFront
     End Sub
     Sub CmdAddPlot2Click(sender As Object, e As EventArgs)
     Dim VpEspDeploy As SortedList = Me.cboTourDeploy.Tag
     Dim VpEspInvoc As SortedList = Me.cboTourDeploy2.Tag
-        VmGrapher.AddNewPlot(VpEspDeploy, clsModule.CgSimus4 + VmRestrictionTXT)
+        VmGrapher.AddNewPlot(VpEspDeploy, mdlConstGlob.CgSimus4 + VmRestrictionTXT)
         If Me.chkDefaut.Checked Then
-            VmGrapher.AddNewPlot(VpEspInvoc, clsModule.CgSimus5 + VmRestrictionTXT)
+            VmGrapher.AddNewPlot(VpEspInvoc, mdlConstGlob.CgSimus5 + VmRestrictionTXT)
         End If
         VmGrapher.Show
         VmGrapher.BringToFront

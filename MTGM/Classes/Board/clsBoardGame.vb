@@ -16,14 +16,14 @@
     '-------------------
     Dim VpSQL As String
     Dim VpReserve As Boolean = False
-        VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type, Card.SpecialDoubleCard" + If(VpSource = clsModule.CgSDecks, ", Reserve", "") + " From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
+        VpSQL = "Select Card.Title, " + VpSource + ".Items, CardFR.TitleFR, Card.Type, Card.SpecialDoubleCard" + If(VpSource = mdlConstGlob.CgSDecks, ", Reserve", "") + " From (Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where "
         VpSQL = VpSQL + VpRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
             While .Read
-                If VpSource = clsModule.CgSDecks Then
+                If VpSource = mdlConstGlob.CgSDecks Then
                     VpReserve = .GetBoolean(5)
                 End If
                 'Carte normale
@@ -31,7 +31,7 @@
                     Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), False, .GetString(0), VpReserve)
                 'Carte transformable
                 Else
-                    Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, clsModule.GetTransformedName(.GetString(0)), VpReserve)
+                    Call Me.AddCard(.GetString(0), .GetString(2), .GetInt32(1), .GetString(3), True, mdlToolbox.GetTransformedName(.GetString(0)), VpReserve)
                 End If
             End While
             .Close
@@ -64,13 +64,13 @@
             End If
         Next VpCard
         Call Shuffle(VmBibli)
-        VmMain.AddRange(VmBibli.GetRange(0, clsModule.CgNMain - VmMulligan))
-        VmBibli.RemoveRange(0, clsModule.CgNMain - VmMulligan)
+        VmMain.AddRange(VmBibli.GetRange(0, mdlConstGlob.CgNMain - VmMulligan))
+        VmBibli.RemoveRange(0, mdlConstGlob.CgNMain - VmMulligan)
         For Each VpCard As clsBoardCard In VmMain
             VpCard.Hidden = False
             VpCard.Owner = VmMain
         Next VpCard
-        VmLives = clsModule.CgNLives
+        VmLives = mdlConstGlob.CgNLives
         VmPoisons = 0
         VmTours = 0
     End Sub
@@ -95,7 +95,7 @@
     Dim VpShuffled As New List(Of clsBoardCard)(VpListe.Count)
         'Génère un tableau trié de nombres aléatoires
         For VpI = 0 To VpListe.Count - 1
-            VpRandomPos.Add(clsModule.VgRandom.NextDouble, VpI)
+            VpRandomPos.Add(mdlConstGlob.VgRandom.NextDouble, VpI)
         Next VpI
         'Réordonne les cartes en conséquence
         VpI = 0

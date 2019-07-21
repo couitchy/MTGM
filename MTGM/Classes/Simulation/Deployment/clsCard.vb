@@ -26,14 +26,14 @@
             If VpType = "P" Then Exit Sub
             VpCardText = VpCardText.ToLower.Replace(vbCrLf, " ").Replace(".", "")
             'Carte parsable
-            If VpCardText.Contains(clsModule.CgManaParsing(0)) Then
-                VpGCost = VpCardText.Substring(0, VpCardText.IndexOf(clsModule.CgManaParsing(0)) - 1)
+            If VpCardText.Contains(mdlConstGlob.CgManaParsing(0)) Then
+                VpGCost = VpCardText.Substring(0, VpCardText.IndexOf(mdlConstGlob.CgManaParsing(0)) - 1)
                 'Carte dont le mana générable dépend d'autres paramètres non contrôlables (dans ce cas on devrait plutôt se trouver dans la situation de myspecialuses)
-                If VpGCost.EndsWith(clsModule.CgManaParsing(1)) Then
+                If VpGCost.EndsWith(mdlConstGlob.CgManaParsing(1)) Then
                     'On affecte un mana incolore par défaut
                     VpGCost = "A"
                 Else
-                    VpGCost = VpGCost.Substring(VpGCost.LastIndexOf(clsModule.CgManaParsing(1)) + clsModule.CgManaParsing(1).Length + 1)
+                    VpGCost = VpGCost.Substring(VpGCost.LastIndexOf(mdlConstGlob.CgManaParsing(1)) + mdlConstGlob.CgManaParsing(1).Length + 1)
                 End If
                 VmManasGen = New clsManas(VpGCost)
             'Terrain sans texte explicite

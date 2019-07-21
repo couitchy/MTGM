@@ -9,7 +9,7 @@ Public Partial Class frmBoard
     #End Region
     #Region "Méthodes"
     Public Sub New(VpOwner As MainForm)
-    Dim VpPath As String = Path.GetTempPath + clsModule.CgTemp
+    Dim VpPath As String = Path.GetTempPath + mdlConstGlob.CgTemp
         Call Me.InitializeComponent
         VmSource = VpOwner.MySource
         VmRestriction = VpOwner.Restriction
@@ -21,7 +21,7 @@ Public Partial Class frmBoard
         If Not Directory.Exists(VpPath) Then
             Directory.CreateDirectory(VpPath)
         End If
-        Call clsModule.ExtractPictures(VpPath.Replace("\\", "\"), VmSource, VmRestriction, True)
+        Call mdlToolbox.ExtractPictures(VpPath.Replace("\\", "\"), VmSource, VmRestriction, True)
         'Nouvelle partie
         VmPlateauPartie = New clsBoardGame(VmSource, VmRestriction)
         Call VmPlateauPartie.BeginPlateauPartie
@@ -168,7 +168,7 @@ Public Partial Class frmBoard
     '-----------------------------------------------------------------------------------------------------------------------------
     'Recherche une carte demandée par l'utilisateur afin de la placer au sommet de la collection (zone) à laquelle elle appartient
     '-----------------------------------------------------------------------------------------------------------------------------
-    Dim VpStr As String = InputBox("Rechercher dans la zone (VO ou VF) :", "Recherche", clsModule.CgCard)
+    Dim VpStr As String = InputBox("Rechercher dans la zone (VO ou VF) :", "Recherche", mdlConstGlob.CgCard)
     Dim VpFound As Boolean = False
     Dim VpTmp As clsBoardCard = Nothing
     Dim VpIndex As Integer
@@ -187,7 +187,7 @@ Public Partial Class frmBoard
                 VpListe.Item(VpIndex) = VpListe.Item(VpPosition)
                 VpListe.Item(VpPosition) = VpTmp
                 Call Me.ManageReDraw(VpListe)
-                Call clsModule.ShowInformation(VpTmp.ToString + " a été placé(e) sur le dessus de la zone.")
+                Call mdlToolbox.ShowInformation(VpTmp.ToString + " a été placé(e) sur le dessus de la zone.")
             End If
         End If
     End Sub
@@ -294,7 +294,7 @@ Public Partial Class frmBoard
     Dim VpCard As clsBoardCard = VpEventArgs.Data.GetData(GetType(PictureBox)).Tag
     Dim VpSource As List(Of clsBoardCard) = VpCard.Owner
         If Me.btReserve.Checked AndAlso VpDestination Is VmPlateauPartie.Regard Then
-            Call clsModule.ShowWarning(clsModule.CgErr9)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr9)
         Else
             If VpCard.SendTo(VpDestination, Me.CalcNewPosition(New Point(VpEventArgs.X, VpEventArgs.Y), VpDestinationPanel, VpDestination)) Then
                 Call Me.ManageReDraw(VpSource, VpDestination)
@@ -329,7 +329,7 @@ Public Partial Class frmBoard
     Dim VpY As Single
         'Gestion d'éventuels marqueurs sur la carte
         If VpCard.Counters > 0 Then
-            VpDiameter = clsModule.CgCounterDiametr_px * Math.Max(sender.Width, sender.Height) / clsModule.CgMTGCardHeight_px
+            VpDiameter = mdlConstGlob.CgCounterDiametr_px * Math.Max(sender.Width, sender.Height) / mdlConstGlob.CgMTGCardHeight_px
             VpLeftToDraw = VpCard.Counters
             VpLevel = 0
             VpItem = 0
@@ -356,7 +356,7 @@ Public Partial Class frmBoard
     End Sub
     Sub FrmPlateauLoad(sender As Object, e As EventArgs)
         Call Me.ManageResize
-        Me.Text = clsModule.CgPlateau + VmRestrictionTXT
+        Me.Text = mdlConstGlob.CgPlateau + VmRestrictionTXT
         VmPlateau.DragMode = False
     End Sub
     Sub FrmPlateauResizeEnd(sender As Object, e As EventArgs)
@@ -374,7 +374,7 @@ Public Partial Class frmBoard
         Me.btLives.Text = "Vies"
         Me.btPoisons.Text = "Poisons"
         Me.btTurns.Text = "Tours"
-        VmPlateauPartie.Mulligan = Math.Min(VmPlateauPartie.Mulligan + 1, clsModule.CgNMain - 1)
+        VmPlateauPartie.Mulligan = Math.Min(VmPlateauPartie.Mulligan + 1, mdlConstGlob.CgNMain - 1)
         Me.btReserve.Checked = False
         Call VmPlateauPartie.BeginPlateauPartie
         Call Me.ManageReDraw
@@ -463,7 +463,7 @@ Public Partial Class frmBoard
                     If Not Me.btReserve.Checked Then
                         VpRedraw = .SendTo(VmPlateauPartie.Regard)
                     Else
-                        Call clsModule.ShowWarning(clsModule.CgErr9)
+                        Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr9)
                     End If
                 Case Else
             End Select
@@ -518,7 +518,7 @@ Public Partial Class frmBoard
                 Call Me.ManageReDraw(VmPlateauPartie.Exil, VmPlateauPartie.Regard)
             End If
         Else
-            Call clsModule.ShowWarning(clsModule.CgErr9)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr9)
         End If
     End Sub
     Sub CardRegardDoubleClick(sender As Object, e As EventArgs)
@@ -666,7 +666,7 @@ Public Partial Class frmBoard
     End Sub
     Sub BtReserveClick(sender As Object, e As EventArgs)
         If Not Me.btReserve.Checked AndAlso VmPlateauPartie.Regard.Count > 0 Then
-            Call clsModule.ShowWarning(clsModule.CgErr10)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr10)
         Else
             Me.btReserve.Checked = Not Me.btReserve.Checked
             With VmPlateauPartie
@@ -684,17 +684,17 @@ Public Partial Class frmBoard
     End Sub
     Sub BtReserveSwapClick(sender As Object, e As EventArgs)
     Dim VpReserveManager As frmSide
-        If clsModule.ShowQuestion("Cette opération va interrompre la partie en cours..." + vbCrLf + "Continuer ?") = System.Windows.Forms.DialogResult.Yes Then
+        If mdlToolbox.ShowQuestion("Cette opération va interrompre la partie en cours..." + vbCrLf + "Continuer ?") = System.Windows.Forms.DialogResult.Yes Then
             VpReserveManager = New frmSide(Me)
             VpReserveManager.ShowDialog
             Call Me.NewPartie
         End If
     End Sub
     Sub BtDeClick(sender As Object, e As EventArgs)
-        Call clsModule.ShowInformation("Le lancer de dé a donné : " + clsModule.VgRandom.Next(1, 7).ToString)
+        Call mdlToolbox.ShowInformation("Le lancer de dé a donné : " + mdlConstGlob.VgRandom.Next(1, 7).ToString)
     End Sub
     Sub BtPieceClick(sender As Object, e As EventArgs)
-        Call clsModule.ShowInformation("Le lancer de pièce a donné : " + If(clsModule.VgRandom.Next(1, 3) = 1, "pile", "face"))
+        Call mdlToolbox.ShowInformation("Le lancer de pièce a donné : " + If(mdlConstGlob.VgRandom.Next(1, 3) = 1, "pile", "face"))
     End Sub
     #End Region
     #Region "Propriétés"

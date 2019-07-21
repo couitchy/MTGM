@@ -10,12 +10,12 @@ Public Partial Class frmStats
         Call Me.InitializeComponent
         VmSource = VpOwner.MySource
         VmRestriction = VpOwner.Restriction
-        If VmSource = clsModule.CgSDecks Then
+        If VmSource = mdlConstGlob.CgSDecks Then
             VmRestriction += "Reserve = False"
             Me.lblTotPrice.Text = "Prix total (avec réserve)"
         End If
         VmOwner = VpOwner
-        Me.Text = clsModule.CgStats + VpOwner.Restriction(True)
+        Me.Text = mdlConstGlob.CgStats + VpOwner.Restriction(True)
         AddHandler Me.cboCriterion.ComboBox.SelectedIndexChanged, AddressOf CboCriterionSelectedIndexChanged
     End Sub
     Private Function GetCardName(VpCard As String) As String
@@ -23,7 +23,7 @@ Public Partial Class frmStats
     'Si l'utilisateur a choisi l'affichage des cartes en français, effectue la traduction
     '------------------------------------------------------------------------------------
         If MainForm.VgMe.IsInVFMode Then
-            Return clsModule.GetNameVF(VpCard)
+            Return mdlToolbox.GetNameVF(VpCard)
         Else
             Return VpCard
         End If
@@ -48,9 +48,9 @@ Public Partial Class frmStats
             Me.grdDetails(0, 1) = New Cells.ColumnHeader("Quantité")
         End With
         'Récupération des valeurs possibles
-        VpSQL = "Select Distinct " + clsModule.CgCriteres.Item(Me.cboCriterion.ControlText) + " From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
+        VpSQL = "Select Distinct " + mdlConstGlob.CgCriteres.Item(Me.cboCriterion.ControlText) + " From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBcommand.ExecuteReader
         With VgDBReader
@@ -68,14 +68,14 @@ Public Partial Class frmStats
                 Select Case Me.cboCriterion.ComboBox.SelectedIndex
                     'Requête numérique
                     Case 3, 5
-                        VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.CgCriteres.Item(Me.cboCriterion.ControlText) + " = " + VpValue.Replace(",", ".") + " And " + VmRestriction
+                        VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + mdlConstGlob.CgCriteres.Item(Me.cboCriterion.ControlText) + " = " + VpValue.Replace(",", ".") + " And " + VmRestriction
                     Case Else
-                        VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + clsModule.CgCriteres.Item(Me.cboCriterion.ControlText) + " = '" + VpValue + "' And " + VmRestriction
+                        VpSQL = "Select Sum(" + VmSource + ".Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title Where " + mdlConstGlob.CgCriteres.Item(Me.cboCriterion.ControlText) + " = '" + VpValue + "' And " + VmRestriction
                 End Select
-                VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
+                VgDBCommand.CommandText = mdlToolbox.TrimQuery(VpSQL)
                 .Rows.Insert(.RowsCount)
                 Me.grdDetails(.RowsCount - 1, 1) = New Cells.Cell(VgDBCommand.ExecuteScalar)
-                Me.grdDetails(.RowsCount - 1, 0) = New Cells.Cell(clsModule.FormatTitle(clsModule.CgCriteres.Item(Me.cboCriterion.ControlText), VpValue, , False))
+                Me.grdDetails(.RowsCount - 1, 0) = New Cells.Cell(mdlToolbox.FormatTitle(mdlConstGlob.CgCriteres.Item(Me.cboCriterion.ControlText), VpValue, , False))
             Next VpValue
             .AutoSize
         End With
@@ -192,7 +192,7 @@ Public Partial Class frmStats
     Dim VpControl1Item As New List(Of String)
         VpSQL = "Select " + VpTournoiType + ", T1r, Items, Card.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
@@ -225,7 +225,7 @@ Public Partial Class frmStats
         'Cas général
         VpSQL = "Select Card.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where " + VpTournoiType + " = False And "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
@@ -240,7 +240,7 @@ Public Partial Class frmStats
         If VpTournoiType = "T1" Then
             VpSQL = "Select Card.Title, Sum(Items) From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Autorisations On Card.Title = Autorisations.Title Where T1r = True And "
             VpSQL = VpSQL + VmRestriction
-            VpSQL = clsModule.TrimQuery(VpSQL, , " Group By Card.Title")
+            VpSQL = mdlToolbox.TrimQuery(VpSQL, , " Group By Card.Title")
             VgDBCommand.CommandText = VpSQL
             VgDBReader = VgDBCommand.ExecuteReader
             With VgDBReader
@@ -266,7 +266,7 @@ Public Partial Class frmStats
         'VpSQL = "Select PriceDate, Sum(Price * Items) From (SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr Where "
         VpSQL = "Select PriceDate, Sum(Price * Items) From (SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate, DatesToUse.Foil FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate, PricesHistory.Foil FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate, PricesHistory.Foil) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST) AND (PricesHistory.Foil = DatesToUse.Foil)) As GlobalHisto Inner Join " + VmSource + " On (" + VmSource + ".EncNbr = GlobalHisto.EncNbr) And (" + VmSource + ".Foil = GlobalHisto.Foil) Where "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL, , " Group By PriceDate")
+        VpSQL = mdlToolbox.TrimQuery(VpSQL, , " Group By PriceDate")
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
@@ -285,14 +285,14 @@ Public Partial Class frmStats
     Dim VpSQL As String
     Dim VpLastTitle As String = ""
     Dim VpTitle As String
-        If clsModule.HasPriceHistory Then
+        If mdlToolbox.HasPriceHistory Then
             'VpSQL = "Select Card.Title, Card.Series, GlobalHisto.PriceDate, GlobalHisto.Price From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST)) As GlobalHisto Inner Join " + VmSource + " On " + VmSource + ".EncNbr = GlobalHisto.EncNbr) Inner Join Card On Card.EncNbr = " + VmSource + ".EncNbr Where "
             VpSQL = "Select Card.Title, Card.Series, GlobalHisto.PriceDate, GlobalHisto.Price, " + VmSource + ".Foil From ((SELECT PricesHistory.EncNbr, PricesHistory.Price, DatesToUse.PriceDate, DatesToUse.Foil FROM PricesHistory INNER JOIN (SELECT PricesHistory.EncNbr, Max(PricesHistory.PriceDate) AS DLAST, AllDates.PriceDate, PricesHistory.Foil FROM PricesHistory, (SELECT Distinct PricesHistory.PriceDate FROM PricesHistory) As AllDates WHERE (((PricesHistory.PriceDate)<=[AllDates].[PriceDate])) GROUP BY PricesHistory.EncNbr, AllDates.PriceDate, PricesHistory.Foil) AS DatesToUse ON (PricesHistory.EncNbr = DatesToUse.EncNbr) AND (PricesHistory.PriceDate = DatesToUse.DLAST) AND (PricesHistory.Foil = DatesToUse.Foil)) As GlobalHisto Inner Join " + VmSource + " On (" + VmSource + ".EncNbr = GlobalHisto.EncNbr) And (" + VmSource + ".Foil = GlobalHisto.Foil)) Inner Join Card On Card.EncNbr = " + VmSource + ".EncNbr Where "
             If VpMyPriceCriteria <> "" Then
                 VpSQL = VpSQL + "Card.myPrice = " + VpMyPriceCriteria + " And "
             End If
             VpSQL = VpSQL + VmRestriction
-            VpSQL = clsModule.TrimQuery(VpSQL, , " Order By Card.EncNbr")
+            VpSQL = mdlToolbox.TrimQuery(VpSQL, , " Order By Card.EncNbr")
             VgDBCommand.CommandText = VpSQL
             VgDBReader = VgDBCommand.ExecuteReader
             With VgDBReader
@@ -300,8 +300,8 @@ Public Partial Class frmStats
                     VpTitle = Me.GetCardName(.GetString(0)) + " (" + .GetString(1) + If(.GetBoolean(4), " foil)", ")")
                     If VpTitle <> VpLastTitle Then
                         If VpHist.Count > 0 Then
-                            If VpGrapher.GraphsCount >= clsModule.CgMaxGraphs Then
-                                Call clsModule.ShowWarning(clsModule.CgErr4)
+                            If VpGrapher.GraphsCount >= mdlConstGlob.CgMaxGraphs Then
+                                Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr4)
                                 .Close
                                 Exit Sub
                             Else
@@ -322,7 +322,7 @@ Public Partial Class frmStats
                 End If
             End With
         Else
-            Call clsModule.ShowWarning(clsModule.CgErr2)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr2)
         End If
     End Sub
     Private Function GetRarest(VpLevel As Integer) As String
@@ -332,9 +332,9 @@ Public Partial Class frmStats
     '---------------------------------------------------------------------------------------------------------
     Dim VpSQL As String
     Dim VpO As Object
-        VpSQL = "Select Rares.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join (Select Card.Title, Count(Card.Title) As Nb From Card Where InStr(UCase(Rarity), " + clsModule.CgRarities(VpLevel) + ") > 0 Group By Card.Title) As Rares On Card.Title = Rares.Title Where "
+        VpSQL = "Select Rares.Title From (" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join (Select Card.Title, Count(Card.Title) As Nb From Card Where InStr(UCase(Rarity), " + mdlConstGlob.CgRarities(VpLevel) + ") > 0 Group By Card.Title) As Rares On Card.Title = Rares.Title Where "
         VpSQL = VpSQL + VmRestriction
-        VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + " Order By Rares.Nb;"
+        VgDBCommand.CommandText = mdlToolbox.TrimQuery(VpSQL, False) + " Order By Rares.Nb;"
         VpO = VgDBCommand.ExecuteScalar
         If VpO Is Nothing Then
             Return Me.GetRarest(VpLevel + 1)
@@ -375,7 +375,7 @@ Public Partial Class frmStats
             VpMaxFoil = 0
         End Try
         If VpMaxFoil > VpMaxNoFoil Then
-            Me.txtMostExpensive.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By FoilPrice Desc;")) + clsModule.CgFoil2 + " : " + Format(VpMaxFoil, "0.00") + " €"
+            Me.txtMostExpensive.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By FoilPrice Desc;")) + mdlConstGlob.CgFoil2 + " : " + Format(VpMaxFoil, "0.00") + " €"
         Else
             Me.txtMostExpensive.Text = Me.GetCardName(Me.QueryInfo("Card.Title", , " Order By Price Desc;")) + " : " + Format(VpMaxNoFoil, "0.00") + " €"
         End If
@@ -398,7 +398,7 @@ Public Partial Class frmStats
         VpSQL = "Select " + VpQuery + " From (((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) " + VpTblCreature
         VpSQL = VpSQL + If(VpSQL.EndsWith("And "), "", "Where ")
         VpSQL = VpSQL + If(VpQuery.Contains("Price"), VmOwner.Restriction, VmRestriction)
-        VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL, False) + VpSort
+        VgDBCommand.CommandText = mdlToolbox.TrimQuery(VpSQL, False) + VpSort
         Return VgDBCommand.ExecuteScalar
     End Function
     Private Function GetGrapher As frmGrapher
@@ -453,12 +453,12 @@ Public Partial Class frmStats
         Call Me.LoadConflictingCards(sender.Tag)
     End Sub
     Sub CmnuHistDeckClick(sender As Object, e As EventArgs)
-        If clsModule.HasPriceHistory Then
+        If mdlToolbox.HasPriceHistory Then
             Application.UseWaitCursor = True
-            Me.GetGrapher.AddNewPlot(Me.GetPriceHistory, Me.Text.Replace(clsModule.CgStats, ""))
+            Me.GetGrapher.AddNewPlot(Me.GetPriceHistory, Me.Text.Replace(mdlConstGlob.CgStats, ""))
             Application.UseWaitCursor = False
         Else
-            Call clsModule.ShowWarning(clsModule.CgErr2)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr2)
         End If
     End Sub
     Sub CmdHistPricesMouseDown(sender As Object, e As MouseEventArgs)

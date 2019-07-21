@@ -15,11 +15,11 @@ Public Partial Class frmNewEdition
         Try
             With VmEditionHeader
                 '(SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, Null, Null, True, True, Border, Release, Null, TotCards, TotCards, Rare, Uncommon, Common, Land, Foils, Nullx12, Notes)
-                VgDBCommand.CommandText = "Insert Into Series (SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, LegalE, LegalS, Border, Release, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, Notes) Values ('" + .SeriesCD + "', '" + .SeriesCD_MO + "', '" + .SeriesCD_MW + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', '" + .SeriesNM_FR.Replace("'", "''") + "', True, True, " + .GetBorder(.Border) + ", " + clsModule.GetDate(.Release) + ", " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", True, '" + .NotesEdition.Replace("'", "''") + "');"
+                VgDBCommand.CommandText = "Insert Into Series (SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, LegalE, LegalS, Border, Release, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, Notes) Values ('" + .SeriesCD + "', '" + .SeriesCD_MO + "', '" + .SeriesCD_MW + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', '" + .SeriesNM_FR.Replace("'", "''") + "', True, True, " + .GetBorder(.Border) + ", " + mdlToolbox.GetDate(.Release) + ", " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", True, '" + .NotesEdition.Replace("'", "''") + "');"
                 VgDBCommand.ExecuteNonQuery
             End With
         Catch
-            Call clsModule.ShowWarning("Impossible d'ajouter l'en-tête à la base de données..." + vbCrLf + "Peut-être ce nom d'édition existe-t-il déjà ? Vérifier les informations saisies et recommencer.")
+            Call mdlToolbox.ShowWarning("Impossible d'ajouter l'en-tête à la base de données..." + vbCrLf + "Peut-être ce nom d'édition existe-t-il déjà ? Vérifier les informations saisies et recommencer.")
             Return False
         End Try
         Return True
@@ -30,7 +30,7 @@ Public Partial Class frmNewEdition
     '--------------------------------------------------------
         Me.lblStatus.Text = "Téléchargement des données en cours... " + VpCount
         Application.DoEvents
-        Call clsModule.DownloadNow(New Uri(VpFrom), VpTo)
+        Call mdlToolbox.DownloadNow(New Uri(VpFrom), VpTo)
     End Sub
     Private Sub FillHeader(VpInfos() As String)
     '-------------------------------------------------------------------------
@@ -67,11 +67,11 @@ Public Partial Class frmNewEdition
     Dim VpTrad As String = "\" + VpInfos(0) + "_titles_fr.txt"
     Dim VpDouble As String = "\" + VpInfos(0) + "_doubles_en.txt"
         'Téléchargement des fichiers nécessaires
-        Call Me.DLResource("(1/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL5 + "_e" + VpInfos(1) + ".png", clsModule.CgIcons + "\_e" + VpInfos(1) + ".png")
-        Call Me.DLResource("(2/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
-        Call Me.DLResource("(3/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
-        Call Me.DLResource("(4/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
-        Call Me.DLResource("(5/5)", clsModule.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_doubles_en.txt", VpDouble)
+        Call Me.DLResource("(1/5)", mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL5 + "_e" + VpInfos(1) + ".png", mdlConstGlob.CgIcons + "\_e" + VpInfos(1) + ".png")
+        Call Me.DLResource("(2/5)", mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_checklist_en.txt", VpChecker)
+        Call Me.DLResource("(3/5)", mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_spoiler_en.txt", VpSpoiler)
+        Call Me.DLResource("(4/5)", mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_titles_fr.txt", VpTrad)
+        Call Me.DLResource("(5/5)", mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL4 + VpInfos(0) + "_doubles_en.txt", VpDouble)
         'Inscription de l'en-tête
         Me.lblStatus.Text = "Inscription de l'en-tête..."
         Application.DoEvents
@@ -86,17 +86,17 @@ Public Partial Class frmNewEdition
             Me.txtCheckList.Tag = Application.StartupPath + VpDouble
             Me.chkNewEdition.Tag = VpInfos(2)
             If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
-                Call clsModule.ShowWarning(clsModule.CgErr0)
+                Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr0)
             Else
                 Call Me.AddNewEdition
             End If
         End If
         'Suppression des fichiers temporaires
-        Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
-        Call clsModule.SecureDelete(Application.StartupPath + VpChecker)
-        Call clsModule.SecureDelete(Application.StartupPath + VpSpoiler)
-        Call clsModule.SecureDelete(Application.StartupPath + VpTrad)
-        Call clsModule.SecureDelete(Application.StartupPath + VpDouble)
+        Call mdlToolbox.SecureDelete(Application.StartupPath + mdlConstGlob.CgUpSeries)
+        Call mdlToolbox.SecureDelete(Application.StartupPath + VpChecker)
+        Call mdlToolbox.SecureDelete(Application.StartupPath + VpSpoiler)
+        Call mdlToolbox.SecureDelete(Application.StartupPath + VpTrad)
+        Call mdlToolbox.SecureDelete(Application.StartupPath + VpDouble)
     End Sub
     Private Sub UpdateSeriesHeaders
     '----------------------------------------------------------------
@@ -106,10 +106,10 @@ Public Partial Class frmNewEdition
     Dim VpInfos() As String
     Dim VpLine As String
     Dim VpFullUpdate As Boolean
-        Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
-        If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
-            VpFullUpdate = ( clsModule.ShowQuestion("Voulez-vous mettre à jour l'intégralité des en-têtes ?" + vbCrLf + "Cliquez sur 'Non' pour mettre uniquement à jour les codes des éditions (compatibilité avec les autres formats de logiciels Magic)") = System.Windows.Forms.DialogResult.Yes )
-            VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
+        Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL12), mdlConstGlob.CgUpSeries)
+        If File.Exists(Application.StartupPath + mdlConstGlob.CgUpSeries) Then
+            VpFullUpdate = ( mdlToolbox.ShowQuestion("Voulez-vous mettre à jour l'intégralité des en-têtes ?" + vbCrLf + "Cliquez sur 'Non' pour mettre uniquement à jour les codes des éditions (compatibilité avec les autres formats de logiciels Magic)") = System.Windows.Forms.DialogResult.Yes )
+            VpSeriesInfos = New StreamReader(Application.StartupPath + mdlConstGlob.CgUpSeries)
             Do While Not VpSeriesInfos.EndOfStream
                 VpLine = VpSeriesInfos.ReadLine
                 If VpLine.Contains("#") Then
@@ -118,21 +118,21 @@ Public Partial Class frmNewEdition
                     Try
                         With VmEditionHeader
                             If VpFullUpdate Then
-                                VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + clsModule.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+                                VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + mdlToolbox.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
                             Else
                                 VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
                             End If
                             VgDBCommand.ExecuteNonQuery
                         End With
                     Catch
-                        Call clsModule.ShowWarning("Impossible de mettre à jour l'en-tête " + VmEditionHeader.SeriesNM + " de la base de données...")
+                        Call mdlToolbox.ShowWarning("Impossible de mettre à jour l'en-tête " + VmEditionHeader.SeriesNM + " de la base de données...")
                     End Try
                 End If
             Loop
-            Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpSeries)
-            Call clsModule.ShowInformation("Terminé !" + vbCrLf + "Il est recommandé de relancer l'application...")
+            Call mdlToolbox.SecureDelete(Application.StartupPath + mdlConstGlob.CgUpSeries)
+            Call mdlToolbox.ShowInformation("Terminé !" + vbCrLf + "Il est recommandé de relancer l'application...")
         Else
-            Call clsModule.ShowWarning(clsModule.CgDL3b)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
         End If
     End Sub
     Private Function QuerySeries As List(Of String)
@@ -147,12 +147,12 @@ Public Partial Class frmNewEdition
     Dim VpMustAdd As Boolean
     Dim VpWidth As Integer
     Dim VpMaxWidth As Integer = Integer.MinValue
-        If Not File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
-            Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL12), clsModule.CgUpSeries)
+        If Not File.Exists(Application.StartupPath + mdlConstGlob.CgUpSeries) Then
+            Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL12), mdlConstGlob.CgUpSeries)
         End If
-        If File.Exists(Application.StartupPath + clsModule.CgUpSeries) Then
+        If File.Exists(Application.StartupPath + mdlConstGlob.CgUpSeries) Then
             VpAlready = Me.BuildList("Select UCase(SeriesNM) From Series;")
-            VpSeriesInfos = New StreamReader(Application.StartupPath + clsModule.CgUpSeries)
+            VpSeriesInfos = New StreamReader(Application.StartupPath + mdlConstGlob.CgUpSeries)
             Do While Not VpSeriesInfos.EndOfStream
                 VpLine = VpSeriesInfos.ReadLine
                 If VpLine.Contains("#") Then
@@ -178,7 +178,7 @@ Public Partial Class frmNewEdition
             Me.cmdAutoPrevious.Enabled = True
             Return VpNew
         Else
-            Call clsModule.ShowWarning(clsModule.CgDL3b)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
             Me.cmdAutoPrevious.Enabled = True
             Return Nothing
         End If
@@ -203,7 +203,7 @@ Public Partial Class frmNewEdition
         VpFile = New StreamReader(Me.txtCheckList.Text, Encoding.Default)
         VpComplement = New List(Of String)
         'Code la nouvelle édition
-        VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.Tag)
+        VpSerieCD = mdlToolbox.GetSerieCodeFromName(Me.chkNewEdition.Tag)
         'Dernier numéro d'identification de carte utilisé
         VgDBCommand.CommandText = "Select Max(EncNbr) From Card;"
         VpEncNbr = CLng(VgDBCommand.ExecuteScalar) + 1
@@ -244,7 +244,7 @@ Public Partial Class frmNewEdition
         Loop
         VpFile.Close
         If VpComplement.Count = 0 Then
-            Call clsModule.ShowWarning("Impossible de trouver la correspondance pour la carte " + VpCarac(0) + "...")
+            Call mdlToolbox.ShowWarning("Impossible de trouver la correspondance pour la carte " + VpCarac(0) + "...")
             Return False
         Else
             VpMyCard = New clsMyCard(VpCarac, VpComplement)
@@ -277,7 +277,7 @@ Public Partial Class frmNewEdition
                     End Try
                 End If
             Catch
-                Call clsModule.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + "...")
+                Call mdlToolbox.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + "...")
                 Return False
             End Try
         End If
@@ -288,23 +288,23 @@ Public Partial Class frmNewEdition
     'Regarde à la position courante du flux si des informations sur une nouvelle carte s'y trouvent
     '----------------------------------------------------------------------------------------------
     Dim VpLine As String
-    Dim VpCarac(0 To clsModule.CgBalises.Length - 1) As String
+    Dim VpCarac(0 To mdlConstGlob.CgBalises.Length - 1) As String
     Dim VpFound As Boolean
     Dim VpMulti As Boolean
         VpLine = VpFile.ReadLine.Trim
-        If VpLine.StartsWith(clsModule.CgBalises(0)) Or VpLine.StartsWith(clsModule.CgAlternateStart) Or VpLine.StartsWith(clsModule.CgAlternateStart2) Then
-            For VpI As Integer = 0 To clsModule.CgBalises.Length - 2
+        If VpLine.StartsWith(mdlConstGlob.CgBalises(0)) Or VpLine.StartsWith(mdlConstGlob.CgAlternateStart) Or VpLine.StartsWith(mdlConstGlob.CgAlternateStart2) Then
+            For VpI As Integer = 0 To mdlConstGlob.CgBalises.Length - 2
                 VpFound = False
                 VpMulti = False
                 Do
                     'Analyse de la ligne selon les balises
-                    If VpLine.StartsWith(clsModule.CgBalises(VpI)) Or VpI = 0 Then
-                        VpCarac(VpI) = VpLine.Replace(clsModule.CgBalises(VpI), "").Replace(clsModule.CgAlternateStart, "").Replace(clsModule.CgAlternateStart2, "").Trim
+                    If VpLine.StartsWith(mdlConstGlob.CgBalises(VpI)) Or VpI = 0 Then
+                        VpCarac(VpI) = VpLine.Replace(mdlConstGlob.CgBalises(VpI), "").Replace(mdlConstGlob.CgAlternateStart, "").Replace(mdlConstGlob.CgAlternateStart2, "").Trim
                         VpFound = True
                         If VpI = 4 Then 'La 5ème balise (indicée 4) "Rules Text:" est une balise dont le contenu peut prendre plusieurs lignes
                             VpMulti = True
                         End If
-                    ElseIf VpMulti And VpLine.StartsWith(clsModule.CgBalises(VpI + 1)) Then 'si on voit la balise suivante, c'est qu'on a fini
+                    ElseIf VpMulti And VpLine.StartsWith(mdlConstGlob.CgBalises(VpI + 1)) Then 'si on voit la balise suivante, c'est qu'on a fini
                         VpMulti = False
                     ElseIf VpMulti Then
                         VpCarac(VpI) = VpCarac(VpI) + vbCrLf + VpLine
@@ -355,12 +355,12 @@ Public Partial Class frmNewEdition
         If Not Me.txtCheckList.Tag Is Nothing AndAlso File.Exists(Me.txtCheckList.Tag.ToString) Then
             Me.lblStatus.Text = "Association des doubles cartes en cours..."
             Application.DoEvents
-            VpSerieCD = clsModule.GetSerieCodeFromName(Me.chkNewEdition.Tag)
+            VpSerieCD = mdlToolbox.GetSerieCodeFromName(Me.chkNewEdition.Tag)
             VpFile = New StreamReader(Me.txtCheckList.Tag.ToString, Encoding.Default)
             While Not VpFile.EndOfStream
                 VpStrs = VpFile.ReadLine.Split("#")
-                VpEncNbrDown = clsModule.GetEncNbr(VpStrs(0), VpSerieCD)
-                VpEncNbrTop = clsModule.GetEncNbr(VpStrs(1), VpSerieCD)
+                VpEncNbrDown = mdlToolbox.GetEncNbr(VpStrs(0), VpSerieCD)
+                VpEncNbrTop = mdlToolbox.GetEncNbr(VpStrs(1), VpSerieCD)
                 VgDBCommand.CommandText = "Insert Into CardDouble(EncNbrDownFace, EncNbrTopFace) Values (" + VpEncNbrDown.ToString + ", " + VpEncNbrTop.ToString + ");"
                 VgDBCommand.ExecuteNonQuery
                 VgDBCommand.CommandText = "Update Card Set SpecialDoubleCard = True Where Card.EncNbr = " + VpEncNbrDown.ToString + ";"
@@ -371,7 +371,7 @@ Public Partial Class frmNewEdition
             VpFile.Close
         End If
         Me.lblStatus.Text = "Terminé."
-        Call clsModule.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
+        Call mdlToolbox.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
         Me.txtCheckList.Text = ""
         Me.txtSpoilerList.Text = ""
         Call Me.CheckLoad
@@ -425,13 +425,13 @@ Public Partial Class frmNewEdition
     'Vérifie la cohérence de la demande avant de lancer la procédure effective
     '-------------------------------------------------------------------------
         If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
-            Call clsModule.ShowWarning(clsModule.CgErr0)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr0)
         Else
             If Me.chkNewEdition.CheckedItems.Count > 0 Then
                 Me.chkNewEdition.Tag = Me.chkNewEdition.CheckedItems(0).ToString
                 Call Me.AddNewEdition
             Else
-                Call clsModule.ShowWarning("Aucune édition n'a été sélectionnée dans la liste...")
+                Call mdlToolbox.ShowWarning("Aucune édition n'a été sélectionnée dans la liste...")
             End If
         End If
     End Sub
@@ -447,11 +447,11 @@ Public Partial Class frmNewEdition
                     'Copie du fichier logo
                     If File.Exists(.LogoEdition) Then
                         Try
-                            File.Copy(.LogoEdition, Application.StartupPath + clsModule.CgIcons + .LogoEdition.Substring(.LogoEdition.LastIndexOf("\")))
+                            File.Copy(.LogoEdition, Application.StartupPath + mdlConstGlob.CgIcons + .LogoEdition.Substring(.LogoEdition.LastIndexOf("\")))
                         Catch
                         End Try
                     Else
-                        Call clsModule.ShowWarning("Aucun logo d'édition n'a été spécifié...")
+                        Call mdlToolbox.ShowWarning("Aucun logo d'édition n'a été spécifié...")
                     End If
                 End With
             End If
@@ -488,7 +488,7 @@ Public Partial Class frmNewEdition
         End If
     End Sub
     Sub LnklblAssistLinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-        Process.Start(clsModule.CgURL6)
+        Process.Start(mdlConstGlob.CgURL6)
     End Sub
     Sub ChkHeaderAlreadyCheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
         Me.propEdition.Enabled = Not Me.chkHeaderAlready.Checked

@@ -27,7 +27,7 @@ Public Partial Class frmTransfer
             Me.cmdOK.Top = Me.cmdOK.Top - Me.grpDest.Height
             Me.Height = Me.Height - Me.grpDest.Height
         End If
-        Me.chkReserve.Visible = ( VpSource = clsModule.CgSDecks )
+        Me.chkReserve.Visible = ( VpSource = mdlConstGlob.CgSDecks )
         Me.chkReserve.Checked = VpTransfertResult.ReserveFrom
         Me.cboSerie.Text = Me.cboSerie.Items(0)
         Me.sldQuant.Minimum = 1
@@ -42,24 +42,24 @@ Public Partial Class frmTransfer
     Dim VpSQL As String
         If SwapTo Then
             VpSQL = "Select SeriesNM From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VmCardName.Replace("'", "''") + "'"
-        ElseIf VmSource = clsModule.CgSFromSearch Then
+        ElseIf VmSource = mdlConstGlob.CgSFromSearch Then
             VpSQL = "Select SeriesNM From ((" + VmSource2 + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
             VpSQL = VpSQL + VmOwner.Restriction
         Else
-            VpSQL = "Select SeriesNM, Foil From ((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where " + If(VmSource = clsModule.CgSDecks, " Reserve = " + VmTransfertResult.ReserveFrom.ToString + " And ", "") + "Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
+            VpSQL = "Select SeriesNM, Foil From ((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where " + If(VmSource = mdlConstGlob.CgSDecks, " Reserve = " + VmTransfertResult.ReserveFrom.ToString + " And ", "") + "Card.Title = '" + VmCardName.Replace("'", "''") + "' And "
             VpSQL = VpSQL + VmOwner.Restriction
         End If
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
-            If VmSource = clsModule.CgSFromSearch Or SwapTo Then
+            If VmSource = mdlConstGlob.CgSFromSearch Or SwapTo Then
                 While .Read
                     VpCboSerie.Items.Add(.GetString(0))
                 End While
             Else
                 While .Read
-                    VpCboSerie.Items.Add(.GetString(0) + If(.GetBoolean(1), clsModule.CgFoil2, ""))
+                    VpCboSerie.Items.Add(.GetString(0) + If(.GetBoolean(1), mdlConstGlob.CgFoil2, ""))
                 End While
             End If
             .Close
@@ -78,7 +78,7 @@ Public Partial Class frmTransfer
         'Cas 1 : plusieurs éditions disponibles ou bien même édition mais avec foil(s) et non foil(s)
         VpSQL = "Select Count(*) From ((" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
         VpSQL = VpSQL + VpOwner.Restriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VpRet = ( VgDBCommand.ExecuteScalar > 1 )
         If Not VpRet Then   's'il n'y a pas d'ambiguité, on veut quand même savoir si la carte qu'on veut transférer est foil ou non
@@ -87,7 +87,7 @@ Public Partial Class frmTransfer
             Else
                 VpSQL = "Select Foil From (" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
                 VpSQL = VpSQL + VpOwner.Restriction
-                VpSQL = clsModule.TrimQuery(VpSQL)
+                VpSQL = mdlToolbox.TrimQuery(VpSQL)
                 VgDBCommand.CommandText = VpSQL
                 VpFoil = VgDBCommand.ExecuteScalar
             End If
@@ -99,7 +99,7 @@ Public Partial Class frmTransfer
         'Cas 2 : Si une seule édition mais plusieurs items
         VpSQL = "Select Items From ((" + VpSource + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
         VpSQL = VpSQL + VpOwner.Restriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         Return VpRet Or ( VgDBCommand.ExecuteScalar > 1 )
     End Function
@@ -110,7 +110,7 @@ Public Partial Class frmTransfer
     Dim VpSQL As String
         VpSQL = "Select Card.Series From ((" + VpSource2 + " Inner Join Card On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD) Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And "
         VpSQL = VpSQL + VpOwner.Restriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         Return VgDBCOmmand.ExecuteScalar
     End Function
@@ -124,28 +124,28 @@ Public Partial Class frmTransfer
             'Dans le cas d'un déplacement ou d'une suppression ou d'un swap : suppression à la source
             If .TransfertType = clsTransferResult.EgTransfertType.Move Or .TransfertType = clsTransferResult.EgTransfertType.Deletion Or .TransfertType = clsTransferResult.EgTransfertType.Swap Then
                 'Nombre d'items déjà présents à la source
-                VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
+                VgDBCommand.CommandText = "Select Items From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = mdlConstGlob.CgSDecks, " And GameID = " + mdlToolbox.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
                 VpNItemsAtSource = VgDBCommand.ExecuteScalar
                 '-NCartes à la source
                 If VpNItemsAtSource - .NCartes > 0 Then
-                    VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
+                    VgDBCommand.CommandText = "Update " + .SFrom + " Set Items = " + (VpNItemsAtSource - .NCartes).ToString + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = mdlConstGlob.CgSDecks, " And GameID = " + mdlToolbox.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
                     VgDBCommand.ExecuteNonQuery
                 Else
-                    VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
+                    VgDBCommand.CommandText = "Delete * From " + .SFrom + " Where Foil = " + .FoilFrom.ToString + " And EncNbr = " + .EncNbrFrom.ToString + If(.SFrom = mdlConstGlob.CgSDecks, " And GameID = " + mdlToolbox.GetDeckIdFromName(.TFrom) + " And Reserve = " + .ReserveFrom.ToString + ";", ";")
                     VgDBCommand.ExecuteNonQuery
                 End If
             End If
             'Dans le cas d'un déplacement ou d'une copie ou d'un swap : ajout à destination
             If .TransfertType = clsTransferResult.EgTransfertType.Move Or .TransfertType = clsTransferResult.EgTransfertType.Copy Or .TransfertType = clsTransferResult.EgTransfertType.Swap Then
                 'Nombre d'items déjà présents à la destination
-                VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
+                VgDBCommand.CommandText = "Select Items From " + .STo + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = mdlConstGlob.CgSDecks, " And GameID = " + mdlToolbox.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
                 VpNItemsAtDest = VgDBCommand.ExecuteScalar
                 '+NCartes à la destination
                 If VpNItemsAtDest > 0 Then
-                    VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = clsModule.CgSDecks, " And GameID = " + clsModule.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
+                    VgDBCommand.CommandText = "Update " + .STo + " Set Items = " + (VpNItemsAtDest + .NCartes).ToString + " Where Foil = " + .FoilTo.ToString + " And EncNbr = " + .EncNbrTo.ToString + If(.STo = mdlConstGlob.CgSDecks, " And GameID = " + mdlToolbox.GetDeckIdFromName(.TTo) + " And Reserve = " + .ReserveTo.ToString + ";", ";")
                     VgDBCommand.ExecuteNonQuery
                 Else
-                    VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + If(.STo = clsModule.CgSDecks, clsModule.GetDeckIdFromName(.TTo) + ", ", "") + .EncNbrTo.ToString + ", " + .NCartes.ToString + ", " + .FoilTo.ToString + If(.STo = clsModule.CgSDecks, ", " + .ReserveTo.ToString, "") + ");"
+                    VgDBCommand.CommandText = "Insert Into " + .STo + " Values (" + If(.STo = mdlConstGlob.CgSDecks, mdlToolbox.GetDeckIdFromName(.TTo) + ", ", "") + .EncNbrTo.ToString + ", " + .NCartes.ToString + ", " + .FoilTo.ToString + If(.STo = mdlConstGlob.CgSDecks, ", " + .ReserveTo.ToString, "") + ");"
                     VgDBCommand.ExecuteNonQuery
                 End If
             End If
@@ -156,16 +156,16 @@ Public Partial Class frmTransfer
     'Affiche le logo de l'édition sélectionnée
     '-----------------------------------------
     Dim VpKey As Integer
-        If VpCboSerie.Text.EndsWith(clsModule.CgFoil2) Then
-            VpEdition = clsModule.GetSerieCodeFromName(VpCboSerie.Text.Replace(clsModule.CgFoil2, ""))
+        If VpCboSerie.Text.EndsWith(mdlConstGlob.CgFoil2) Then
+            VpEdition = mdlToolbox.GetSerieCodeFromName(VpCboSerie.Text.Replace(mdlConstGlob.CgFoil2, ""))
             VpFoil = True
         Else
-            VpEdition = clsModule.GetSerieCodeFromName(VpCboSerie.Text)
+            VpEdition = mdlToolbox.GetSerieCodeFromName(VpCboSerie.Text)
             VpFoil = False
         End If
-        VpKey = clsModule.VgImgSeries.Images.IndexOfKey("_e" + VpEdition + CgIconsExt)
+        VpKey = mdlConstGlob.VgImgSeries.Images.IndexOfKey("_e" + VpEdition + CgIconsExt)
         If VpKey <> -1 Then
-            VpPicSerie.Image = clsModule.VgImgSeries.Images(VpKey)
+            VpPicSerie.Image = mdlConstGlob.VgImgSeries.Images(VpKey)
         Else
             VpPicSerie.Image = Nothing
         End If
@@ -184,9 +184,9 @@ Public Partial Class frmTransfer
         If VmTransfertResult.TransfertType = clsTransferResult.EgTransfertType.Copy Then
             Me.sldQuant.Maximum = VgOptions.VgSettings.CopyRange
         Else
-            VpSQL = "Select " + VmSource + ".Items From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where " + If(VmSource = clsModule.CgSDecks, " Reserve = " + VmTransfertResult.ReserveFrom.ToString + " And ", "") + "Card.Title = '" + VmCardName.Replace("'", "''") + "' And Foil = " + VpFoil.ToString + " And Card.Series = '" + VpEdition + "' And "
+            VpSQL = "Select " + VmSource + ".Items From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where " + If(VmSource = mdlConstGlob.CgSDecks, " Reserve = " + VmTransfertResult.ReserveFrom.ToString + " And ", "") + "Card.Title = '" + VmCardName.Replace("'", "''") + "' And Foil = " + VpFoil.ToString + " And Card.Series = '" + VpEdition + "' And "
             VpSQL = VpSQL + VmOwner.Restriction
-            VpSQL = clsModule.TrimQuery(VpSQL)
+            VpSQL = mdlToolbox.TrimQuery(VpSQL)
             VgDBCommand.CommandText = VpSQL
             Me.sldQuant.Maximum = CInt(VgDBCommand.ExecuteScalar)
             Me.lblQuant.Text = Me.sldQuant.Value.ToString
@@ -210,15 +210,15 @@ Public Partial Class frmTransfer
         If Me.cboSerie.Items.Contains(Me.cboSerie.Text) AndAlso (Me.cboSerie2.Items.Contains(Me.cboSerie2.Text) OrElse Me.cboSerie2.Text.Trim = "") Then
             With VmTransfertResult
                 .NCartes = Me.sldQuant.Value
-                If Me.cboSerie.Text.EndsWith(clsModule.CgFoil2) Then
-                    .IDSerieFrom = clsModule.GetSerieCodeFromName(Me.cboSerie.Text.Replace(clsModule.CgFoil2, ""))
+                If Me.cboSerie.Text.EndsWith(mdlConstGlob.CgFoil2) Then
+                    .IDSerieFrom = mdlToolbox.GetSerieCodeFromName(Me.cboSerie.Text.Replace(mdlConstGlob.CgFoil2, ""))
                     .FoilFrom = True
                 Else
-                    .IDSerieFrom = clsModule.GetSerieCodeFromName(Me.cboSerie.Text)
+                    .IDSerieFrom = mdlToolbox.GetSerieCodeFromName(Me.cboSerie.Text)
                     .FoilFrom = False
                 End If
                 If .TransfertType = clsTransferResult.EgTransfertType.Swap Then
-                    .IDSerieTo = clsModule.GetSerieCodeFromName(Me.cboSerie2.Text)
+                    .IDSerieTo = mdlToolbox.GetSerieCodeFromName(Me.cboSerie2.Text)
                     .FoilTo = Me.chkFoil.Checked
                     .ReserveTo = Me.chkReserve.Checked
                 Else

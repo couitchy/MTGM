@@ -3,11 +3,11 @@
     Private VmVendeur As clsSeller
     Private VmEdition As String
     Private VmLanguage As String
-    Private VmEtat As clsModule.eQuality
+    Private VmEtat As mdlConstGlob.eQuality
     Private VmQuant As Integer
     Private VmBought As Integer
     Private VmPrix As Single
-    Public Sub New(VpName As String, VpVendeur As clsSeller, VpEdition As String, VpLanguage As String, VpEtat As clsModule.eQuality, VpQuant As Integer, VpBought As Integer, VpPrix As Single)
+    Public Sub New(VpName As String, VpVendeur As clsSeller, VpEdition As String, VpLanguage As String, VpEtat As mdlConstGlob.eQuality, VpQuant As Integer, VpBought As Integer, VpPrix As Single)
         VmName = VpName
         VmVendeur = VpVendeur
         VmEdition = VpEdition
@@ -18,10 +18,10 @@
         VmPrix = VpPrix
     End Sub
     Public Sub New(VpName As String)
-        Me.New(VpName, New clsSeller, "", "", clsModule.eQuality.Mint, 0, 0, 0)
+        Me.New(VpName, New clsSeller, "", "", mdlConstGlob.eQuality.Mint, 0, 0, 0)
     End Sub
     Public Sub New
-        Me.New("", New clsSeller, "", "", clsModule.eQuality.Mint, 0, 0, 0)
+        Me.New("", New clsSeller, "", "", mdlConstGlob.eQuality.Mint, 0, 0, 0)
     End Sub
     Public Shared Function GetClone(VpA As List(Of clsRemoteCard)) As List(Of clsRemoteCard)
     '-------------------------------------------
@@ -90,11 +90,11 @@
             VmLanguage = VpLanguage
         End Set
     End Property
-    Public Property Etat As clsModule.eQuality
+    Public Property Etat As mdlConstGlob.eQuality
         Get
             Return VmEtat
         End Get
-        Set (VpEtat As clsModule.eQuality)
+        Set (VpEtat As mdlConstGlob.eQuality)
             VmEtat = VpEtat
         End Set
     End Property

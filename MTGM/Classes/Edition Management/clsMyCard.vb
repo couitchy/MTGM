@@ -42,7 +42,7 @@
         End If
     End Sub
     Public Function GetMyCost As String
-        Return clsModule.MyCost(VmCost).ToString
+        Return mdlToolbox.MyCost(VmCost).ToString
     End Function
     Public Function MyType As String
         '(C = creature, I = instant, A = artefact, E = enchant-creature, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)

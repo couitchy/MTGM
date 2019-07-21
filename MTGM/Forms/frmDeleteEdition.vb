@@ -31,15 +31,15 @@ Public Partial Class frmDeleteEdition
         End If
     End Sub
     Sub FrmDeleteEditionLoad(ByVal sender As Object, ByVal e As EventArgs)
-        Call clsModule.LoadEditions(Me.cboSerie)
+        Call mdlToolbox.LoadEditions(Me.cboSerie)
     End Sub
     Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
     Dim VpCD As String = Me.cboSerie.Text.Substring(1, 2)
-    Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + VpCD + CgIconsExt)
+    Dim VpKey As Integer = mdlConstGlob.VgImgSeries.Images.IndexOfKey("_e" + VpCD + CgIconsExt)
     Dim VpCount As Integer
         'Affiche le logo de l'édition sélectionnée
         If VpKey <> -1 Then
-            Me.picSerie.Image = clsModule.VgImgSeries.Images(VpKey)
+            Me.picSerie.Image = mdlConstGlob.VgImgSeries.Images(VpKey)
         Else
             Me.picSerie.Image = Nothing
         End If
@@ -54,8 +54,8 @@ Public Partial Class frmDeleteEdition
         If Me.cboSerie.Text.Trim <> "" Then
             Call Me.GoDelete
             VmOwner.LoadTvw
-            Call clsModule.ShowInformation("Suppression effectuée avec succès !")
-            Call clsModule.LoadEditions(Me.cboSerie)
+            Call mdlToolbox.ShowInformation("Suppression effectuée avec succès !")
+            Call mdlToolbox.LoadEditions(Me.cboSerie)
             Me.picSerie.Image = Nothing
         End If
     End Sub

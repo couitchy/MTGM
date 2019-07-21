@@ -40,7 +40,7 @@ Public Partial Class frmTranslate
             Return VpStr
         Catch
             If Me.chkAlert.Checked Then
-                Call clsModule.ShowWarning("Un problème est survenu lors de la traduction de la carte " + VpIn + "...")
+                Call mdlToolbox.ShowWarning("Un problème est survenu lors de la traduction de la carte " + VpIn + "...")
             End If
         End Try
         Return VpIn
@@ -77,7 +77,7 @@ Public Partial Class frmTranslate
             .Close
         End With
         MainForm.VgMe.IsMainReaderBusy = False
-        Call clsModule.ShowInformation("Traduction terminée !")
+        Call mdlToolbox.ShowInformation("Traduction terminée !")
     End Sub
     Sub CmdGoClick(ByVal sender As Object, ByVal e As EventArgs)
         If Not Me.cboSerie.SelectedItem Is Nothing Then
@@ -86,19 +86,19 @@ Public Partial Class frmTranslate
             Call Me.Launch(Me.cboSerie.Text.Substring(1, 2))
             Me.cmdGo.Enabled = True
         Else
-            Call clsModule.ShowWarning("Aucune édition n'a été sélectionnée...")
+            Call mdlToolbox.ShowWarning("Aucune édition n'a été sélectionnée...")
         End If
     End Sub
     Sub FrmTranslateLoad(ByVal sender As Object, ByVal e As EventArgs)
-        Call clsModule.LoadEditions(Me.cboSerie)
+        Call mdlToolbox.LoadEditions(Me.cboSerie)
     End Sub
     Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
     '-----------------------------------------
     'Affiche le logo de l'édition sélectionnée
     '-----------------------------------------
-    Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + Me.cboSerie.Text.Substring(1, 2) + CgIconsExt)
+    Dim VpKey As Integer = mdlConstGlob.VgImgSeries.Images.IndexOfKey("_e" + Me.cboSerie.Text.Substring(1, 2) + CgIconsExt)
         If VpKey <> -1 Then
-            Me.picSerie.Image = clsModule.VgImgSeries.Images(VpKey)
+            Me.picSerie.Image = mdlConstGlob.VgImgSeries.Images(VpKey)
         Else
             Me.picSerie.Image = Nothing
         End If

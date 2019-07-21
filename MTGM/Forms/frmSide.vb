@@ -18,7 +18,7 @@ Public Partial Class frmSide
     Dim VpRow As Integer
     Dim VpCellModel As DataModels.IDataModel
         'Construction de la grille
-        Call clsModule.InitGrid(Me.grdRepartition, New String() {"Nom VF", "Nom VO", "Quantité Deck", "Quantité Réserve"})
+        Call mdlToolbox.InitGrid(Me.grdRepartition, New String() {"Nom VF", "Nom VO", "Quantité Deck", "Quantité Réserve"})
         'Enumération
         For Each VpCard As clsBoardCard In VmOwner.PlateauPartie.CardsInDeck
             If Not VmRepartition.Contains(VpCard.NameVO) Then

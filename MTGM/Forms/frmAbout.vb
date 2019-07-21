@@ -11,18 +11,18 @@ Public Partial Class frmAbout
     Dim VpHisto As StreamReader
         Me.txtVer.Text = Application.ProductVersion.Substring(0, 8)
         Me.txtDateCompile.Text = System.IO.File.GetLastWriteTimeUtc(Process.GetCurrentProcess().MainModule.FileName).ToShortDateString
-        Me.txtCodeLines.Text = clsModule.CgCodeLines.ToString
-        Me.txtNClasses.Text = clsModule.CGNClasses.ToString
-        If File.Exists(Windows.Forms.Application.StartupPath + clsModule.CgHSTFile) Then
-            VpHisto = New StreamReader(Windows.Forms.Application.StartupPath + clsModule.CgHSTFile, Encoding.Default)
+        Me.txtCodeLines.Text = mdlConstGlob.CgCodeLines.ToString
+        Me.txtNClasses.Text = mdlConstGlob.CgNClasses.ToString
+        If File.Exists(Windows.Forms.Application.StartupPath + mdlConstGlob.CgHSTFile) Then
+            VpHisto = New StreamReader(Windows.Forms.Application.StartupPath + mdlConstGlob.CgHSTFile, Encoding.Default)
             Me.txtVersions.Text = VpHisto.ReadToEnd().Replace(vbLf, vbCrLf)
             VpHisto.Close
         End If
     End Sub
     Sub LnkMailLinkClicked(ByVal sender As Object, ByVal e As LinkLabelLinkClickedEventArgs)
-        Process.Start(clsModule.CgURL18)
+        Process.Start(mdlConstGlob.CgURL18)
     End Sub
     Sub PicPaypalClick(ByVal sender As Object, ByVal e As EventArgs)
-        Process.Start(clsModule.CgURL16)
+        Process.Start(mdlConstGlob.CgURL16)
     End Sub
 End Class

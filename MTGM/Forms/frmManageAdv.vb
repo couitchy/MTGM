@@ -14,16 +14,16 @@ Public Partial Class frmManageAdv
         Me.cboOwner.Text = ""
         Me.cboDeck.Text = ""
         'Liste des propriétaires
-        For VpI As Integer = 1 To clsModule.GetAdvCount
-            VpOwner = clsModule.GetAdvName(VpI)
+        For VpI As Integer = 1 To mdlToolbox.GetAdvCount
+            VpOwner = mdlToolbox.GetAdvName(VpI)
             VpItem = New ListViewItem(VpOwner)
-            VpItem.SubItems.Add(clsModule.GetAdvDecksCount(clsModule.GetAdvId(VpOwner)).ToString)
+            VpItem.SubItems.Add(mdlToolbox.GetAdvDecksCount(mdlToolbox.GetAdvId(VpOwner)).ToString)
             Me.lvwAdv.Items.Add(VpItem)
             Me.cboOwner.Items.Add(VpOwner)
         Next VpI
         'Liste des decks
-        For VpI As Integer = 1 To clsModule.GetDeckCount
-            Me.cboDeck.Items.Add(clsModule.GetDeckNameFromIndex(VpI))
+        For VpI As Integer = 1 To mdlToolbox.GetDeckCount
+            Me.cboDeck.Items.Add(mdlToolbox.GetDeckNameFromIndex(VpI))
         Next VpI
         Me.cboDeck.Sorted = True
     End Sub
@@ -62,11 +62,11 @@ Public Partial Class frmManageAdv
         If VpAdvName <> "" Then
             For Each VpD As ListViewItem In Me.lvwAdv.Items
                 If VpD.Text.ToLower = VpAdvName.ToLower Then
-                    Call clsModule.ShowWarning("Un adversaire portant ce nom existe déjà...")
+                    Call mdlToolbox.ShowWarning("Un adversaire portant ce nom existe déjà...")
                     Exit Sub
                 End If
             Next VpD
-            VpAdvId = clsModule.GetNewAdvId
+            VpAdvId = mdlToolbox.GetNewAdvId
             VgDBCommand.CommandText = "Insert Into MyAdversairesID Values (" + VpAdvId.ToString + ", '" + VpAdvName.Replace("'", "''") + "');"
             VgDBCommand.ExecuteNonQuery
             VpItem = New ListViewItem(VpAdvName)
@@ -78,14 +78,14 @@ Public Partial Class frmManageAdv
     Sub CmdAffectClick(sender As Object, e As EventArgs)
     Dim VpAdvId As Integer
         If Me.cboOwner.Items.Contains(Me.cboOwner.Text) And Me.cboDeck.Items.Contains(Me.cboDeck.Text) Then
-            VpAdvId = clsModule.GetAdvId(Me.cboOwner.Text)
+            VpAdvId = mdlToolbox.GetAdvId(Me.cboOwner.Text)
             VgDBCommand.CommandText = "Update MyGamesID Set AdvID = " + VpAdvId.ToString + " Where GameName = '" + Me.cboDeck.Text.Replace("'", "''") + "';"
             VgDBCommand.ExecuteNonQuery
             Call Me.ReloadListes
         End If
     End Sub
     Sub CboDeckSelectedIndexChanged(sender As Object, e As EventArgs)
-        Me.cboOwner.Text = clsModule.GetOwner(Me.cboDeck.Text)
+        Me.cboOwner.Text = mdlToolbox.GetOwner(Me.cboDeck.Text)
     End Sub
     Sub LvwAdvSelectedIndexChanged(sender As Object, e As EventArgs)
         If Me.lvwAdv.SelectedIndices.Count > 0 Then
@@ -97,8 +97,8 @@ Public Partial Class frmManageAdv
     End Sub
     Sub BtRemoveActivate(sender As Object, e As EventArgs)
     Dim VpAdvId As Integer
-        If clsModule.ShowQuestion("Êtes-vous sûr de vouloir supprimer l'adversaire " + Me.lvwAdv.SelectedItems(0).Text + " ?" + vbCrLf + "Tous ses decks vous seront réattribués...")  = System.Windows.Forms.DialogResult.Yes Then
-            VpAdvId = clsModule.GetAdvId(Me.lvwAdv.SelectedItems(0).Text)
+        If mdlToolbox.ShowQuestion("Êtes-vous sûr de vouloir supprimer l'adversaire " + Me.lvwAdv.SelectedItems(0).Text + " ?" + vbCrLf + "Tous ses decks vous seront réattribués...")  = System.Windows.Forms.DialogResult.Yes Then
+            VpAdvId = mdlToolbox.GetAdvId(Me.lvwAdv.SelectedItems(0).Text)
             'Réattribue tous les decks concernés au propriétaire 0 avant suppression
             VgDBCommand.CommandText = "Update MyGamesID Set AdvID = 0 Where AdvId = " + VpAdvId.ToString + ";"
             VgDBCommand.ExecuteNonQuery
@@ -116,7 +116,7 @@ Public Partial Class frmManageAdv
         If VpAdvName <> "" Then
             For Each VpD As ListViewItem In Me.lvwAdv.Items
                 If VpD.Text.ToLower = VpAdvName.ToLower Then
-                    Call clsModule.ShowWarning("Un adversaire portant ce nom existe déjà...")
+                    Call mdlToolbox.ShowWarning("Un adversaire portant ce nom existe déjà...")
                     Exit Sub
                 End If
             Next VpD

@@ -54,7 +54,7 @@ Public Partial Class frmSearch
         For Each VpStr As String In VpValues
             If VpStr.Trim <> "" Then
                 'VpQuery = "InStr(" + VpField + ", '" + VpStr + "') > 0 And " + VpQuery
-                VpQuery = VpField + " Like '%" + clsModule.StrDiacriticInsensitize(VpStr) + "%' And " + VpQuery
+                VpQuery = VpField + " Like '%" + mdlToolbox.StrDiacriticInsensitize(VpStr) + "%' And " + VpQuery
             End If
         Next VpStr
     End Sub
@@ -71,7 +71,7 @@ Public Partial Class frmSearch
             Return " = "
         End If
     End Function
-    Private Function Search(VpField As String, VpValue As String, Optional VpIsCreature As Boolean = False, Optional VpMode As clsModule.eSearchType = clsModule.eSearchType.Alpha) As String
+    Private Function Search(VpField As String, VpValue As String, Optional VpIsCreature As Boolean = False, Optional VpMode As mdlConstGlob.eSearchType = mdlConstGlob.eSearchType.Alpha) As String
     '------------------------------------------------------------
     'Effectue la requête de l'utilisateur dans la base de données
     '------------------------------------------------------------
@@ -82,14 +82,14 @@ Public Partial Class frmSearch
     Dim VpCriteria As String
         'Gestion des différents modes de recherche
         Select Case VpMode
-            Case clsModule.eSearchType.Num
+            Case mdlConstGlob.eSearchType.Num
                 VpCriteria = VpField + Me.FindNumOperator + VpValue.Replace(",", ".")
-            Case clsModule.eSearchType.NumOverAlpha
+            Case mdlConstGlob.eSearchType.NumOverAlpha
                 VpCriteria = "Val(" + VpField + ")" + Me.FindNumOperator + VpValue
-            Case clsModule.eSearchType.Alpha
+            Case mdlConstGlob.eSearchType.Alpha
                 If Not VpValue.Contains(" ") And Not VpValue.Contains("""") Then
                     'VpCriteria = "InStr(" + VpField + ", '" + VpValue + "') > 0"   'cas simple
-                    VpCriteria = VpField + " Like '%" + clsModule.StrDiacriticInsensitize(VpValue) + "%'"
+                    VpCriteria = VpField + " Like '%" + mdlToolbox.StrDiacriticInsensitize(VpValue) + "%'"
                 Else
                     VpCriteria = Me.BuildSplitSearch(VpField, VpValue)              'cas composé
                 End If
@@ -109,7 +109,7 @@ Public Partial Class frmSearch
             Else
                 VpSQL = VpSQL2
             End If
-            VpSQL = clsModule.TrimQuery(VpSQL)
+            VpSQL = mdlToolbox.TrimQuery(VpSQL)
         'Recherche restreinte aux cartes non possédées
         ElseIf Me.chkRestrictionInv.Checked Then
             VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria
@@ -122,7 +122,7 @@ Public Partial Class frmSearch
             Else
                 VpSQL = VpSQL + VpSQL2
             End If
-            VpSQL = clsModule.TrimQuery(VpSQL)
+            VpSQL = mdlToolbox.TrimQuery(VpSQL)
         'Recherche étendue (toutes les cartes de la base de données)
         Else
             VpSQL = "Select Card.Title, CardFR.TitleFR, Card.EncNbr From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO) " + If(VpIsCreature, "Inner Join Creature On Creature.Title = Card.Title ", "") + "Where " + VpCriteria + ";"
@@ -144,7 +144,7 @@ Public Partial Class frmSearch
             'Retourne le résultat de la requête en tant que sous-sélection (table virtuelle) pour une utilisation ultérieure éventuelle (chargement dans le treeview)
             Return VpSQL.Substring(0, VpSQL.Length - 1)
         Catch
-            Call clsModule.ShowWarning("Une erreur s'est produite lors de la recherche..." + vbCrLf + "Vérifier les informations saisies et recommencer.")
+            Call mdlToolbox.ShowWarning("Une erreur s'est produite lors de la recherche..." + vbCrLf + "Vérifier les informations saisies et recommencer.")
         End Try
         Return ""
     End Function
@@ -181,7 +181,7 @@ Public Partial Class frmSearch
             Return ""
         ElseIf VmPrevSearchs.Count = 1 Then
             Me.cboFind.Tag = Me.cboFind.Text
-            Return "(" + VpSQL + ") As " + clsModule.CgSFromSearch
+            Return "(" + VpSQL + ") As " + mdlConstGlob.CgSFromSearch
         Else
             Me.cboFind.Tag = Me.cboFind.Tag + ", " + Me.cboFind.Text
             'Fusion des requêtes en Union
@@ -189,7 +189,7 @@ Public Partial Class frmSearch
                 For Each VpSQLi As String In VmPrevSearchs
                     VpSQLs = VpSQLs + VpSQLi + " Union "
                 Next VpSQLi
-                Return "(" + VpSQLs.Substring(0, VpSQLs.Length - 7) + ") As " + clsModule.CgSFromSearch
+                Return "(" + VpSQLs.Substring(0, VpSQLs.Length - 7) + ") As " + mdlConstGlob.CgSFromSearch
             Else
                 'Fusion des requêtes en Intersection
                 VpI = 1
@@ -201,7 +201,7 @@ Public Partial Class frmSearch
                     End If
                     VpI += 1
                 Next VpSQLi
-                Return "(Select T1.* From " + VpSQLs + ") As " + clsModule.CgSFromSearch
+                Return "(Select T1.* From " + VpSQLs + ") As " + mdlConstGlob.CgSFromSearch
             End If
         End If
     End Function
@@ -220,19 +220,19 @@ Public Partial Class frmSearch
         Select Case VpType
             'Recherche type string simple
             Case 0, 1, 2, 3, 10, 11
-                VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq)
+                VpSQL = Me.Search(mdlConstGlob.CgSearchFields(VpType), VpReq)
             'Recherche type nombre / sur créatures
             Case 4, 5
-                VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, True, clsModule.eSearchType.NumOverAlpha)
+                VpSQL = Me.Search(mdlConstGlob.CgSearchFields(VpType), VpReq, True, mdlConstGlob.eSearchType.NumOverAlpha)
             'Recherche type nombre / égalité
             Case 6, 9
-                VpSQL = Me.Search(clsModule.CgSearchFields(VpType), VpReq, , clsModule.eSearchType.Num)
+                VpSQL = Me.Search(mdlConstGlob.CgSearchFields(VpType), VpReq, , mdlConstGlob.eSearchType.Num)
             'Recherche type string / sur éditions VO
             Case 7
-                VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(Me.cboFind.Text, True))
+                VpSQL = Me.Search(mdlConstGlob.CgSearchFields(VpType), mdlToolbox.GetSerieCodeFromName(Me.cboFind.Text, True))
             'Recherche type string / sur éditions VF
             Case 8
-                VpSQL = Me.Search(clsModule.CgSearchFields(VpType), clsModule.GetSerieCodeFromName(Me.cboFind.Text, True, True))
+                VpSQL = Me.Search(mdlConstGlob.CgSearchFields(VpType), mdlToolbox.GetSerieCodeFromName(Me.cboFind.Text, True, True))
             Case Else
         End Select
         'Nombre de réponses
@@ -242,7 +242,7 @@ Public Partial Class frmSearch
             With VmOwner
                 .mnuDispAdvSearch.Enabled = True
                 Call .ManageDispMenu(.mnuDispAdvSearch.Text, False)
-                Call .LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, clsModule.CgFromSearch + " (" + Me.cboFind.Tag +")")
+                Call .LoadTvw(Me.GetSearchRequests(VpSQL), Me.chkClearPrev.Checked, mdlConstGlob.CgFromSearch + " (" + Me.cboFind.Tag +")")
             End With
         End If
         Me.cboFind.Focus
@@ -253,14 +253,14 @@ Public Partial Class frmSearch
     '------------------------------------------------------------------------------------------------------------------------------------
         If Me.lstResult.SelectedItem IsNot Nothing Then
             If Me.chkShowExternal.Checked Then
-                Call Me.FindCardNode(clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), VmOwner.LastRoot)
+                Call Me.FindCardNode(mdlToolbox.ExtractENName(Me.lstResult.SelectedItem.ToString), VmOwner.LastRoot)
                 'VmOwner.tvwExplore.Focus
             End If
         End If
     End Sub
     Sub LstResultSelectedIndexChanged(sender As Object, e As EventArgs)
         If Me.lstResult.SelectedItem IsNot Nothing AndAlso Me.picScanCard.Visible Then
-            Call clsModule.LoadScanCard(clsModule.ExtractENName(Me.lstResult.SelectedItem.ToString), 0, Me.picScanCard)
+            Call mdlToolbox.LoadScanCard(mdlToolbox.ExtractENName(Me.lstResult.SelectedItem.ToString), 0, Me.picScanCard)
         End If
     End Sub
     Private Sub CbarSearchMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)

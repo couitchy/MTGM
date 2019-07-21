@@ -65,12 +65,12 @@ Public Partial Class frmSpecialCardUse
             VgDBCommand.CommandText = "Insert Into MySpecialUses Values (" + clsSpecialty.GetSpecId(Me.cboEffort.Text).ToString + ", " + clsSpecialty.GetSpecId(Me.cboEffet.Text).ToString + ", '" + Me.cboCard.Text.Replace("'", "''") + "', '" + Me.txtEffort.Text + "', '" + Me.txtEffet.Text + "', " + Me.chkInvocTapped.Checked.ToString + ", " + Me.chkDoesntUntap.Checked.ToString + ");"
             Try
                 VgDBCommand.ExecuteNonQuery
-                Call clsModule.ShowInformation("Cet effet sera pris en compte dès la prochaine simulation.")
+                Call mdlToolbox.ShowInformation("Cet effet sera pris en compte dès la prochaine simulation.")
             Catch
-                Call clsModule.ShowWarning(clsModule.CgErr1)
+                Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr1)
             End Try
         Else
-            Call clsModule.ShowWarning("L'effet a été défini de manière incomplète...")
+            Call mdlToolbox.ShowWarning("L'effet a été défini de manière incomplète...")
         End If
     End Sub
     Sub CboCardSelectedIndexChanged(sender As Object, e As EventArgs)

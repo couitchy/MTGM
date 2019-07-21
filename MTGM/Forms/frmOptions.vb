@@ -25,13 +25,13 @@ Public Partial Class frmOptions
     Dim VpFile As FileStream
     Dim VpWriter As XmlTextWriter
         Try
-            VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Create)
+            VpFile = New FileStream(Application.StartupPath + mdlConstGlob.CgXMLFile, FileMode.Create)
             VpWriter = New XmlTextWriter(VpFile, Nothing)
             VpXmlSerializer.Serialize(VpWriter, VgSettings)
             VpWriter.Close
             VpFile.Close
         Catch
-            Call clsModule.ShowWarning(clsModule.CgErr11)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr11)
         End Try
     End Sub
     Public Sub LoadSettings
@@ -41,19 +41,19 @@ Public Partial Class frmOptions
     Dim VpXmlSerializer As XmlSerializer
     Dim VpFile As FileStream
     Dim VpReader As XmlTextReader
-        If File.Exists(Application.StartupPath + clsModule.CgXMLFile) Then
+        If File.Exists(Application.StartupPath + mdlConstGlob.CgXMLFile) Then
             Try
                 VpXmlSerializer = New XmlSerializer(GetType(clsSettings))
-                VpFile = New FileStream(Application.StartupPath + clsModule.CgXMLFile, FileMode.Open)
+                VpFile = New FileStream(Application.StartupPath + mdlConstGlob.CgXMLFile, FileMode.Open)
                 VpReader = New XmlTextReader(VpFile)
                 VgSettings = CType(VpXmlSerializer.Deserialize(VpReader), clsSettings)
                 VpReader.Close
                 VpFile.Close
             Catch
-                Call clsModule.ShowWarning(clsModule.CgErr11)
+                Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr11)
             End Try
-        ElseIf File.Exists(Application.StartupPath + clsModule.CgINIFile) Then
-            Call clsModule.ShowInformation(clsModule.CgErr8)
+        ElseIf File.Exists(Application.StartupPath + mdlConstGlob.CgINIFile) Then
+            Call mdlToolbox.ShowInformation(mdlConstGlob.CgErr8)
         End If
     End Sub
 End Class

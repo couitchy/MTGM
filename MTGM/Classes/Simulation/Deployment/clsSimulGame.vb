@@ -8,7 +8,7 @@ Public Class clsSimulGame
     Private VmInPlay As New List(Of clsCard)        'Cartes en jeu (permanents)
     Private VmInRound As New List(Of clsCard)       'Cartes en jeu pour le tour courant (éphémères)
     Private VmReserve As clsManas                   'Réserve de manas pour le tour courant
-    Private VmLives As Integer = clsModule.CgNLives 'Nombre de points de vie
+    Private VmLives As Integer = mdlConstGlob.CgNLives 'Nombre de points de vie
     Public Sub New(VpSource As String, VpRestriction As String, Optional VpGestDeploy As Boolean = False, Optional VpVerbose As Boolean = False, Optional VpSimuOut As StreamWriter = Nothing)
     '-------------------
     'Construction du jeu
@@ -20,7 +20,7 @@ Public Class clsSimulGame
             VpSQL = "Select Card.Title, Card.CardText, Card.Type, Spell.Cost, " + VpSource + ".Items, CardFR.TitleFR, Card.SubType, Spell.Color, Spell.myCost From ((Card Inner Join " + VpSource + " On " + VpSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where"
         End If
         VpSQL = VpSQL + VpRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
@@ -55,7 +55,7 @@ Public Class clsSimulGame
         VmDeck = New List(Of clsCard)(VmDeckCopy)
         'Génère un tableau trié de nombres aléatoires
         For VpI = 0 To Me.CardsCount - 1
-            VpRandomPos.Add(clsModule.VgRandom.NextDouble, VpI)
+            VpRandomPos.Add(mdlConstGlob.VgRandom.NextDouble, VpI)
         Next VpI
         'Réordonne les cartes en conséquence
         VpI = 0
@@ -140,7 +140,7 @@ Public Class clsSimulGame
         For Each VpCard As clsCard In Me.CardsInPlay
             If VpCard.ManaAble And Not VpCard.Tapped Then
                 Call VmReserve.AddSubManas(VpCard.ManasGen)
-                Call clsModule.VerboseSimu(VmVerbose, VpCard.ManasGen.Potentiel.ToString + " manas ajoutés à la réserve (" + VpCard.CardName + ")", VmSimuOut)
+                Call mdlToolbox.VerboseSimu(VmVerbose, VpCard.ManasGen.Potentiel.ToString + " manas ajoutés à la réserve (" + VpCard.CardName + ")", VmSimuOut)
                 VpCard.Tapped = True
             End If
         Next VpCard
@@ -228,7 +228,7 @@ Public Class clsSimulGame
                         Else
                             'Perte de point de vie
                             If VpCard.Speciality.EffortID = 22 Then
-                                Call clsModule.VerboseSimu(VmVerbose, "Joueur a " + VmLives.ToString + " point(s) de vie", VmSimuOut)
+                                Call mdlToolbox.VerboseSimu(VmVerbose, "Joueur a " + VmLives.ToString + " point(s) de vie", VmSimuOut)
                                 VpInt = CInt(VpCard.Speciality.Effort)
                                 If VmLives <= VpInt Then
                                     VpNext = True
@@ -310,7 +310,7 @@ Public Class clsSimulGame
                         End If
                     '- points de vie à perdre
                     Case 21
-                        Call clsModule.VerboseSimu(VmVerbose, "Joueur a : " + VmLives.ToString + " point(s) de vie", VmSimuOut)
+                        Call mdlToolbox.VerboseSimu(VmVerbose, "Joueur a : " + VmLives.ToString + " point(s) de vie", VmSimuOut)
                         VpInt = CInt(VpCard.Speciality.Effort)
                         If VmLives <= VpInt Then
                             VpNext = True
@@ -340,7 +340,7 @@ Public Class clsSimulGame
                         Case 100
                             Call Me.Reserve.AddSubManas(New clsManas(VpCard.Speciality.Effet))
                             VpSomething = True
-                            Call clsModule.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName, VmSimuOut)
+                            Call mdlToolbox.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName, VmSimuOut)
                         '- dégagement d'un artefact
                         Case 110
                             'Liste des artefacts potentiellement visés
@@ -352,7 +352,7 @@ Public Class clsSimulGame
                                     If (Not VpCard Is VpTarget) And VpTarget.CardName = VpArtefact And VpTarget.Tapped = True Then
                                         VpTarget.Tapped = False
                                         VpNext = True
-                                        Call clsModule.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName + " pour dégager " + VpTarget.CardName, VmSimuOut)
+                                        Call mdlToolbox.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName + " pour dégager " + VpTarget.CardName, VmSimuOut)
                                         VpSomething = True
                                         Exit For
                                     End If
@@ -371,7 +371,7 @@ Public Class clsSimulGame
                                         VpTmpInPlay1.Add(VpTarget)
                                         Me.CardsInDeck.Remove(VpTarget)     'Normalement on n'a pas le droit de toucher à la liste que l'on est en train d'énumérer (ou celle qui la contient) mais là on quitte la boucle immédiatement après...
                                         VpNext = True
-                                        Call clsModule.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName + " pour mettre en jeu " + VpTarget.CardName, VmSimuOut)
+                                        Call mdlToolbox.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName + " pour mettre en jeu " + VpTarget.CardName, VmSimuOut)
                                         VpSomething = True
                                         Exit For
                                     End If
@@ -381,7 +381,7 @@ Public Class clsSimulGame
                         '- pioche de cartes
                         Case 130
                             Call Me.Draw(CInt(VpCard.Speciality.Effet))
-                            Call clsModule.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName, VmSimuOut)
+                            Call mdlToolbox.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName, VmSimuOut)
                             VpSomething = True
                         '- piocher la carte spécifiée
                         Case 131
@@ -395,7 +395,7 @@ Public Class clsSimulGame
                                         VpTmpInPlay4.Add(VpTarget)
                                         Me.CardsInDeck.Remove(VpTarget)     'Normalement on n'a pas le droit de toucher à la liste que l'on est en train d'énumérer (ou celle qui la contient) mais là on quitte la boucle immédiatement après...
                                         VpNext = True
-                                        Call clsModule.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName + " pour piocher " + VpTarget.CardName, VmSimuOut)
+                                        Call mdlToolbox.VerboseSimu(VmVerbose, "Effet utilisé : " + VpCard.CardName + " pour piocher " + VpTarget.CardName, VmSimuOut)
                                         VpSomething = True
                                         Exit For
                                     End If
@@ -473,9 +473,9 @@ Public Class clsSimulGame
             If VpCard.IsALand AndAlso VpCard.IsSpecial Then
                 If VpCard.Speciality.InvocTapped Then
                     VpCard.Tapped = True
-                    Call clsModule.VerboseSimu(VmVerbose, "Terrain spécial posé (engagé) : " + VpCard.CardName, VmSimuOut)
+                    Call mdlToolbox.VerboseSimu(VmVerbose, "Terrain spécial posé (engagé) : " + VpCard.CardName, VmSimuOut)
                 Else
-                    Call clsModule.VerboseSimu(VmVerbose, "Terrain spécial posé : " + VpCard.CardName, VmSimuOut)
+                    Call mdlToolbox.VerboseSimu(VmVerbose, "Terrain spécial posé : " + VpCard.CardName, VmSimuOut)
                 End If
                 Return VpCard
             'Si on a un terrain producteur de mana
@@ -492,7 +492,7 @@ Public Class clsSimulGame
             End If
         Next VpCard
         If Not VpPicked Is Nothing Then
-            Call clsModule.VerboseSimu(VmVerbose, "Terrain posé : " + VpPicked.CardName, VmSimuOut)
+            Call mdlToolbox.VerboseSimu(VmVerbose, "Terrain posé : " + VpPicked.CardName, VmSimuOut)
         End If
         Return VpPicked
     End Function
@@ -554,7 +554,7 @@ Public Class clsSimulGame
     Dim VpSum As Integer = 0
     Dim VpCard As clsCard
     Dim VpJ As Integer
-        VpJ = Math.Max(VpList.Count - clsModule.CgNMain, 0)
+        VpJ = Math.Max(VpList.Count - mdlConstGlob.CgNMain, 0)
         For VpI As Integer = VpJ To VpList.Count - 1
             VpCard = VpList.Item(VpI)
             If Not ( VpCard.ManaAble Or VpCard.IsSpecial ) Then

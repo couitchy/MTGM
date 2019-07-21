@@ -9,7 +9,7 @@ Imports System.Xml.Serialization
 #End Region
 Public Partial Class frmBuyCards
     #Region "Déclarations"
-    Private VmServer As clsModule.eMarketServer         'Market place choisie par l'utilisateur pour effectuer ses transactions
+    Private VmServer As mdlConstGlob.eMarketServer      'Market place choisie par l'utilisateur pour effectuer ses transactions
     Private VmToBuy As New List(Of clsLocalCard)        'Collection des cartes souhaitées à l'achat
     Private VmToSell As New List(Of clsRemoteCard)      'Collection des cartes disponibles à la vente
     Private VmEditions As List(Of String)               'Liste des éditions disponibles pour une même carte dans le cas où il y en a trop et qu'il faut potentiellement restreindre le volume de recherches
@@ -18,7 +18,7 @@ Public Partial Class frmBuyCards
     Private VmIsComplete As Boolean = False             'Page complètement affichée dans le navigateur
     #End Region
     #Region "Méthodes"
-    Public Sub New(VpServer As clsModule.eMarketServer)
+    Public Sub New(VpServer As mdlConstGlob.eMarketServer)
         Call Me.InitializeComponent
         'Market place
         VmServer = VpServer
@@ -38,7 +38,7 @@ Public Partial Class frmBuyCards
             VmBrowser.Navigate(VpURL)
         End If
         While Not VmIsComplete
-            If Now.Subtract(VpStart).TotalSeconds > clsModule.CgTimeOut Then
+            If Now.Subtract(VpStart).TotalSeconds > mdlConstGlob.CgTimeOut Then
                 VmBrowser.Stop
                 VmIsComplete = True
             End If
@@ -99,7 +99,7 @@ Public Partial Class frmBuyCards
             Next VpDelete
         End If
     End Sub
-    Private Sub MVFetch(VpCard As String, VpQualities() As clsModule.eQuality, VpBannedSellers() As String)
+    Private Sub MVFetch(VpCard As String, VpQualities() As mdlConstGlob.eQuality, VpBannedSellers() As String)
     '--------------------------------------------------------------------------------------------------------------
     'Se connecte sur Magic-Ville pour récupérer les informations de ventes relatives à la carte passée en paramètre
     '--------------------------------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ Public Partial Class frmBuyCards
     Dim VpRemoteCard As clsRemoteCard = Nothing
     Dim VpToRemove As New List(Of clsRemoteCard)
         'Connexion au site de Magic-Ville
-        Call Me.BrowseAndWait(clsModule.CgURL26)
+        Call Me.BrowseAndWait(mdlConstGlob.CgURL26)
         'Saisie de la carte dans la zone de recherche
         VpElement = VmBrowser.Document.All.GetElementsByName("recherche_titre").Item(0)
         VpElement.SetAttribute("value", VpCard)
@@ -158,7 +158,7 @@ Public Partial Class frmBuyCards
                     ElseIf VpElement.Name.Contains("ref") Then
                         .Edition = VpElement.GetAttribute("value")
                     ElseIf VpElement.Name.Contains("lang") Then
-                        .Language = clsModule.MyLanguage(VpElement.GetAttribute("value"))
+                        .Language = mdlToolbox.MyLanguage(VpElement.GetAttribute("value"))
                     ElseIf VpElement.Name.Contains("etat") Then
                         .Etat = VpElement.GetAttribute("value")
                     ElseIf VpElement.Name.Contains("seller") Then
@@ -166,13 +166,13 @@ Public Partial Class frmBuyCards
                     End If
                 End With
             ElseIf VpElement.GetAttribute("color") = "#3333ff" Then
-                VpRemoteCard.Prix = clsModule.MyVal(VpElement.InnerText)
+                VpRemoteCard.Prix = mdlToolbox.MyVal(VpElement.InnerText)
             End If
         Next VpElement
         'Supprime de la collection tout ce qui ne respecte pas les critères actifs
         For Each VpRemoteCard In VmToSell
             With VpRemoteCard
-                If Not ( Array.IndexOf(clsModule.CgBuyLanguage, .Language.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, .Etat) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .Vendeur.Name.ToLower) < 0) ) Then
+                If Not ( Array.IndexOf(mdlConstGlob.CgBuyLanguage, .Language.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, .Etat) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .Vendeur.Name.ToLower) < 0) ) Then
                     VpToRemove.Add(VpRemoteCard)
                 End If
             End With
@@ -181,7 +181,7 @@ Public Partial Class frmBuyCards
             VmToSell.Remove(VpDelete)
         Next VpDelete
     End Sub
-    Private Sub MKMFetch(VpCard As String, VpQualities() As clsModule.eQuality, VpBannedSellers() As String)
+    Private Sub MKMFetch(VpCard As String, VpQualities() As mdlConstGlob.eQuality, VpBannedSellers() As String)
     '------------------------------------------------------------------------------------------------------------------
     'Se connecte sur MagicCardMarket pour récupérer les informations de ventes relatives à la carte passée en paramètre
     '------------------------------------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ Public Partial Class frmBuyCards
         VpProducts = MKMRequest(Of clsProductRequest)(CgURL24.Replace("card-name", Uri.EscapeDataString(VpCard.ToLower)))
         'S'il y a trop d'id produits disponibles (trop d'éditions pour une même carte), on propose de restreindre les requêtes
         VmEditions = Nothing
-        If VpProducts.product.Count > clsModule.CgMaxEditionsMarket Then
+        If VpProducts.product.Count > mdlConstGlob.CgMaxEditionsMarket Then
             VpFilterEditions = New frmBuySettings(VpCard, Me, VpProducts.product)
             VpFilterEditions.ShowDialog
         End If
@@ -203,8 +203,8 @@ Public Partial Class frmBuyCards
                 'Ajout à la collection si respect des critères actifs
                 For Each VpArticle As clsArticleRequest.clsArticle In VpArticles.article
                     With VpArticle
-                        If Array.IndexOf(clsModule.CgBuyLanguage, .language.languageName.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, clsModule.MyQuality(.condition)) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .seller.username.ToLower) < 0) Then
-                            VmToSell.Add(New clsRemoteCard(VpCard, New clsSeller(.seller.username), VpProduct.expansion, .language.languageName, clsModule.MyQuality(.condition), .count, 0, .price))
+                        If Array.IndexOf(mdlConstGlob.CgBuyLanguage, .language.languageName.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, mdlToolbox.MyQuality(.condition)) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .seller.username.ToLower) < 0) Then
+                            VmToSell.Add(New clsRemoteCard(VpCard, New clsSeller(.seller.username), VpProduct.expansion, .language.languageName, mdlToolbox.MyQuality(.condition), .count, 0, .price))
                         End If
                     End With
                 Next VpArticle
@@ -317,7 +317,7 @@ Public Partial Class frmBuyCards
                 VpGroup = Me.Extract(VpLocalCard.Name, VpToSell)
                 'Avertissement si aucun exemplaire de cette carte n'est disponible à la vente
                 If VpGroup.Count = 0 Then
-                    Call clsModule.ShowWarning("Impossible d'acquérir la carte " + VpLocalCard.Name + "...")
+                    Call mdlToolbox.ShowWarning("Impossible d'acquérir la carte " + VpLocalCard.Name + "...")
                     Exit While
                 End If
                 VpFound = Nothing
@@ -370,7 +370,7 @@ Public Partial Class frmBuyCards
                                 If VpSeller1 IsNot VpSeller2 AndAlso VpSeller2.Coverage > VpSeller1.Coverage Then
                                     'Recherche à qui il vaudrait mieux confier la transaction initiale pour minimiser le surcoût en se passant du vendeur dont on ne veut plus (dans tous les cas, le surcoût doit être inférieur à la valeur maximale estimée pour les frais de port d'une carte)
                                     For Each VpCard2 As clsRemoteCard In VpSeller2.GetCardsOfInterest(VpToSell, False)
-                                        If VpCard2.Name = VpFound.Name AndAlso VpCard2.Quantity > 0 AndAlso VpCard2.Prix <= VpFound.Prix AndAlso VpCard2.Prix - VpCard1.Prix < clsModule.CgWorstShippingCost Then
+                                        If VpCard2.Name = VpFound.Name AndAlso VpCard2.Quantity > 0 AndAlso VpCard2.Prix <= VpFound.Prix AndAlso VpCard2.Prix - VpCard1.Prix < mdlConstGlob.CgWorstShippingCost Then
                                             VpFound = VpCard2
                                         End If
                                     Next VpCard2
@@ -401,7 +401,7 @@ Public Partial Class frmBuyCards
             'Optimisation complémentaire par rapport aux frais de port
             For Each VpSeller1 As clsSeller In VpSellers
                 'Si on sollicite un vendeur pour un montant n'atteignant même pas les frais de port max, on va essayer de dispatcher les acquisitions ailleurs
-                If clsRemoteCard.GetSubTotal(VpToSell, VpSeller1) <= clsModule.CgWorstShippingCost Then
+                If clsRemoteCard.GetSubTotal(VpToSell, VpSeller1) <= mdlConstGlob.CgWorstShippingCost Then
                     VpBackups.Clear
                     'Parcourt les cartes qu'on lui a achetées
                     For Each VpCard1 As clsRemoteCard In VpSeller1.GetCardsOfInterest(VpToSell, True)
@@ -422,7 +422,7 @@ Public Partial Class frmBuyCards
                         Application.DoEvents
                     Next VpCard1
                     'Si on n'a pas réussi à transférer l'intégralité des transactions avec ce vendeur ou bien qu'au final ça coûte plus cher que les frais de port économisés, on restaure toutes les transactions dans leur état initial
-                    If VpSeller1.Bought > 0 OrElse clsRemoteCard.GetTotal(VpToSell) - VpPreTotal >= clsModule.CgShippingCost Then
+                    If VpSeller1.Bought > 0 OrElse clsRemoteCard.GetTotal(VpToSell) - VpPreTotal >= mdlConstGlob.CgShippingCost Then
                         Call Me.CancelChanges(VpBackups)
                     End If
                 End If
@@ -437,7 +437,7 @@ Public Partial Class frmBuyCards
                         VpFound = New clsRemoteCard(VpCard1.Name, Nothing, VpCard1.Edition, VpCard1.Language, VpCard1.Etat, VpCard1.Quantity, VpCard1.Bought, Single.PositiveInfinity)
                         'Recherche si la carte est disponible avec une économie supérieure aux frais de port engendrés
                         For Each VpCard2 As clsRemoteCard In VpToSell
-                            If VpCard2.Name = VpFound.Name AndAlso VpCard2.Quantity > 0 AndAlso VpCard2.Prix <= VpFound.Prix AndAlso VpCard1.Prix - VpCard2.Prix > clsModule.CgShippingCost Then
+                            If VpCard2.Name = VpFound.Name AndAlso VpCard2.Quantity > 0 AndAlso VpCard2.Prix <= VpFound.Prix AndAlso VpCard1.Prix - VpCard2.Prix > mdlConstGlob.CgShippingCost Then
                                 VpFound = VpCard2
                             End If
                         Next VpCard2
@@ -452,7 +452,7 @@ Public Partial Class frmBuyCards
             End If
             'Avertissement si le nombre maximal de transactions autorisées est dépassé
             If clsSeller.GetCount(VpSellers) > VpMaxTransactions Then
-                Call clsModule.ShowWarning("Impossible d'effectuer tous les achats avec seulement " + VpMaxTransactions.ToString + " transaction(s)...")
+                Call mdlToolbox.ShowWarning("Impossible d'effectuer tous les achats avec seulement " + VpMaxTransactions.ToString + " transaction(s)...")
             End If
         End If
         'Récapitulatif des transactions par vendeur
@@ -471,7 +471,7 @@ Public Partial Class frmBuyCards
         VpOutput.Flush
         VpOutput.Close
         Me.txtTot.Text = clsRemoteCard.GetTotal(VpToSell).ToString + "€"
-        Call clsModule.ShowInformation("Optimisation terminée !" + vbCrLf + "Les résultats vont s'afficher automatiquement dans le bloc-notes...")
+        Call mdlToolbox.ShowInformation("Optimisation terminée !" + vbCrLf + "Les résultats vont s'afficher automatiquement dans le bloc-notes...")
     End Sub
     Private Sub InsertRow(VpS As String, VpN As Integer, VpCellModel As DataModels.IDataModel)
     '--------------------------------------
@@ -484,10 +484,10 @@ Public Partial Class frmBuyCards
             Me.grdBasket(.RowsCount - 1, 1).DataModel = VpCellModel
         End With
     End Sub
-    Public Sub LoadGrid(VpMode As clsModule.eBasketMode)
+    Public Sub LoadGrid(VpMode As mdlConstGlob.eBasketMode)
     Dim VpCellModel As DataModels.IDataModel
         'Mode 1 : Résultats de la recherche sur Internet
-        If VpMode = clsModule.eBasketMode.Remote Then
+        If VpMode = mdlConstGlob.eBasketMode.Remote Then
             #If DEBUG Then
                 Return
             #End If
@@ -592,7 +592,7 @@ Public Partial Class frmBuyCards
                 Call Me.ExcludeSellers
             End If
             Call Me.ClearSellList
-            Call Me.LoadGrid(clsModule.eBasketMode.Remote)
+            Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
             Me.cmdCalc.Enabled = True
         End If
     End Sub
@@ -600,7 +600,7 @@ Public Partial Class frmBuyCards
     #Region "Evènements"
     Private Sub CellValidated(sender As Object, e As CellEventArgs)
     Dim VpQ As Short
-        With clsModule.VgSessionSettings
+        With mdlConstGlob.VgSessionSettings
             If Not .GridClearing Then
                  .GridClearing = True
                 VmToBuy.Clear
@@ -611,23 +611,23 @@ Public Partial Class frmBuyCards
                         VmToBuy.Add(New clsLocalCard(Me.grdBasket(VpI, 0).Value, VpQ, 0))
                     End If
                 Next VpI
-                Call Me.LoadGrid(clsModule.eBasketMode.Local)
+                Call Me.LoadGrid(mdlConstGlob.eBasketMode.Local)
                  .GridClearing = False
             End If
         End With
     End Sub
     Sub BtLocalBasketActivate(ByVal sender As Object, ByVal e As EventArgs)
-        Call Me.LoadGrid(clsModule.eBasketMode.Local)
+        Call Me.LoadGrid(mdlConstGlob.eBasketMode.Local)
     End Sub
     Sub BtRemoteBasketActivate(ByVal sender As Object, ByVal e As EventArgs)
-        Call Me.LoadGrid(clsModule.eBasketMode.Remote)
+        Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
     End Sub
     Sub CmdRefreshClick(ByVal sender As Object, ByVal e As EventArgs)
-    Dim VpQualities As New List(Of clsModule.eQuality)
+    Dim VpQualities As New List(Of mdlConstGlob.eQuality)
     Dim VpBannedSellers() As String = Nothing
         'Information utilisateur
         If VmToBuy.Count = 0 Then
-            Call clsModule.ShowInformation("Choisissez des cartes à acheter via clic droit dans l'explorateur !")
+            Call mdlToolbox.ShowInformation("Choisissez des cartes à acheter via clic droit dans l'explorateur !")
             Exit Sub
         End If
         'Blocage d'actions indésirables
@@ -637,10 +637,10 @@ Public Partial Class frmBuyCards
         Me.prgRefresh.Maximum = VmToBuy.Count
         Me.prgRefresh.Value = 0
         'Qualités autorisées pour les cartes à acheter
-        If Me.chkMint.Checked Then VpQualities.Add(clsModule.eQuality.Mint)
-        If Me.chkNearMint.Checked Then VpQualities.Add(clsModule.eQuality.NearMint)
-        If Me.chkExcellent.Checked Then VpQualities.Add(clsModule.eQuality.Excellent)
-        If Me.chkGood.Checked Then VpQualities.Add(clsModule.eQuality.Good)
+        If Me.chkMint.Checked Then VpQualities.Add(mdlConstGlob.eQuality.Mint)
+        If Me.chkNearMint.Checked Then VpQualities.Add(mdlConstGlob.eQuality.NearMint)
+        If Me.chkExcellent.Checked Then VpQualities.Add(mdlConstGlob.eQuality.Excellent)
+        If Me.chkGood.Checked Then VpQualities.Add(mdlConstGlob.eQuality.Good)
         'Vendeurs exclus
         If Me.chkSeller.Checked Then
             VpBannedSellers = VgOptions.VgSettings.BannedSellers.ToLower.Split("#")
@@ -657,9 +657,9 @@ Public Partial Class frmBuyCards
                 End If
                 'Choix de la market place
                 Select Case VmServer
-                    Case clsModule.eMarketServer.MagicVille
+                    Case mdlConstGlob.eMarketServer.MagicVille
                         Call Me.MVFetch(VpCard.Name, VpQualities.ToArray, VpBannedSellers)
-                    Case clsModule.eMarketServer.MagicCardMarket
+                    Case mdlConstGlob.eMarketServer.MagicCardMarket
                         Call Me.MKMFetch(VpCard.Name, VpQualities.ToArray, VpBannedSellers)
                     Case Else
                 End Select
@@ -669,9 +669,9 @@ Public Partial Class frmBuyCards
             Me.prgRefresh.Value = 0
             Application.DoEvents
             Call Me.ClearSellList
-            Call Me.LoadGrid(clsModule.eBasketMode.Remote)
+            Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
         Catch
-            Call clsModule.ShowWarning(clsModule.CgDL3b)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
         End Try
         'Restauration des actions bloquées
         Me.cmdRefresh.Visible = True
@@ -679,7 +679,7 @@ Public Partial Class frmBuyCards
         Me.cmdCalc.Enabled = True
     End Sub
     Sub CmdCalcClick(ByVal sender As Object, ByVal e As EventArgs)
-    Dim VpPath As String = clsModule.GetFreeTempFile(".txt")
+    Dim VpPath As String = mdlToolbox.GetFreeTempFile(".txt")
         Me.prgRefresh.Style = ProgressBarStyle.Marquee
         Cursor.Current = Cursors.WaitCursor
         Call Me.CalcTransactions(Me.sldTransactions.Value, VpPath)
@@ -720,7 +720,7 @@ Public Partial Class frmBuyCards
                 Application.DoEvents
                 Call Me.ExcludeSellers
                 Cursor.Current = Cursors.WaitCursor
-                Call Me.LoadGrid(clsModule.eBasketMode.Remote)
+                Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
             End If
         End If
     End Sub
@@ -736,7 +736,7 @@ Public Partial Class frmBuyCards
             If VmToSell.Count > 0 And Me.chkSeller.Checked Then
                 Application.DoEvents
                 Call Me.ExcludeSellers
-                Call Me.LoadGrid(clsModule.eBasketMode.Remote)
+                Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
             End If
         End If
     End Sub

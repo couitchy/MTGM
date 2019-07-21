@@ -10,8 +10,8 @@ Public Partial Class frmPerfs
     '------------
         Call Me.InitializeComponent
         VmOwner = VpOwner
-        For VpI As Integer = 1 To clsModule.GetDeckCount
-            Me.dropAddGame.DropDownItems.Add(clsModule.GetDeckNameFromIndex(VpI), Nothing, AddressOf AddGameClick)
+        For VpI As Integer = 1 To mdlToolbox.GetDeckCount
+            Me.dropAddGame.DropDownItems.Add(mdlToolbox.GetDeckNameFromIndex(VpI), Nothing, AddressOf AddGameClick)
         Next VpI
         Call AddKnownGames("JeuLocal", Me.cboJeuLocal)
         Call AddKnownGames("JeuAdverse", Me.cboJeuAdv)
@@ -21,14 +21,14 @@ Public Partial Class frmPerfs
         AddHandler Me.cboAdvVersion.ComboBox.SelectedIndexChanged, AddressOf CboAdvVersionSelectedIndexChanged
         Me.cboLocalVersion.ComboBox.BackColor = Color.LightBlue
         Me.cboAdvVersion.ComboBox.BackColor = Color.LightBlue
-        For VpI As Integer = 1 To clsModule.GetAdvCount
-            Me.cboJeuLocal.Items.Add(clsModule.CgPerfsTotal + clsModule.GetAdvName(VpI))
-            Me.cboJeuAdv.Items.Add(clsModule.CgPerfsTotal + clsModule.GetAdvName(VpI))
+        For VpI As Integer = 1 To mdlToolbox.GetAdvCount
+            Me.cboJeuLocal.Items.Add(mdlConstGlob.CgPerfsTotal + mdlToolbox.GetAdvName(VpI))
+            Me.cboJeuAdv.Items.Add(mdlConstGlob.CgPerfsTotal + mdlToolbox.GetAdvName(VpI))
         Next VpI
-        Me.cboLocalVersion.Items.Add(clsModule.CgPerfsVersion)
-        Me.cboAdvVersion.Items.Add(clsModule.CgPerfsVersion)
-        Me.cboLocalVersion.Items.Add(clsModule.CgPerfsTotalV)
-        Me.cboAdvVersion.Items.Add(clsModule.CgPerfsTotalV)
+        Me.cboLocalVersion.Items.Add(mdlConstGlob.CgPerfsVersion)
+        Me.cboAdvVersion.Items.Add(mdlConstGlob.CgPerfsVersion)
+        Me.cboLocalVersion.Items.Add(mdlConstGlob.CgPerfsTotalV)
+        Me.cboAdvVersion.Items.Add(mdlConstGlob.CgPerfsTotalV)
     End Sub
     Private Sub MyRefresh
     '---------------------------------------------------------------------------
@@ -43,10 +43,10 @@ Public Partial Class frmPerfs
     'Ajoute au combobox les versions disponibles pour le jeu venant d'être sélectionné
     '---------------------------------------------------------------------------------
     Dim VpSQL As String
-        VpCbo2.ComboBox.Text = clsModule.CgPerfsTotalV
+        VpCbo2.ComboBox.Text = mdlConstGlob.CgPerfsTotalV
         VpCbo2.Items.Clear
-        VpCbo2.Items.Add(clsModule.CgPerfsVersion)
-        VpCbo2.Items.Add(clsModule.CgPerfsTotalV)
+        VpCbo2.Items.Add(mdlConstGlob.CgPerfsVersion)
+        VpCbo2.Items.Add(mdlConstGlob.CgPerfsTotalV)
         VpSQL = "Select " + VpField2 + " From MyScores Where " + VpField1 + " = '" + VpCbo1.ComboBox.Text.Replace("'", "''") + "';"
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBCommand.ExecuteReader
@@ -63,7 +63,7 @@ Public Partial Class frmPerfs
     '--------------------------------------------------------------------------
     'Vérifie que la version (ie. la date) sélectionnée pour le jeu est correcte
     '--------------------------------------------------------------------------
-        If VpCbo.Items.Contains(VpCbo.ComboBox.Text) And VpCbo.ComboBox.Text <> clsModule.CgPerfsVersion And VpCbo.ComboBox.Text <> clsModule.CgPerfsTotalV Then
+        If VpCbo.Items.Contains(VpCbo.ComboBox.Text) And VpCbo.ComboBox.Text <> mdlConstGlob.CgPerfsVersion And VpCbo.ComboBox.Text <> mdlConstGlob.CgPerfsTotalV Then
             Return "'" + VpCbo.ComboBox.Text + "'"
         Else
             Return "Null"
@@ -119,33 +119,33 @@ Public Partial Class frmPerfs
     Dim VpGameCounter As New clsGameCounter                     'Matrice contenant {version locale, version adverse, nombre victoires locales, nombre victoires adverses)
     Dim VpDistinctAdverseVersions() As Date
     Dim VpDistinctLocalVersions() As Date
-    Dim VpHandleGamesVersions As Boolean = (Not (VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal))) And Me.dropGamesVersions.Checked
+    Dim VpHandleGamesVersions As Boolean = (Not (VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal))) And Me.dropGamesVersions.Checked
         'Si on ne tient pas compte des versions des jeux, le diagramme est bipolaire
         If Not VpHandleGamesVersions Then
             'Cas 1 : jeu 1 contre jeu 2
-            If Not (VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal)) Then
+            If Not (VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal)) Then
                 'Cas 1.1 : 1 contre 2
                 Call Me.GetNVictoires(VpJeuLocal, VpJeuAdv, VpVicLocal, VpVicAdv, True, "", "")
                 'Cas 1.2 : 2 contre 1
                 Call Me.GetNVictoires(VpJeuAdv, VpJeuLocal, VpVicLocal, VpVicAdv, False, "", "")
             'Cas 2 : adversaire 1 contre adversaire 2
-            ElseIf VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) And VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then
-                VpJeuLocal = VpJeuLocal.Replace(clsModule.CgPerfsTotal, "")
-                VpJeuAdv = VpJeuAdv.Replace(clsModule.CgPerfsTotal, "")
+            ElseIf VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) And VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) Then
+                VpJeuLocal = VpJeuLocal.Replace(mdlConstGlob.CgPerfsTotal, "")
+                VpJeuAdv = VpJeuAdv.Replace(mdlConstGlob.CgPerfsTotal, "")
                 'Cas 2.1 : 1 contre 2
                 Call Me.GetNVictoires("", "", VpVicLocal, VpVicAdv, True, VpJeuLocal, VpJeuAdv)
                 'Cas 2.2 : 2 contre 1
                 Call Me.GetNVictoires("", "", VpVicLocal, VpVicAdv, False, VpJeuLocal, VpJeuAdv)
             'Cas 3 : adversaire 1 contre jeu 2
-            ElseIf VpJeuLocal.StartsWith(clsModule.CgPerfsTotal)
-                VpJeuLocal = VpJeuLocal.Replace(clsModule.CgPerfsTotal, "")
+            ElseIf VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal)
+                VpJeuLocal = VpJeuLocal.Replace(mdlConstGlob.CgPerfsTotal, "")
                 'Cas 3.1 : 1 contre 2
                 Call Me.GetNVictoires("", VpJeuAdv, VpVicLocal, VpVicAdv, True, VpJeuLocal, "")
                 'Cas 3.2 : 2 contre 1
                 Call Me.GetNVictoires("", VpJeuAdv, VpVicLocal, VpVicAdv, False, VpJeuLocal, "")
             'Cas 4 : jeu 1 contre adversaire 2
-            ElseIf VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then
-                VpJeuAdv = VpJeuAdv.Replace(clsModule.CgPerfsTotal, "")
+            ElseIf VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) Then
+                VpJeuAdv = VpJeuAdv.Replace(mdlConstGlob.CgPerfsTotal, "")
                 'Cas 4.1 : 1 contre 2
                 Call Me.GetNVictoires(VpJeuLocal, "", VpVicLocal, VpVicAdv, True, "", VpJeuAdv)
                 'Cas 4.2 : 2 contre 1
@@ -176,23 +176,23 @@ Public Partial Class frmPerfs
             If Me.mnuBreakDown.Checked Then
                 VpSQL = "Select Victoire, JeuLocalVersion, JeuAdverseVersion From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' "
                 'Cas 1 : toutes les versions du jeu local contre 1 version du jeu adverse
-                If Me.cboLocalVersion.ComboBox.Text = clsModule.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text <> clsModule.CgPerfsTotalV Then
+                If Me.cboLocalVersion.ComboBox.Text = mdlConstGlob.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text <> mdlConstGlob.CgPerfsTotalV Then
                     VpSQL = VpSQL + "And JeuAdverseVersion = '" + Me.cboAdvVersion.ComboBox.Text + "';"
                 'Cas 2 : 1 version du jeu local contre toutes les versions du jeu adverse
-                ElseIf Me.cboLocalVersion.ComboBox.Text <> clsModule.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text = clsModule.CgPerfsTotalV Then
+                ElseIf Me.cboLocalVersion.ComboBox.Text <> mdlConstGlob.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text = mdlConstGlob.CgPerfsTotalV Then
                     VpSQL = VpSQL + "And JeuLocalVersion = '" + Me.cboLocalVersion.ComboBox.Text + "';"
                 'Cas 3 : toutes les versions du jeu local contre toutes les versions du jeu adverse
-                ElseIf Me.cboLocalVersion.ComboBox.Text = clsModule.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text = clsModule.CgPerfsTotalV Then
+                ElseIf Me.cboLocalVersion.ComboBox.Text = mdlConstGlob.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text = mdlConstGlob.CgPerfsTotalV Then
                     VpSQL = VpSQL + ";"
                 'Cas 4 : 1 version du jeu local contre 1 version du jeu adverse
-                ElseIf Me.cboLocalVersion.ComboBox.Text <> clsModule.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text <> clsModule.CgPerfsTotalV Then
+                ElseIf Me.cboLocalVersion.ComboBox.Text <> mdlConstGlob.CgPerfsTotalV And Me.cboAdvVersion.ComboBox.Text <> mdlConstGlob.CgPerfsTotalV Then
                     VpSQL = VpSQL + "And JeuLocalVersion = '" + Me.cboLocalVersion.ComboBox.Text + "' And JeuAdverseVersion = '" + Me.cboAdvVersion.ComboBox.Text + "';"
                 End If
                 VgDBCommand.CommandText = VpSQL
                 VgDBReader = VgDBCommand.ExecuteReader
                 With VgDBReader
                     While .Read
-                        VpGameCounter.AddGame(clsModule.MyCDate(.GetValue(1).ToString), clsModule.MyCDate(.GetValue(2).ToString), .GetBoolean(0))
+                        VpGameCounter.AddGame(mdlToolbox.MyCDate(.GetValue(1).ToString), mdlToolbox.MyCDate(.GetValue(2).ToString), .GetBoolean(0))
                     End While
                     .Close
                 End With
@@ -207,12 +207,12 @@ Public Partial Class frmPerfs
                     'Ajout des victoires locales
                     For VpI As Integer = 0 To VpDistinctLocalVersions.Length - 1
                         .Value(0, VpI) = VpGameCounter.GetNVicLocal(VpDistinctLocalVersions(VpI))
-                        .SerLeg(VpI) = "Victoires " + VpJeuLocal + " (" + clsModule.MyShortDateString(VpDistinctLocalVersions(VpI)) + ") : " + .Value(0, VpI).ToString
+                        .SerLeg(VpI) = "Victoires " + VpJeuLocal + " (" + mdlToolbox.MyShortDateString(VpDistinctLocalVersions(VpI)) + ") : " + .Value(0, VpI).ToString
                     Next VpI
                     'Ajout des victoires adverses
                     For VpI As Integer = 0 To VpDistinctAdverseVersions.Length - 1
                         .Value(0, VpI + VpDistinctLocalVersions.Length) = VpGameCounter.GetNVicAdverse(VpDistinctAdverseVersions(VpI))
-                        .SerLeg(VpI + VpDistinctLocalVersions.Length) = "Victoires " + VpJeuAdv + " (" + clsModule.MyShortDateString(VpDistinctAdverseVersions(VpI)) + ") : " + .Value(0, VpI + VpDistinctLocalVersions.Length).ToString
+                        .SerLeg(VpI + VpDistinctLocalVersions.Length) = "Victoires " + VpJeuAdv + " (" + mdlToolbox.MyShortDateString(VpDistinctAdverseVersions(VpI)) + ") : " + .Value(0, VpI + VpDistinctLocalVersions.Length).ToString
                     Next VpI
                     .SerLegBox = True
                     .Chart3D = True
@@ -226,7 +226,7 @@ Public Partial Class frmPerfs
                 VgDBReader = VgDBCommand.ExecuteReader
                 With VgDBReader
                     While .Read
-                        VpGameCounter.AddGame(clsModule.MyCDate(.GetValue(1).ToString), clsModule.MyCDate(.GetValue(2).ToString), .GetBoolean(0))
+                        VpGameCounter.AddGame(mdlToolbox.MyCDate(.GetValue(1).ToString), mdlToolbox.MyCDate(.GetValue(2).ToString), .GetBoolean(0))
                     End While
                     .Close
                 End With
@@ -289,7 +289,7 @@ Public Partial Class frmPerfs
     Dim VpLeastPlayed As String = ""
         For Each VpLocal As String In Me.cboJeuLocal.Items
             For Each VpAdv As String In Me.cboJeuAdv.Items
-                If Not VpLocal.StartsWith(clsModule.CgPerfsTotal) And Not VpAdv.StartsWith(clsModule.CgPerfsTotal) And VpLocal <> VpAdv And clsModule.GetOwner(VpLocal) <> clsModule.GetOwner(VpAdv) Then
+                If Not VpLocal.StartsWith(mdlConstGlob.CgPerfsTotal) And Not VpAdv.StartsWith(mdlConstGlob.CgPerfsTotal) And VpLocal <> VpAdv And mdlToolbox.GetOwner(VpLocal) <> mdlToolbox.GetOwner(VpAdv) Then
                     VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal = '" + VpLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpAdv.Replace("'", "''") + "';"
                     VpCur = VgDBCommand.ExecuteScalar
                     If VpCur < VpMin Then
@@ -347,7 +347,7 @@ Public Partial Class frmPerfs
         Try
             VpExcelApp = CreateObject("Excel.Application")
         Catch
-            Call clsModule.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système..." + vbCrLf + "Impossible de continuer.")
+            Call mdlToolbox.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système..." + vbCrLf + "Impossible de continuer.")
             Exit Sub
         End Try
         With VpExcelApp
@@ -399,13 +399,13 @@ Public Partial Class frmPerfs
             With .Sheets(2)
                 .Name = "Matches vs."
                 VpRow = 1
-                VpM = clsModule.GetAdvCount
+                VpM = mdlToolbox.GetAdvCount
                 For VpI As Integer = 1 To VpM
                     For VpJ As Integer = VpI + 1 To VpM
-                        VpJ1 = clsModule.GetAdvName(VpI)
-                        VpJ2 = clsModule.GetAdvName(VpJ)
-                        VpJn1 = clsModule.GetAdvDecksCount(VpJ1)
-                        VpJn2 = clsModule.GetAdvDecksCount(VpJ2)
+                        VpJ1 = mdlToolbox.GetAdvName(VpI)
+                        VpJ2 = mdlToolbox.GetAdvName(VpJ)
+                        VpJn1 = mdlToolbox.GetAdvDecksCount(VpJ1)
+                        VpJn2 = mdlToolbox.GetAdvDecksCount(VpJ2)
                         If VpJn1 > 0 And VpJn2 > 0 Then
                             ReDim VpVersusMatV1(0 To VpJn1 - 1)
                             ReDim VpVersusMatD1(0 To VpJn1 - 1)
@@ -463,8 +463,8 @@ Public Partial Class frmPerfs
                 For VpI As Integer = 1 To VpM
                     For VpJ As Integer = 1 To VpM
                         If VpI <> VpJ Then
-                            VpJ1 = clsModule.GetAdvName(VpI)
-                            VpJ2 = clsModule.GetAdvName(VpJ)
+                            VpJ1 = mdlToolbox.GetAdvName(VpI)
+                            VpJ2 = mdlToolbox.GetAdvName(VpJ)
                             .Cells(1 + VpI, 1) = VpJ1
                             .Cells(1, 1 + VpJ) = VpJ2
                             If VpTotMat.ContainsKey(VpJ1 + VpJ2) Then
@@ -488,16 +488,16 @@ Public Partial Class frmPerfs
                 VpRow = 1
                 For VpI As Integer = 1 To VpM
                     For VpJ As Integer = VpI + 1 To VpM
-                        VpJ1 = clsModule.GetAdvName(VpI)
-                        VpJ2 = clsModule.GetAdvName(VpJ)
+                        VpJ1 = mdlToolbox.GetAdvName(VpI)
+                        VpJ2 = mdlToolbox.GetAdvName(VpJ)
                         VpTournoi = New clsMagicTournament
-                        If clsModule.GetAdvDecksCount(VpJ1) > 0 And clsModule.GetAdvDecksCount(VpJ2) > 0 Then
+                        If mdlToolbox.GetAdvDecksCount(VpJ1) > 0 And mdlToolbox.GetAdvDecksCount(VpJ2) > 0 Then
                             .Cells(VpRow, 1) = VpJ1 + " vs. " + VpJ2
                             .Rows(VpRow).EntireRow.Font.Bold = True
                             VpRow = VpRow + 1
                             For Each VpDeck1 As String In clsPerformances.GetAdvDecks(VpJ1)
                                 For Each VpDeck2 As String In clsPerformances.GetAdvDecks(VpJ2)
-                                    If clsModule.GetDeckFormat(VpDeck1) = clsModule.GetDeckFormat(VpDeck2) Then
+                                    If mdlToolbox.GetDeckFormat(VpDeck1) = mdlToolbox.GetDeckFormat(VpDeck2) Then
                                         VpTournoi.CreateMatchup(VpDeck1, VpDeck2, clsPerformances.GetNVictoires(VpDeck1, VpDeck2), clsPerformances.GetNVictoires(VpDeck2, VpDeck1))
                                     End If
                                 Next VpDeck2
@@ -518,7 +518,7 @@ Public Partial Class frmPerfs
                     .Columns(VpI).EntireColumn.AutoFit
                 Next VpI
             End With
-            Call clsModule.ShowInformation("Génération terminée." + vbCrLf + "NB. Ces calculs n'ont de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix) et si suffisamment de parties entre tous les decks ont été disputées.")
+            Call mdlToolbox.ShowInformation("Génération terminée." + vbCrLf + "NB. Ces calculs n'ont de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix) et si suffisamment de parties entre tous les decks ont été disputées.")
             .Visible = True
         End With
     End Sub
@@ -543,7 +543,7 @@ Public Partial Class frmPerfs
         End If
     End Sub
     Private Sub AddResult(VpJeuLocal As String, VpJeuAdv As String, VpVictoire As Boolean)
-        If VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then Exit Sub
+        If VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) Then Exit Sub
         If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
             If Me.dropGamesVersions.Checked Then
                 VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboLocalVersion) + ", '" + VpJeuAdv.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboAdvVersion) + ", " + If(VpVictoire, "True", "False") + ");"
@@ -553,12 +553,12 @@ Public Partial Class frmPerfs
             VgDBCommand.ExecuteNonQuery
             Call Me.UpdateGraph
         Else
-            Call clsModule.ShowWarning("Sélectionner deux jeux présents dans les listes déroulantes avant d'en enregistrer le résultat...")
+            Call mdlToolbox.ShowWarning("Sélectionner deux jeux présents dans les listes déroulantes avant d'en enregistrer le résultat...")
         End If
         Call Me.GetAllPlayed
     End Sub
     Private Sub RemoveResult(VpJeuLocal As String, VpJeuAdv As String, VpVictoire As Boolean)
-        If VpJeuLocal.StartsWith(clsModule.CgPerfsTotal) Or VpJeuAdv.StartsWith(clsModule.CgPerfsTotal) Then Exit Sub
+        If VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) Then Exit Sub
         If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
             If Me.dropGamesVersions.Checked Then
                 VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuLocalVersion = " + Me.ValidateVersion(Me.cboLocalVersion) + " And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And JeuAdverseVersion = " + Me.ValidateVersion(Me.cboAdvVersion) + " And Victoire = " + If(VpVictoire, "True", "False") + ");"
@@ -568,16 +568,16 @@ Public Partial Class frmPerfs
             Try
                 VgDBCommand.ExecuteNonQuery
             Catch
-                Call clsModule.ShowWarning("Impossible d'accomplir l'opération...")
+                Call mdlToolbox.ShowWarning("Impossible d'accomplir l'opération...")
             End Try
             Call Me.UpdateGraph
         Else
-            Call clsModule.ShowWarning("Sélectionner deux jeux présents dans les listes déroulantes avant d'en enregistrer le résultat...")
+            Call mdlToolbox.ShowWarning("Sélectionner deux jeux présents dans les listes déroulantes avant d'en enregistrer le résultat...")
         End If
         Call Me.GetAllPlayed
     End Sub
     Sub DropAddGameOtherClick(ByVal sender As Object, ByVal e As EventArgs)
-    Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", clsModule.CgDefaultDeckName)
+    Dim VpGameName As String = InputBox("Quel est le nom du jeu indépendant (disponible dans les deux colonnes) à ajouter ?", "Nouveau jeu", mdlConstGlob.CgDefaultDeckName)
         If VpGameName.Trim <> "" Then
             If Not Me.cboJeuLocal.Items.Contains(VpGameName) Then
                 Me.cboJeuLocal.Items.Add(VpGameName)
@@ -595,7 +595,7 @@ Public Partial Class frmPerfs
     End Sub
     Sub MySelectedIndexChanged(VpCbo1 As TD.SandBar.ComboBoxItem, VpCbo2 As TD.SandBar.ComboBoxItem)
     Dim VpPickDate As New frmCalendar
-        If VpCbo1.Items.Contains(VpCbo1.ComboBox.Text) And VpCbo2.ComboBox.Text = clsModule.CgPerfsVersion Then
+        If VpCbo1.Items.Contains(VpCbo1.ComboBox.Text) And VpCbo2.ComboBox.Text = mdlConstGlob.CgPerfsVersion Then
             VpPickDate.ShowDialog
             If VpPickDate.DialogResult = System.Windows.Forms.DialogResult.OK Then
                 VpCbo2.Items.Add(VpPickDate.cal.SelectionStart.ToShortDateString)
@@ -655,7 +655,7 @@ Public Partial Class frmPerfs
         Me.cboJeuLocal.MinimumControlWidth = 130 * Me.CreateGraphics().DpiX / 96
     End Sub
     Sub BtEfficiencyActivate(ByVal sender As Object, ByVal e As EventArgs)
-        If clsModule.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Ceci peut prendre plusieurs secondes...")= System.Windows.Forms.DialogResult.Yes Then
+        If mdlToolbox.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Ceci peut prendre plusieurs secondes...")= System.Windows.Forms.DialogResult.Yes Then
             Cursor.Current = Cursors.WaitCursor
             Call Me.ExcelEfficiency
         End If

@@ -4,16 +4,16 @@ Imports System.ComponentModel
 Public Class clsSettings
     Private VmNJeux As Integer = 1
     Private VmNomsJeux As String = ""
-    Private VmDBProvider As clsModule.eDBProvider = clsModule.eDBProvider.Jet
-    Private VmDefaultBase As String = Application.StartupPath + clsModule.CgMDB
-    Private VmPicturesFile As String = Application.StartupPath + clsModule.CgDAT
-    Private VmMagicBack As String = Application.StartupPath + clsModule.CgMagicBack
+    Private VmDBProvider As mdlConstGlob.eDBProvider = mdlConstGlob.eDBProvider.Jet
+    Private VmDefaultBase As String = Application.StartupPath + mdlConstGlob.CgMDB
+    Private VmPicturesFile As String = Application.StartupPath + mdlConstGlob.CgDAT
+    Private VmMagicBack As String = Application.StartupPath + mdlConstGlob.CgMagicBack
     Private VmPlugins As String = Application.StartupPath
     Private VmBannedSellers As String = ""
     Private VmDefaultActivatedCriteria As String = "1#7"
     Private VmDefaultCriteriaOrder As String = "Type#Couleur#Edition#Coût d'invocation#Rareté#Prix#Quantité#Carte"
     Private VmRestoreCriteria As Boolean = True
-    Private VmDefaultSearchCriterion As clsModule.eSearchCriterion = clsModule.eSearchCriterion.NomVF
+    Private VmDefaultSearchCriterion As mdlConstGlob.eSearchCriterion = mdlConstGlob.eSearchCriterion.NomVF
     Private VmCheckForUpdate As Boolean = True
     Private VmAutoRefresh As Boolean = True
     Private VmImageMode As PictureBoxSizeMode = PictureBoxSizeMode.CenterImage
@@ -23,32 +23,32 @@ Public Class clsSettings
     Private VmRestoredWidth As Integer = 1008
     Private VmRestoredHeight As Integer = 604
     Private VmFormWindowState As FormWindowState = FormWindowState.Normal
-    Private VmLastUpdateAut As String = clsModule.CgLastUpdateAut
-    Private VmLastUpdateSimu As String = clsModule.CgLastUpdateSimu
-    Private VmLastUpdateTxtVF As String = clsModule.CgLastUpdateTxtVF
-    Private VmLastUpdateRulings As String = clsModule.CgLastUpdateRulings
-    Private VmLastUpdatePictPatch As String = clsModule.CgLastUpdatePictPatch
-    Private VmLastUpdateTradPatch As String = clsModule.CgLastUpdateTradPatch
-    Private VmLastUpdateSubTypesPatch As String = clsModule.CgLastUpdateSubsPatch
-    Private VmLastUpdateSubTypesVFPatch As String = clsModule.CgLastUpdateSubsVFPatch
-    Private VmLastUpdateMultiverseIdPatch As String = clsModule.CgLastUpdateMultiIdPatch
+    Private VmLastUpdateAut As String = mdlConstGlob.CgLastUpdateAut
+    Private VmLastUpdateSimu As String = mdlConstGlob.CgLastUpdateSimu
+    Private VmLastUpdateTxtVF As String = mdlConstGlob.CgLastUpdateTxtVF
+    Private VmLastUpdateRulings As String = mdlConstGlob.CgLastUpdateRulings
+    Private VmLastUpdatePictPatch As String = mdlConstGlob.CgLastUpdatePictPatch
+    Private VmLastUpdateTradPatch As String = mdlConstGlob.CgLastUpdateTradPatch
+    Private VmLastUpdateSubTypesPatch As String = mdlConstGlob.CgLastUpdateSubsPatch
+    Private VmLastUpdateSubTypesVFPatch As String = mdlConstGlob.CgLastUpdateSubsVFPatch
+    Private VmLastUpdateMultiverseIdPatch As String = mdlConstGlob.CgLastUpdateMultiIdPatch
     Private VmShowUpdateMenus As Boolean = False
     Private VmPrevSearches As String = ""
     Private VmVFDefault As Boolean = True
     Private VmShowCorruption As Boolean = True
     Private VmCopyRange As Integer = 1
     Private VmShowLines As Boolean = False
-    Private VmDownloadServerEnum As clsModule.eServer = clsModule.eServer.FreePagesPerso
-    Private VmMarketServerEnum As clsModule.eMarketServer = clsModule.eMarketServer.MagicVille
+    Private VmDownloadServerEnum As mdlConstGlob.eServer = mdlConstGlob.eServer.FreePagesPerso
+    Private VmMarketServerEnum As mdlConstGlob.eMarketServer = mdlConstGlob.eMarketServer.MagicVille
     Private VmShowAllSeries As Boolean = False
-    Private VmPicturesSource As clsModule.ePicturesSource = clsmodule.ePicturesSource.Local
+    Private VmPicturesSource As mdlConstGlob.ePicturesSource = mdlConstGlob.ePicturesSource.Local
     Private VmFontSize As Single = 10
-    <DisplayName("Critère de recherche"), Category("Général"), DefaultValue(clsModule.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
-    Public Property DefaultSearchCriterion As clsModule.eSearchCriterion
+    <DisplayName("Critère de recherche"), Category("Général"), DefaultValue(mdlConstGlob.eSearchCriterion.NomVF), Description("Critère de recherche par défaut pour la recherche avancée")> _
+    Public Property DefaultSearchCriterion As mdlConstGlob.eSearchCriterion
         Get
             Return VmDefaultSearchCriterion
         End Get
-        Set (VpDefaultSearchCriterion As clsModule.eSearchCriterion)
+        Set (VpDefaultSearchCriterion As mdlConstGlob.eSearchCriterion)
             VmDefaultSearchCriterion = VpDefaultSearchCriterion
         End Set
     End Property
@@ -281,12 +281,12 @@ Public Class clsSettings
             VmImageMode = VpImageMode
         End Set
     End Property
-    <DisplayName("Source des images"), Category("Explorateur"), DefaultValue(clsModule.ePicturesSource.Local), Description("Emplacement source des images des cartes")> _
-    Public Property PicturesSource As clsModule.ePicturesSource
+    <DisplayName("Source des images"), Category("Explorateur"), DefaultValue(mdlConstGlob.ePicturesSource.Local), Description("Emplacement source des images des cartes")> _
+    Public Property PicturesSource As mdlConstGlob.ePicturesSource
         Get
             Return VmPicturesSource
         End Get
-        Set (VpPicturesSource As clsModule.ePicturesSource)
+        Set (VpPicturesSource As mdlConstGlob.ePicturesSource)
             VmPicturesSource = VpPicturesSource
         End Set
     End Property
@@ -390,20 +390,20 @@ Public Class clsSettings
         End Set
     End Property
     <DisplayName("Serveur de téléchargement"), Category("Mises à jour"), Description("Serveur de téléchargement à contacter pour télécharger les mises à jour d'application et de contenu")> _
-    Public Property DownloadServerEnum As clsModule.eServer
+    Public Property DownloadServerEnum As mdlConstGlob.eServer
         Get
             Return VmDownloadServerEnum
         End Get
-        Set (VpDownloadServerEnum As clsModule.eServer)
+        Set (VpDownloadServerEnum As mdlConstGlob.eServer)
             VmDownloadServerEnum = VpDownloadServerEnum
         End Set
     End Property
     <DisplayName("Serveur d'achats de cartes"), Category("Mises à jour"), Description("Serveur à contacter pour récupérer les informations d'achats / ventes")> _
-    Public Property MarketServerEnum As clsModule.eMarketServer
+    Public Property MarketServerEnum As mdlConstGlob.eMarketServer
         Get
             Return VmMarketServerEnum
         End Get
-        Set (VpMarketServerEnum As clsModule.eMarketServer)
+        Set (VpMarketServerEnum As mdlConstGlob.eMarketServer)
             VmMarketServerEnum = VpMarketServerEnum
         End Set
     End Property
@@ -411,9 +411,9 @@ Public Class clsSettings
     Public ReadOnly Property DownloadServer As String
         Get
             Select Case VmDownloadServerEnum
-                Case clsModule.eServer.FreePagesPerso
-                    Return clsModule.CgDefaultServer
-                Case clsModule.eServer.ChromeLightStudio
+                Case mdlConstGlob.eServer.FreePagesPerso
+                    Return mdlConstGlob.CgDefaultServer
+                Case mdlConstGlob.eServer.ChromeLightStudio
                     Return "http://chromelight.brutin.fr/MTGM"
                 Case Else
                     Return ""
@@ -421,11 +421,11 @@ Public Class clsSettings
         End Get
     End Property
     <DisplayName("Moteur de base de données"), Category("Général"), Description("Composant logiciel OLEDB permettant d'accéder aux fichiers de base de données Microsoft Access")> _
-    Public Property DBProvider As clsModule.eDBProvider
+    Public Property DBProvider As mdlConstGlob.eDBProvider
         Get
             Return VmDBProvider
         End Get
-        Set (VpDBProvider As clsModule.eDBProvider)
+        Set (VpDBProvider As mdlConstGlob.eDBProvider)
             VmDBProvider = VpDBProvider
         End Set
     End Property

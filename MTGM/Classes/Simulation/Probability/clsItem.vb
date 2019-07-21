@@ -17,9 +17,9 @@
             Case eElementType.Card, eElementType.SubType, eElementType.Cost
                 Return VmElementValue
             Case eElementType.Type
-                Return clsModule.FormatTitle("Card.Type", VmElementValue)
+                Return mdlToolbox.FormatTitle("Card.Type", VmElementValue)
             Case eElementType.Color
-                Return clsModule.FormatTitle("Spell.Color", VmElementValue)
+                Return mdlToolbox.FormatTitle("Spell.Color", VmElementValue)
             Case Else
                 Return ""
         End Select

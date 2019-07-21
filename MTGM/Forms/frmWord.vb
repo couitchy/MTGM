@@ -12,7 +12,7 @@ Public Partial Class frmWord
     Private Const CmTxtPerRowNoFullTxt As Integer = 6
     Private Const CmTxtPerRowWithFullTxt As Integer = 4
     Public Sub New(VpOwner As MainForm)
-    Dim VpPath As String = Path.GetTempPath + clsModule.CgTemp
+    Dim VpPath As String = Path.GetTempPath + mdlConstGlob.CgTemp
         Call Me.InitializeComponent
         VmSource = VpOwner.MySource
         VmRestriction = VpOwner.Restriction
@@ -44,12 +44,12 @@ Public Partial Class frmWord
         Try
             VpWordApp = CreateObject("Word.Application")
         Catch
-            Call clsModule.ShowWarning("Aucune installation de Microsoft Word n'a été détectée sur votre système." + vbCrLf + "Impossible de continuer...")
+            Call mdlToolbox.ShowWarning("Aucune installation de Microsoft Word n'a été détectée sur votre système." + vbCrLf + "Impossible de continuer...")
             Exit Sub
         End Try
         'Pré-extraction des images nécessaires
         If Not VpTextOnly Then
-            Call clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
+            Call mdlToolbox.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
         End If
         'Nouveau document
         VpWordApp.DisplayAlerts = False
@@ -60,7 +60,7 @@ Public Partial Class frmWord
         VpSQL = If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText")
         VpSQL = "Select " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Sum(Items), Card.Title, Spell.Cost, Creature.Power, Creature.Tough, IIf(IsNull(" + VpSQL + "), '', " + VpSQL + ") From ((((Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join " + VmSource + " On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Spell.Title = Card.Title) Inner Join TextesFR On Card.Title = TextesFR.CardName) Left Join Creature On Card.Title = Creature.Title Where "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title, Spell.Cost, Creature.Power, Creature.Tough, CardText, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText"))
+        VpSQL = mdlToolbox.TrimQuery(VpSQL, , " Group By " + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + ", Card.Title, Spell.Cost, Creature.Power, Creature.Tough, CardText, " + If(Me.chkVF.Checked, "TextesFR.TexteFR", "Card.CardText"))
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBcommand.ExecuteReader
         With VgDBReader
@@ -83,10 +83,10 @@ Public Partial Class frmWord
         If Not VpTextOnly Then
             'Marges minimales
             With VpDocument.PageSetup
-                .LeftMargin = VpWordApp.MillimetersToPoints(clsModule.CgXMargin)
-                .RightMargin = VpWordApp.MillimetersToPoints(clsModule.CgXMargin)
-                .TopMargin = VpWordApp.MillimetersToPoints(clsModule.CgYMargin)
-                .BottomMargin = VpWordApp.MillimetersToPoints(clsModule.CgYMargin)
+                .LeftMargin = VpWordApp.MillimetersToPoints(mdlConstGlob.CgXMargin)
+                .RightMargin = VpWordApp.MillimetersToPoints(mdlConstGlob.CgXMargin)
+                .TopMargin = VpWordApp.MillimetersToPoints(mdlConstGlob.CgYMargin)
+                .BottomMargin = VpWordApp.MillimetersToPoints(mdlConstGlob.CgYMargin)
             End With
             'Remplissage
             VpTop = 0
@@ -95,14 +95,14 @@ Public Partial Class frmWord
             For Each VpItem As clsWordItem In VpItems
                 Try
                     For VpI As Integer = 1 To VpItem.Quant
-                        VpPath = Me.txtSaveImg.Text + "\" + clsModule.AvoidForbiddenChr(VpItem.TitleVO) + ".jpg"
+                        VpPath = Me.txtSaveImg.Text + "\" + mdlToolbox.AvoidForbiddenChr(VpItem.TitleVO) + ".jpg"
                         VpPicture = VpDocument.Shapes.AddPicture(VpPath, False, True, 1, 1, 1, 1)
-                        If Not Me.chkManageBorder.Checked OrElse clsModule.HasBorder(VpPath) Then
-                            VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm)
-                            VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm)
+                        If Not Me.chkManageBorder.Checked OrElse mdlToolbox.HasBorder(VpPath) Then
+                            VpPicture.Width = VpWordApp.MillimetersToPoints(mdlConstGlob.CgMTGCardWidth_mm)
+                            VpPicture.Height = VpWordApp.MillimetersToPoints(mdlConstGlob.CgMTGCardHeight_mm)
                         Else
-                            VpPicture.Width = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_crop_mm)
-                            VpPicture.Height = VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_crop_mm)
+                            VpPicture.Width = VpWordApp.MillimetersToPoints(mdlConstGlob.CgMTGCardWidth_crop_mm)
+                            VpPicture.Height = VpWordApp.MillimetersToPoints(mdlConstGlob.CgMTGCardHeight_crop_mm)
                         End If
                         VpPicture.Top = VpTop
                         VpPicture.Left = VpLeft
@@ -116,15 +116,15 @@ Public Partial Class frmWord
                             VpTop = 0
                         ElseIf VpCount Mod CmImgPerRow = 0 Then     '3 vignettes par ligne
                             VpLeft = 0
-                            VpTop = VpTop + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardHeight_mm + clsModule.CgYMargin)
+                            VpTop = VpTop + VpWordApp.MillimetersToPoints(mdlConstGlob.CgMTGCardHeight_mm + mdlConstGlob.CgYMargin)
                         Else
-                            VpLeft = VpLeft + VpWordApp.MillimetersToPoints(clsModule.CgMTGCardWidth_mm + clsModule.CgXMargin)
+                            VpLeft = VpLeft + VpWordApp.MillimetersToPoints(mdlConstGlob.CgMTGCardWidth_mm + mdlConstGlob.CgXMargin)
                         End If
                         Me.prgAvance.Increment(1)
                         Application.DoEvents
                     Next VpI
                 Catch
-                    Call clsModule.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + VpItem.Title + "...")
+                    Call mdlToolbox.ShowWarning("Un problème est survenu lors de la création de la vignette de la carte " + VpItem.Title + "...")
                 End Try
             Next VpItem
         '2. Génération mode texte
@@ -182,7 +182,7 @@ Public Partial Class frmWord
     Dim VpSQL As String
         VpSQL = "Select Distinct Card.Title From " + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr Where "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL)
+        VpSQL = mdlToolbox.TrimQuery(VpSQL)
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBcommand.ExecuteReader
         With VgDBReader
@@ -222,14 +222,14 @@ Public Partial Class frmWord
         End If
     End Sub
     Sub CmdWordClick(sender As Object, e As EventArgs)
-        If Me.chklstWord.CheckedItems.Count > clsModule.CgMaxVignettes Then
-            Call clsModule.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + clsModule.CgMaxVignettes.ToString + ".")
+        If Me.chklstWord.CheckedItems.Count > mdlConstGlob.CgMaxVignettes Then
+            Call mdlToolbox.ShowWarning("Le nombre de vignettes à générer est trop important..." + vbCrLf + "Maximum autorisé : " + mdlConstGlob.CgMaxVignettes.ToString + ".")
         Else
             Me.cmdWord.Enabled = False
             Application.UseWaitCursor = True
             If Me.optSaveImg.Checked Then
                 Call Me.WordGen(False)
-                Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
+                Process.Start(mdlConstGlob.CgShell, Me.txtSaveImg.Text)
             Else
                 Call Me.WordGen(True)
             End If

@@ -106,15 +106,15 @@ Public Class clsBoardCard
             VpCardName = If(VmTransformed, VmTransformedCardName, VmCardName)
             VmMissingImg = False
             If Not VmHidden Then
-                VpFile = Path.GetTempPath + clsModule.CgTemp + "\" + clsModule.AvoidForbiddenChr(VpCardName) + ".jpg"
+                VpFile = Path.GetTempPath + mdlConstGlob.CgTemp + "\" + mdlToolbox.AvoidForbiddenChr(VpCardName) + ".jpg"
                 If File.Exists(VpFile) Then
                     Return VpFile
                 Else
                     VmMissingImg = True
-                    Return Application.StartupPath + clsModule.CgMagicBack
+                    Return Application.StartupPath + mdlConstGlob.CgMagicBack
                 End If
             Else
-                Return Application.StartupPath + clsModule.CgMagicBack
+                Return Application.StartupPath + mdlConstGlob.CgMagicBack
             End If
         End Get
     End Property

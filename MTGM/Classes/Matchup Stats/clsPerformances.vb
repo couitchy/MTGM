@@ -158,7 +158,7 @@
     'Retourne le prix du jeu passé en paramètre
     '------------------------------------------
     Dim VpId As String
-        VpId = clsModule.GetDeckIdFromName(VpGame)
+        VpId = mdlToolbox.GetDeckIdFromName(VpGame)
         If VpId <> "" Then
             Try
                 VgDBCommand.CommandText = "Select Sum(Price * Items) From Card Inner Join MyGames On Card.EncNbr = MyGames.EncNbr Where GameID = " + VpId + ";"

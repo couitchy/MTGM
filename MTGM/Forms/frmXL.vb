@@ -36,20 +36,20 @@ Public Partial Class frmXL
         Try
             VpExcelApp = CreateObject("Excel.Application")
         Catch
-            Call clsModule.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système." + vbCrLf + "Impossible de continuer...")
+            Call mdlToolbox.ShowWarning("Aucune installation de Microsoft Excel n'a été détectée sur votre système." + vbCrLf + "Impossible de continuer...")
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR")
             Exit Sub
         End Try
         'Récupération de la liste
         VpSQL = "Select * From (((((" + VmSource + " Inner Join Card On " + VmSource + ".EncNbr = Card.EncNbr) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join TextesFR On TextesFR.CardName = Card.Title) Left Join Creature On Card.Title = Creature.Title Where "
         VpSQL = VpSQL + VmRestriction
-        VpSQL = clsModule.TrimQuery(VpSQL, True, " Order By " + If(VmSource = clsModule.CgSDecks, "Reserve Desc, ", "") + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + " Asc")
+        VpSQL = mdlToolbox.TrimQuery(VpSQL, True, " Order By " + If(VmSource = mdlConstGlob.CgSDecks, "Reserve Desc, ", "") + If(Me.chkVF.Checked, "CardFR.TitleFR", "Card.Title") + " Asc")
         VgDBCommand.CommandText = VpSQL
         VgDBReader = VgDBcommand.ExecuteReader
         With VgDBReader
             While .Read
                 VpCur = New clsXLItem(Me.chklstXL, If(Me.chkVF.Checked, .GetString(.GetOrdinal("TitleFR")), .GetString(.GetOrdinal("Card.Title"))), CInt(.GetValue(.GetOrdinal("Items"))), CBool(.GetValue(.GetOrdinal("Foil"))), .GetValue(.GetOrdinal("Color")).ToString, .GetValue(.GetOrdinal("Power")).ToString, .GetValue(.GetOrdinal("Tough")).ToString, .GetValue(.GetOrdinal("Cost")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "SeriesNM_FR", "SeriesNM"))).ToString, .GetValue(.GetOrdinal("Price")).ToString, .GetValue(.GetOrdinal("FoilPrice")).ToString, .GetValue(.GetOrdinal("Rarity")).ToString, .GetValue(.GetOrdinal("SubType")).ToString, .GetValue(.GetOrdinal("Type")).ToString, .GetValue(.GetOrdinal(If(Me.chkVF.Checked, "TexteFR", "CardText"))).ToString.Trim)
-                If VmSource = clsModule.CgSDecks Then
+                If VmSource = mdlConstGlob.CgSDecks Then
                     VpCur.Reserve = CBool(.GetValue(.GetOrdinal("Reserve")))
                 End If
                 VpElements.Add(VpCur)
@@ -270,8 +270,8 @@ Public Partial Class frmXL
         Application.UseWaitCursor = True
         Call Me.ExcelGen
         If Me.chkSaveImg.Checked Then
-            Call clsModule.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
-            Process.Start(clsModule.CgShell, Me.txtSaveImg.Text)
+            Call mdlToolbox.ExtractPictures(Me.txtSaveImg.Text, VmSource, VmRestriction)
+            Process.Start(mdlConstGlob.CgShell, Me.txtSaveImg.Text)
         End If
         Application.UseWaitCursor = False
         Me.cmdXL.Enabled = True

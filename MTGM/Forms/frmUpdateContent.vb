@@ -9,7 +9,7 @@ Public Partial Class frmUpdateContent
     Private VmBusy As Boolean
     Private VmCancel As Boolean
     Private VmAnswered As Boolean
-    Private VmPassiveUpdate As clsModule.ePassiveUpdate = clsModule.ePassiveUpdate.NotNow
+    Private VmPassiveUpdate As mdlConstGlob.ePassiveUpdate = mdlConstGlob.ePassiveUpdate.NotNow
     Public Sub New
         Call Me.InitializeComponent
     End Sub
@@ -24,9 +24,9 @@ Public Partial Class frmUpdateContent
     DIm VpLength As Integer
         Try
             'Gestion cas 0
-            VpStamps(0) = clsModule.GetPictSP
+            VpStamps(0) = mdlToolbox.GetPictSP
             'Gestion cas 1 à 10
-            VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1D)
+            VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1D)
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             VpAnswer.Read(VpBuf, 0, VpBuf.Length)
             VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)  'gestion cr ou cr+lf
@@ -39,7 +39,7 @@ Public Partial Class frmUpdateContent
 
             Return VpStamps
         Catch
-            Call clsModule.ShowWarning(clsModule.CgDL3b)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
             Return Nothing
         End Try
     End Function
@@ -53,7 +53,7 @@ Public Partial Class frmUpdateContent
     Dim VpBuf(0 To 74) As Byte
     DIm VpLength As Integer
         Try
-            VpRequest = WebRequest.Create(clsModule.VgOptions.VgSettings.DownloadServer + CgURL1E)
+            VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1E)
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             VpAnswer.Read(VpBuf, 0, VpBuf.Length)
             VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
@@ -67,7 +67,7 @@ Public Partial Class frmUpdateContent
 
             Return VpSizes
         Catch
-            Call clsModule.ShowWarning(clsModule.CgDL3b)
+            Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
             Return Nothing
         End Try
     End Function
@@ -100,7 +100,7 @@ Public Partial Class frmUpdateContent
             Case clsUpdateContent.EgMAJContenu.NewRulings
                 VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateRulings, VpStamp, VpSize)
             Case clsUpdateContent.EgMAJContenu.NewPrix
-                VpMAJContenu = New clsUpdateContent(VpType, clsModule.GetLastPricesDate.ToShortDateString, VpStamp, VpSize)
+                VpMAJContenu = New clsUpdateContent(VpType, mdlToolbox.GetLastPricesDate.ToShortDateString, VpStamp, VpSize)
             Case clsUpdateContent.EgMAJContenu.NewPict
                 If File.Exists(VgOptions.VgSettings.PicturesFile) Then
                     VpPictFileSize = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length
@@ -134,10 +134,10 @@ Public Partial Class frmUpdateContent
         Select Case VpElement.TypeContenu
             Case clsUpdateContent.EgMAJContenu.NewAut
                 'Appel silencieux pour mise à jour autorisations en tournoi
-                Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL15), clsModule.CgUpAutorisations)
-                If File.Exists(Application.StartupPath + clsModule.CgUpAutorisations) Then
-                    Call MainForm.VgMe.UpdateAutorisations(Application.StartupPath + clsModule.CgUpAutorisations, True)
-                    Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpAutorisations)
+                Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL15), mdlConstGlob.CgUpAutorisations)
+                If File.Exists(Application.StartupPath + mdlConstGlob.CgUpAutorisations) Then
+                    Call MainForm.VgMe.UpdateAutorisations(Application.StartupPath + mdlConstGlob.CgUpAutorisations, True)
+                    Call mdlToolbox.SecureDelete(Application.StartupPath + mdlConstGlob.CgUpAutorisations)
                     VgOptions.VgSettings.LastUpdateAut = VpElement.Serveur
                 Else
                     Return False
@@ -155,10 +155,10 @@ Public Partial Class frmUpdateContent
                 End If
             Case clsUpdateContent.EgMAJContenu.NewSimu
                 'Appel silencieux pour mise à jour modèles et historiques
-                Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL3B), clsModule.CgUpDDBb)
-                If File.Exists(Application.StartupPath + clsModule.CgUpDDBb) Then
-                    Call clsModule.DBImport(Application.StartupPath + clsModule.CgUpDDBb, True)
-                    Call clsModule.DBAdaptEncNbr
+                Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL3B), mdlConstGlob.CgUpDDBb)
+                If File.Exists(Application.StartupPath + mdlConstGlob.CgUpDDBb) Then
+                    Call mdlToolbox.DBImport(Application.StartupPath + mdlConstGlob.CgUpDDBb, True)
+                    Call mdlToolbox.DBAdaptEncNbr
                     VgOptions.VgSettings.LastUpdateSimu = VpElement.Serveur
                 Else
                     Return False
@@ -193,8 +193,8 @@ Public Partial Class frmUpdateContent
                 End If
             Case clsUpdateContent.EgMAJContenu.NewTxtVF
                 'Appel silencieux pour mise à jour texte des cartes en français
-                Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL11), clsModule.CgUpTXTFR)
-                If File.Exists(Application.StartupPath + clsModule.CgUpTXTFR) Then
+                Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL11), mdlConstGlob.CgUpTXTFR)
+                If File.Exists(Application.StartupPath + mdlConstGlob.CgUpTXTFR) Then
                     Call MainForm.VgMe.UpdateTxtFR(True)
                     VgOptions.VgSettings.LastUpdateTxtVF = VpElement.Serveur
                 Else
@@ -202,23 +202,23 @@ Public Partial Class frmUpdateContent
                 End If
             Case clsUpdateContent.EgMAJContenu.NewRulings
                 'Appel silencieux pour mise à jour texte des règles spécifiques
-                VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
-                Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL19), clsModule.CgUpRulings)
-                While VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
+                VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.InProgress
+                Call mdlToolbox.DownloadUpdate(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL19), mdlConstGlob.CgUpRulings)
+                While VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.InProgress
                     Application.DoEvents
                 End While
-                If VmPassiveUpdate = clsModule.ePassiveUpdate.Failed Then
+                If VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.Failed Then
                     Return False
                 Else
                     VgOptions.VgSettings.LastUpdateRulings = VpElement.Serveur
                 End If
-                VmPassiveUpdate = clsModule.ePassiveUpdate.NotNow
+                VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.NotNow
             Case clsUpdateContent.EgMAJContenu.NewPrix
                 'Appel silencieux pour mise à jour prix
-                Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL9), clsModule.CgUpPrices)
-                If File.Exists(Application.StartupPath + clsModule.CgUpPrices) Then
-                    Call MainForm.VgMe.UpdatePrices(Application.StartupPath + clsModule.CgUpPrices, False, True)
-                    Call clsModule.SecureDelete(Application.StartupPath + clsModule.CgUpPrices)
+                Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL9), mdlConstGlob.CgUpPrices)
+                If File.Exists(Application.StartupPath + mdlConstGlob.CgUpPrices) Then
+                    Call MainForm.VgMe.UpdatePrices(Application.StartupPath + mdlConstGlob.CgUpPrices, False, True)
+                    Call mdlToolbox.SecureDelete(Application.StartupPath + mdlConstGlob.CgUpPrices)
                 Else
                     Return False
                 End If
@@ -226,21 +226,21 @@ Public Partial Class frmUpdateContent
                 'Appel silencieux (multiple) pour mise(s) à jour d'images
                 If MainForm.VgMe.IsInImgDL Then Return False
                 For VpI As Integer = 1 + CInt(VpElement.Locale.Replace("SP", "")) To CInt(VpElement.Serveur.Replace("SP", ""))
-                    VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
+                    VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.InProgress
                     'Téléchargement du fichier accompagnateur
-                    Call clsModule.DownloadNow(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + clsModule.CgPicLogExt), clsModule.CgUpPic + clsModule.CgPicLogExt)
+                    Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + mdlConstGlob.CgPicLogExt), mdlConstGlob.CgUpPic + mdlConstGlob.CgPicLogExt)
                     Application.DoEvents
                     'Téléchargement du service pack d'images
                     MainForm.VgMe.IsInImgDL = True
-                    Call clsModule.DownloadUpdate(New Uri(clsModule.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + clsModule.CgPicUpExt), clsModule.CgUpPic + clsModule.CgPicUpExt, , True)
-                    While VmPassiveUpdate = clsModule.ePassiveUpdate.InProgress
+                    Call mdlToolbox.DownloadUpdate(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL10 + "SP" + VpI.ToString + mdlConstGlob.CgPicUpExt), mdlConstGlob.CgUpPic + mdlConstGlob.CgPicUpExt, , True)
+                    While VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.InProgress
                         Application.DoEvents
                     End While
-                    If VmPassiveUpdate = clsModule.ePassiveUpdate.Failed Then    'dès que l'application d'un service pack a merdé, il faut sortir sans poursuivre avec les suivants
+                    If VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.Failed Then    'dès que l'application d'un service pack a merdé, il faut sortir sans poursuivre avec les suivants
                         Return False
                     End If
                 Next VpI
-                VmPassiveUpdate = clsModule.ePassiveUpdate.NotNow
+                VmPassiveUpdate = mdlConstGlob.ePassiveUpdate.NotNow
             Case clsUpdateContent.EgMAJContenu.NewSerie
 
             Case clsUpdateContent.EgMAJContenu.NewTrad
@@ -306,7 +306,7 @@ Public Partial Class frmUpdateContent
         Else
             Call VgOptions.SaveSettings
             Me.IsBusy = False
-            Call clsModule.ShowInformation("Opération terminée.")
+            Call mdlToolbox.ShowInformation("Opération terminée.")
         End If
     End Sub
     Sub CbarUpdateMouseDown(ByVal sender As Object, ByVal e As MouseEventArgs)
@@ -327,7 +327,7 @@ Public Partial Class frmUpdateContent
             If Me.IsBusy Then
                 Me.cbarUpdate.Show
                 If Not VmAnswered Then
-                    VmCancel = ( clsModule.ShowQuestion("Voulez-vous annuler les mises à jour de contenu ?" + vbCrLf + "L'annulation aura lieu à la fin de l'opération en cours...") = System.Windows.Forms.DialogResult.Yes )
+                    VmCancel = ( mdlToolbox.ShowQuestion("Voulez-vous annuler les mises à jour de contenu ?" + vbCrLf + "L'annulation aura lieu à la fin de l'opération en cours...") = System.Windows.Forms.DialogResult.Yes )
                     VmAnswered = True
                 End If
             Else
@@ -366,11 +366,11 @@ Public Partial Class frmUpdateContent
             End If
         End If
     End Sub
-    Public Property PassiveUpdate As clsModule.ePassiveUpdate
+    Public Property PassiveUpdate As mdlConstGlob.ePassiveUpdate
         Get
             Return VmPassiveUpdate
         End Get
-        Set (VpPassiveUpdate As clsModule.ePassiveUpdate)
+        Set (VpPassiveUpdate As mdlConstGlob.ePassiveUpdate)
             VmPassiveUpdate = VpPassiveUpdate
         End Set
     End Property

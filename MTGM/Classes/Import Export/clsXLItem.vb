@@ -21,7 +21,7 @@
         End If
         'Type
         If VpChk.GetItemChecked(8) Then
-            VmType = clsModule.FormatTitle("Card.Type", VpType)
+            VmType = mdlToolbox.FormatTitle("Card.Type", VpType)
         End If
         'Sous-type
         If VpChk.GetItemChecked(7) Then
@@ -29,7 +29,7 @@
         End If
         'Couleur
         If VpChk.GetItemChecked(1) Then
-            VmColor = clsModule.FormatTitle("Spell.Color", VpColor)
+            VmColor = mdlToolbox.FormatTitle("Spell.Color", VpColor)
         End If
         'Force / Endurance
         If VpChk.GetItemChecked(2) Then
@@ -49,7 +49,7 @@
         End If
         'Rareté
         If VpChk.GetItemChecked(6) Then
-            VmRarity = clsModule.FormatTitle("Card.Rarity", VpRarity)
+            VmRarity = mdlToolbox.FormatTitle("Card.Rarity", VpRarity)
         End If
         'Texte
         If VpChk.GetItemChecked(9) Then

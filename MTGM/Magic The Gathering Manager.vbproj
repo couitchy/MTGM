@@ -8,7 +8,7 @@
     <MyType>WindowsForms</MyType>
     <RootNamespace>Magic_The_Gathering_Manager</RootNamespace>
     <AssemblyName>Magic The Gathering Manager</AssemblyName>
-    <StartupObject>Magic_The_Gathering_Manager.clsModule</StartupObject>
+    <StartupObject>Magic_The_Gathering_Manager.mdlMain</StartupObject>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>Off</OptionStrict>
@@ -216,9 +216,9 @@
       <DependentUpon>frmOptions.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmOptions.vb" />
-    <Compile Include="User Controls\ucExRichTextBox.vb" />
-    <Compile Include="User Controls\ucFilenameEditor.vb" />
-    <Compile Include="User Controls\ucReadOnlyPropertyGrid.vb" />
+    <Compile Include="Controls\ucExRichTextBox.vb" />
+    <Compile Include="Controls\ucFilenameEditor.vb" />
+    <Compile Include="Controls\ucReadOnlyPropertyGrid.vb" />
     <EmbeddedResource Include="Forms\frmAbout.resx">
       <DependentUpon>frmAbout.vb</DependentUpon>
     </EmbeddedResource>
@@ -319,7 +319,9 @@
     <Compile Include="Classes\Toolbox\clsCustomPropertyDescriptor.vb" />
     <Compile Include="Classes\Updates\clsUpdateContent.vb" />
     <Compile Include="Classes\Updates\clsTxtFR.vb" />
-    <Compile Include="Modules\clsModule.vb" />
+    <Compile Include="Modules\mdlToolbox.vb" />
+    <Compile Include="Modules\mdlConstGlob.vb" />
+    <Compile Include="Modules\mdlMain.vb" />
     <EmbeddedResource Include="Forms\frmSearch.resx">
       <DependentUpon>frmSearch.vb</DependentUpon>
     </EmbeddedResource>
@@ -378,6 +380,6 @@
     <Folder Include="Classes\Simulation\Probability" />
     <Folder Include="Modules" />
     <Folder Include="Forms" />
-    <Folder Include="User Controls" />
+    <Folder Include="Controls" />
   </ItemGroup>
 </Project>

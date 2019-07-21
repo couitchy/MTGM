@@ -55,8 +55,8 @@ Public Partial Class frmGrapher
                 .Legend.AttachTo(PlotSurface2D.XAxisPosition.Top, PlotSurface2D.YAxisPosition.Left)
                 .Legend.VerticalEdgePlacement = Legend.Placement.Inside
                 .Legend.HorizontalEdgePlacement = Legend.Placement.Inside
-                .YAxis1.WorldMin = CDbl(CInt(Me.GetExtremum(False) * (1 - clsModule.CgGraphsExtraMargin) - 0.5))
-                .YAxis1.WorldMax = CDbl(CInt(Me.GetExtremum(True)  * (1 + clsModule.CgGraphsExtraMargin) + 0.5))
+                .YAxis1.WorldMin = CDbl(CInt(Me.GetExtremum(False) * (1 - mdlConstGlob.CgGraphsExtraMargin) - 0.5))
+                .YAxis1.WorldMax = CDbl(CInt(Me.GetExtremum(True)  * (1 + mdlConstGlob.CgGraphsExtraMargin) + 0.5))
                 Me.chklstCurves.SelectedIndex = Math.Max(0, VpSel)
             End If
             .Refresh

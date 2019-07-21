@@ -91,10 +91,10 @@ Public Partial Class frmAddCards
     '--------------------------------------------------------------------------------------------------------------
     'Retourne la quantité enregistrée d'items dont la référence est passée en paramètre dans la collection courante
     '--------------------------------------------------------------------------------------------------------------
-    Dim VpSource As String = If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks)
+    Dim VpSource As String = If(Me.mnuDropToCollection.Checked, mdlConstGlob.CgSCollection, mdlConstGlob.CgSDecks)
     Dim VpO As Object
     Dim VpStr As String = "0"
-        If Not IsNumeric(VpEncNbr) Then Return clsModule.CgStock
+        If Not IsNumeric(VpEncNbr) Then Return mdlConstGlob.CgStock
         'Quantité dans l'édition courante
         VgDBCommand.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr + " And Foil = " + VpFoil.ToString + If(Me.mnuDropToCollection.Checked = False, " And Reserve = " + VpReserve.ToString + " And GameID = " + Me.cmdDestination.Tag.ToString + ";", ";")
         VpO = VgDBCommand.ExecuteScalar
@@ -131,28 +131,28 @@ Public Partial Class frmAddCards
         Me.cboSerie.Tag = ""
         Me.lblNbItems.Tag = 0
         Call Me.LoadCombos  'on le fait dans le constructeur car ça prend une éternité si c'est fait dans le Load à cause du rafraîchissement graphique
-        If clsModule.GetDeckCount = 0 Then
+        If mdlToolbox.GetDeckCount = 0 Then
             Me.cmdDestination.Visible = False
         Else
             'Destinations possibles
-            For VpI As Integer = 1 To clsModule.GetDeckCount
-                Me.cmnuDestination.Items.Add(clsModule.GetDeckNameFromIndex(VpI), Nothing, AddressOf DropTo)
+            For VpI As Integer = 1 To mdlToolbox.GetDeckCount
+                Me.cmnuDestination.Items.Add(mdlToolbox.GetDeckNameFromIndex(VpI), Nothing, AddressOf DropTo)
             Next VpI
         End If
         'Destination par défaut
         VpSource = VmOwner.GetSelectedSource
-        If VpSource <> "" And VpSource <> clsModule.CgAdvSearch Then
+        If VpSource <> "" And VpSource <> mdlConstGlob.CgAdvSearch Then
             For Each VpItem As ToolStripMenuItem In Me.cmnuDestination.Items
                 If VpItem.Text = VpSource Then
                     VpItem.Checked = True
-                    Me.cmdDestination.Tag = clsModule.GetDeckIdFromName(VpSource)
+                    Me.cmdDestination.Tag = mdlToolbox.GetDeckIdFromName(VpSource)
                     Me.lblDest.Text = VpSource
                     Exit For
                 End If
             Next VpItem
         Else
             Me.mnuDropToCollection.Checked = True
-            Me.lblDest.Text = clsModule.CgCollection
+            Me.lblDest.Text = mdlConstGlob.CgCollection
         End If
         Me.chkReserve.Visible = Not Me.mnuDropToCollection.Checked
     End Sub
@@ -163,7 +163,7 @@ Public Partial Class frmAddCards
             VpItem.Checked = ( VpItem Is sender )
         Next VpItem
         Me.chkReserve.Visible = Not Me.mnuDropToCollection.Checked
-        Me.cmdDestination.Tag = clsModule.GetDeckIdFromName(sender.Text)
+        Me.cmdDestination.Tag = mdlToolbox.GetDeckIdFromName(sender.Text)
         Me.lblDest.Text = sender.Text
         Me.lblNbItems.Text = Me.FindQuant(Me.lblEncNbr.Text, Me.chkFoil.Checked, Me.chkReserve.Checked)
     End Sub
@@ -195,11 +195,11 @@ Public Partial Class frmAddCards
     End Sub
     Sub CboSerieSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
     Dim VpSerieCD As String = Me.cboSerie.Text.Substring(1, 2)
-    Dim VpKey As Integer = clsModule.VgImgSeries.Images.IndexOfKey("_e" + VpSerieCD + CgIconsExt)
+    Dim VpKey As Integer = mdlConstGlob.VgImgSeries.Images.IndexOfKey("_e" + VpSerieCD + CgIconsExt)
         Me.lblYear.Text = Me.FindDateSerie(VpSerieCD)
         Me.lblEncNbr.Text = Me.AdjustEncNbr(Me.cboTitleEN.Text, VpSerieCD)
         If VpKey <> -1 Then
-            Me.imgEdition.Image = clsModule.VgImgSeries.Images(VpKey)
+            Me.imgEdition.Image = mdlConstGlob.VgImgSeries.Images(VpKey)
         Else
             Me.imgEdition.Image = Nothing
         End If
@@ -209,13 +209,13 @@ Public Partial Class frmAddCards
         If Val(Me.txtNbItems.Text) <> 0 Then
             Try
                 If CInt(Me.lblNbItems.Tag) = 0 Then
-                    VgDBCommand.CommandText = "Insert Into " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Values (" + If(Not Me.mnuDropToCollection.Checked, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, ", " + Me.chkReserve.Checked.ToString, "") + ");"
+                    VgDBCommand.CommandText = "Insert Into " + If(Me.mnuDropToCollection.Checked, mdlConstGlob.CgSCollection, mdlConstGlob.CgSDecks) + " Values (" + If(Not Me.mnuDropToCollection.Checked, Me.cmdDestination.Tag.ToString + ", ", "") + Me.lblEncNbr.Text + ", " + CInt(Me.txtNbItems.Text).ToString + ", " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, ", " + Me.chkReserve.Checked.ToString, "") + ");"
                     VgDBCommand.ExecuteNonQuery
                 ElseIf ( CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text) ) <= 0 Then
-                    VgDBCommand.CommandText = "Delete * From " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+                    VgDBCommand.CommandText = "Delete * From " + If(Me.mnuDropToCollection.Checked, mdlConstGlob.CgSCollection, mdlConstGlob.CgSDecks) + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
                     VgDBCommand.ExecuteNonQuery
                 Else
-                    VgDBCommand.CommandText = "Update " + If(Me.mnuDropToCollection.Checked, clsModule.CgSCollection, clsModule.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, " And Reserve = " + Me.chkReserve.Checked.ToString + " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
+                    VgDBCommand.CommandText = "Update " + If(Me.mnuDropToCollection.Checked, mdlConstGlob.CgSCollection, mdlConstGlob.CgSDecks) + " Set Items = " + (CInt(Me.lblNbItems.Tag) + CInt(Me.txtNbItems.Text)).ToString + " Where EncNbr = " + Me.lblEncNbr.Text + " And Foil = " + Me.chkFoil.Checked.ToString + If(Not Me.mnuDropToCollection.Checked, " And Reserve = " + Me.chkReserve.Checked.ToString + " And GameID = " + Me.cmdDestination.Tag.ToString, "") + ";"
                     VgDBCommand.ExecuteNonQuery
                 End If
                 Me.cboSerie.Tag = Me.cboSerie.Text
@@ -226,13 +226,13 @@ Public Partial Class frmAddCards
                 Me.lblEncNbr.Text = "ID Encyclopédie"
                 Me.lblYear.Text = "Année"
                 Me.imgEdition.Image = Nothing
-                Me.lblNbItems.Text = clsModule.CgStock
+                Me.lblNbItems.Text = mdlConstGlob.CgStock
                 Me.lblNbItems.Tag = 0
                 Me.txtNbItems.Text = "+1"
                 Me.chkFoil.Checked = False
                 Me.cboTitleFR.Focus
             Catch
-                Call clsModule.ShowWarning("Impossible d'ajouter cette carte dans la base de données." + vbCrLf + "La carte n'est peut-être pas (ou incorrectement) référencée...")
+                Call mdlToolbox.ShowWarning("Impossible d'ajouter cette carte dans la base de données." + vbCrLf + "La carte n'est peut-être pas (ou incorrectement) référencée...")
             End Try
         End If
     End Sub

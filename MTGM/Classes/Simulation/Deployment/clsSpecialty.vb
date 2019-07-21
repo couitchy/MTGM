@@ -28,7 +28,7 @@
             End With
         Catch
             If Not VmModelOutOfDateErr Then
-                Call clsModule.ShowWarning(clsModule.CgErr1)
+                Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr1)
                 VmModelOutOfDateErr = True
             End If
         End Try

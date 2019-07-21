@@ -1,4 +1,4 @@
-Imports System.Data
+ï»¿Imports System.Data
 Imports System.Data.OleDb
 Imports System.Text
 Imports System.Net
@@ -8,379 +8,19 @@ Imports System.Globalization
 Imports SourceGrid2
 Imports Cells = SourceGrid2.Cells.Real
 Imports ICSharpCode.SharpZipLib.Zip
-Public Module clsModule
-    Public Declare Function OpenIcon                Lib "user32" (ByVal hwnd As Long) As Long
-    Public Declare Function SetForegroundWindow     Lib "user32" (ByVal hwnd As Long) As Long
-    Public Declare Function SendMessageA            Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
-    Public Const CgCodeLines As Integer             = 36508
-    Public Const CGNClasses As Integer              = 87
-    Public Const CgLastUpdateAut As String          = "18/10/2016"
-    Public Const CgLastUpdateSimu As String         = "19/10/2016"
-    Public Const CgLastUpdateTxtVF As String        = "20/10/2016"
-    Public Const CgLastUpdateRulings As String      = "16/10/2016"
-    Public Const CgLastUpdatePictPatch As String    = "27/12/2014"
-    Public Const CgLastUpdateTradPatch As String    = "09/01/2017"
-    Public Const CgLastUpdateSubsPatch As String    = "04/04/2015"
-    Public Const CgLastUpdateSubsVFPatch As String  = "03/04/2015"
-    Public Const CgLastUpdateMultiIdPatch As String = "19/10/2016"
-    Public Const CgProject As String                = "Magic_The_Gathering_Manager.MainForm"
-    Public Const CgMe As String                     = "Moi"
-    Public Const CgNCriterions As Integer           = 8
-    Public Const CgNDispMenuBase As Integer         = 4
-    Public Const CgNMain As Integer                 = 7
-    Public Const CgNLives As Integer                = 20
-    Public Const CgMaxPot As Integer                = 100
-    Public Const CgPertinCoeff As Integer           = 4
-    Public Const CgGraphsExtraMargin As Single      = 0.2
-    Public Const CgMaxGraphs As Integer             = 128
-    Public Const CgMaxVignettes As Integer          = 120
-    Public Const CgMaxEditionsMarket As Integer     = 4
-    Public Const CgShippingCost As Single           = 5
-    Public Const CgWorstShippingCost As Single      = 10
-    Public Const CgMissingTable As Long             = -2147217865
-    Public Const CgImgMinLength As Long             = 296297676
-    Public Const CgTimeOut As Integer               = 5
-    Public Const CgMTGCardWidth_mm As Integer       = 63
-    Public Const CgMTGCardHeight_mm As Integer      = 88
-    Public Const CgMTGCardWidth_crop_mm As Integer  = 57
-    Public Const CgMTGCardHeight_crop_mm As Integer = 82
-    Public Const CgMTGCardWidth_px As Integer       = 210
-    Public Const CgMTGCardHeight_px As Integer      = 300
-    Public Const CgCounterDiametr_px As Integer     = 20
-    Public Const CgChevauchFactor As Single         = 0.14
-    Public Const CgSpacingFactor As Single          = 1.5
-    Public Const CgXMargin As Integer               = 5
-    Public Const CgYMargin As Integer               = 8
-    Public Const CgTemp As String                   = "\mtgmgr"
-    Public Const CgIcons As String                  = "\Ressources"
-    Public Const CgMagicBack As String              = "\Ressources\Magic Back.jpg"
-    Public Const CgMDB As String                    = "\Cartes\Magic DB.mdb"
-    Public Const CgDAT As String                    = "\Cartes\Images DB.dat"
-    Public Const CgINIFile As String                = "\MTGM.ini"
-    Public Const CgXMLFile As String                = "\MTGM.xml"
-    Public Const CgHLPFile As String                = "\MTGM.pdf"
-    Public Const CgHSTFile As String                = "\Historique.txt"
-    Public Const CgUpdater As String                = "\Updater.exe"
-    Public Const CgMTGMWebResourcer As String       = "\WebResourcer.exe"
-    Public Const CgHTMLCollectionViewer As String   = "\CollectionViewer.exe"
-    Public Const CgColViewerZipRes As String        = "\CollectionViewer.zip"
-    Public Const CgUpDFile As String                = "\Magic The Gathering Manager.new"
-    Public Const CgDownDFile As String              = "\Magic The Gathering Manager.bak"
-    Public Const CgUpMultiverse As String           = "\AllSets-x.json"
-    Public Const CgUpMultiverse2 As String          = "\AllSets-x.json.zip"
-    Public Const CgUpDDB As String                  = "\Images DB.mdb"
-    Public Const CgUpDDBb As String                 = "\Patch.mdb"
-    Public Const CgUpDDBd As String                 = "Images%20DB.dat"
-    Public Const CgUpTXTFR As String                = "\TextesVF.txt"
-    Public Const CgUpSeries As String               = "\Series.txt"
-    Public Const CgUpAutorisations As String        = "\Tournois.txt"
-    Public Const CgUpRulings As String              = "\Rulings.xml"
-    Public Const CgUpPrices As String               = "\LastPrices.txt"
-    Public Const CgUpPic As String                  = "\SP_Pict"
-    Public Const CgMdPic As String                  = "MD_Pict"
-    Public Const CgMdTrad As String                 = "\MD_Trad.log"
-    Public Const CgMdSubTypes As String             = "\MD_SubTypes.log"
-    Public Const CgMdSubTypesVF As String           = "\MD_SubTypesVF.log"
-    Public Const CgMdMultiverse As String           = "\MD_Multiverse.log"
-    Public Const CgShell As String                  = "explorer.exe"
-    Public Const CgDefaultServer As String          = "http://couitchy.free.fr/upload/MTGM"
-    Public Const CgURL0 As String                   = "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=#&type=card"
-    Public Const CgURL1 As String                   = "/Updates/TimeStamp r4.txt"
-    Public Const CgURL1B As String                  = "/Updates/Beta/TimeStamp.txt"
-    Public Const CgURL1C As String                  = "/Updates/PicturesStamp.txt"
-    Public Const CgURL1D As String                  = "/Updates/ContenuStamp r20.txt"
-    Public Const CgURL1E As String                  = "/Updates/ContenuSizes r20.txt"
-    Public Const CgURL2 As String                   = "/Updates/Magic The Gathering Manager r4.new"
-    Public Const CgURL2B As String                  = "/Updates/Beta/Magic The Gathering Manager.new"
-    Public Const CgURL3 As String                   = "/Updates/Images DB.mdb"
-    Public Const CgURL3B As String                  = "/Updates/Patch r13.mdb"
-    Public Const CgURL4 As String                   = "/Listes%20des%20editions/"
-    Public Const CgURL5 As String                   = "/Logos%20des%20editions/"
-    Public Const CgURL6 As String                   = "https://mtgjson.com/json/"
-    Public Const CgURL7 As String                   = "/Updates/Historique.txt"
-    Public Const CgURL8 As String                   = "/Lib/"
-    Public Const CgURL9 As String                   = "/Updates/LastPrices.txt"
-    Public Const CgURL10 As String                  = "/Images%20des%20cartes/"
-    Public Const CgURL11 As String                  = "/Updates/TextesVF.txt"
-    Public Const CgURL12 As String                  = "/Updates/Series r18.txt"
-    Public Const CgURL13 As String                  = "/Updates/MTGM.pdf"
-    Public Const CgURL14 As String                  = "/Updates/MD_Trad.log"
-    Public Const CgURL15 As String                  = "/Updates/Tournois r21.txt"
-    Public Const CgURL16 As String                  = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
-    Public Const CgURL17 As String                  = "http://mtgm.free.fr"
-    Public Const CgURL18 As String                  = "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"
-    Public Const CgURL19 As String                  = "/Updates/Rulings.xml"
-    Public Const CgURL20 As String                  = "/Updates/MD_SubTypes r19.log"
-    Public Const CgURL21 As String                  = "/Updates/MD_SubTypesVF r19.log"
-    Public Const CgURL22 As String                  = "/Updates/MD_Multiverse r21.log"
-    Public Const CgURL23 As String                  = "https://mtgjson.com/json/AllSets.json.zip"
-    Public Const CgURL24 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/products/card-name/1/1/false"
-    Public Const CgURL25 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
-    Public Const CgURL26 As String                  = "http://magic-ville.fr/fr/"
-    Public Const CgDL1 As String                    = "Vérification des mises à jour..."
-    Public Const CgDL2 As String                    = "Téléchargement en cours"
-    Public Const CgDL2b As String                   = "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
-    Public Const CgDL2c As String                   = "Une mise à jour des images est en cours." + vbCrLf + "Veuillez patienter avant d'essayer de les utiliser..."
-    Public Const CgDL3 As String                    = "Erreur lors du téléchargement"
-    Public Const CgDL3b As String                   = "La connexion au serveur a échoué..." + vbCrLf + "Vérifier la connectivité à Internet et les paramètres du pare-feu."
-    Public Const CgDL4 As String                    = "Téléchargement terminé"
-    Public Const CgDL5 As String                    = "Téléchargement annulé"
-    Public Const CgErr0 As String                   = "Des fichiers nécessaires sont manquants..."
-    Public Const CgErr1 As String                   = "Les modèles de simulation sont absents ou incomplets..." + vbCrLf + "Procédez à la mise à jour depuis le menu 'Fichier' de la fenêtre principale..."
-    Public Const CgErr2 As String                   = "L'historique des prix est vide..."
-    Public Const CgErr3 As String                   = "Impossible d'afficher les informations demandées maintenant..." + vbCrLf + "Si une mise à jour est en cours, merci d'attendre qu'elle se finisse."
-    Public Const CgErr4 As String                   = "Le nombre maximal de courbes affichables a été atteint..." + vbCrLf + "Les suivantes seront ignorées."
-    Public Const CgErr5 As String                   = "Le processus de mise à jour a été interrompu..."
-    Public Const CgErr6 As String                   = "Le plug-in spécifié est introuvable..."
-    Public Const CgErr7 As String                   = "Aucun critère de classement n'a été sélectionné..."
-    Public Const CgErr8 As String                   = "A la suite d'une mise à jour, vos préférences ont été réinitialisées." + vbCrLf + "Merci de vérifier dans Gestion / Préférences les différents chemins des fichiers. Il est possible que certaines mises à jour de contenu devront être re-téléchargées..."
-    Public Const CgErr9 As String                   = "Vous ne pouvez pas déplacer des cartes dans cette zone quand la Réserve est affichée..."
-    Public Const CgErr10 As String                  = "La zone 'Regard' doit être vide pour pouvoir afficher la Réserve..."
-    Public Const CgErr11 As String                  = "Impossible de modifier les préférences..."
-    Public Const CgFExtH As String                  = ".html"
-    Public Const CgFExtO As String                  = ".dck"
-    Public Const CgFExtN As String                  = ".dk2"
-    Public Const CgFExtA As String                  = ".dec"
-    Public Const CgFExtW As String                  = ".mwDeck"
-    Public Const CgFExtX As String                  = ".xmg"
-    Public Const CgFExtC As String                  = ".txt"
-    Public Const CgFExtM As String                  = ".xml"
-    Public Const CgFExtL As String                  = ".csv"
-    Public Const CgFExtU As String                  = ".ugs"
-    Public Const CgFExtD As String                  = ".mdb"
-    Public Const CgIconsExt As String               = ".png"
-    Public Const CgPicUpExt As String               = ".dat"
-    Public Const CgPicLogExt As String              = ".log"
-    Public Const CgImgSeries As String              = "_series_"
-    Public Const CgImgColors As String              = "_colors_"
-    Public Const CgDefaultDeckName As String        = "(Deck)"
-    Public Const CgDefaultFolderName As String      = "(Dossier)"
-    Public Const CgDefaultFormat As String          = "Classique"
-    Public Const CgRulings As String                = "Règles spécifiques"
-    Public Const CgPlateau As String                = "Plateau de jeu : "
-    Public Const CgStats As String                  = "Statistiques : "
-    Public Const CgSimus As String                  = "Simulations : "
-    Public Const CgSimus3 As String                 = "Proba. séquence(s) pour "
-    Public Const CgSimus4 As String                 = "Manas productibles pour "
-    Public Const CgSimus5 As String                 = "Défaut de manas pour "
-    Public Const CgRefresh As String                = "Rafraîchir"
-    Public Const CgPanel As String                  = "Ouvrir / fermer panneau image"
-    Public Const CgStock As String                  = "Nombre déjà en stock"
-    Public Const CgSide As String                   = "~ Jeu de réserve ~"
-    Public Const CgCollection As String             = "Collection"
-    Public Const CgSCollection As String            = "MyCollection"
-    Public Const CgSDecks As String                 = "MyGames"
-    Public Const CgAdvSearch As String              = "Résultats de recherche"
-    Public Const CgFromSearch As String             = "Recherche"
-    Public Const CgSFromSearch As String            = "MySearch"
-    Public Const CgCard As String                   = "(carte)"
-    Public Const CgPerfsEfficiency As String        = "Calcul du facteur d'efficacité" + vbCrLf + "----------------------------------" + vbCrLf + "NB. Ce calcul n'a de sens que si tous les jeux en présence ont été saisis dans la base (afin d'en connaître leur prix)." + vbCrLf + "~1, le jeu est à la hauteur de son prix (jeu normal)" + vbCrLf + "<1, le jeu gagne plus de parties qu'il n'en devrait compte tenu de son prix (jeu efficient)" + vbCrLf + ">1, le jeu gagne moins de parties qu'il n'en devrait compte tenu de son prix (jeu soit mauvais / soit ""bulldozer"")" + vbCrLf + "(un résultat négatif signifie qu'il manque des informations pour le calcul : prix du jeu, résultats de parties...)" + vbCrLf + vbCrLf
-    Public Const CgPerfsVersion As String           = "nouv."
-    Public Const CgPerfsTotal As String             = "TOTAL "
-    Public Const CgPerfsTotalV As String            = "toutes"
-    Public Const CgPerfsVFree As String             = "sans version"
-    Public Const CgAlternateStart As String         = "Card Name:"
-    Public Const CgAlternateStart2 As String        = "Name:"
-    Public Const CgFoil As String                   = "PREMIUMFOILVO"
-    Public Const CgFoil2 As String                  = " (Foil)"
-    Public CgBuyLanguage() As String                = {"french", "english"}
-    Public CgBalises() As String                    = {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}
-    Public CgManaParsing() As String                = {"to your mana pool", "add", "either ", " or ", " colorless mana", " mana of any color", " mana"}
-    Public CgCriterionsFields() As String           = {"Card.Type", "Spell.Color", "Card.Series", "Spell.myCost", "Card.Rarity", "Card.myPrice", "Items", "Card.Title"}
-    Public CgNumbers() As String                    = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
-    Public CgRarities() As String                   = {"'M'", "'R'", "'U'", "'C'", "'D'", "'L'", "'S'"}
-    Public CgSearchFields() As String               = {"Card.Title", "CardFR.TitleFR", "Card.CardText", "TextesFR.TexteFR", "Creature.Power", "Creature.Tough", "Card.Price", "Card.Series", "Card.Series", "Spell.myCost", "Card.SubType", "SubTypes.SubTypeVF"}
-    Public CgRequiredFiles() As String              = {"\TreeViewMS.dll", "\ChartFX.Lite.dll", "\NPlot.dll", "\SandBar.dll", "\SourceGrid2.dll", "\SourceLibrary.dll", "\ICSharpCode.SharpZipLib.dll", CgMagicBack, CgUpdater}
-    Public CgStrConn() As String                    = {"Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source=", "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="}
-    Public CgCriteres As New Hashtable(CgNCriterions)
-    Public CgVirtualPath As String
-    Public VgDB As OleDbConnection
-    Public VgDBCommand As New OleDbCommand
-    Public VgDBReader As OleDbDataReader
-    Public VgImgSeries As New ImageList
-    Public VgRemoteDate As Date
-    Public VgOptions As New frmOptions
-    Public VgSessionSettings As New clsSessionSettings
-    Public VgRandom As New Random(Now.Millisecond)
+Public Module mdlToolbox
     Public WithEvents VgTray As NotifyIcon
     Public WithEvents VgTimer As Timer
     Public WithEvents VgClient As New WebClient
-    Public Enum eFormat
-        MTGMv2 = 0
-        MTGM
-        MTGArena
-        Apprentice
-        MWS
-        Web
-    End Enum
-    Public Enum eServer
-        FreePagesPerso
-        ChromeLightStudio
-    End Enum
-    Public Enum eMarketServer
-        MagicVille
-        MagicCardMarket
-    End Enum
-    Public Enum ePicturesSource
-        Local
-        Online
-    End Enum
-    Public Enum eSearchType
-        Alpha = 0
-        Num
-        NumOverAlpha
-    End Enum
-    Public Enum eCountMode
-        All
-        Distinct
-        OnlyReserve
-        NoReserve
-    End Enum
-    Public Enum eForbiddenCharset
-        Standard = 0
-        BDD
-        Full
-    End Enum
-    Public Enum eUpdateType
-        Release = 0
-        Beta
-        Contenu
-    End Enum
-    Public Enum eSearchCriterion
-        NomVO = 0
-        NomVF
-        TexteVO
-        TexteVF
-        Force
-        Endurance
-        Prix
-        EditionVO
-        EditionVF
-        Cout
-        TypeVO
-        TypeVF
-    End Enum
-    Public Enum eSortCriteria
-        Price
-        Quality
-        Seller
-    End Enum
-    Public Enum eBasketMode
-        Local
-        Remote
-    End Enum
-    Public Enum eQuality
-        Mint = 0
-        NearMint
-        Excellent
-        Good
-        LightPlayed
-        Played
-        Poor
-    End Enum
-    Public Enum eModeCarac
-        Serie = 0
-        Couleur
-        Type
-    End Enum
-    Public Enum ePassiveUpdate
-        NotNow = 0
-        InProgress
-        Done
-        Failed
-    End Enum
-    Public Enum eDBVersion
-        Unknown = 0 'version inconnue (base corrompue)
-        BDD_v1      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-        BDD_v2      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-        BDD_v3      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-        BDD_v4      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-        BDD_v5      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-        BDD_v6      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-        BDD_v7      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-        BDD_v8      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-        BDD_v9      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-        BDD_v10     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-        BDD_v11     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
-        BDD_v12     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
-        BDD_v13     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
-        BDD_v14     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
-        BDD_v15     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
-        BDD_v16     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi
-        BDD_v17     'manque tournois MTGO, MultiverseId, dossiers decks
-        BDD_v18     'manque tournois MTGO, MultiverseId
-        BDD_v19     'manque tournois MTGO
-        BDD_v20     'à jour
-    End Enum
-    Public Enum eDBProvider
-        Jet = 0
-        ACE
-    End Enum
-    Public Sub Main(ByVal VpArgs() As String)
-    '-------------------------------
-    'Point d'entrée de l'application
-    '-------------------------------
-    Dim VpStartup As String = ""
-        'Gestion globale des exceptions
-        AddHandler Application.ThreadException, AddressOf ThreadExceptionHandler
-        AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf DomainExceptionHandler
-        'Gestion répertoire virtuel UAC (Vista / 7)
-        CgVirtualPath = Process.GetCurrentProcess.MainModule.FileName.Replace("Magic The Gathering Manager.exe", "")
-        CgVirtualPath = Environment.GetEnvironmentVariable("USERPROFILE") + "\AppData\Local\VirtualStore" + CgVirtualPath.Substring(2)
-        'Exécution du formulaire de démarrage
-        If Not PreventMultipleInstances Then
-            Application.EnableVisualStyles
-            Application.Run(New MainForm(VpArgs))
-        Else
-            Application.Exit
-        End If
-    End Sub
-    Private Function PreventMultipleInstances As Boolean
-    '---------------------------------------------------------------------------------------------------
-    'Vérifie si une instance de MTGM est déjà en cours d'exécution, auquel cas l'affiche au premier plan
-    '---------------------------------------------------------------------------------------------------
-    Dim VmHandle As Long
-    Dim VmProcesses() As Process
-        VmProcesses = Process.GetProcessesByName(Process.GetCurrentProcess.ProcessName)
-        For Each VpProcess As Process In VmProcesses
-            If VpProcess.Id <> Process.GetCurrentProcess.Id Then
-                VmHandle = VpProcess.MainWindowHandle.ToInt32
-                Call OpenIcon(VmHandle)
-                Call SetForegroundWindow(VmHandle)
-                Return True
-            End If
-        Next VpProcess
-        Return False
-    End Function
-    Private Sub ThreadExceptionHandler(sender As Object, ByVal e As Threading.ThreadExceptionEventArgs)
-    Dim VpExceptionBox As New frmExceptionBox(e.Exception.ToString)
-        VpExceptionBox.ShowDialog
-    End Sub
-    Private Sub DomainExceptionHandler(sender As Object, ByVal e As UnhandledExceptionEventArgs)
-    Dim VpExceptionBox As New frmExceptionBox(e.ExceptionObject.ToString)
-        VpExceptionBox.ShowDialog
-    End Sub
-    Public Function CheckIntegrity As Boolean
-    '------------------------------------
-    'Vérifie l'intégrité de l'application
-    '------------------------------------
-        For Each VpFile As String In CgRequiredFiles
-            'Si le fichier n'existe pas
-            If Not File.Exists(Application.StartupPath + VpFile) Then
-                'Essaie de le télécharger
-                Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL8 + VpFile.Replace("\", "")), VpFile)
-                'Si le fichier n'existe toujours pas, on ne démarre pas
-                If Not File.Exists(Application.StartupPath + VpFile) Then
-                    Call ShowWarning(clsModule.CgErr0)
-                    Return False
-                End If
-            End If
-        Next VpFile
-        Return True
-    End Function
+    #Region "API Win32"    
+    Public Declare Function OpenIcon            Lib "user32" (ByVal hwnd As Long) As Long
+    Public Declare Function SetForegroundWindow Lib "user32" (ByVal hwnd As Long) As Long
+    Public Declare Function SendMessageA        Lib "user32" (ByVal hWnd As IntPtr, ByVal wMsg As UInt32, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
+    #End Region
+    #Region "Gestion de la base de donnÃ©es"
     Public Function DBOpen(VpPath As String) As Boolean
     '--------------------------------------------------------------------------------
-    'Essaie d'ouvrir la base de données spécifiée en paramètre et renvoie le résultat
+    'Essaie d'ouvrir la base de donnÃ©es spÃ©cifiÃ©e en paramÃ¨tre et renvoie le rÃ©sultat
     '--------------------------------------------------------------------------------
         If Not IO.File.Exists(VpPath) Then
             Return False
@@ -399,19 +39,19 @@ Public Module clsModule
                     Return True
                 End If
             Catch VpErr As Exception
-                Call ShowWarning("Impossible d'ouvrir la base de données sélectionnée..." + vbCrLf + vbCrLf + "Détails : " + VpErr.Message)
+                Call ShowWarning("Impossible d'ouvrir la base de donnÃ©es sÃ©lectionnÃ©e..." + vbCrLf + vbCrLf + "DÃ©tails : " + VpErr.Message)
             End Try
         End If
         Return False
     End Function
     Private Function DBVersion As Boolean
     '------------------------------------
-    'Vérifie la version de la BDD ouverte
+    'VÃ©rifie la version de la BDD ouverte
     '------------------------------------
     Dim VpDBVersion As eDBVersion = eDBVersion.Unknown
     Dim VpSchemaTable As DataTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, "TABLE"})
     Dim VpTablesCount As Integer = VpSchemaTable.Rows.Count
-        'Détermination de la version de la base de données suivant le nombre d'éléments qu'elle contient
+        'DÃ©termination de la version de la base de donnÃ©es suivant le nombre d'Ã©lÃ©ments qu'elle contient
         If VpTablesCount >= 8 Then
             VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyScores", Nothing})
             If Not VpSchemaTable.Rows(1)!COLUMN_NAME.ToString.StartsWith("JeuAdverse") Then
@@ -505,27 +145,27 @@ Public Module clsModule
             'Si on est ici, BDD version 1
             VpDBVersion = eDBVersion.BDD_v1
         End If
-        'Actions à effectuer en conséquence
+        'Actions Ã  effectuer en consÃ©quence
         If VpDBVersion = eDBVersion.Unknown Then        'Version inconnue
             Return False
-        ElseIf VpDBVersion = eDBVersion.BDD_v20 Then    'Dernière version
+        ElseIf VpDBVersion = eDBVersion.BDD_v20 Then    'DerniÃ¨re version
             Return True
-        Else                                            'Versions intermédiaires
-            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v20)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+        Else                                            'Versions intermÃ©diaires
+            If ShowQuestion("La base de donnÃ©es (v" + CInt(VpDBVersion).ToString + ") doit Ãªtre mise Ã  jour pour devenir compatible avec la nouvelle version du logiciel (v20)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
                 Try
-                    'Passage version 1 à 2
+                    'Passage version 1 Ã  2
                     If CInt(VpDBVersion) < 2 Then
                         VgDBCommand.CommandText = "Create Table MyScores (JeuLocal Text(50) With Compression, JeuAdverse Text(50) With Compression, Victoire Bit);"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 2 à 3
+                    'Passage version 2 Ã  3
                     If CInt(VpDBVersion) < 3 Then
                         VgDBCommand.CommandText = "Alter Table MyScores Add JeuLocalVersion Text(10) With Compression;"
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Alter Table MyScores Add JeuAdverseVersion Text(10) With Compression;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 3 à 4
+                    'Passage version 3 Ã  4
                     If CInt(VpDBVersion) < 4 Then
                         Try
                             VgDBCommand.CommandText = "Create Table MyGamesID (GameID Integer, GameName Text(50) With Compression);"
@@ -533,7 +173,7 @@ Public Module clsModule
                         Catch
                         End Try
                     End If
-                    'Passage version 4 à 5
+                    'Passage version 4 Ã  5
                     If CInt(VpDBVersion) < 5 Then
                         VgDBCommand.CommandText = "Create Table MySpecialUses (EffortID Integer, EffetID Integer, Card Text(80) With Compression, Effort Text(255) With Compression, Effet Text(255) With Compression);"
                         VgDBCommand.ExecuteNonQuery
@@ -542,22 +182,22 @@ Public Module clsModule
                         VgDBCommand.CommandText = "Alter Table MyScores Add IsMixte Bit;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 5 à 6
+                    'Passage version 5 Ã  6
                     If CInt(VpDBVersion) < 6 Then
                         VgDBCommand.CommandText = "Create Table TextesFR (CardName Text(80) With Compression, TexteFR Memo);"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 6 à 7
+                    'Passage version 6 Ã  7
                     If CInt(VpDBVersion) < 7 Then
                         VgDBCommand.CommandText = "Create Table Autorisations (Title Text(80) With Compression, T1 Bit, T1r Bit, T15 Bit, T1x Bit, T2 Bit, Bloc Bit);"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 7 à 8
+                    'Passage version 7 Ã  8
                     If CInt(VpDBVersion) < 8 Then
                         VgDBCommand.CommandText = "Create Table PricesHistory (EncNbr Long, PriceDate Date, Price Single);"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 8 à 9
+                    'Passage version 8 Ã  9
                     If CInt(VpDBVersion) < 9 Then
                         VgDBCommand.CommandText = "Create Table MyAdversairesID (AdvID Long, AdvName Text(255) With Compression);"
                         VgDBCommand.ExecuteNonQuery
@@ -570,7 +210,7 @@ Public Module clsModule
                         VgDBCommand.CommandText = "Alter Table MyScores Drop Column IsMixte;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 9 à 10
+                    'Passage version 9 Ã  10
                     If CInt(VpDBVersion) < 10 Then
                         Call DBChangeType("Card", "Price", "Single", "Val")
                         Call DBChangeType("Card", "myPrice", "Integer", "Int")
@@ -581,7 +221,7 @@ Public Module clsModule
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Alter Table PricesHistory Add Foil Bit;"
                         VgDBCommand.ExecuteNonQuery
-                        Try     'normalement la clé primaire n'existe pas (mais on ne sait jamais), d'où la trappe pour éviter une exception
+                        Try     'normalement la clÃ© primaire n'existe pas (mais on ne sait jamais), d'oÃ¹ la trappe pour Ã©viter une exception
                             VgDBCommand.CommandText = "Drop Index PrimaryKey On MyCollection;"
                             VgDBCommand.ExecuteNonQuery
                         Catch
@@ -591,12 +231,12 @@ Public Module clsModule
                         VgDBCommand.CommandText = "Create Index EncNbr On MyCollection (EncNbr);"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 10 à 11
+                    'Passage version 10 Ã  11
                     If CInt(VpDBVersion) < 11 Then
                         VgDBCommand.CommandText = "Alter Table Autorisations Add M Bit;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 11 à 12
+                    'Passage version 11 Ã  12
                     If CInt(VpDBVersion) < 12 Then
                         VgDBCommand.CommandText = "Alter Table Card Add SpecialDoubleCard Bit;"
                         VgDBCommand.ExecuteNonQuery
@@ -605,7 +245,7 @@ Public Module clsModule
                         VgDBCommand.CommandText = "Create Table CardDouble (EncNbrDownFace Long, EncNbrTopFace Long);"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 12 à 13
+                    'Passage version 12 Ã  13
                     If CInt(VpDBVersion) < 13 Then
                         VgDBCommand.CommandText = "Create Table SubTypes (SubTypeVO Text(32) With Compression, SubTypeVF Text(32) With Compression);"
                         VgDBCommand.ExecuteNonQuery
@@ -614,7 +254,7 @@ Public Module clsModule
                         VgDBCommand.CommandText = "Update Series Set SeriesNM_FR = SeriesNM;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 13 à 14
+                    'Passage version 13 Ã  14
                     If CInt(VpDBVersion) < 14 Then
                         VgDBCommand.CommandText = "Alter Table MyGamesID Add GameDate Date;"
                         VgDBCommand.ExecuteNonQuery
@@ -624,15 +264,15 @@ Public Module clsModule
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Update MyGamesID Set GameDate = '" + Now.ToShortDateString + "';"
                         VgDBCommand.ExecuteNonQuery
-                        VgDBCommand.CommandText = "Update MyGamesID Set GameFormat = '" + clsModule.CgDefaultFormat + "';"
+                        VgDBCommand.CommandText = "Update MyGamesID Set GameFormat = '" + mdlConstGlob.CgDefaultFormat + "';"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 14 à 15
+                    'Passage version 14 Ã  15
                     If CInt(VpDBVersion) < 15 Then
                         VgDBCommand.CommandText = "Alter Table MyGames Add Reserve Bit;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 15 à 16
+                    'Passage version 15 Ã  16
                     If CInt(VpDBVersion) < 16 Then
                         VgDBCommand.CommandText = "Alter Table Series Add SeriesCD_MO Text(3) With Compression;"
                         VgDBCommand.ExecuteNonQuery
@@ -642,9 +282,9 @@ Public Module clsModule
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Update Series Set SeriesCD_MW = SeriesCD;"
                         VgDBCommand.ExecuteNonQuery
-                        Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des éditions / Mettre à jour les en-têtes) pour assurer une compatibilité optimale avec les autres formats de logiciels Magic...")
+                        Call ShowInformation("Vous devriez mettre Ã  jour les en-tÃªtes (Fichier / Ajouter des Ã©ditions / Mettre Ã  jour les en-tÃªtes) pour assurer une compatibilitÃ© optimale avec les autres formats de logiciels Magic...")
                     End If
-                    'Passage version 16 à 17
+                    'Passage version 16 Ã  17
                     If CInt(VpDBVersion) < 17 Then
                         VgDBCommand.CommandText = "Alter Table Autorisations Drop Column T1x;"
                         VgDBCommand.ExecuteNonQuery
@@ -653,7 +293,7 @@ Public Module clsModule
                         VgDBCommand.CommandText = "Alter Table Autorisations Add Multi Bit;"
                         VgDBCommand.ExecuteNonQuery
                     End If
-                    'Passage version 17 à 18
+                    'Passage version 17 Ã  18
                     If CInt(VpDBVersion) < 18 Then
                         VgDBCommand.CommandText = "Alter Table MyGamesID Add Parent Long;"
                         VgDBCommand.ExecuteNonQuery
@@ -661,15 +301,15 @@ Public Module clsModule
                         VgDBCommand.ExecuteNonQuery
                         Call ShowInformation("Vous pouvez maintenant classer vos decks dans des dossiers !")
                     End If
-                    'Passage version 18 à 19
+                    'Passage version 18 Ã  19
                     If CInt(VpDBVersion) < 19 Then
                         VgDBCommand.CommandText = "Alter Table Card Add MultiverseId Long;"
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Update Card Set MultiverseId = 0;"
                         VgDBCommand.ExecuteNonQuery
-                        Call ShowInformation("Vous pouvez maintenant avoir l'image de chaque carte selon son édition (à activer dans les Préférences) !")
+                        Call ShowInformation("Vous pouvez maintenant avoir l'image de chaque carte selon son Ã©dition (Ã  activer dans les PrÃ©fÃ©rences) !")
                     End If
-                    'Passage version 19 à 20
+                    'Passage version 19 Ã  20
                     If CInt(VpDBVersion) < 20 Then
                         VgDBCommand.CommandText = "Alter Table Autorisations Add MTGO Bit;"
                         VgDBCommand.ExecuteNonQuery
@@ -681,7 +321,7 @@ Public Module clsModule
                         VgDBCommand.ExecuteNonQuery
                     End If
                 Catch
-                    Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
+                    Call ShowWarning("Un problÃ¨me est survenu pendant la mise Ã  jour de la base de donnÃ©es...")
                     Return False
                 End Try
                 Return True
@@ -692,7 +332,7 @@ Public Module clsModule
     End Function
     Private Sub DBChangeType(VpTable As String, VpField As String, VpType As String, VpCaster As String)
     '-----------------------------------------------------------------------------------------------------------------
-    'Jet-SQL ne supporte pas le changement de type d'une colonne avec conversion implicite, d'où la routine ci-dessous
+    'Jet-SQL ne supporte pas le changement de type d'une colonne avec conversion implicite, d'oÃ¹ la routine ci-dessous
     '-----------------------------------------------------------------------------------------------------------------
         VgDBCommand.CommandText = "Alter Table " + VpTable + " Add " + VpField + "2 " + VpType + ";"
         VgDBCommand.ExecuteNonQuery
@@ -709,7 +349,7 @@ Public Module clsModule
     End Sub
     Public Function DBOK As Boolean
         If VgDB Is Nothing Then
-            Call ShowWarning("Aucune base de données n'a été sélectionnée...")
+            Call ShowWarning("Aucune base de donnÃ©es n'a Ã©tÃ© sÃ©lectionnÃ©e...")
             Return False
         ElseIf MainForm.VgMe.IsMainReaderBusy Then
             Return False
@@ -719,7 +359,7 @@ Public Module clsModule
     End Function
     Public Sub DBImport(VpPath As String, Optional VpSilent As Boolean = False)
     '---------------------------------------------------------------------------------
-    'Importe dans la base de données l'ensemble du patch (structure + enregistrements)
+    'Importe dans la base de donnÃ©es l'ensemble du patch (structure + enregistrements)
     '---------------------------------------------------------------------------------
     'TABLE_CATALOG
     'TABLE_SCHEMA
@@ -771,7 +411,7 @@ Public Module clsModule
         'Pour chaque table du patch
         For VpI As Integer = 0 To VpTables.Rows.Count - 1
             VpTable = VpTables.Rows(VpI)!TABLE_NAME.ToString
-            'Si la table existe déjà dans la base mais qu'elle doit être préalablement détruite
+            'Si la table existe dÃ©jÃ  dans la base mais qu'elle doit Ãªtre prÃ©alablement dÃ©truite
             If PreDelete(VpTable) Then
                 Try
                     VgDBCommand.CommandText = "Drop Table " + VpTable + ";"
@@ -781,7 +421,7 @@ Public Module clsModule
             End If
             'Si la table n'existe pas (ou plus) dans la base
             If Not IsInDB(VpTable) Then
-                'Prépare la requête de création de table (méthode SQL)
+                'PrÃ©pare la requÃªte de crÃ©ation de table (mÃ©thode SQL)
                 VpSQL = "Create Table " + VpTable + "("
                 VpSchemaTable = VpDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, VpTable, Nothing})
                 For VpK As Integer = 0 To VpSchemaTable.Rows.Count - 1
@@ -801,7 +441,7 @@ Public Module clsModule
                 VpSQL = VpSQL.Substring(0, VpSQL.Length - 2)
                 VgDBCommand.CommandText = VpSQL + ");"
                 VgDBCommand.ExecuteNonQuery
-                'La table étant présente, on peut insérer les nouvelles données (méthode OLEDB/DataSet)
+                'La table Ã©tant prÃ©sente, on peut insÃ©rer les nouvelles donnÃ©es (mÃ©thode OLEDB/DataSet)
                 VpDBCommand.CommandText = "Select * From " + VpTable + ";"
                 VgDBCommand.CommandText = VpDBCommand.CommandText
                 VpDA1.SelectCommand = VpDBCommand
@@ -821,7 +461,7 @@ Public Module clsModule
         Next VpI
         'Informe l'utilisateur
         If Not VpSilent Then
-            Call ShowInformation("Mise à jour effectuée." + vbCrLf + "Assurez-vous d'avoir également la dernière version du logiciel...")
+            Call ShowInformation("Mise Ã  jour effectuÃ©e." + vbCrLf + "Assurez-vous d'avoir Ã©galement la derniÃ¨re version du logiciel...")
         End If
         'Supprime le patch
         VpDB.Close
@@ -831,8 +471,8 @@ Public Module clsModule
     End Sub
     Public Sub DBAdaptEncNbr
     '--------------------------------------------------------------------------------------------------------------------------
-    'Toutes les éditions ne sont pas forcément importées dans le même ordre chez les utilisateurs, d'où des EncNbr différents :
-    '=> cette procédure détermine les bons EncNbr à partir du nom de la carte et de son édition
+    'Toutes les Ã©ditions ne sont pas forcÃ©ment importÃ©es dans le mÃªme ordre chez les utilisateurs, d'oÃ¹ des EncNbr diffÃ©rents :
+    '=> cette procÃ©dure dÃ©termine les bons EncNbr Ã  partir du nom de la carte et de son Ã©dition
     '--------------------------------------------------------------------------------------------------------------------------
         VgDBCommand.CommandText = "Alter Table PricesHistory Add EncNbr Long;"
         VgDBCommand.ExecuteNonQuery
@@ -847,15 +487,15 @@ Public Module clsModule
     End Sub
     Private Function PreDelete(VpTable As String) As Boolean
     '---------------------------------------------------------------------------------------------
-    'Indique si la table spécifiée en paramètre doit être supprimée lors de l'application du patch
+    'Indique si la table spÃ©cifiÃ©e en paramÃ¨tre doit Ãªtre supprimÃ©e lors de l'application du patch
     '---------------------------------------------------------------------------------------------
         Select Case VpTable
             Case "MySpecialUses"
-                'Essaie d'utiliser le champ large ; si erreur => on doit recréer la table avec un champ plus grand
+                'Essaie d'utiliser le champ large ; si erreur => on doit recrÃ©er la table avec un champ plus grand
                 Try
                     VgDBCommand.CommandText = "Insert Into MySpecialUses Values (-1, -1, 'X', '" + StrBuild("X", 128) + "', '" + StrBuild("X", 128) + "', False, False);"
                     VgDBCommand.ExecuteNonQuery
-                    VgDBCommand.CommandText = "Delete * From MySpecialUses Where EffortID = -1;"        'un peu crade mais je n'ai pas trouvé plus simple !
+                    VgDBCommand.CommandText = "Delete * From MySpecialUses Where EffortID = -1;"        'un peu crade mais je n'ai pas trouvÃ© plus simple !
                     VgDBCommand.ExecuteNonQuery
                 Catch
                     Return True
@@ -867,7 +507,7 @@ Public Module clsModule
     End Function
     Private Function IsInDB(VpTable As String) As Boolean
     '------------------------------------------------------------------------------------------------
-    'Renvoie faux si la table spécifiée en paramètre n'existe pas ou est vide dans la base de données
+    'Renvoie faux si la table spÃ©cifiÃ©e en paramÃ¨tre n'existe pas ou est vide dans la base de donnÃ©es
     '------------------------------------------------------------------------------------------------
     Dim VpResult As Boolean
         Try
@@ -883,39 +523,10 @@ Public Module clsModule
         End If
         Return VpResult
     End Function
-    Public Function LoadIcons(VpImgSeries As ImageList) As Boolean
-    '----------------------------------------------------------
-    'Charge en mémoire les icônes / ressources de l'application
-    '----------------------------------------------------------
-    Dim VpHandle As Image
-    Dim VpKey As String
-        If Not System.IO.Directory.Exists(Application.StartupPath + CgIcons) Then
-            Call ShowWarning("Impossible de trouver le répertoire des ressources...")
-            Return False
-        Else
-            VgImgSeries.ColorDepth = ColorDepth.Depth32Bit
-            VgImgSeries.ImageSize = New Size(21, 21)
-            VgImgSeries.TransparentColor = System.Drawing.Color.Transparent
-            For Each VpIcon As String In System.IO.Directory.GetFiles(Application.StartupPath + CgIcons, "*" + CgIconsExt)
-                If File.Exists(VpIcon) Then
-                    VpHandle = Image.FromFile(VpIcon)
-                    VpKey = VpIcon.Substring(VpIcon.LastIndexOf("\") + 1)
-                    If Not VgImgSeries.Images.Keys.Contains(VpKey) Then
-                        VgImgSeries.Images.Add(VpKey, VpHandle)
-                    End If
-                    If Not VpImgSeries.Images.Keys.Contains(VpKey) Then
-                        VpImgSeries.Images.Add(VpKey, VpHandle)
-                    End If
-                End If
-            Next VpIcon
-        End If
-        Return True
-    End Function
-    '------------------
-    'Boîtes de dialogue
-    '------------------
+    #End Region
+    #Region "BoÃ®tes de dialogue"
     Public Sub ShowWarning(VpStr As String)
-        MessageBox.Show(VpStr, "Problème", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
+        MessageBox.Show(VpStr, "ProblÃ¨me", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
     End Sub
     Public Sub ShowInformation(VpStr As String)
         MessageBox.Show(VpStr, "Information", MessageBoxbuttons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
@@ -923,9 +534,11 @@ Public Module clsModule
     Public Function ShowQuestion(VpStr As String, Optional VpButtons As MessageBoxButtons = MessageBoxbuttons.YesNo) As DialogResult
         Return MessageBox.Show(VpStr, "Question", VpButtons, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
     End Function
+    #End Region
+    #Region "Accessoires"
     Public Function Matching(VpStr As String) As Object
     '-------------------------------------------
-    'Adapte une chaîne en un type plus approprié
+    'Adapte une chaÃ®ne en un type plus appropriÃ©
     '-------------------------------------------
         If VpStr = "True" Then
             Return True
@@ -939,7 +552,7 @@ Public Module clsModule
     End Function
     Public Function TrimQuery(VpSQL As String, Optional VpDot As Boolean = True, Optional VpAddendum As String = "") As String
     '----------------------------------
-    'Suppression des mots-clés inutiles
+    'Suppression des mots-clÃ©s inutiles
     '----------------------------------
     Dim VpTrimSQL As String
         If VpSQL.EndsWith(" Where ") Then
@@ -957,7 +570,7 @@ Public Module clsModule
     End Function
     Public Function FormatTitle(VpTag As String, VpStr As String, Optional VpFR As Boolean = False, Optional VpIsForTvw As Boolean = True) As String
     '-------------------------------------------------------------------
-    'Modifie l'expression passée en paramètre en un titre plus explicite
+    'Modifie l'expression passÃ©e en paramÃ¨tre en un titre plus explicite
     '-------------------------------------------------------------------
     Dim VpDBCommand As OleDbCommand
         Select Case VpTag
@@ -974,9 +587,9 @@ Public Module clsModule
             Case "Card.Type"
                 Select Case VpStr.ToUpper
                     Case "C"
-                        Return "Créatures"
+                        Return "CrÃ©atures"
                     Case "I"
-                        Return "Ephémères"
+                        Return "EphÃ©mÃ¨res"
                     Case "A"
                         Return "Artefacts"
                     Case "E"
@@ -990,13 +603,13 @@ Public Module clsModule
                     Case "T"
                         Return "Enchantements"
                     Case "U"
-                        Return "Créatures avec capacité"
+                        Return "CrÃ©atures avec capacitÃ©"
                     Case "P"
                         Return "Arpenteurs"
                     Case "Q"
                         Return "Plans"
                     Case "H"
-                        Return "Phénomènes"
+                        Return "PhÃ©nomÃ¨nes"
                     Case "Y"
                         Return "Conspirations"
                     Case "Z"
@@ -1026,7 +639,7 @@ Public Module clsModule
                         Return "Blanches"
                     Case "T"
                         Return "Jetons"
-                    'Cas mal géré des double cartes
+                    'Cas mal gÃ©rÃ© des double cartes
                     Case "X"
                         Return "Double-cartes"
                     Case Else
@@ -1041,21 +654,21 @@ Public Module clsModule
             Case "Card.myPrice"
                 Select Case VpStr
                     Case "1"
-                        Return "Moins de 0,50€"
+                        Return "Moins de 0,50â‚¬"
                     Case "2"
-                        Return "Entre 0,50€ et 1€"
+                        Return "Entre 0,50â‚¬ et 1â‚¬"
                     Case "3"
-                        Return "Entre 1€ et 3€"
+                        Return "Entre 1â‚¬ et 3â‚¬"
                     Case "4"
-                        Return "Entre 3€ et 5€"
+                        Return "Entre 3â‚¬ et 5â‚¬"
                     Case "5"
-                        Return "Entre 5€ et 10€"
+                        Return "Entre 5â‚¬ et 10â‚¬"
                     Case "6"
-                        Return "Entre 10€ et 20€"
+                        Return "Entre 10â‚¬ et 20â‚¬"
                     Case "7"
-                        Return "Entre 20€ et 50€"
+                        Return "Entre 20â‚¬ et 50â‚¬"
                     Case "8"
-                        Return "Plus de 50 €"
+                        Return "Plus de 50 â‚¬"
                     Case Else
                         Return VpStr
                 End Select
@@ -1082,7 +695,7 @@ Public Module clsModule
                     Case "D", "L", "S"
                         Return "Sans valeur"
                     Case "X"
-                        Return "Spéciales"
+                        Return "SpÃ©ciales"
                     Case Else
                         Return VpStr
                 End Select
@@ -1132,7 +745,7 @@ Public Module clsModule
     End Function
     Public Function MyPrice(VpStr As String) As Integer
     '-------------------------------------------------------
-    'Retourne la catégorie du prix correspondant à sa valeur
+    'Retourne la catÃ©gorie du prix correspondant Ã  sa valeur
     '-------------------------------------------------------
         '(1 [0-0.5] 2 [0.5-1] 3 [1-3] 4 [3-5] 5 [5-10] 6 [10-20] 7 [20-50] 8 [50+])
         Select Case MyVal(VpStr)
@@ -1156,7 +769,7 @@ Public Module clsModule
     End Function
     Public Function MyCost(VpStr As String) As Integer
     '---------------------------------------------------------------------
-    'Retourne le coût converti de mana de l'invocation passée en paramètre
+    'Retourne le coÃ»t converti de mana de l'invocation passÃ©e en paramÃ¨tre
     '---------------------------------------------------------------------
     Dim VpColorless As Integer
         If VpStr = "0" Then
@@ -1172,7 +785,7 @@ Public Module clsModule
     End Function
     Public Function MyTxt(VpCard As String, VpVF As Boolean, VpDownFace As Boolean) As String
     '----------------------------------------------------
-    'Retourne le texte VF de la carte passée en paramètre
+    'Retourne le texte VF de la carte passÃ©e en paramÃ¨tre
     '----------------------------------------------------
     Dim VpDBCommand As New OleDbCommand
     Dim VpO As Object
@@ -1232,7 +845,7 @@ Public Module clsModule
     End Function
     Public Function StrCount(VpStr As String, VpChar As String) As Integer
     '----------------------------------------------------------------------------------------
-    'Retourne le nombre d'occurences du caractère spécifié dans la chaîne passée en paramètre
+    'Retourne le nombre d'occurences du caractÃ¨re spÃ©cifiÃ© dans la chaÃ®ne passÃ©e en paramÃ¨tre
     '----------------------------------------------------------------------------------------
     Dim VpCounter As Integer = 0
         For VpI As Integer = 0 To VpStr.Length - 1
@@ -1254,25 +867,25 @@ Public Module clsModule
     End Function
     Public Function StrDiacriticInsensitize(VpStr As String) As String
     '-----------------------------------------------------------------------------------------------------------------------------------------------
-    'Rend la requête SQL insensible aux signes diacritiques pour le terme passé en paramètre (NB. elle l'est déjà vis-à-vis de la casse avec JetSQL)
+    'Rend la requÃªte SQL insensible aux signes diacritiques pour le terme passÃ© en paramÃ¨tre (NB. elle l'est dÃ©jÃ  vis-Ã -vis de la casse avec JetSQL)
     '-----------------------------------------------------------------------------------------------------------------------------------------------
     Dim VpStrSB As New StringBuilder
     Dim VpCur As Char
         For VpI As Integer = 0 To VpStr.Length - 1
             VpCur = VpStr.Substring(VpI, 1)
             Select Case VpCur
-                Case "e", "é", "è", "ê", "ë", "E", "É", "È", "Ê", "Ë"
-                    VpStrSB.Append("[eéèêë]")
-                Case "a", "à", "â", "ä", "A", "À", "Â", "Ä"
-                    VpStrSB.Append("[aàâä]")
-                Case "i", "ì", "ï", "î", "I", "Ì", "Ï", "Î"
-                    VpStrSB.Append("[iïîì]")
-                Case "o", "ô", "ö", "ò", "O", "Ô", "Ö", "Ò"
-                    VpStrSB.Append("[oôöò]")
-                Case "u", "ù", "û", "ü", "U", "Ù", "Û", "Ü"
-                    VpStrSB.Append("[uûüù]")
-                Case "c", "ç", "C", "Ç"
-                    VpStrSB.Append("[cç]")
+                Case "e", "Ã©", "Ã¨", "Ãª", "Ã«", "E", "Ã‰", "Ãˆ", "ÃŠ", "Ã‹"
+                    VpStrSB.Append("[eÃ©Ã¨ÃªÃ«]")
+                Case "a", "Ã ", "Ã¢", "Ã¤", "A", "Ã€", "Ã‚", "Ã„"
+                    VpStrSB.Append("[aÃ Ã¢Ã¤]")
+                Case "i", "Ã¬", "Ã¯", "Ã®", "I", "ÃŒ", "Ã", "ÃŽ"
+                    VpStrSB.Append("[iÃ¯Ã®Ã¬]")
+                Case "o", "Ã´", "Ã¶", "Ã²", "O", "Ã”", "Ã–", "Ã’"
+                    VpStrSB.Append("[oÃ´Ã¶Ã²]")
+                Case "u", "Ã¹", "Ã»", "Ã¼", "U", "Ã™", "Ã›", "Ãœ"
+                    VpStrSB.Append("[uÃ»Ã¼Ã¹]")
+                Case "c", "Ã§", "C", "Ã‡"
+                    VpStrSB.Append("[cÃ§]")
                 Case Else
                     VpStrSB.Append(VpCur)
             End Select
@@ -1284,7 +897,7 @@ Public Module clsModule
     End Function
     Public Function FindIndex(VpTab() As String, VpValue As String) As Integer
     '--------------------------------------------------------------------------------------------------------------
-    'Retourne l'indice de la première occurence de la valeur passée en paramètre dans le tableau passé en paramètre
+    'Retourne l'indice de la premiÃ¨re occurence de la valeur passÃ©e en paramÃ¨tre dans le tableau passÃ© en paramÃ¨tre
     '--------------------------------------------------------------------------------------------------------------
         For VpI As Integer = 0 To VpTab.Length - 1
             If VpTab(VpI) = VpValue Then
@@ -1295,7 +908,7 @@ Public Module clsModule
     End Function
     Public Function FindNumber(VpStr As String) As Integer
     '----------------------------------------------------------------------------------
-    'Retourne le nombre correspondant à la chaîne (texte ou nombre) passée en paramètre
+    'Retourne le nombre correspondant Ã  la chaÃ®ne (texte ou nombre) passÃ©e en paramÃ¨tre
     '----------------------------------------------------------------------------------
         If IsNumeric(VpStr) Then
             Return Val(VpStr)
@@ -1346,14 +959,14 @@ Public Module clsModule
     End Sub
     Public Sub InitGrid(VpGrid As Grid, VpColumns() As String)
     '-----------------------------------
-    'Initialisation des contrôles grille
+    'Initialisation des contrÃ´les grille
     '-----------------------------------
         With VpGrid
             'Nettoyage
             If .Rows.Count > 0 Then
                 .Rows.RemoveRange(0, .Rows.Count)
             End If
-            'Nombre de colonnes et d'en-têtes
+            'Nombre de colonnes et d'en-tÃªtes
             .ColumnsCount = VpColumns.Length
             .FixedRows = 1
             .Rows.Insert(0)
@@ -1377,6 +990,21 @@ Public Module clsModule
         VpOut.Flush
         VpOut.Close
     End Sub
+    Public Sub VerboseSimu(VpVerbose As Boolean, VpStr As String, VpSimuOut As StreamWriter, Optional VpEndSimu As Boolean = False)
+    '-----------------------------------------------------
+    'GÃ¨re la verbositÃ© pour les simulations de dÃ©ploiement
+    '-----------------------------------------------------
+        If VpVerbose Then
+            If VpEndSimu Then
+                VpSimuOut.Flush
+                VpSimuOut.Close
+            Else
+                VpSimuOut.WriteLine(VpStr)
+            End If
+        End If
+    End Sub
+    #End Region
+    #Region "Mises Ã  jour"
     Public Function GetPictSP As String
     Dim VpRequest As HttpWebRequest
     Dim VpResponse As WebResponse
@@ -1394,7 +1022,7 @@ Public Module clsModule
     End Function
     Public Sub CheckForPicUpdates
     '-------------------------------------------------------------------------
-    'Vérifie si une mise à jour de la base d'image est disponible sur Internet
+    'VÃ©rifie si une mise Ã  jour de la base d'image est disponible sur Internet
     '-------------------------------------------------------------------------
     Dim VpStamp As String
     Dim VpStr As String
@@ -1402,7 +1030,7 @@ Public Module clsModule
         VpOldText = MainForm.VgMe.StatusTextGet
         Call MainForm.VgMe.StatusText(CgDL1, True)
         VgTimer.Stop
-        'Vérification par la taille
+        'VÃ©rification par la taille
         Try
             VpStamp = GetPictSP
             VpStr = (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length.ToString
@@ -1410,19 +1038,19 @@ Public Module clsModule
                 VpStr = VpStamp.Substring(VpStamp.IndexOf(VpStr) + VpStr.Length + 1)
                 VpStr = VpStr.Substring(0, VpStr.IndexOf("#"))
                 If VpStr = "OK"  Then
-                    Call ShowInformation("Les images sont déjà à jour...")
+                    Call ShowInformation("Les images sont dÃ©jÃ  Ã  jour...")
                     Call MainForm.VgMe.StatusText(VpOldText)
                 Else
-                    'Téléchargement du fichier accompagnateur
+                    'TÃ©lÃ©chargement du fichier accompagnateur
                     Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL10 + VpStr + CgPicLogExt), CgUpPic + CgPicLogExt)
                     Application.DoEvents
-                    'Téléchargement du service pack d'images
+                    'TÃ©lÃ©chargement du service pack d'images
                     MainForm.VgMe.IsInImgDL = True
                     Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL10 + VpStr + CgPicUpExt), CgUpPic + CgPicUpExt)
                 End If
             Else
-                If ShowQuestion("La base d'images semble être corrompue." + vbCrLf + "Voulez-vous la re-télécharger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
-                    'Re-téléchargement complet de la base principale
+                If ShowQuestion("La base d'images semble Ãªtre corrompue." + vbCrLf + "Voulez-vous la re-tÃ©lÃ©charger maintenant ?") = System.Windows.Forms.DialogResult.Yes Then
+                    'Re-tÃ©lÃ©chargement complet de la base principale
                     MainForm.VgMe.IsInImgDL = True
                     Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL10 + CgUpDDBd), VgOptions.VgSettings.PicturesFile, False)
                 Else
@@ -1430,14 +1058,14 @@ Public Module clsModule
                 End If
             End If
         Catch
-            'En cas d'échec de connexion
+            'En cas d'Ã©chec de connexion
             Call ShowWarning(CgDL3b)
             Call MainForm.VgMe.StatusText(VpOldText)
         End Try
     End Sub
     Public Sub CheckForUpdates(Optional VpExplicit As Boolean = False, Optional VpBeta As Boolean = False, Optional VpContenu As Boolean = False)
     '------------------------------------------------------------------
-    'Vérifie si une mise à jour du logiciel est disponible sur Internet
+    'VÃ©rifie si une mise Ã  jour du logiciel est disponible sur Internet
     '------------------------------------------------------------------
     Dim VpRequest As HttpWebRequest
     Dim VpAnswer As Stream
@@ -1449,31 +1077,31 @@ Public Module clsModule
         Call MainForm.VgMe.StatusText(CgDL1)
         'Fichier d'historique des versions
         Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL7), CgHSTFile)
-        'Vérification horodatage
+        'VÃ©rification horodatage
         Try
             VpRequest = WebRequest.Create(If(VpBeta, VgOptions.VgSettings.DownloadServer + CgURL1B, VgOptions.VgSettings.DownloadServer + CgURL1))
             VpAnswer = VpRequest.GetResponse.GetResponseStream
-            'Lecture du fichier horodaté sur Internet
+            'Lecture du fichier horodatÃ© sur Internet
             VpAnswer.Read(VpBuf, 0, 19)
             Call Date.TryParseExact(New ASCIIEncoding().GetString(VpBuf), "dd/MM/yyyy HH:mm:ss", New CultureInfo("fr-FR"), DateTimeStyles.None, VgRemoteDate)
-            'Si version plus récente
+            'Si version plus rÃ©cente
             If DateTime.Compare(File.GetLastWriteTimeUtc(Application.ExecutablePath), VgRemoteDate) < 0 Then
                 VgTray.Visible = True
                 VgTray.Tag = If(VpBeta, eUpdateType.Beta, eUpdateType.Release)
-                VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + If(VpBeta, " BETA", ""), "Une mise à jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la télécharger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
+                VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + If(VpBeta, " BETA", ""), "Une mise Ã  jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la tÃ©lÃ©charger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
             ElseIf VpExplicit
                 If VpContenu Then
-                    If clsModule.ShowQuestion("L'application est à jour..." + vbCrLf + "Voulez-vous rechercher aussi les mises à jour de contenu (prix, images...) ?") = System.Windows.Forms.DialogResult.Yes Then
+                    If mdlToolbox.ShowQuestion("L'application est Ã  jour..." + vbCrLf + "Voulez-vous rechercher aussi les mises Ã  jour de contenu (prix, images...) ?") = System.Windows.Forms.DialogResult.Yes Then
                         Call MainForm.VgMe.MnuContenuUpdateClick(Nothing, Nothing)
                     End If
                 Else
                     If VpBeta Then
-                        Call ShowInformation("Aucune version bêta postérieure à la dernière release n'est disponible pour l'instant...")
+                        Call ShowInformation("Aucune version bÃªta postÃ©rieure Ã  la derniÃ¨re release n'est disponible pour l'instant...")
                     Else
-                        Call ShowInformation("Vous disposez déjà de la dernière version de Magic The Gathering Manager !")
+                        Call ShowInformation("Vous disposez dÃ©jÃ  de la derniÃ¨re version de Magic The Gathering Manager !")
                     End If
                 End If
-            'Recherche automatique des mises à jour de contenu
+            'Recherche automatique des mises Ã  jour de contenu
             ElseIf DBOK Then
                 If MainForm.VgMe.MyChildren.DoesntExist(MainForm.VgMe.MyChildren.ContenuUpdater) Then
                     VpContenuUpdate = New frmUpdateContent
@@ -1484,11 +1112,11 @@ Public Module clsModule
                 If VpContenuUpdate.CheckForContenu(VpNewContenu) Then
                     VgTray.Visible = True
                     VgTray.Tag = eUpdateType.Contenu
-                    VgTray.ShowBalloonTip(10, "Magic The Gathering Manager", "Des mises à jour de contenu sont disponibles..." + vbCrLf + "Cliquer ici pour en savoir plus...", ToolTipIcon.Info)
+                    VgTray.ShowBalloonTip(10, "Magic The Gathering Manager", "Des mises Ã  jour de contenu sont disponibles..." + vbCrLf + "Cliquer ici pour en savoir plus...", ToolTipIcon.Info)
                 End If
             End If
         Catch
-            'En cas d'échec de connexion, inutile de continuer à checker
+            'En cas d'Ã©chec de connexion, inutile de continuer Ã  checker
             VgTimer.Stop
             If VpExplicit Then
                 Call ShowWarning(CgDL3b)
@@ -1520,14 +1148,14 @@ Public Module clsModule
     End Sub
     Public Sub DownloadNow(VpURI As System.Uri, VpOutput As String)
     '----------------------------------------------------------------------------
-    'Télécharge immédiatement l'application mise à jour ou une de ses dépendances
+    'TÃ©lÃ©charge immÃ©diatement l'application mise Ã  jour ou une de ses dÃ©pendances
     '----------------------------------------------------------------------------
     Dim VpCopy As Process
         Cursor.Current = Cursors.WaitCursor
         Try
             VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
         Catch
-            'Si on arrive là c'est qu'on n'a pas les droits d'écriture => on télécharge dans un dossier temporaire et on lance la copie en demandant les droits d'admin
+            'Si on arrive lÃ  c'est qu'on n'a pas les droits d'Ã©criture => on tÃ©lÃ©charge dans un dossier temporaire et on lance la copie en demandant les droits d'admin
             Try
                 VgClient.DownloadFile(VpURI, Path.GetTempPath + VpOutput)
                 VpCopy = New Process
@@ -1544,12 +1172,12 @@ Public Module clsModule
     End Sub
     Public Sub DownloadUpdate(VpURI As System.Uri, VpOutput As String, Optional VpBaseDir As Boolean = True, Optional VpSilent As Boolean = False)
     '------------------------------------------------------------------------------
-    'Télécharge en arrière-plan l'application mise à jour ou une de ses dépendances
+    'TÃ©lÃ©charge en arriÃ¨re-plan l'application mise Ã  jour ou une de ses dÃ©pendances
     '------------------------------------------------------------------------------
         If MainForm.VgMe.IsDownloadInProgress Then
             If Not MainForm.VgMe.MyChildren.DoesntExist(MainForm.VgMe.MyChildren.ContenuUpdater) Then
-                If MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.InProgress Then
-                    MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.Failed
+                If MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = mdlConstGlob.ePassiveUpdate.InProgress Then
+                    MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = mdlConstGlob.ePassiveUpdate.Failed
                 End If
             End If
             If Not VpSilent Then
@@ -1568,7 +1196,7 @@ Public Module clsModule
     End Sub
     Public Sub DownloadUnzip(VpURI As System.Uri, VpOutput As String, VpInside As String)
     '-------------------------------------------------------------
-    'Télécharge immédiatement et décompresse la ressource demandée
+    'TÃ©lÃ©charge immÃ©diatement et dÃ©compresse la ressource demandÃ©e
     '-------------------------------------------------------------
     Dim VpZipStream As ZipInputStream
     Dim VpZipEntry As ZipEntry
@@ -1579,7 +1207,7 @@ Public Module clsModule
                 VpZipEntry = VpZipStream.GetNextEntry
                 If VpZipEntry IsNot Nothing AndAlso VpZipEntry.IsFile AndAlso VpZipEntry.Name <> "" Then
                     Using VpFile As Stream = File.OpenWrite(Application.StartupPath + VpInside)
-                        Call clsModule.CopyStream(VpZipStream, VpFile)
+                        Call mdlToolbox.CopyStream(VpZipStream, VpFile)
                     End Using
                 Else
                     Exit Do
@@ -1599,7 +1227,7 @@ Public Module clsModule
     End Sub
     Public Sub ClientDownloadFileCompleted(ByVal sender As Object, ByVal e As AsyncCompletedEventArgs) Handles VgClient.DownloadFileCompleted
     '------------------------------------------------------------
-    'Installe l'application mise à jour ou une de des dépendances
+    'Installe l'application mise Ã  jour ou une de des dÃ©pendances
     '------------------------------------------------------------
     Dim VpResult As WebException = e.Error
         MainForm.VgMe.IsInImgDL = False
@@ -1640,19 +1268,21 @@ Public Module clsModule
             Call MainForm.VgMe.UpdateTxtFR
         'Maj Rulings
         ElseIf File.Exists(Application.StartupPath + CgUpRulings) Then
-            Call MainForm.VgMe.UpdateRulings(Not MainForm.VgMe.MyChildren.DoesntExist(MainForm.VgMe.MyChildren.ContenuUpdater) AndAlso MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = clsModule.ePassiveUpdate.InProgress)
+            Call MainForm.VgMe.UpdateRulings(Not MainForm.VgMe.MyChildren.DoesntExist(MainForm.VgMe.MyChildren.ContenuUpdater) AndAlso MainForm.VgMe.MyChildren.ContenuUpdater.PassiveUpdate = mdlConstGlob.ePassiveUpdate.InProgress)
         End If
     End Sub
+    #End Region
+    #Region "RequÃªtes ponctuelles"
     Public Function GetEncNbr(VpCardName As String, VpIDSerie As String) As Long
     '-------------------------------------------------------------------------------------------
-    'Retourne le numéro unique caractéristique d'une carte à partir de son nom et de son édition
+    'Retourne le numÃ©ro unique caractÃ©ristique d'une carte Ã  partir de son nom et de son Ã©dition
     '-------------------------------------------------------------------------------------------
         VgDBCommand.CommandText = "Select Card.EncNbr From Card Where Card.Title = '" + VpCardName.Replace("'", "''") + "' And Card.Series = '" + VpIDSerie + "';"
         Return CLng(VgDBCommand.ExecuteScalar)
     End Function
     Public Function GetSerieCodeFromName(VpName As String, Optional VpApprox As Boolean = False, Optional VpFR As Boolean = False) As String
     '-------------------------------------------------------------------------------------------
-    'Retourne le code id d'une édition à partir de son nom VO ou VF, éventuellement approximatif
+    'Retourne le code id d'une Ã©dition Ã  partir de son nom VO ou VF, Ã©ventuellement approximatif
     '-------------------------------------------------------------------------------------------
     Dim VpO As Object
         If VpName.Length = 2 Then
@@ -1679,7 +1309,7 @@ Public Module clsModule
     End Function
     Public Function GetSerieNameFromCode(VpSerie As String, VpVF As Boolean) As String
     '--------------------------------------------------------
-    'Retourne le nom VO d'une édition à partir de son code id
+    'Retourne le nom VO d'une Ã©dition Ã  partir de son code id
     '--------------------------------------------------------
     Dim VpO As Object
     Dim VpFoil As Boolean = VpSerie.EndsWith(CgFoil2)
@@ -1694,7 +1324,7 @@ Public Module clsModule
     End Function
     Public Function GetTransformedName(VpCard As String) As String
     '--------------------------------------------------------------------
-    'Pour les cartes double faces, obtient le nom de la carte transformée
+    'Pour les cartes double faces, obtient le nom de la carte transformÃ©e
     '--------------------------------------------------------------------
     Dim VpDBCommand As OleDbCommand
         Try
@@ -1709,7 +1339,7 @@ Public Module clsModule
     End Function
     Public Function GetNameVF(VpCardVO As String) As String
     '----------------------------------------------------------------------------
-    'Retourne la première traduction disponible pour la carte passée en paramètre
+    'Retourne la premiÃ¨re traduction disponible pour la carte passÃ©e en paramÃ¨tre
     '----------------------------------------------------------------------------
     Dim VpDBCommand As OleDbCommand
         Try
@@ -1724,14 +1354,14 @@ Public Module clsModule
     End Function
     Public Function HasPriceHistory As Boolean
     '--------------------------------------------------
-    'Vérifie si la base contient un historique des prix
+    'VÃ©rifie si la base contient un historique des prix
     '--------------------------------------------------
         VgDBCommand.CommandText = "Select Count(*) From PricesHistory;"
         Return ( CInt(VgDBCommand.ExecuteScalar) > 0 )
     End Function
     Public Function GetPriceHistory(VpCardName As String, VpFoil As Boolean) As Hashtable
     '---------------------------------------------------------------------------------------------
-    'Retourne l'historique des prix pour la carte passée en paramètre pour chacune de ses éditions
+    'Retourne l'historique des prix pour la carte passÃ©e en paramÃ¨tre pour chacune de ses Ã©ditions
     '---------------------------------------------------------------------------------------------
     Dim VpHist As New Hashtable
     Dim VpLastName As String = ""
@@ -1757,13 +1387,13 @@ Public Module clsModule
     End Function
     Public Function GetLastPricesDate As Date
     '-------------------------------------------------
-    'Retourne la dernière date de mise à jour des prix
+    'Retourne la derniÃ¨re date de mise Ã  jour des prix
     '-------------------------------------------------
     Dim VpDate As Date
         VgDBCommand.CommandText = "Select Top 1 PriceDate From Card Order By PriceDate Desc;"
         VpDate = VgDBCommand.ExecuteScalar
         If VpDate.Subtract(Date.Now).Days > 0 Then
-            'Si on est là c'est que la date n'est pas valide (on ne peut pas avoir des prix dans le futur !) => on force la mise à jour en retournant une date d'il y a un an
+            'Si on est lÃ  c'est que la date n'est pas valide (on ne peut pas avoir des prix dans le futur !) => on force la mise Ã  jour en retournant une date d'il y a un an
             Return New DateTime(Date.Now.Year - 1, Date.Now.Month, Date.Now.Day)
         Else
             Return VpDate
@@ -1771,7 +1401,7 @@ Public Module clsModule
     End Function
     Public Sub LoadEditions(VpCbo As ComboBox)
     '--------------------------------------------------------------
-    'Charge la liste des éditions présentes dans la base de données
+    'Charge la liste des Ã©ditions prÃ©sentes dans la base de donnÃ©es
     '--------------------------------------------------------------
         VpCbo.Items.Clear
         VpCbo.Text = ""
@@ -1785,9 +1415,153 @@ Public Module clsModule
         End With
         VpCbo.Sorted = True
     End Sub
+    Public Function GetAdvCount As Integer
+    '------------------------------------------------------
+    'Retourne le nombre de propriÃ©taires en base de donnÃ©es
+    '------------------------------------------------------
+        VgDBCommand.CommandText = "Select Count(*) From MyAdversairesID;"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetAdvDecksCount(VpI As Integer) As Integer
+    '--------------------------------------------------------------------------------------
+    'Retourne le nombre de decks possÃ©dÃ©s par le propriÃ©taire d'index spÃ©cifiÃ© en paramÃ¨tre
+    '--------------------------------------------------------------------------------------
+        VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where AdvID = " + VpI.ToString + " And IsFolder = False;"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetAdvDecksCount(VpName As String) As Integer
+        VgDBCommand.CommandText = "Select Count(*) From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpName.Replace("'", "''") + "' And IsFolder = False;"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetAdvId(VpName As String) As Integer
+    '-------------------------------------------------------------------------
+    'Retourne l'identifiant de l'adversaire dont le nom est passÃ© en paramÃ¨tre
+    '-------------------------------------------------------------------------
+        VgDBCommand.CommandText = "Select AdvId From MyAdversairesId Where AdvName = '" + VpName.Replace("'", "''") + "';"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetOwner(VpDeck As String) As String
+    '-------------------------------------------------------------------------
+    'Retourne l'identifiant de l'adversaire dont le nom est passÃ© en paramÃ¨tre
+    '-------------------------------------------------------------------------
+        VgDBCommand.CommandText = "Select AdvName From MyAdversairesID Inner Join MyGamesID On MyAdversairesID.AdvID = MyGamesID.AdvID Where GameName = '" + VpDeck.Replace("'", "''") + "';"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetAdvName(VpI As Integer) As String
+    '-------------------------------------------------------------
+    'Retourne le nom de l'adversaire d'index spÃ©cifiÃ© en paramÃ¨tre
+    'NB. : 0 = Moi
+    '-------------------------------------------------------------
+        VgDBCommand.CommandText = "Select Last(AdvName) From (Select Top " + VpI.ToString + " AdvName From MyAdversairesID Order By AdvID);"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetNewAdvId As Integer
+    '-------------------------------------------------
+    'Retourne un identifiant pour un nouvel adversaire
+    '-------------------------------------------------
+        VgDBCommand.CommandText = "Select Max(AdvID) From MyAdversairesID;"
+        Return (CInt(VgDBCommand.ExecuteScalar) + 1)
+    End Function
+    Public Function GetDeckNameFromIndex(VpI As Integer) As String
+    '---------------------------------------------------------------------
+    'Retourne le nom du deck d'index spÃ©cifiÃ© en paramÃ¨tre
+    '/!\ retourne le nom du VpI Ã¨me deck, et pas le deck dont l'id est VpI
+    '---------------------------------------------------------------------
+        VgDBCommand.CommandText = "Select Last(GameName) From (Select Top " + VpI.ToString + " GameName From MyGamesID Where IsFolder = False Order By GameID);"
+        Try
+            Return VgDBCommand.ExecuteScalar
+        Catch
+            Return "Jeu nÂ°" + VpI.ToString
+        End Try
+    End Function
+    Public Function GetDeckIdFromName(VpStr As String) As String
+    '--------------------------------------------------
+    'Retourne l'id du deck de nom spÃ©cifiÃ© en paramÃ¨tre
+    '--------------------------------------------------
+    Dim VpO As Object
+        VgDBCommand.CommandText = "Select GameID From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
+        VpO = VgDBCommand.ExecuteScalar
+        If Not VpO Is Nothing Then
+            Return VpO.ToString
+        Else
+            Return ""
+        End If
+    End Function
+    Public Function GetDeckNameFromId(VpId As Long) As String
+    '--------------------------------------------------
+    'Retourne le nom du deck d'id spÃ©cifiÃ© en paramÃ¨tre
+    '--------------------------------------------------
+        VgDBCommand.CommandText = "Select GameName From MyGamesID Where GameID = " + VpId.ToString + ";"
+        Return VgDBCommand.ExecuteScalar.ToString
+    End Function
+    Public Function IsDeckFolder(VpId As Long) As Boolean
+    '---------------------------------------------------
+    'Retourne si le deck n'est qu'un alias de rÃ©pertoire
+    '---------------------------------------------------
+        VgDBCommand.CommandText = "Select IsFolder From MyGamesID Where GameID = " + VpId.ToString + ";"
+        Return VgDBCommand.ExecuteScalar.ToString
+    End Function
+    Public Function GetChildrenDecksIds(VpParent As String) As List(Of Integer)
+    '---------------------------------------------------------------
+    'Retourne les decks dont le nom du parent est passÃ© en paramÃ¨tre
+    '---------------------------------------------------------------
+    Dim VpChildren As New List(Of Integer)
+        VgDBCommand.CommandText = "Select GameID From MyGamesID Where Parent " + VpParent + " Order By GameID;"
+        VgDBReader = VgDBCommand.ExecuteReader
+        With VgDBReader
+            While .Read
+                VpChildren.Add(CInt(.GetValue(0)))
+            End While
+            .Close
+        End With
+        Return VpChildren
+    End Function
+    Public Function GetDeckFormat(VpStr As String) As String
+    '--------------------------------------------------------------
+    'Retourne le format de jeu du deck de nom spÃ©cifiÃ© en paramÃ¨tre
+    '--------------------------------------------------------------
+        VgDBCommand.CommandText = "Select GameFormat From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
+        Return VgDBCommand.ExecuteScalar.ToString
+    End Function
+    Public Function GetDeckDescription(VpDeckIndex As Integer) As String
+    '--------------------------------------------------------------------
+    'Retourne le commentaire associÃ© au deck de nom spÃ©cifiÃ© en paramÃ¨tre
+    '--------------------------------------------------------------------
+    Dim VpSQL As String
+    Dim VpO As Object
+        VpSQL = "Select GameDescription From MyGamesID Inner Join MyGames On MyGamesID.GameID = MyGames.GameID  Where MyGames.GameID = " + VpDeckIndex.ToString
+        VgDBCommand.CommandText = mdlToolbox.TrimQuery(VpSQL)
+        VpO = VgDBCommand.ExecuteScalar
+        If Not VpO Is Nothing Then
+            Return VpO.ToString
+        Else
+            Return ""
+        End If
+    End Function
+    Public Function GetDeckCount As Integer
+    '----------------------------------------------
+    'Retourne le nombre de decks en base de donnÃ©es
+    '----------------------------------------------
+        VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where IsFolder = False;"
+        Return VgDBCommand.ExecuteScalar
+    End Function
+    Public Function GetNewDeckId As Integer
+    '--------------------------------------------
+    'Retourne un identifiant pour un nouveau deck
+    '--------------------------------------------
+        VgDBCommand.CommandText = "Select Max(GameID) From MyGamesID;"
+        Try
+            Return (CInt(VgDBCommand.ExecuteScalar) + 1)
+        Catch
+            'Si pas de deck prÃ©sent
+            Return 0
+        End Try
+    End Function
+    #End Region
+    #Region "Gestion des images"
     Public Sub ExtractPictures(VpSaveFolder As String, VpSource As String, VpRestriction As String, Optional VpExtractTransformed As Boolean = False)
     '-------------------------------------------------------------------------------------------------
-    'Sauvegarde dans le dossier spécifié par l'utilisateur l'ensembles des images JPEG de la sélection
+    'Sauvegarde dans le dossier spÃ©cifiÃ© par l'utilisateur l'ensembles des images JPEG de la sÃ©lection
     '-------------------------------------------------------------------------------------------------
     Dim VpSQL As String
     Dim VpCards As New List(Of String)
@@ -1813,7 +1587,7 @@ Public Module clsModule
     End Sub
     Public Sub LoadScanCard(VpTitle As String, VpMultiverseId As Long, VppicScanCard As PictureBox, Optional VpSave As Boolean = False, Optional VpSaveFolder As String = "")
     '---------------------------------------------------------------------------------
-    'Charge l'image scannérisée de la carte recherchée dans la zone prévue à cet effet
+    'Charge l'image scannÃ©risÃ©e de la carte recherchÃ©e dans la zone prÃ©vue Ã  cet effet
     '---------------------------------------------------------------------------------
     Dim VpOffset As Long
     Dim VpEnd As Long
@@ -1833,13 +1607,13 @@ Public Module clsModule
             RemoveHandler VppicScanCard.LoadCompleted, AddressOf LoadScanCardCompleted
             AddHandler VppicScanCard.LoadCompleted, AddressOf LoadScanCardCompleted
             ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
-            VppicScanCard.LoadAsync(clsModule.CgURL0.Replace("#", VpMultiverseId.ToString))
+            VppicScanCard.LoadAsync(mdlConstGlob.CgURL0.Replace("#", VpMultiverseId.ToString))
         ElseIf File.Exists(VgOptions.VgSettings.PicturesFile) Then
             If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < CgImgMinLength Then
                 If Not VpSave Then
                     VppicScanCard.Image = Nothing
                 End If
-                Call ShowWarning("La base d'images ne possède pas la taille minimale requise." + vbCrLf + "Vérifiez le fichier spécifié dans les Préférences...")
+                Call ShowWarning("La base d'images ne possÃ¨de pas la taille minimale requise." + vbCrLf + "VÃ©rifiez le fichier spÃ©cifiÃ© dans les PrÃ©fÃ©rences...")
                 Exit Sub
             End If
             VpPicturesFile = New StreamReader(VgOptions.VgSettings.PicturesFile)
@@ -1865,7 +1639,7 @@ Public Module clsModule
                             VppicScanCard.Image = Image.FromFile(VpTmp)
                         Catch
                             If VgOptions.VgSettings.ShowCorruption Then
-                                Call ShowWarning("La base d'images semble être corrompue." + vbCrLf + "Essayez de la mettre à jour ou de la re-télécharger...")
+                                Call ShowWarning("La base d'images semble Ãªtre corrompue." + vbCrLf + "Essayez de la mettre Ã  jour ou de la re-tÃ©lÃ©charger...")
                             End If
                             VppicScanCard.Image = Nothing
                             VgDBReader.Close
@@ -1894,9 +1668,9 @@ Public Module clsModule
                 End If
             End Try
             VgDBReader.Close
-            'Fichier présent mais table d'index absente
+            'Fichier prÃ©sent mais table d'index absente
             If VpMissingTable Then
-                Select Case ShowQuestion("Cette version du logiciel est capable de gérer les images des cartes mais la base de données n'est pas à jour." + vbCrLf + "Voulez-vous télécharger les informations manquantes maintenant ?" + vbCrLf + "Cliquez sur 'Annuler' pour ne plus afficher ce message...", MessageBoxButtons.YesNoCancel)
+                Select Case ShowQuestion("Cette version du logiciel est capable de gÃ©rer les images des cartes mais la base de donnÃ©es n'est pas Ã  jour." + vbCrLf + "Voulez-vous tÃ©lÃ©charger les informations manquantes maintenant ?" + vbCrLf + "Cliquez sur 'Annuler' pour ne plus afficher ce message...", MessageBoxButtons.YesNoCancel)
                     Case DialogResult.Yes
                         Call DownloadUpdate(New Uri(VgOptions.VgSettings.DownloadServer + CgURL3), CgUpDDB)
                     Case DialogResult.Cancel
@@ -1909,18 +1683,18 @@ Public Module clsModule
     End Sub
     Private Sub LoadScanCardCompleted(sender As Object, e As AsyncCompletedEventArgs)
     '-------------------------------------------------------------------------------------------
-    'Vérifie que l'image retournée par le Gatherer n'est pas trop grande ou s'il faut la réduire
+    'VÃ©rifie que l'image retournÃ©e par le Gatherer n'est pas trop grande ou s'il faut la rÃ©duire
     '-------------------------------------------------------------------------------------------
     Dim VppicScanCard As PictureBox = sender
         With VppicScanCard
             If .Image.Height >= CgMTGCardHeight_px * 1.1 Then
-                .Image = New Bitmap(.Image, 223, 310)   '223x310 est déterminé empiriquement de façon à ne pas afficher trop de bordure
+                .Image = New Bitmap(.Image, 223, 310)   '223x310 est dÃ©terminÃ© empiriquement de faÃ§on Ã  ne pas afficher trop de bordure
             End If
         End With
     End Sub
     Public Function HasBorder(VpPath As String) As Boolean
     '-------------------------------------------------------------------------------------------------------
-    'Regarde si l'image dont le chemin est passé en paramètre contient une bordure noire ou blanche continue
+    'Regarde si l'image dont le chemin est passÃ© en paramÃ¨tre contient une bordure noire ou blanche continue
     '-------------------------------------------------------------------------------------------------------
     Const CpBorderSize As Integer = 8
     Dim VpBitmap As Bitmap
@@ -1950,154 +1724,14 @@ Public Module clsModule
                     End If
                 Next VpY
             Next VpX
-            'En déduit s'il y a une bordure ou pas
+            'En dÃ©duit s'il y a une bordure ou pas
             Return ( (VpB / VpCount > 0.5 AndAlso VpW / VpCount < 0.1) OrElse (VpW / VpCount > 0.5 AndAlso VpB / VpCount < 0.1) )
         Else
             Return True
         End If
     End Function
-    Public Function GetAdvCount As Integer
-    '------------------------------------------------------
-    'Retourne le nombre de propriétaires en base de données
-    '------------------------------------------------------
-        VgDBCommand.CommandText = "Select Count(*) From MyAdversairesID;"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetAdvDecksCount(VpI As Integer) As Integer
-    '--------------------------------------------------------------------------------------
-    'Retourne le nombre de decks possédés par le propriétaire d'index spécifié en paramètre
-    '--------------------------------------------------------------------------------------
-        VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where AdvID = " + VpI.ToString + " And IsFolder = False;"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetAdvDecksCount(VpName As String) As Integer
-        VgDBCommand.CommandText = "Select Count(*) From MyGamesID Inner Join MyAdversairesID On MyGamesID.AdvID = MyAdversairesID.AdvID Where AdvName = '" + VpName.Replace("'", "''") + "' And IsFolder = False;"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetAdvId(VpName As String) As Integer
-    '-------------------------------------------------------------------------
-    'Retourne l'identifiant de l'adversaire dont le nom est passé en paramètre
-    '-------------------------------------------------------------------------
-        VgDBCommand.CommandText = "Select AdvId From MyAdversairesId Where AdvName = '" + VpName.Replace("'", "''") + "';"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetOwner(VpDeck As String) As String
-    '-------------------------------------------------------------------------
-    'Retourne l'identifiant de l'adversaire dont le nom est passé en paramètre
-    '-------------------------------------------------------------------------
-        VgDBCommand.CommandText = "Select AdvName From MyAdversairesID Inner Join MyGamesID On MyAdversairesID.AdvID = MyGamesID.AdvID Where GameName = '" + VpDeck.Replace("'", "''") + "';"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetAdvName(VpI As Integer) As String
-    '-------------------------------------------------------------
-    'Retourne le nom de l'adversaire d'index spécifié en paramètre
-    'NB. : 0 = Moi
-    '-------------------------------------------------------------
-        VgDBCommand.CommandText = "Select Last(AdvName) From (Select Top " + VpI.ToString + " AdvName From MyAdversairesID Order By AdvID);"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetNewAdvId As Integer
-    '-------------------------------------------------
-    'Retourne un identifiant pour un nouvel adversaire
-    '-------------------------------------------------
-        VgDBCommand.CommandText = "Select Max(AdvID) From MyAdversairesID;"
-        Return (CInt(VgDBCommand.ExecuteScalar) + 1)
-    End Function
-    Public Function GetDeckNameFromIndex(VpI As Integer) As String
-    '---------------------------------------------------------------------
-    'Retourne le nom du deck d'index spécifié en paramètre
-    '/!\ retourne le nom du VpI ème deck, et pas le deck dont l'id est VpI
-    '---------------------------------------------------------------------
-        VgDBCommand.CommandText = "Select Last(GameName) From (Select Top " + VpI.ToString + " GameName From MyGamesID Where IsFolder = False Order By GameID);"
-        Try
-            Return VgDBCommand.ExecuteScalar
-        Catch
-            Return "Jeu n°" + VpI.ToString
-        End Try
-    End Function
-    Public Function GetDeckIdFromName(VpStr As String) As String
-    '--------------------------------------------------
-    'Retourne l'id du deck de nom spécifié en paramètre
-    '--------------------------------------------------
-    Dim VpO As Object
-        VgDBCommand.CommandText = "Select GameID From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
-        VpO = VgDBCommand.ExecuteScalar
-        If Not VpO Is Nothing Then
-            Return VpO.ToString
-        Else
-            Return ""
-        End If
-    End Function
-    Public Function GetDeckNameFromId(VpId As Long) As String
-    '--------------------------------------------------
-    'Retourne le nom du deck d'id spécifié en paramètre
-    '--------------------------------------------------
-        VgDBCommand.CommandText = "Select GameName From MyGamesID Where GameID = " + VpId.ToString + ";"
-        Return VgDBCommand.ExecuteScalar.ToString
-    End Function
-    Public Function IsDeckFolder(VpId As Long) As Boolean
-    '---------------------------------------------------
-    'Retourne si le deck n'est qu'un alias de répertoire
-    '---------------------------------------------------
-        VgDBCommand.CommandText = "Select IsFolder From MyGamesID Where GameID = " + VpId.ToString + ";"
-        Return VgDBCommand.ExecuteScalar.ToString
-    End Function
-    Public Function GetChildrenDecksIds(VpParent As String) As List(Of Integer)
-    '---------------------------------------------------------------
-    'Retourne les decks dont le nom du parent est passé en paramètre
-    '---------------------------------------------------------------
-    Dim VpChildren As New List(Of Integer)
-        VgDBCommand.CommandText = "Select GameID From MyGamesID Where Parent " + VpParent + " Order By GameID;"
-        VgDBReader = VgDBCommand.ExecuteReader
-        With VgDBReader
-            While .Read
-                VpChildren.Add(CInt(.GetValue(0)))
-            End While
-            .Close
-        End With
-        Return VpChildren
-    End Function
-    Public Function GetDeckFormat(VpStr As String) As String
-    '--------------------------------------------------------------
-    'Retourne le format de jeu du deck de nom spécifié en paramètre
-    '--------------------------------------------------------------
-        VgDBCommand.CommandText = "Select GameFormat From MyGamesID Where GameName = '" + VpStr.Replace("'", "''") + "';"
-        Return VgDBCommand.ExecuteScalar.ToString
-    End Function
-    Public Function GetDeckDescription(VpDeckIndex As Integer) As String
-    '--------------------------------------------------------------------
-    'Retourne le commentaire associé au deck de nom spécifié en paramètre
-    '--------------------------------------------------------------------
-    Dim VpSQL As String
-    Dim VpO As Object
-        VpSQL = "Select GameDescription From MyGamesID Inner Join MyGames On MyGamesID.GameID = MyGames.GameID  Where MyGames.GameID = " + VpDeckIndex.ToString
-        VgDBCommand.CommandText = clsModule.TrimQuery(VpSQL)
-        VpO = VgDBCommand.ExecuteScalar
-        If Not VpO Is Nothing Then
-            Return VpO.ToString
-        Else
-            Return ""
-        End If
-    End Function
-    Public Function GetDeckCount As Integer
-    '----------------------------------------------
-    'Retourne le nombre de decks en base de données
-    '----------------------------------------------
-        VgDBCommand.CommandText = "Select Count(*) From MyGamesID Where IsFolder = False;"
-        Return VgDBCommand.ExecuteScalar
-    End Function
-    Public Function GetNewDeckId As Integer
-    '--------------------------------------------
-    'Retourne un identifiant pour un nouveau deck
-    '--------------------------------------------
-        VgDBCommand.CommandText = "Select Max(GameID) From MyGamesID;"
-        Try
-            Return (CInt(VgDBCommand.ExecuteScalar) + 1)
-        Catch
-            'Si pas de deck présent
-            Return 0
-        End Try
-    End Function
+    #End Region
+    #Region "Gestion des fichiers temporaires"
     Public Function GetFreeTempFile(VpExt As String) As String
     '--------------------------------------------------
     'Retourne un nom de fichier temporaire image valide
@@ -2124,7 +1758,7 @@ Public Module clsModule
             Next VpFile
         Catch
             If Not VpSilent Then
-                Call ShowWarning("Impossible d'accéder au répertoire temporaire...")
+                Call ShowWarning("Impossible d'accÃ©der au rÃ©pertoire temporaire...")
             End If
         End Try
         'Logs
@@ -2134,7 +1768,7 @@ Public Module clsModule
             Next VpFile
         Catch
             If Not VpSilent Then
-                Call ShowWarning("Impossible d'accéder au répertoire temporaire...")
+                Call ShowWarning("Impossible d'accÃ©der au rÃ©pertoire temporaire...")
             End If
         End Try
         'Updates
@@ -2160,24 +1794,12 @@ Public Module clsModule
     End Sub
     Public Sub SecureDelete(VpFile As String)
     '----------------------------------------------------------------
-    'Suppression du fichier passé en paramètre (avec trappe d'erreur)
+    'Suppression du fichier passÃ© en paramÃ¨tre (avec trappe d'erreur)
     '----------------------------------------------------------------
         Try
             File.Delete(VpFile)
         Catch
         End Try
     End Sub
-    Public Sub VerboseSimu(VpVerbose As Boolean, VpStr As String, VpSimuOut As StreamWriter, Optional VpEndSimu As Boolean = False)
-    '-----------------------------------------------------
-    'Gère la verbosité pour les simulations de déploiement
-    '-----------------------------------------------------
-        If VpVerbose Then
-            If VpEndSimu Then
-                VpSimuOut.Flush
-                VpSimuOut.Close
-            Else
-                VpSimuOut.WriteLine(VpStr)
-            End If
-        End If
-    End Sub
+    #End Region
 End Module
