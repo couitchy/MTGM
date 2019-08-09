@@ -70,6 +70,7 @@ Partial Class frmNewEdition
         Me.chkNewEditionAuto = New System.Windows.Forms.CheckedListBox
         Me.cmdAutoPrevious = New System.Windows.Forms.Button
         Me.cmdAutoNext = New System.Windows.Forms.Button
+        Me.chkAllNone = New System.Windows.Forms.CheckBox
         Me.grpData.SuspendLayout
         Me.splitH.Panel1.SuspendLayout
         Me.splitH.Panel2.SuspendLayout
@@ -316,7 +317,7 @@ Partial Class frmNewEdition
         Me.lblAssist2.Size = New System.Drawing.Size(248, 51)
         Me.lblAssist2.TabIndex = 1
         Me.lblAssist2.Text = "Cliquez sur 'Suivant' pour ajouter de nouvelles éditions à votre logiciel Magic T"& _
-        "he Gathering Manager..."
+        "he Gathering Manager."
         '
         'lblAssist1
         '
@@ -392,6 +393,7 @@ Partial Class frmNewEdition
         '
         'grpAuto
         '
+        Me.grpAuto.Controls.Add(Me.chkAllNone)
         Me.grpAuto.Controls.Add(Me.lblStatus)
         Me.grpAuto.Controls.Add(Me.lblAuto2)
         Me.grpAuto.Controls.Add(Me.lblAuto1)
@@ -438,10 +440,10 @@ Partial Class frmNewEdition
         '
         Me.chkNewEditionAuto.CheckOnClick = true
         Me.chkNewEditionAuto.FormattingEnabled = true
-        Me.chkNewEditionAuto.Location = New System.Drawing.Point(76, 129)
+        Me.chkNewEditionAuto.Location = New System.Drawing.Point(76, 144)
         Me.chkNewEditionAuto.MultiColumn = true
         Me.chkNewEditionAuto.Name = "chkNewEditionAuto"
-        Me.chkNewEditionAuto.Size = New System.Drawing.Size(270, 139)
+        Me.chkNewEditionAuto.Size = New System.Drawing.Size(270, 124)
         Me.chkNewEditionAuto.TabIndex = 8
         AddHandler Me.chkNewEditionAuto.ItemCheck, AddressOf Me.ChkNewEditionItemCheck
         '
@@ -466,6 +468,18 @@ Partial Class frmNewEdition
         Me.cmdAutoNext.Text = "Suivant >"
         Me.cmdAutoNext.UseVisualStyleBackColor = true
         AddHandler Me.cmdAutoNext.Click, AddressOf Me.CmdAutoNextClick
+        '
+        'chkAllNone
+        '
+        Me.chkAllNone.AutoSize = true
+        Me.chkAllNone.Location = New System.Drawing.Point(239, 121)
+        Me.chkAllNone.Name = "chkAllNone"
+        Me.chkAllNone.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.chkAllNone.Size = New System.Drawing.Size(107, 17)
+        Me.chkAllNone.TabIndex = 12
+        Me.chkAllNone.Text = "Toutes / Aucune"
+        Me.chkAllNone.UseVisualStyleBackColor = true
+        AddHandler Me.chkAllNone.CheckedChanged, AddressOf Me.ChkAllNoneCheckedChanged
         '
         'frmNewEdition
         '
@@ -498,6 +512,7 @@ Partial Class frmNewEdition
         Me.grpAuto.PerformLayout
         Me.ResumeLayout(false)
     End Sub
+    Private chkAllNone As System.Windows.Forms.CheckBox
     Private optUpdate As System.Windows.Forms.RadioButton
     Private lblStatus As System.Windows.Forms.Label
     Private lblData As System.Windows.Forms.Label

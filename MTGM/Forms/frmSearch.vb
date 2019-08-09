@@ -211,6 +211,7 @@ Public Partial Class frmSearch
     Dim VpSQL As String = ""
     Dim VpReq As String = Me.cboFind.Text.Replace("'", "''")
     Dim VpType As Integer = Me.cboSearchType.SelectedIndex
+        If Me.cboFind.Text = "" Then Return
         Me.lstResult.Items.Clear
         Me.picScanCard.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
         'Mémorisation requête

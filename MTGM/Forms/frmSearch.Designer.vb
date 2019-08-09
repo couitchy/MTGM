@@ -326,7 +326,7 @@ Partial Class frmSearch
         Me.cboFind.Location = New System.Drawing.Point(62, 45)
         Me.cboFind.Name = "cboFind"
         Me.cboFind.Size = New System.Drawing.Size(264, 21)
-        Me.cboFind.TabIndex = 15
+        Me.cboFind.TabIndex = 16
         AddHandler Me.cboFind.KeyDown, AddressOf Me.CboFindKeyDown
         AddHandler Me.cboFind.KeyUp, AddressOf Me.CboFindKeyUp
         '
@@ -347,7 +347,7 @@ Partial Class frmSearch
         Me.cboSearchType.Location = New System.Drawing.Point(62, 16)
         Me.cboSearchType.Name = "cboSearchType"
         Me.cboSearchType.Size = New System.Drawing.Size(150, 21)
-        Me.cboSearchType.TabIndex = 16
+        Me.cboSearchType.TabIndex = 15
         Me.cboSearchType.Text = "Nom de la carte (VF)"
         AddHandler Me.cboSearchType.SelectedIndexChanged, AddressOf Me.CboSearchTypeSelectedIndexChanged
         '

@@ -4,6 +4,7 @@ Imports System.Globalization
 Public Partial Class frmNewEdition
     Private VmEditionHeader As New clsEditionHeader
     Private VmEncNbr0 As Long = -1
+    Private VmBusy As Boolean = False
     Public Sub New
         Call Me.InitializeComponent
         Me.picMagic.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
@@ -118,9 +119,9 @@ Public Partial Class frmNewEdition
                     Try
                         With VmEditionHeader
                             If VpFullUpdate Then
-                                VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + mdlToolbox.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+                                VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM = '" + .SeriesNM.Replace("'", "''") + "', SeriesNM_FR = '" + .SeriesNM_FR.Replace("'", "''") + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "', Border = " + .GetBorder(.Border) + ", Release = " + mdlToolbox.GetDate(.Release) + ", TotCards = " + .TotCards.ToString + ", UqRare = " + .Rare.ToString + ", UqUncom = " + .Uncommon.ToString + ", UqComm = " + .Common.ToString + ", UqBLand = " + .Land.ToString + ", Notes = '" + .NotesEdition.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
                             Else
-                                VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "', SeriesNM_MtG = '" + .SeriesNM_MtG.Replace("'", "''") + "' Where SeriesCD = '" + .SeriesCD + "';"
+                                VgDBCommand.CommandText = "Update Series Set SeriesCD_MO = '" + .SeriesCD_MO + "', SeriesCD_MW = '" + .SeriesCD_MW + "' Where SeriesCD = '" + .SeriesCD + "';"
                             End If
                             VgDBCommand.ExecuteNonQuery
                         End With
@@ -410,15 +411,28 @@ Public Partial Class frmNewEdition
         Me.propEdition.SelectedObject = VmEditionHeader
     End Sub
     Sub ChkNewEditionItemCheck(ByVal sender As Object, ByVal e As ItemCheckEventArgs)
-    '---------------------------------------------------------
-    'N'autorise la sélection que d'une unique nouvelle édition
-    '---------------------------------------------------------
-        For VpI As Integer = 0 To sender.Items.Count - 1
+    Dim VpAll As Boolean = True
+    Dim VpNone As Boolean = True
+        If VmBusy Then Exit Sub
+        VmBusy = True
+        For VpI As Integer = 0 To Me.chkNewEditionAuto.Items.Count - 1
             If VpI <> e.Index Then
-                sender.SetItemChecked(VpI, False)
+                VpAll = VpAll And Me.chkNewEditionAuto.GetItemChecked(VpI)
+                VpNone = VpNone And (Not Me.chkNewEditionAuto.GetItemChecked(VpI))
+            Else
+                VpAll = VpAll And e.NewValue = CheckState.Checked
+                VpNone = VpNone And (Not e.NewValue = CheckState.Checked)
             End If
         Next VpI
-        Me.cmdAutoNext.Enabled = ( Me.chkNewEditionAuto.CheckedItems.Count = 0 )
+        If VpAll Then
+            Me.chkAllNone.CheckState = CheckState.Checked
+        ElseIf VpNone Then
+            Me.chkAllNone.CheckState = CheckState.Unchecked
+        Else
+            Me.chkAllNone.CheckState = CheckState.Indeterminate
+        End If
+        Me.cmdAutoNext.Enabled = Not VpNone
+        VmBusy = False
     End Sub
     Sub CmdOKClick(ByVal sender As Object, ByVal e As EventArgs)
     '-------------------------------------------------------------------------
@@ -496,16 +510,27 @@ Public Partial Class frmNewEdition
     Sub OptManualCheckedChanged(sender As Object, e As EventArgs)
         Me.lnklblAssist.Enabled = Me.optManual.Checked
     End Sub
+    Sub ChkAllNoneCheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
+        If VmBusy Then Exit Sub
+        VmBusy = True
+        For VpI As Integer = 0 To chkNewEditionAuto.Items.Count - 1
+            Me.chkNewEditionAuto.SetItemChecked(VpI, Me.chkAllNone.Checked)
+        Next VpI
+        Me.cmdAutoNext.Enabled = Me.chkAllNone.Checked
+        VmBusy = False
+    End Sub
     Sub CmdAutoNextClick(sender As Object, e As EventArgs)
     Dim VpInfos() As String
         Me.cmdAutoNext.Enabled = False
-        For Each VpLine As String In Me.chkNewEditionAuto.Tag
-            VpInfos = VpLine.Split("#")
-            If VpInfos(2) = Me.chkNewEditionAuto.CheckedItems.Item(0).ToString Then
-                Call Me.UpdateSerie(VpInfos)
-                Exit For
-            End If
-        Next VpLine
+        For Each VpToAdd As Object In Me.chkNewEditionAuto.CheckedItems
+            For Each VpLine As String In Me.chkNewEditionAuto.Tag
+                VpInfos = VpLine.Split("#")
+                If VpInfos(2) = VpToAdd.ToString Then
+                    Call Me.UpdateSerie(VpInfos)
+                    Exit For
+                End If
+            Next VpLine
+        Next VpToAdd
         Me.grpAssist.Visible = True
         Me.grpAuto.Visible = False
         Me.cmdAutoNext.Enabled = True
