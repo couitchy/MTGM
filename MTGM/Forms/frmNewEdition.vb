@@ -59,7 +59,7 @@ Public Partial Class frmNewEdition
             .NotesEdition = VpInfos(30)
         End With
     End Sub
-    Private Sub UpdateSerie(VpInfos() As String)
+    Private Sub UpdateSerie(VpInfos() As String, VpSilent As Boolean)
     '------------------------------------------------------------------------------------
     'Met à jour automatiquement l'édition dont les informations sont passées en paramètre
     '------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ Public Partial Class frmNewEdition
             If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
                 Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr0)
             Else
-                Call Me.AddNewEdition
+                Call Me.AddNewEdition(VpSilent)
             End If
         End If
         'Suppression des fichiers temporaires
@@ -322,7 +322,7 @@ Public Partial Class frmNewEdition
         End If
         Return Nothing
     End Function
-    Private Sub AddNewEdition
+    Private Sub AddNewEdition(VpSilent As Boolean)
     '---------------------------------------------------------------------------------------
     'Ajoute à la base de données l'ensemble des cartes présentes dans les fichiers spécifiés
     '---------------------------------------------------------------------------------------
@@ -372,7 +372,9 @@ Public Partial Class frmNewEdition
             VpFile.Close
         End If
         Me.lblStatus.Text = "Terminé."
-        Call mdlToolbox.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
+        If Not VpSilent Then
+            Call mdlToolbox.ShowInformation(VpCounter.ToString + " carte(s) ont été ajoutée(s) à la base de données...")
+        End If
         Me.txtCheckList.Text = ""
         Me.txtSpoilerList.Text = ""
         Call Me.CheckLoad
@@ -443,7 +445,7 @@ Public Partial Class frmNewEdition
         Else
             If Me.chkNewEdition.CheckedItems.Count > 0 Then
                 Me.chkNewEdition.Tag = Me.chkNewEdition.CheckedItems(0).ToString
-                Call Me.AddNewEdition
+                Call Me.AddNewEdition(False)
             Else
                 Call mdlToolbox.ShowWarning("Aucune édition n'a été sélectionnée dans la liste...")
             End If
@@ -521,18 +523,25 @@ Public Partial Class frmNewEdition
     End Sub
     Sub CmdAutoNextClick(sender As Object, e As EventArgs)
     Dim VpInfos() As String
+    Dim VpMulti As Boolean
         Me.cmdAutoNext.Enabled = False
+        VpMulti = ( Me.chkNewEditionAuto.CheckedItems.Count > 1 )
         For Each VpToAdd As Object In Me.chkNewEditionAuto.CheckedItems
             For Each VpLine As String In Me.chkNewEditionAuto.Tag
                 VpInfos = VpLine.Split("#")
                 If VpInfos(2) = VpToAdd.ToString Then
-                    Call Me.UpdateSerie(VpInfos)
+                    Call Me.UpdateSerie(VpInfos, VpMulti)
                     Exit For
                 End If
             Next VpLine
+            'Si l'utilisateur a cliqué sur 'Précédent', on interrompt
+            If Me.grpAssist.Visible And Not Me.grpAuto.Visible Then
+                Exit For
+            End If
         Next VpToAdd
         Me.grpAssist.Visible = True
         Me.grpAuto.Visible = False
+        Me.chkAllNone.Checked = False
         Me.cmdAutoNext.Enabled = True
     End Sub
     Sub CmdAutoPreviousClick(sender As Object, e As EventArgs)
