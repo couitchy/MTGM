@@ -78,6 +78,7 @@ Partial Class MainForm
         Me.mnuPricesUpdateListe = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPricesHistoryAdd = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBuildPatch = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuGetShippingCosts = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPictures = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPicturesSymbols = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPicturesThumbs = New System.Windows.Forms.ToolStripMenuItem()
@@ -402,7 +403,7 @@ Partial Class MainForm
         '
         'mnuPrices
         '
-        Me.mnuPrices.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPricesUpdate, Me.mnuPricesHistoryAdd, Me.mnuPricesHistoryRebuild, Me.mnuBuildPatch})
+        Me.mnuPrices.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPricesUpdate, Me.mnuPricesHistoryAdd, Me.mnuPricesHistoryRebuild, Me.mnuBuildPatch, Me.mnuGetShippingCosts})
         Me.mnuPrices.Name = "mnuPrices"
         Me.mnuPrices.Size = New System.Drawing.Size(152, 22)
         Me.mnuPrices.Text = "Prix"
@@ -444,6 +445,13 @@ Partial Class MainForm
         Me.mnuBuildPatch.Size = New System.Drawing.Size(283, 22)
         Me.mnuBuildPatch.Text = "Construction du patch r13"
         AddHandler Me.mnuBuildPatch.Click, AddressOf Me.MnuBuildPatchClick
+        '
+        'mnuGetShippingCosts
+        '
+        Me.mnuGetShippingCosts.Name = "mnuGetShippingCosts"
+        Me.mnuGetShippingCosts.Size = New System.Drawing.Size(283, 22)
+        Me.mnuGetShippingCosts.Text = "Récupération des frais de port (MKM)"
+        AddHandler Me.mnuGetShippingCosts.Click, AddressOf Me.MnuGetShippingCostsClick
         '
         'mnuPictures
         '
@@ -879,6 +887,7 @@ Partial Class MainForm
     Private mnuINIReady As System.Windows.Forms.ToolStripMenuItem
     Private mnuDBReady As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildPatch As System.Windows.Forms.ToolStripMenuItem
+    Private mnuGetShippingCosts As System.Windows.Forms.ToolStripMenuItem
     Private mnuTrad As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsExtractDiff2 As System.Windows.Forms.ToolStripMenuItem
     Private mnuExtractTexts As System.Windows.Forms.ToolStripMenuItem

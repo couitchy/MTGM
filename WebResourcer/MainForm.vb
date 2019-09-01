@@ -39,7 +39,9 @@ Public Partial Class MainForm
     Private Const CmURL5 As String          = "http://magiccards.info/###/^^.html"
     Private Const CmURL6 As String          = "http://magiccards.info/query?q=%2B%2Be%3A###%2Fen&v=spoiler&s=issue"
     Private Const CmURL7 As String          = "https://mtgjson.com/json/###.json"
-    Private Const CmId As String            = "#cardname#"
+    Private Const CmURL8 As String          = "https://www.cardmarket.com/en/Help/ShippingCosts?origin=#country#&destination=FR#Show_shipping_costs"
+    Private Const CmId1 As String           = "#cardname#"
+    Private Const CmId2 As String           = "#country#"
     Private Const CmKey0 As String          = "recherche_titre"
     Private Const CmKey1 As String          = "gathering-cartes-view"
     Private Const CmKey2 As String          = "NM/MT"
@@ -61,6 +63,9 @@ Public Partial Class MainForm
     Private Const CmKey8D As String         = "<br><br>"
     Private Const CmKey8E As String         = ", <i>"
     Private Const CmKey8F As String         = "</i></p>"
+    Private Const CmKey9 As String          = "<tbody><tr><td>"
+    Private Const CmKey9B As String         = "</td><td>"
+    Private Const CmKey9C As String         = "</td></tr><tr><td>"
     Private Const CmFrench  As Integer      = 2
     Private Const CmMe As String            = "Moi"
     Private Const CmStamp As String         = "ContenuStamp r14.txt"
@@ -68,6 +73,8 @@ Public Partial Class MainForm
     Private CmFields() As String            = {"LastUpdateAut", "LastUpdateSimu", "LastUpdateTxtVF", "LastUpdateTradPatch"}
     Private CmIndexes() As Integer          = {2, 3, 4, 7}
     Private CmIgnoredEditions() As String   = {"Premium Deck Seri...", "Archenemy Decks", "Duels of the Plan...", "Battle Royale", "Anthologies", "Promotional Card", "Friday Night Magic", "Prerelease Cards", "Magic Player Rewards"}
+    Private CmCountriesName() As String     = {"Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "United Kingdom"}
+    Private CmCountriesId() As String       = {"AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "D", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "CH", "GB"}
     Private VmDB As OleDbConnection
     Private VmDBCommand As New OleDbCommand
     Private VmDBReader As OleDbDataReader
@@ -113,6 +120,52 @@ Public Partial Class MainForm
             Me.txtETA.Text = Format(VpETA.Hours, "00") + ":" + Format(VpETA.Minutes, "00") + ":" + Format(VpETA.Seconds, "00")
         End If
     End Sub
+    Private Sub GetShippingCosts
+    '--------------------------------------------------------------------
+    'Récupère les frais de port indiqués sur le site de Magic Card Market
+    '--------------------------------------------------------------------
+    Dim VpStr As String = ""
+    Dim VpStrs() As String
+    Dim VpStrs2() As String
+    Dim VpOut As StreamWriter
+        Me.dlgSave.FileName = ""
+        Me.dlgSave.ShowDialog
+        If Me.dlgSave.FileName <> "" Then
+            VpOut = New StreamWriter(Me.dlgSave.FileName)
+            Call Me.AddToLog("La récupération des frais de port a commencé...", eLogType.Information, True)
+            Application.DoEvents
+            VpOut.WriteLine("#Country;Code;Value max.;Quantity max.;Cost")
+            For Each VpCountry As String In CmCountriesId
+                VpStr = Me.HTMLfromRequest(CmURL8.Replace(CmId2, VpCountry))
+                VpStr = VpStr.Substring(VpStr.IndexOf(CmKey9) + 15).Replace("&#x20AC;", "€").Replace(CmKey9B, ";")
+                VpStrs = VpStr.Split(New String() {CmKey9C}, StringSplitOptions.None)
+                For Each VpStr2 As String In VpStrs
+                    VpStrs2 = VpStr2.Split(";")
+                    If VpStrs2.Length = 6 AndAlso Val(VpStrs2(5)) <> 0 AndAlso Val(VpStrs2(3)) <= 100000 Then
+                        VpOut.WriteLine(CmCountriesName(Array.IndexOf(CmCountriesId, VpCountry)) + ";" + VpCountry + ";" + Val(VpStrs2(2).Replace(",", ".")).ToString + ";" + Me.WeightToCards(Val(VpStrs2(3))).ToString + ";" + Val(VpStrs2(5).Replace(",", ".")).ToString)
+                    End If
+                Next VpStr2
+                Application.DoEvents
+            Next VpCountry
+            VpOut.Flush
+            VpOut.Close
+            Call Me.AddToLog("La récupération des frais de port est terminée.", eLogType.Information, , True)
+        End If
+    End Sub
+    Private Function WeightToCards(VpWeight As Integer) As Integer
+        Select Case VpWeight
+            Case Is <= 20
+                Return 4
+            Case Is <= 50
+                Return 17
+            Case Is <= 100
+                Return 40
+            Case Is <= 100000
+                Return 50000
+            Case Else
+                Return Integer.MaxValue
+        End Select
+    End Function
     Private Function HTMLfromRequest(VpURL As String) As String
     '------------------------------------------------------------------
     'Récupère le code HTML en réponse de la requête passée en paramètre
@@ -164,12 +217,11 @@ Public Partial Class MainForm
                 VpVoid = VpIn2.Substring(0, VpIn2.IndexOf("Æ") + 1)
                 VpIn2 = VpIn2.Replace(VpVoid, "")
             End If
-            VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId, VpIn2))
+            VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId1, VpIn2))
             VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
             VpIr = Me.FindRightIndex(VpStrs, VpIn.Replace("û", "u"))
             VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
             VpStr = Me.HTMLfromRequest(VpStr)
-'           VpStr = (New StreamReader("C:\Users\Couitchy\Desktop\plains.html", Encoding.Default)).ReadToEnd
             VpStr = VpStr.Substring(VpStr.IndexOf("Disponibilités"))
             VpStrs = VpStr.Split(New String() {"/sigles/"}, StringSplitOptions.None)
             For Each VpStr In VpStrs
@@ -966,7 +1018,7 @@ Public Partial Class MainForm
     Dim VpStrs() As String
     Dim VpIr As Integer
         Try
-            VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId, VpIn.Replace(" ", "+")))
+            VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId1, VpIn.Replace(" ", "+")))
             VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
             VpIr = Me.FindRightIndex(VpStrs, VpIn)
             VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
@@ -2013,7 +2065,7 @@ Public Partial Class MainForm
     Dim VpStrs() As String
     Dim VpIr As Integer
         Try
-            VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId, VpIn.Replace(" ", "+")))
+            VpStr = Me.HTMLfromRequest(CmURL1.Replace(CmId1, VpIn.Replace(" ", "+")))
             VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
             VpIr = Me.FindRightIndex(VpStrs, VpIn)
             VpStr = CmURL2 + VpStrs(VpIr).Substring(0, VpStrs(VpIr).IndexOf(""""))
@@ -3028,6 +3080,9 @@ Public Partial Class MainForm
                 Call Me.BuildPatch
             End If
         End If
+    End Sub
+    Sub MnuGetShippingCostsClick(sender As Object, e As EventArgs)
+        Call Me.GetShippingCosts
     End Sub
     Sub MnuDBReadyClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
