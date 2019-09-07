@@ -1,27 +1,30 @@
-﻿Public Class clsRemoteCard
-    Private VmName As String
-    Private VmVendeur As clsSeller
-    Private VmEdition As String
-    Private VmLanguage As String
-    Private VmEtat As mdlConstGlob.eQuality
-    Private VmQuant As Integer
-    Private VmBought As Integer
-    Private VmPrix As Single
-    Public Sub New(VpName As String, VpVendeur As clsSeller, VpEdition As String, VpLanguage As String, VpEtat As mdlConstGlob.eQuality, VpQuant As Integer, VpBought As Integer, VpPrix As Single)
+﻿Imports System.Xml.Serialization
+Public Class clsRemoteCard
+    Private VmName As String                        'Nom de la carte à vendre
+    Private VmSeller As clsSeller                   'Nom du vendeur
+    Private VmEdition As String                     'Edition dans laquelle la carte est imprimée (l'utilisateur a pu éventuellement en indiquer plusieurs comme lui convenant)
+    Private VmLanguage As String                    'Langue dans laquelle la carte est imprimée (VF ou VO)
+    Private VmCondition As mdlConstGlob.eQuality    'Etat dans lequel se trouve la carte (bonne ou mauvaise qualité)
+    Private VmQuantity As Integer                   'Nombre d'exemplaires disponibles à la vente
+    Private VmBought As Integer                     'Nombre d'exemplaires achetés
+    Private VmPrice As Single                       'Prix de vente de la carte
+    Private VmShippingCost As Single                'Montant des frais de porte pour cette carte comme si elle était achetée seule
+    Public Sub New(VpName As String, VpSeller As clsSeller, VpEdition As String, VpLanguage As String, VpCondition As mdlConstGlob.eQuality, VpQuantity As Integer, VpBought As Integer, VpPrice As Single, VpShippingCost As Single)
         VmName = VpName
-        VmVendeur = VpVendeur
+        VmSeller = VpSeller
         VmEdition = VpEdition
         VmLanguage = VpLanguage
-        VmEtat = VpEtat
-        VmQuant = VpQuant
+        VmCondition = VpCondition
+        VmQuantity = VpQuantity
         VmBought = VpBought
-        VmPrix = VpPrix
+        VmPrice = VpPrice
+        VmShippingCost = VpShippingCost
     End Sub
     Public Sub New(VpName As String)
-        Me.New(VpName, New clsSeller, "", "", mdlConstGlob.eQuality.Mint, 0, 0, 0)
+        Me.New(VpName, New clsSeller, "", "", mdlConstGlob.eQuality.Mint, 0, 0, 0, 0)
     End Sub
     Public Sub New
-        Me.New("", New clsSeller, "", "", mdlConstGlob.eQuality.Mint, 0, 0, 0)
+        Me.New("")
     End Sub
     Public Shared Function GetClone(VpA As List(Of clsRemoteCard)) As List(Of clsRemoteCard)
     '-------------------------------------------
@@ -31,7 +34,7 @@
     Dim VpSellers As New List(Of clsSeller)
         For Each VpRemoteCard As clsRemoteCard In VpA
             With VpRemoteCard
-                VpB.Add(New clsRemoteCard(.Name, clsSeller.AddOrGet(.Vendeur.Name, .Vendeur.Coverage, .Vendeur.Bought, VpSellers) , .Edition, .Language, .Etat, .Quantity, .Bought, .Prix))
+                VpB.Add(New clsRemoteCard(.Name, clsSeller.AddOrGet(.Seller.Name, .Seller.Country, .Seller.Coverage, .Seller.Bought, .Seller.BoughtValue, VpSellers) , .Edition, .Language, .Condition, .Quantity, .Bought, .Price, .ShippingCost))
             End With
         Next VpRemoteCard
         Return VpB
@@ -42,7 +45,7 @@
     '---------------------------------------------------------------------------------------------
     Dim VpTotal As Single = 0
         For Each VpRemoteCard As clsRemoteCard In VpToSell
-            VpTotal += VpRemoteCard.Bought * VpRemoteCard.Prix
+            VpTotal += VpRemoteCard.Bought * VpRemoteCard.Price
         Next VpRemoteCard
         Return VpTotal
     End Function
@@ -52,8 +55,8 @@
     '-------------------------------------------------------------------------------------------------------------
     Dim VpTotal As Single = 0
         For Each VpRemoteCard As clsRemoteCard In VpToSell
-            If VpRemoteCard.Vendeur Is VpSeller Then
-                VpTotal += VpRemoteCard.Bought * VpRemoteCard.Prix
+            If VpRemoteCard.Seller Is VpSeller Then
+                VpTotal += VpRemoteCard.Bought * VpRemoteCard.Price
             End If
         Next VpRemoteCard
         Return VpTotal
@@ -66,12 +69,12 @@
             VmName = VpName
         End Set
     End Property
-    Public Property Vendeur As clsSeller
+    Public Property Seller As clsSeller
         Get
-            Return VmVendeur
+            Return VmSeller
         End Get
-        Set (VpVendeur As clsSeller)
-            VmVendeur = VpVendeur
+        Set (VpSeller As clsSeller)
+            VmSeller = VpSeller
         End Set
     End Property
     Public Property Edition As String
@@ -90,20 +93,20 @@
             VmLanguage = VpLanguage
         End Set
     End Property
-    Public Property Etat As mdlConstGlob.eQuality
+    Public Property Condition As mdlConstGlob.eQuality
         Get
-            Return VmEtat
+            Return VmCondition
         End Get
-        Set (VpEtat As mdlConstGlob.eQuality)
-            VmEtat = VpEtat
+        Set (VpCondition As mdlConstGlob.eQuality)
+            VmCondition = VpCondition
         End Set
     End Property
     Public Property Quantity As Integer
         Get
-            Return VmQuant
+            Return VmQuantity
         End Get
-        Set (VpQuant As Integer)
-            VmQuant = VpQuant
+        Set (VpQuantity As Integer)
+            VmQuantity = VpQuantity
         End Set
     End Property
     Public Property Bought As Integer
@@ -114,22 +117,36 @@
             VmBought = VpBought
         End Set
     End Property
-    Public Property Prix As Single
+    Public Property Price As Single
         Get
-            Return VmPrix
+            Return VmPrice
         End Get
-        Set (VpPrix As Single)
-            VmPrix = VpPrix
+        Set (VpPrice As Single)
+            VmPrice = VpPrice
         End Set
+    End Property
+    Public Property ShippingCost As Single
+        Get
+            Return VmShippingCost
+        End Get
+        Set (VpShippingCost As Single)
+            VmShippingCost = VpShippingCost
+        End Set
+    End Property
+    <XmlIgnore> _
+    Public ReadOnly Property PriceWithShipping As Single
+        Get
+            Return VmPrice + VmShippingCost
+        End Get
     End Property
     Public Class clsRemoteCardComparer
         Implements IComparer(Of clsRemoteCard)
         Public Function Compare(ByVal x As clsRemoteCard, ByVal y As clsRemoteCard) As Integer Implements IComparer(Of clsRemoteCard).Compare
             'Si 2 cartes sont au même prix, on favorise le vendeur qui a la plus grande couverture
-            If Math.Abs(x.Prix - y.Prix) <= 0.1 Then
-                Return y.Vendeur.Coverage.CompareTo(x.Vendeur.Coverage)
+            If Math.Abs(x.PriceWithShipping - y.PriceWithShipping) <= 0.1 Then  'pour simplifier, jusqu'à 10 centimes d'écart, on considère que c'est le même prix
+                Return y.Seller.Coverage.CompareTo(x.Seller.Coverage)
             Else
-                Return x.Prix.CompareTo(y.Prix)
+                Return x.PriceWithShipping.CompareTo(y.PriceWithShipping)
             End If
         End Function
     End Class

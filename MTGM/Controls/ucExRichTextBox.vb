@@ -203,7 +203,6 @@ Public Class ucExRichTextBox
 
     #Region "Accessors"
 
-    ' TODO This can be ommitted along with RemoveBadCharacters
     ' Overrides the default implementation of RTF.  This is done because the control
     ' was originally developed to run in an instant messenger that uses the
     ' Jabber XML-based protocol.  The framework would throw an exception when the

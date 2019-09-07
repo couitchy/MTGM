@@ -1,7 +1,7 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 36576
-    Public Const CGNClasses As Integer              = 90
+    Public Const CgCodeLines As Integer             = 36797
+    Public Const CGNClasses As Integer              = 92
     Public Const CgLastUpdateAut As String          = "18/10/2016"
     Public Const CgLastUpdateSimu As String         = "19/10/2016"
     Public Const CgLastUpdateTxtVF As String        = "20/10/2016"
@@ -23,8 +23,7 @@ Public Module mdlConstGlob
     Public Const CgMaxGraphs As Integer             = 128
     Public Const CgMaxVignettes As Integer          = 120
     Public Const CgMaxEditionsMarket As Integer     = 4
-    Public Const CgShippingCost As Single           = 5
-    Public Const CgWorstShippingCost As Single      = 10
+    Public Const CgWorstShippingCost As Single      = 100000
     Public Const CgMissingTable As Long             = -2147217865
     Public Const CgImgMinLength As Long             = 296297676
     Public Const CgTimeOut As Integer               = 5
@@ -70,6 +69,7 @@ Public Module mdlConstGlob
     Public Const CgMdSubTypes As String             = "\MD_SubTypes.log"
     Public Const CgMdSubTypesVF As String           = "\MD_SubTypesVF.log"
     Public Const CgMdMultiverse As String           = "\MD_Multiverse.log"
+    Public Const CgMdShippingCosts As String        = "\MD_ShippingCosts.log"
     Public Const CgShell As String                  = "explorer.exe"
     Public Const CgDefaultServer As String          = "http://couitchy.free.fr/upload/MTGM"
     Public Const CgURL0 As String                   = "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=#&type=card"
@@ -105,6 +105,7 @@ Public Module mdlConstGlob
     Public Const CgURL24 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/products/card-name/1/1/false"
     Public Const CgURL25 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
     Public Const CgURL26 As String                  = "http://magic-ville.fr/fr/"
+    Public Const CgURL27 As String                  = "/Updates/MD_ShippingCosts r21.log"
     Public Const CgDL1 As String                    = "Vérification des mises à jour..."
     Public Const CgDL2 As String                    = "Téléchargement en cours"
     Public Const CgDL2b As String                   = "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."
