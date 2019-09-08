@@ -243,48 +243,25 @@ Public Partial Class frmBuyCards
         Next VpRemoteCard
         Return VpExtracted
     End Function
-'    Private Function ChangeTransaction(VpFound As clsRemoteCard, VpCard As clsRemoteCard, VpBackups As List(Of clsBackupTransaction)) As Boolean
-'    '------------------------------------------------------------------------------------------------------------------------------
-'    'Modification d'une transaction au profit d'un vendeur pour un autre, et sauvegarde des informations pour annulation éventuelle
-'    '------------------------------------------------------------------------------------------------------------------------------
-'    Dim VpN As Integer
-'        If VpFound.Seller IsNot Nothing Then
-'            VpN = Math.Min(VpCard.Bought, VpFound.Quantity)
-'            'Restitution au vendeur initial
-'            VpCard.Quantity += VpN
-'            VpCard.Bought -= VpN
-'            VpCard.Seller.Bought -= VpN
-'            VpCard.Seller.BoughtValue -= VpCard.Price * VpN
-'            'Acquisition auprès du nouveau vendeur
-'            VpFound.Quantity -= VpN
-'            VpFound.Bought += VpN
-'            VpFound.Seller.Bought += VpN
-'            VpFound.Seller.BoughtValue += VpFound.Price * VpN
-'            'Sauvegarde en cas d'annulation
-'            VpBackups.Add(New clsBackupTransaction(VpCard, VpFound, VpN))
-'            Return True
-'        End If
-'        Return False
-'    End Function
-'    Private Sub CancelChanges(VpBackups As List(Of clsBackupTransaction))
-'    '---------------------------------------------------------------------------
-'    'Annulation des modifications effectuées temporairement sur les transactions
-'    '---------------------------------------------------------------------------
-'        For Each VpBackup As clsBackupTransaction In VpBackups
-'            With VpBackup
-'                'Réacquisition auprès du vendeur initial
-'                .Before.Quantity -= .N
-'                .Before.Bought += .N
-'                .Before.Seller.Bought += .N
-'                .Before.Seller.BoughtValue += .Before.Price * .N
-'                'Restitution à l'ex-autre vendeur
-'                .After.Quantity += .N
-'                .After.Bought -= .N
-'                .After.Seller.Bought -= .N
-'                .After.Seller.BoughtValue -= .After.Price * .N
-'            End With
-'        Next VpBackup
-'    End Sub
+    Private Sub ChangeTransaction(VpFound As clsRemoteCard, VpCard As clsRemoteCard)
+    '------------------------------------------------------------------------------------------------------------------------------
+    'Modification d'une transaction au profit d'un vendeur pour un autre, et sauvegarde des informations pour annulation éventuelle
+    '------------------------------------------------------------------------------------------------------------------------------
+    Dim VpN As Integer
+        If VpFound.Seller IsNot Nothing Then
+            VpN = Math.Min(VpCard.Bought, VpFound.Quantity)
+            'Restitution au vendeur initial
+            VpCard.Quantity += VpN
+            VpCard.Bought -= VpN
+            VpCard.Seller.Bought -= VpN
+            VpCard.Seller.BoughtValue -= VpCard.Price * VpN
+            'Acquisition auprès du nouveau vendeur
+            VpFound.Quantity -= VpN
+            VpFound.Bought += VpN
+            VpFound.Seller.Bought += VpN
+            VpFound.Seller.BoughtValue += VpFound.Price * VpN
+        End If
+    End Sub
     Private Sub CalcTransactions(VpShippingPolicies As Dictionary(Of String, List(Of clsShipping)), VpMaxTransactions As Integer, VpPath As String)
     '------------------------------------------------------------------------------------------------------------------------------
     'Détermine les transactions nécessaires pour acheter toutes les cartes désirées de la bonne manière (heuristique sous-optimale)
@@ -339,7 +316,7 @@ Public Partial Class frmBuyCards
         'Trie les cartes à vendre de la moins chère à la plus chère (en intégrant les frais de port unitaires)
         VpToSell.Sort(New clsRemoteCard.clsRemoteCardComparer)
         'Trie les vendeurs par couverture, de la plus grande à la plus petite
-        VpAllSellers.Sort(New clsSeller.clsSellerComparer)
+        VpAllSellers.Sort(New clsSeller.clsSellerCoverageComparer)
         'Parcourt la liste des cartes à acheter
         For Each VpLocalCard As clsLocalCard In VpToBuy
             While VpLocalCard.Quantity > 0
@@ -374,8 +351,47 @@ Public Partial Class frmBuyCards
                 VpFound.Seller.BoughtValue += VpFound.Price * VpN
             End While
         Next VpLocalCard
-        'TODO stratégie alternative : éviter les transactions d'un montant < seuil
-        'TODO stratégie alternative : partir des vendeurs qui ont le plus de couverture pour minimiser le nombre de transactions
+        'Trie les vendeurs par montant de transaction, du plus petit au plus grand
+        VpSellers.Sort(New clsSeller.clsSellerBoughtValueComparer)
+        'Il faut à présent dispatcher les cartes achetées auprès des vendeurs pour lesquels le montant minimal de transaction n'est pas atteint
+        If mdlConstGlob.CgMinParcelValue > 0 Then
+            For Each VpSeller As clsSeller In VpSellers
+                If VpSeller.BoughtValue < mdlConstGlob.CgMinParcelValue Then
+                    For Each VpRemoteCard As clsRemoteCard In VpSeller.GetBoughtCards
+                        'Tant qu'il reste des cartes à acquérir auprès de ce vendeur pour lequel la valeur achetée n'atteint pas le seuil
+                        While VpRemoteCard.Bought > 0
+                            VpFound = Nothing
+                            For Each VpSeller1 As clsSeller In VpSellers
+                                'Parmi les vendeurs déjà sollicités (et pour lesquels ce seuil est bien atteint)                            
+                                If VpSeller1.BoughtValue >= mdlConstGlob.CgMinParcelValue Then
+                                    'Regarde les cartes qu'ils proposent
+                                    For Each VpRemoteCard1 As clsRemoteCard In VpSeller1.Cards
+                                        'Si on trouve parmi elles celle(s) qu'on voulait redispatcher
+                                        If VpRemoteCard.Name = VpRemoteCard1.Name AndAlso VpRemoteCard1.Quantity > 0 Then
+                                            'On choisit celle au prix le plus bas (en intégrant le surcoût de frais de port)
+                                            If VpFound Is Nothing OrElse VpRemoteCard1.Price + VpRemoteCard1.Seller.GetMarginalShippingCostFor(Math.Min(VpRemoteCard.Quantity, VpRemoteCard1.Quantity), VpRemoteCard1.Price) < VpFound.Price + VpFound.Seller.GetMarginalShippingCostFor(Math.Min(VpRemoteCard.Quantity, VpFound.Quantity), VpFound.Price) Then
+                                                VpFound = VpRemoteCard1
+                                            End If
+                                        End If
+                                    Next VpRemoteCard1
+                                End If
+                            Next VpSeller1
+                            'Si on a trouvé, effectue la modification de transaction
+                            If VpFound IsNot Nothing Then
+                                Call Me.ChangeTransaction(VpFound, VpRemoteCard)
+                            'Avertissement si on n'a pas réussi à se passer du vendeur
+                            Else
+                                If Not VpOpti.Warning Then
+                                    VpOpti.Warning = True
+                                    Call mdlToolbox.ShowWarning("Impossible de n'avoir que des transactions au-delà de " + mdlConstGlob.CgMinParcelValue.ToString + "€...")
+                                End If
+                                Exit While
+                            End If
+                        End While
+                    Next VpRemoteCard
+                End If
+            Next VpSeller
+        End If
         'Récapitulatif des transactions vendeur par vendeur
         For Each VpSeller As clsSeller In VpSellers
             If VpSeller.Bought > 0 Then

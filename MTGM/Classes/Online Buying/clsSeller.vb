@@ -131,10 +131,16 @@ Public Class clsSeller
             Return VmToSell
         End Get
     End Property
-    Public Class clsSellerComparer
+    Public Class clsSellerCoverageComparer
         Implements IComparer(Of clsSeller)
         Public Function Compare(ByVal x As clsSeller, ByVal y As clsSeller) As Integer Implements IComparer(Of clsSeller).Compare
             Return y.Coverage.CompareTo(x.Coverage)
+        End Function
+    End Class
+    Public Class clsSellerBoughtValueComparer
+        Implements IComparer(Of clsSeller)
+        Public Function Compare(ByVal x As clsSeller, ByVal y As clsSeller) As Integer Implements IComparer(Of clsSeller).Compare
+            Return x.BoughtValue.CompareTo(y.BoughtValue)
         End Function
     End Class
 End Class

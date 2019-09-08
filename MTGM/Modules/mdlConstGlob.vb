@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 36797
+    Public Const CgCodeLines As Integer             = 36830
     Public Const CGNClasses As Integer              = 92
     Public Const CgLastUpdateAut As String          = "18/10/2016"
     Public Const CgLastUpdateSimu As String         = "19/10/2016"
@@ -24,6 +24,7 @@ Public Module mdlConstGlob
     Public Const CgMaxVignettes As Integer          = 120
     Public Const CgMaxEditionsMarket As Integer     = 4
     Public Const CgWorstShippingCost As Single      = 100000
+    Public Const CgMinParcelValue As Single         = 2
     Public Const CgMissingTable As Long             = -2147217865
     Public Const CgImgMinLength As Long             = 296297676
     Public Const CgTimeOut As Integer               = 5

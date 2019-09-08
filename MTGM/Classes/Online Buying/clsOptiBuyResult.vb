@@ -1,14 +1,24 @@
 ﻿Public Class clsOptiBuyResult
+    Private VmWarning As Boolean        'Un avertissement a été affiché
     Private VmBought As Integer         'Nombre de carte achetées
     Private VmSellersCount As Integer   'Nombre de vendeurs sollicités
     Private VmCardsCost As Single       'Montant total des cartes
     Private VmShippingCost As Single    'Montant total des frais de port
     Public Sub New
+        VmWarning = False
         VmBought = 0
         VmSellersCount = 0
         VmCardsCost = 0
         VmShippingCost = 0
     End Sub
+    Public Property Warning As Boolean
+        Get
+            Return VmWarning
+        End Get
+        Set (VpWarning As Boolean)
+            VmWarning = VpWarning
+        End Set
+    End Property
     Public Property Bought As Integer
         Get
             Return VmBought
