@@ -350,11 +350,11 @@ Public Partial Class frmStats
     '- nombre de cartes, la plus vieille, la plus rare, créature la plus forte
     '- attaque moyenne, défense moyenne et ratio d'efficacité (attaque / cout moyen)
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
-    Dim VpC As Double
-    Dim VpP As Double
-    Dim VpT As Double
-    Dim VpMaxNoFoil As Double
-    Dim VpMaxFoil As Double
+    Dim VpC As Single
+    Dim VpP As Single
+    Dim VpT As Single
+    Dim VpMaxNoFoil As Single
+    Dim VpMaxFoil As Single
         'Trappe d'erreur (si pas de créatures dans la sélection ou pas de cartes invocables)
         Try
             VpC = Me.QueryInfo("Sum(myCost * Items) / Sum(Items)", "Where ( Cost <> Null ) And ")

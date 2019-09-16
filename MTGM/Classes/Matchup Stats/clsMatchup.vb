@@ -4,7 +4,7 @@
     Private m_Deck1Victory As Integer
     Private m_Deck2Victory As Integer
     Private m_ProbaBase As Integer
-    Private m_ProbaModif As Double
+    Private m_ProbaModif As Single
     Private m_Played As Boolean
     Public Sub New(deck1 As String, deck2 As String, victory1 As Integer, victory2 As Integer)
         m_Deck1 = deck1
@@ -57,7 +57,7 @@
             m_ProbaBase = Value
         End Set
     End Property
-    Public Property ProbaModif() As Double
+    Public Property ProbaModif() As Single
         Get
             Return m_ProbaModif
         End Get

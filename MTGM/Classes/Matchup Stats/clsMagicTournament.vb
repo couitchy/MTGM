@@ -18,7 +18,7 @@ Public Class clsMagicTournament
         ' => Concrètement, si un jeu a déjà été sélectionné deux fois, il aura 5^2 = 25 fois moins de chance de sortir
         Dim factFavor As Integer = 1
         ' Les decks à favoriser ont un facteur puissance supplémentaire de sortir
-        Dim coefFavor As Double = 0.6
+        Dim coefFavor As Single = 0.6
         ' Si le deck a joué moins de 60% du nombre de parties jouées en moyenne par les decks, il faut le favoriser
         ' Initialise un dictionnaire permettant de suivre le nombre de duel impliquant chaque jeu (avec pour l'instant 0 partie par deck)
         Dim Decks As New Dictionary(Of String, clsDeck)()
@@ -46,7 +46,7 @@ Public Class clsMagicTournament
             Decks(mu.Deck2).NbGamesHisto += mu.Deck1Victory + mu.Deck2Victory
         Next
         ' Détermine la liste des decks à favoriser
-        Dim avgPlayed As Double = Decks.Values.[Select](Function(x) x.NbGamesHisto).Average()
+        Dim avgPlayed As Single = Decks.Values.[Select](Function(x) x.NbGamesHisto).Average()
         For Each deck As clsDeck In Decks.Values.Where(Function(x) x.NbGamesHisto < (coefFavor * avgPlayed))
             deck.Favor = factFavor
         Next
@@ -66,9 +66,9 @@ Public Class clsMagicTournament
                 mu.ProbaModif = (If(mu.Played, 0, 1)) * mu.ProbaBase * Math.Pow(factReduc, (2 * maxPlayed + Decks(mu.Deck1).Favor + Decks(mu.Deck2).Favor - Decks(mu.Deck1).NbGames - Decks(mu.Deck2).NbGames))
             Next
             ' Ensuite on détermine le total de chances de sortir
-            Dim nb As Double = _matchups.[Select](Function(x) x.ProbaModif).Sum()
+            Dim nb As Single = _matchups.[Select](Function(x) x.ProbaModif).Sum()
             ' Puis on tire au sort un chiffre entier allant de 1 à nb
-            Dim tirage As Double = Math.Truncate(rnd.NextDouble() * nb) + 1
+            Dim tirage As Single = Math.Truncate(rnd.NextDouble() * nb) + 1
             Dim offset As Integer = 0
             ' Et on détermine à quel matchup il correspond
             While True

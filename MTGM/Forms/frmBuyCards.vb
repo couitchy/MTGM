@@ -12,6 +12,7 @@ Public Partial Class frmBuyCards
     Private VmServer As mdlConstGlob.eMarketServer      'Market place choisie par l'utilisateur pour effectuer ses transactions
     Private VmToBuy As New List(Of clsLocalCard)        'Collection des cartes souhaitées à l'achat
     Private VmToSell As New List(Of clsRemoteCard)      'Collection des cartes disponibles à la vente
+    Private VmProducts As New List(Of clsProduct)       'Collection des offres exploitables sous forme statistique
     Private VmEditions As List(Of String)               'Liste des éditions disponibles pour une même carte dans le cas où il y en a trop et qu'il faut potentiellement restreindre le volume de recherches
     Private VmSplitterDistance As Integer               'Position du séparateur
     Private VmBrowser As New WebBrowser                 'Navigateur web
@@ -98,6 +99,22 @@ Public Partial Class frmBuyCards
                 VmToSell.Remove(VpDelete)
             Next VpDelete
         End If
+    End Sub
+    Private Sub Classify
+    '---------------------------------------------------------------------------
+    'Réorganise les cartes disponibles à la vente sous forme de produits groupés
+    '---------------------------------------------------------------------------
+    Dim VpProduct As clsProduct
+        VmProducts.Clear
+        For Each VpLocalCard As clsLocalCard In VmToBuy
+            VpProduct = New clsProduct(VpLocalCard.Name)
+            For Each VpRemoteCard As clsRemoteCard In VmToSell
+                If VpRemoteCard.Name = VpProduct.Name Then
+                    VpProduct.AddOffer(VpRemoteCard)
+                End If
+            Next VpRemoteCard
+            VmProducts.Add(VpProduct)
+        Next VpLocalCard
     End Sub
     Private Sub MVFetch(VpCard As String, VpQualities() As mdlConstGlob.eQuality, VpBannedSellers() As String)
     '--------------------------------------------------------------------------------------------------------------
@@ -433,49 +450,39 @@ Public Partial Class frmBuyCards
     Dim VpCellModel As DataModels.IDataModel
         'Mode 1 : Résultats de la recherche sur Internet
         If VpMode = mdlConstGlob.eBasketMode.Remote Then
-            #If DEBUG Then
-                Return
-            #End If
-            Me.grdBasket.SuspendLayout
-            Application.UseWaitCursor = True
             'Préparation de la grille
+            Me.grdBasket.SuspendLayout
             With Me.grdBasket
-                Me.prgRefresh.Value = 0
-                Me.prgRefresh.Maximum = VmToSell.Count
                 'Nettoyage
                 If .Rows.Count > 0 Then
                     .Rows.RemoveRange(0, .Rows.Count)
                 End If
                 'Nombre de colonnes et d'en-têtes
-                .ColumnsCount = 7
+                .ColumnsCount = 6
                 .FixedRows = 1
                 .Rows.Insert(0)
-                Me.grdBasket(0, 0) = New Cells.ColumnHeader("Nom de la carte")
-                Me.grdBasket(0, 1) = New Cells.ColumnHeader("Vendeur")
-                Me.grdBasket(0, 2) = New Cells.ColumnHeader("Edition")
-                Me.grdBasket(0, 3) = New Cells.ColumnHeader("Langue")
-                Me.grdBasket(0, 4) = New Cells.ColumnHeader("Etat")
-                Me.grdBasket(0, 5) = New Cells.ColumnHeader("Quantité")
-                Me.grdBasket(0, 6) = New Cells.ColumnHeader("Prix unitaire")
-                CType(Me.grdBasket(0, 5), Cells.ColumnHeader).Comparer = New clsGridNumericComparer
-                CType(Me.grdBasket(0, 6), Cells.ColumnHeader).Comparer = New clsGridNumericComparer
+                Me.grdBasket(0, 0) = New Cells.ColumnHeader("Nom")
+                Me.grdBasket(0, 1) = New Cells.ColumnHeader("Editions")
+                Me.grdBasket(0, 2) = New Cells.ColumnHeader("Vendeurs")
+                Me.grdBasket(0, 3) = New Cells.ColumnHeader("Quantité")
+                Me.grdBasket(0, 4) = New Cells.ColumnHeader("Moy./vendeur")
+                Me.grdBasket(0, 5) = New Cells.ColumnHeader("Prix médian")
+                For VpI As Integer = 1 To 5
+                    CType(Me.grdBasket(0, VpI), Cells.ColumnHeader).Comparer = New clsGridNumericComparer
+                Next VpI
                 'Remplissage offres
-                For VpI As Integer = 0 To VmToSell.Count - 1
+                For VpI As Integer = 0 To VmProducts.Count - 1
                     Application.DoEvents
                     .Rows.Insert(VpI + 1)
-                    Me.grdBasket(VpI + 1, 0) = New Cells.Cell(VmToSell.Item(VpI).Name)
-                    Me.grdBasket(VpI + 1, 1) = New Cells.Cell(VmToSell.Item(VpI).Seller.Name)
-                    Me.grdBasket(VpI + 1, 2) = New Cells.Cell(VmToSell.Item(VpI).Edition)
-                    Me.grdBasket(VpI + 1, 3) = New Cells.Cell(VmToSell.Item(VpI).Language)
-                    Me.grdBasket(VpI + 1, 4) = New Cells.Cell(VmToSell.Item(VpI).Condition)
-                    Me.grdBasket(VpI + 1, 5) = New Cells.Cell(VmToSell.Item(VpI).Quantity)
-                    Me.grdBasket(VpI + 1, 6) = New Cells.Cell(VmToSell.Item(VpI).Price.ToString + " €")
-                    Me.prgRefresh.Increment(1)
+                    Me.grdBasket(VpI + 1, 0) = New Cells.Cell(VmProducts(VpI).Name)
+                    Me.grdBasket(VpI + 1, 1) = New Cells.Cell(VmProducts(VpI).Editions.ToString)
+                    Me.grdBasket(VpI + 1, 2) = New Cells.Cell(VmProducts(VpI).Sellers.ToString)
+                    Me.grdBasket(VpI + 1, 3) = New Cells.Cell(VmProducts(VpI).Quantity.ToString)
+                    Me.grdBasket(VpI + 1, 4) = New Cells.Cell(VmProducts(VpI).MeanQuantity.ToString("F2"))
+                    Me.grdBasket(VpI + 1, 5) = New Cells.Cell(VmProducts(VpI).MedianPrice.ToString("F2") + " €")
                 Next VpI
                 .AutoSize
             End With
-            Me.prgRefresh.Value = 0
-            Application.UseWaitCursor = False
             Me.grdBasket.ResumeLayout
         'Mode 2 : Cartes à acheter
         Else
@@ -531,12 +538,13 @@ Public Partial Class frmBuyCards
         VpFile.Close
         VmToBuy = VpCapsule.ToBuy
         VmToSell = VpCapsule.ToSell
-        Call Me.LoadGrid(eBasketMode.Local)
+        Call Me.LoadGrid(mdlConstGlob.eBasketMode.Local)
         If VmToSell.Count > 0 Then
             If Me.chkSeller.Checked Then
                 Call Me.ExcludeSellers
             End If
             Call Me.ClearSellList
+            Call Me.Classify
             Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
             Me.cmdCalc.Enabled = True
         End If
@@ -574,6 +582,10 @@ Public Partial Class frmBuyCards
         If VmToBuy.Count = 0 Then
             Call mdlToolbox.ShowInformation("Choisissez des cartes à acheter via clic droit dans l'explorateur !")
             Exit Sub
+        ElseIf VmToSell.Count > 0 Then
+            If mdlToolbox.ShowQuestion("Des offres pour les cartes demandées sont déjà disponibles..." + vbCrLf + "Voulez-vous à nouveau télécharger ces informations depuis " + VmServer.ToString + " ?") = DialogResult.No Then
+                Exit Sub
+            End If
         End If
         'Blocage d'actions indésirables
         Me.cmdRefresh.Visible = False
@@ -616,6 +628,7 @@ Public Partial Class frmBuyCards
             Me.prgRefresh.Value = 0
             Application.DoEvents
             Call Me.ClearSellList
+            Call Me.Classify
             Call Me.LoadGrid(mdlConstGlob.eBasketMode.Remote)
         Catch
             Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
@@ -737,8 +750,12 @@ Public Partial Class frmBuyCards
         Me.dlgOpen.FileName = ""
         Me.dlgOpen.ShowDialog
         If Me.dlgOpen.FileName <> "" Then
+            Cursor.Current = Cursors.WaitCursor
+            Application.UseWaitCursor = True
+            Application.DoEvents
             Call Me.BasketLoad(Me.dlgOpen.FileName)
             Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL27), mdlConstGlob.CgMdShippingCosts)
+            Application.UseWaitCursor = False
         End If
     End Sub
     Sub CmdCancelClick(sender As Object, e As EventArgs)

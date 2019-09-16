@@ -105,6 +105,7 @@
     <Compile Include="Classes\Matchup Stats\clsMatchup.vb" />
     <Compile Include="Classes\Matchup Stats\clsPerformances.vb" />
     <Compile Include="Classes\Online Buying\clsOptiBuyResult.vb" />
+    <Compile Include="Classes\Online Buying\clsProduct.vb" />
     <Compile Include="Classes\Online Buying\clsShipping.vb" />
     <Compile Include="Forms\frmAbout.Designer.vb">
       <DependentUpon>frmAbout.vb</DependentUpon>
