@@ -279,7 +279,7 @@ Public Partial Class frmBuyCards
             VpFound.Seller.BoughtValue += VpFound.Price * VpN
         End If
     End Sub
-    Private Sub CalcTransactions(VpShippingPolicies As Dictionary(Of String, List(Of clsShipping)), VpMaxTransactions As Integer, VpPath As String)
+    Private Sub CalcTransactions(VpShippingPolicies As Dictionary(Of String, List(Of clsShipping)), VpMinParcelValue As Single, VpPath As String)
     '------------------------------------------------------------------------------------------------------------------------------
     'Détermine les transactions nécessaires pour acheter toutes les cartes désirées de la bonne manière (heuristique sous-optimale)
     '------------------------------------------------------------------------------------------------------------------------------
@@ -371,16 +371,16 @@ Public Partial Class frmBuyCards
         'Trie les vendeurs par montant de transaction, du plus petit au plus grand
         VpSellers.Sort(New clsSeller.clsSellerBoughtValueComparer)
         'Il faut à présent dispatcher les cartes achetées auprès des vendeurs pour lesquels le montant minimal de transaction n'est pas atteint
-        If mdlConstGlob.CgMinParcelValue > 0 Then
+        If VpMinParcelValue > 0 Then
             For Each VpSeller As clsSeller In VpSellers
-                If VpSeller.BoughtValue < mdlConstGlob.CgMinParcelValue Then
+                If VpSeller.BoughtValue < VpMinParcelValue Then
                     For Each VpRemoteCard As clsRemoteCard In VpSeller.GetBoughtCards
                         'Tant qu'il reste des cartes à acquérir auprès de ce vendeur pour lequel la valeur achetée n'atteint pas le seuil
                         While VpRemoteCard.Bought > 0
                             VpFound = Nothing
                             For Each VpSeller1 As clsSeller In VpSellers
                                 'Parmi les vendeurs déjà sollicités (et pour lesquels ce seuil est bien atteint)                            
-                                If VpSeller1.BoughtValue >= mdlConstGlob.CgMinParcelValue Then
+                                If VpSeller1.BoughtValue >= VpMinParcelValue Then
                                     'Regarde les cartes qu'ils proposent
                                     For Each VpRemoteCard1 As clsRemoteCard In VpSeller1.Cards
                                         'Si on trouve parmi elles celle(s) qu'on voulait redispatcher
@@ -396,12 +396,9 @@ Public Partial Class frmBuyCards
                             'Si on a trouvé, effectue la modification de transaction
                             If VpFound IsNot Nothing Then
                                 Call Me.ChangeTransaction(VpFound, VpRemoteCard)
-                            'Avertissement si on n'a pas réussi à se passer du vendeur
+                            'Note si on n'a pas réussi à se passer du vendeur
                             Else
-                                If Not VpOpti.Warning Then
-                                    VpOpti.Warning = True
-                                    Call mdlToolbox.ShowWarning("Impossible de n'avoir que des transactions au-delà de " + mdlConstGlob.CgMinParcelValue.ToString + "€...")
-                                End If
+                                Call VpOpti.AddSmallTransaction(VpRemoteCard.Seller)
                                 Exit While
                             End If
                         End While
@@ -433,7 +430,7 @@ Public Partial Class frmBuyCards
         VpOutput.Flush
         VpOutput.Close
         Me.txtTot.Text = VpOpti.CardsCost.ToString + "€"
-        Call mdlToolbox.ShowInformation("Optimisation terminée !" + vbCrLf + "Les résultats vont s'afficher automatiquement dans le bloc-notes...")
+        Call mdlToolbox.ShowInformation("Optimisation terminée !" + vbCrLf + VpOpti.Warning(VpMinParcelValue) + "Les résultats vont s'afficher automatiquement dans le bloc-notes...")
     End Sub
     Private Sub InsertRow(VpS As String, VpN As Integer, VpCellModel As DataModels.IDataModel)
     '--------------------------------------
@@ -645,6 +642,7 @@ Public Partial Class frmBuyCards
     Dim VpShippingData As StreamReader
     Dim VpShippingPolicy As List(Of clsShipping)
     Dim VpShippingPolicies As New Dictionary(Of String, List(Of clsShipping))
+    Dim VpMinParcelValue As Single = 0
     Dim VpPath As String = mdlToolbox.GetFreeTempFile(".txt")
         Me.prgRefresh.Style = ProgressBarStyle.Marquee
         Cursor.Current = Cursors.WaitCursor
@@ -668,8 +666,12 @@ Public Partial Class frmBuyCards
                 End If
             End While
             VpShippingData.Close
+            'Essaie de ne pas effectuer de transaction dont le montant des produits serait strictement inférieur à la valeur saisie par l'utilisateur (optionnel)
+            If Me.chkTransactions.Checked Then
+                VpMinParcelValue = Val(Me.txtTransaction.Text)
+            End If
             'Calcul effectif des transactions
-            Call Me.CalcTransactions(VpShippingPolicies, Me.sldTransactions.Value, VpPath)
+            Call Me.CalcTransactions(VpShippingPolicies, VpMinParcelValue, VpPath)
             If File.Exists(VpPath) Then
                 Process.Start(VpPath)
             End If
@@ -703,6 +705,9 @@ Public Partial Class frmBuyCards
             Me.mnuRemoveSeller.Enabled = ( VpItem >= 0 )
             Me.cmnuSeller.Show(sender, e.Location)
         End If
+    End Sub
+    Sub ChkTransactionsCheckedChanged(sender As Object, e As EventArgs)
+        Me.txtTransaction.Enabled = Me.chkTransactions.Checked
     End Sub
     Sub ChkSellerCheckedChanged(sender As Object, e As EventArgs)
         If Me.chkSeller.Checked Then

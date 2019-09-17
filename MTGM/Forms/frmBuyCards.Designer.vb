@@ -39,13 +39,13 @@ Partial Class frmBuyCards
         Me.cbarGestion = New TD.SandBar.ContainerBar()
         Me.pnlGestion = New TD.SandBar.ContainerBarClientPanel()
         Me.splitV1 = New System.Windows.Forms.SplitContainer()
+        Me.lblTransactions = New System.Windows.Forms.Label()
         Me.chkSeller = New System.Windows.Forms.CheckBox()
         Me.chkGood = New System.Windows.Forms.CheckBox()
         Me.chkExcellent = New System.Windows.Forms.CheckBox()
         Me.chkNearMint = New System.Windows.Forms.CheckBox()
         Me.chkMint = New System.Windows.Forms.CheckBox()
         Me.chkTransactions = New System.Windows.Forms.CheckBox()
-        Me.sldTransactions = New System.Windows.Forms.TrackBar()
         Me.lblInfo = New System.Windows.Forms.Label()
         Me.splitV2 = New System.Windows.Forms.SplitContainer()
         Me.lblSeller = New System.Windows.Forms.Label()
@@ -68,7 +68,7 @@ Partial Class frmBuyCards
         Me.mnuRemoveSeller = New System.Windows.Forms.ToolStripMenuItem()
         Me.dlgSave = New System.Windows.Forms.SaveFileDialog()
         Me.dlgOpen = New System.Windows.Forms.OpenFileDialog()
-        Me.lblTransactions = New System.Windows.Forms.Label()
+        Me.txtTransaction = New System.Windows.Forms.TextBox()
         Me.splitH.Panel1.SuspendLayout
         Me.splitH.Panel2.SuspendLayout
         Me.splitH.SuspendLayout
@@ -77,7 +77,6 @@ Partial Class frmBuyCards
         Me.splitV1.Panel1.SuspendLayout
         Me.splitV1.Panel2.SuspendLayout
         Me.splitV1.SuspendLayout
-        CType(Me.sldTransactions,System.ComponentModel.ISupportInitialize).BeginInit
         Me.splitV2.Panel1.SuspendLayout
         Me.splitV2.Panel2.SuspendLayout
         Me.splitV2.SuspendLayout
@@ -137,6 +136,7 @@ Partial Class frmBuyCards
         '
         'splitV1.Panel1
         '
+        Me.splitV1.Panel1.Controls.Add(Me.txtTransaction)
         Me.splitV1.Panel1.Controls.Add(Me.lblTransactions)
         Me.splitV1.Panel1.Controls.Add(Me.chkSeller)
         Me.splitV1.Panel1.Controls.Add(Me.chkGood)
@@ -144,7 +144,6 @@ Partial Class frmBuyCards
         Me.splitV1.Panel1.Controls.Add(Me.chkNearMint)
         Me.splitV1.Panel1.Controls.Add(Me.chkMint)
         Me.splitV1.Panel1.Controls.Add(Me.chkTransactions)
-        Me.splitV1.Panel1.Controls.Add(Me.sldTransactions)
         Me.splitV1.Panel1.Controls.Add(Me.lblInfo)
         '
         'splitV1.Panel2
@@ -154,15 +153,25 @@ Partial Class frmBuyCards
         Me.splitV1.SplitterDistance = 235
         Me.splitV1.TabIndex = 0
         '
+        'lblTransactions
+        '
+        Me.lblTransactions.AutoSize = true
+        Me.lblTransactions.BackColor = System.Drawing.Color.Transparent
+        Me.lblTransactions.Location = New System.Drawing.Point(203, 32)
+        Me.lblTransactions.Name = "lblTransactions"
+        Me.lblTransactions.Size = New System.Drawing.Size(13, 13)
+        Me.lblTransactions.TabIndex = 15
+        Me.lblTransactions.Text = "€"
+        '
         'chkSeller
         '
         Me.chkSeller.AutoSize = true
         Me.chkSeller.Location = New System.Drawing.Point(10, 88)
         Me.chkSeller.Name = "chkSeller"
-        Me.chkSeller.Size = New System.Drawing.Size(208, 17)
+        Me.chkSeller.Size = New System.Drawing.Size(150, 17)
         Me.chkSeller.TabIndex = 14
         Me.chkSeller.Text = "Exclure les vendeurs listés"
-        Me.chkSeller.UseVisualStyleBackColor = True
+        Me.chkSeller.UseVisualStyleBackColor = true
         AddHandler Me.chkSeller.CheckedChanged, AddressOf Me.ChkSellerCheckedChanged
         '
         'chkGood
@@ -212,22 +221,13 @@ Partial Class frmBuyCards
         'chkTransactions
         '
         Me.chkTransactions.AutoSize = true
-        Me.chkTransactions.Checked = true
-        Me.chkTransactions.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkTransactions.Location = New System.Drawing.Point(10, 32)
         Me.chkTransactions.Name = "chkTransactions"
-        Me.chkTransactions.Size = New System.Drawing.Size(15, 14)
+        Me.chkTransactions.Size = New System.Drawing.Size(138, 17)
         Me.chkTransactions.TabIndex = 9
+        Me.chkTransactions.Text = "Eviter les transactions <"
         Me.chkTransactions.UseVisualStyleBackColor = true
-        '
-        'sldTransactions
-        '
-        Me.sldTransactions.Location = New System.Drawing.Point(125, 30)
-        Me.sldTransactions.Minimum = 1
-        Me.sldTransactions.Name = "sldTransactions"
-        Me.sldTransactions.Size = New System.Drawing.Size(97, 45)
-        Me.sldTransactions.TabIndex = 8
-        Me.sldTransactions.Value = 3
+        AddHandler Me.chkTransactions.CheckedChanged, AddressOf Me.ChkTransactionsCheckedChanged
         '
         'lblInfo
         '
@@ -448,15 +448,15 @@ Partial Class frmBuyCards
         Me.dlgOpen.Filter = "Magic Cards Baskets (*.mcb) | *.mcb"
         Me.dlgOpen.Title = "Chargement du panier"
         '
-        'lblTransactions
+        'txtTransaction
         '
-        Me.lblTransactions.AutoSize = true
-        Me.lblTransactions.BackColor = System.Drawing.Color.Transparent
-        Me.lblTransactions.Location = New System.Drawing.Point(26, 32)
-        Me.lblTransactions.Name = "lblTransactions"
-        Me.lblTransactions.Size = New System.Drawing.Size(90, 13)
-        Me.lblTransactions.TabIndex = 15
-        Me.lblTransactions.Text = "Max. transactions"
+        Me.txtTransaction.Enabled = false
+        Me.txtTransaction.Location = New System.Drawing.Point(154, 30)
+        Me.txtTransaction.Name = "txtTransaction"
+        Me.txtTransaction.Size = New System.Drawing.Size(43, 20)
+        Me.txtTransaction.TabIndex = 16
+        Me.txtTransaction.Text = "2"
+        Me.txtTransaction.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'frmBuyCards
         '
@@ -478,7 +478,6 @@ Partial Class frmBuyCards
         Me.splitV1.Panel1.PerformLayout
         Me.splitV1.Panel2.ResumeLayout(false)
         Me.splitV1.ResumeLayout(false)
-        CType(Me.sldTransactions,System.ComponentModel.ISupportInitialize).EndInit
         Me.splitV2.Panel1.ResumeLayout(false)
         Me.splitV2.Panel2.ResumeLayout(false)
         Me.splitV2.Panel2.PerformLayout
@@ -488,12 +487,12 @@ Partial Class frmBuyCards
         Me.cmnuSeller.ResumeLayout(false)
         Me.ResumeLayout(false)
     End Sub
+    Private txtTransaction As System.Windows.Forms.TextBox
     Private lblTransactions As System.Windows.Forms.Label
     Private chkNearMint As System.Windows.Forms.CheckBox
     Private chkExcellent As System.Windows.Forms.CheckBox
     Private chkGood As System.Windows.Forms.CheckBox
     Private chkSeller As System.Windows.Forms.CheckBox
-    Private sldTransactions As System.Windows.Forms.TrackBar
     Private chkTransactions As System.Windows.Forms.CheckBox
     Private chkMint As System.Windows.Forms.CheckBox
     Private cmdCancel As System.Windows.Forms.Button
