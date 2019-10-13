@@ -1089,7 +1089,7 @@ Public Module mdlToolbox
                 VgTray.Visible = True
                 VgTray.Tag = If(VpBeta, eUpdateType.Beta, eUpdateType.Release)
                 VgTray.ShowBalloonTip(10, "Magic The Gathering Manager" + If(VpBeta, " BETA", ""), "Une mise à jour de l'application est disponible..." + vbCrLf + "Cliquer ici pour la télécharger, quitter Magic The Gathering Manager et l'installer.", ToolTipIcon.Info)
-            ElseIf VpExplicit
+            ElseIf VpExplicit Then
                 If VpContenu Then
                     If mdlToolbox.ShowQuestion("L'application est à jour..." + vbCrLf + "Voulez-vous rechercher aussi les mises à jour de contenu (prix, images...) ?") = System.Windows.Forms.DialogResult.Yes Then
                         Call MainForm.VgMe.MnuContenuUpdateClick(Nothing, Nothing)

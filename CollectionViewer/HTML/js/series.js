@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AR","BB","BE","BG","BK","BT","BZ","C1","C3","C4","C5","C6","C7","C8","CA","CB","CD","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GP","GR","GS","GW","GX","HD","HM","HP","IA","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MH","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","OD","OG","ON","OR","P1","P2","P3","PC","PG","PH","PI","PR","PS","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SH","SI","SK","SL","SM","SS","ST","TC","TD","TH","TO","TP","TS","UB","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
+var codes_mtgm=["1E","3B","3W","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AR","BB","BE","BG","BK","BT","BZ","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GP","GR","GS","GW","GX","HD","HM","HP","IA","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MH","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","OD","OG","ON","OR","P1","P2","P3","PC","PG","PH","PI","PR","PS","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SH","SI","SK","SL","SM","SS","ST","TC","TD","TE","TH","TO","TP","TS","UB","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
 
 // Structure of array 
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -173,7 +173,10 @@ series['GR'] = new Array('GRN','Guilds of Ravnica','Les Guildes de Ravnica','259
 series['RG'] = new Array('RNA','Ravnica Allegiance','L\'Allégeance de Ravnica','259','2019');
 series['WS'] = new Array('WAR','War of the Spark','La Guerre des Planeswalkers','264','2019');
 var guildrav = new Array('Bloc Guildes de Ravnica','GR','RG','WS');
-var extensions = new Array(horsbloc,iceage,mirage,tempest,urza,mercadia,invasion,odyssey,carnage,mirrodin,kamigawa,ravnica,spirale,lorwyn,sombrelande,alara,zendikar,cicatrices,innistrad,retourRavnica,theros,tarkir,battlezen,shadowsinni,kalad,amonk,ixa,guildrav);
+// Throne of Eldraine Block
+series['TE'] = new Array('ELD','Throne of Eldraine','Le Trône d\'Eldraine','269','2019');
+var throne = new Array('Bloc Le Trône d\'Eldraine','TE');
+var extensions = new Array(horsbloc,iceage,mirage,tempest,urza,mercadia,invasion,odyssey,carnage,mirrodin,kamigawa,ravnica,spirale,lorwyn,sombrelande,alara,zendikar,cicatrices,innistrad,retourRavnica,theros,tarkir,battlezen,shadowsinni,kalad,amonk,ixa,guildrav,throne);
 
 // Compilations
 series['CH'] = new Array('CHR','Chronicles','','125','1995');
@@ -275,8 +278,9 @@ series['C4'] = new Array('C14','Commander 2014','','5x100','2014');
 series['C5'] = new Array('C15','Commander 2015','','5x100','2015');
 series['C6'] = new Array('C16','Commander 2016','','5x100','2016');
 series['C7'] = new Array('C17','Commander 2017','','4x100','2017');
-series['C8'] = new Array('C17','Commander 2018','','4x100','2018');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8');
+series['C8'] = new Array('C18','Commander 2018','','4x100','2018');
+series['C9'] = new Array('C19','Commander 2019','','4x100','2019');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9');
 
 // Introductory Sets
 series['P1'] = new Array('POR','Portal','Portal','222','1997');

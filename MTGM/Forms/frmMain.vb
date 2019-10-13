@@ -3497,9 +3497,9 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuRestorePrevClick(sender As Object, e As EventArgs)
-    '-------------------------------------
-    'Rétrogade la version de l'application
-    '-------------------------------------
+    '--------------------------------------
+    'Rétrograde la version de l'application
+    '--------------------------------------
         If File.Exists(Application.StartupPath + mdlConstGlob.CgDownDFile) Then
             If mdlToolbox.ShowQuestion("Êtes-vous sûr de vouloir restaurer la précédente version sauvegardée de l'application ?")  = System.Windows.Forms.DialogResult.Yes Then
                 File.Move(Application.StartupPath + mdlConstGlob.CgDownDFile, Application.StartupPath + mdlConstGlob.CgUpDFile)

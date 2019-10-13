@@ -37,10 +37,10 @@ Module Program
                     VpProcess.Kill
                     Try
                         Do
-                            Console.WriteLine("Waiting for the thread to terminate...")
+                            Console.WriteLine("Waiting for process to terminate...")
                         Loop While Not VpProcess.HasExited
                     Catch
-                        Console.WriteLine("Thread seems to be terminated...")
+                        Console.WriteLine("Process seems to be terminated...")
                     End Try
                 End If
             Catch

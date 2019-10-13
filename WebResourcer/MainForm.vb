@@ -1691,6 +1691,10 @@ Public Partial Class MainForm
                 Return "SignatureSpellbookGideon#" + VpStr
             Case "M0"
                 Return "magic2020#" + VpStr
+            Case "C9"
+                Return "commander2019#" + VpStr
+            Case "TE"
+                Return "throneofeldraine#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2017,6 +2021,10 @@ Public Partial Class MainForm
                 Return "ST"
             Case "magic2020"
                 Return "M0"
+            Case "commander2019"
+                Return "C9"
+            Case "throneofeldraine"
+                Return "TE"
             Case Else
                 Return ""
         End Select
@@ -2204,30 +2212,39 @@ Public Partial Class MainForm
         'Construction des listings
         Call Me.AddToLog("Construction du listing VO/VF...", eLogType.Information)
         Application.DoEvents
-        Call Me.BuildAllTitles(VpJSONInfos)
+        Call Me.BuildAllTitles(VpJSONInfos, "_titles_fr.txt")
         Call Me.AddToLog("Construction de la checklist...", eLogType.Information)
         Application.DoEvents
-        Call Me.BuildCheckList(VpJSONInfos)
+        Call Me.BuildCheckList(VpJSONInfos, "_checklist_en.txt")
         Call Me.AddToLog("Construction de la spoilerlist...", eLogType.Information)
         Application.DoEvents
-        Call Me.BuildSpoilerList(VpJSONInfos)
+        Call Me.BuildSpoilerList(VpJSONInfos, "_spoiler_en.txt")
         Call Me.AddToLog("Construction du listing des doubles cartes...", eLogType.Information)
         Application.DoEvents
-        Call Me.BuildDoubles(VpJSONInfos)
+        Call Me.BuildDoubles(VpJSONInfos, "_doubles_en.txt")
+        'Listings alternatifs (éventuellement)
+        If VpJSONInfos.special Then
+            If MessageBox.Show("L'édition semble contenir des cartes spéciales (double face ou double carte ou aventure)" + vbCrLf + "Voulez-vous générer les listings alternatifs ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                Call Me.AddToLog("Construction des listings alternatifs...", eLogType.Information)
+                Application.DoEvents
+                Call Me.BuildAllTitles(VpJSONInfos, "_titles_fr_special.txt")
+                Call Me.BuildCheckList(VpJSONInfos, "_checklist_en_special.txt")
+                Call Me.BuildSpoilerList(VpJSONInfos, "_spoiler_en_special.txt")
+            End If
+        End If
         Call Me.AddToLog("La construction des fichiers spoilers est terminée.", eLogType.Information)
     End Sub
-    Private Sub BuildAllTitles(VpJSONInfos As clsFullInfos)
-    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_titles_fr.txt")
+    Private Sub BuildAllTitles(VpJSONInfos As clsFullInfos, VpSuffix As String)
+    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpAlready As New List(Of String)
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
-                If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing Then
-                    For Each VpForeign As clsFullInfos.clsFullCardInfos.clsForeignInfos In .foreignData
-                        If VpForeign.language = "French" Then
-                            VpOut.WriteLine(.name + "#" + VpForeign.name)
-                            Exit For
-                        End If
-                    Next VpForeign
+                If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing AndAlso .foreignData.Count > 0 Then
+                    If .linkedTo IsNot Nothing Then
+                        VpOut.WriteLine(.name + " // " + .linkedTo.name + "#" + .getForeignName("French") + " // " + .linkedTo.getForeignName("French"))
+                    ElseIf .linkedFrom Is Nothing Then
+                        VpOut.WriteLine(.name + "#" + .getForeignName("French"))
+                    End If
                     VpAlready.Add(.name)
                 End If
             End With
@@ -2235,70 +2252,67 @@ Public Partial Class MainForm
         VpOut.Flush
         VpOut.Close
     End Sub
-    Private Sub BuildCheckList(VpJSONInfos As clsFullInfos)
-    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_checklist_en.txt")
+    Private Sub BuildCheckList(VpJSONInfos As clsFullInfos, VpSuffix As String)
+    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpColors As String
+    Dim VpDone As New List(Of String)
         VpOut.WriteLine("#" + vbTab + "Name" + vbTab + "Artist" + vbTab + "Color" + vbTab + "Rarity" + vbTab + "Set")
         VpJSONInfos.cards.Sort(New clsFullInfos.clsFullCardInfosComparer)
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
-                If .colors Is Nothing OrElse .colors.Count = 0 Then
-                    If .type <> "Land" AndAlso Not .type.StartsWith("Basic Land") Then
-                        Call Me.AddToLog("Vérifier la couleur de la carte : " + .name, eLogType.Warning)
+                If Not VpDone.Contains(.name) Then
+                    If .colors Is Nothing OrElse .colors.Count = 0 Then
+                        If .type <> "Land" AndAlso Not .type.StartsWith("Basic Land") Then
+                            If Not VpSuffix.Contains("special") Then
+                                Call Me.AddToLog("Vérifier la couleur de la carte : " + .name, eLogType.Warning)
+                            End If
+                        End If
+                        VpColors = "/"
+                    Else
+                        VpColors = ""
+                        For Each VpColor As String In .getMergedColors
+                            Select Case VpColor.ToUpper
+                                Case "W"
+                                    VpColor = "White"
+                                Case "U"
+                                    VpColor = "Blue"
+                                Case "R"
+                                    VpColor = "Red"
+                                Case "G"
+                                    VpColor = "Green"
+                                Case "B"
+                                    VpColor = "Black"
+                                Case Else
+                            End Select
+                            VpColors += "/" + VpColor
+                        Next VpColor
                     End If
-                    VpColors = "/"
-                Else
-                    VpColors = ""
-                    For Each VpColor As String In .colors
-                        Select Case VpColor.ToUpper
-                            Case "W"
-                                VpColor = "White"
-                            Case "U"
-                                VpColor = "Blue"
-                            Case "R"
-                                VpColor = "Red"
-                            Case "G"
-                                VpColor = "Green"
-                            Case "B"
-                                VpColor = "Black"
-                            Case Else
-                        End Select
-                        VpColors += "/" + VpColor
-                    Next VpColor
+                    If .linkedTo IsNot Nothing Then
+                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                    ElseIf .linkedFrom Is Nothing Then
+                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                    End If
+                    VpDone.Add(.name)
                 End If
-                VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
             End With
         Next VpCard
         VpOut.Flush
         VpOut.Close
     End Sub
-    Private Sub BuildSpoilerList(VpJSONInfos As clsFullInfos)
-    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_spoiler_en.txt")
-    Dim VpSubcosts() As String
-    Dim VpCost As String
+    Private Sub BuildSpoilerList(VpJSONInfos As clsFullInfos, VpSuffix As String)
+    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpRarity As String
     Dim VpDone As New List(Of String)
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
                 If Not VpDone.Contains(.name) Then
-                    VpOut.WriteLine("Name: " + vbTab + .name)
-                    VpCost = ""
-                    If .manaCost IsNot Nothing Then
-                        VpSubcosts = .manaCost.Split("{")
-                        If VpSubcosts.Length > 1 Then
-                            For VpI As Integer = 1 To VpSubcosts.Length - 1
-                                VpSubcosts(VpI) = VpSubcosts(VpI).Replace("}", "")
-                                If VpSubcosts(VpI).Contains("/") Then
-                                    VpCost += "(" + VpSubcosts(VpI) + ")"
-                                Else
-                                    VpCost += VpSubcosts(VpI)
-                                End If
-                            Next VpI
-                        Else
-                            VpCost = .manaCost.Replace("{", "").Replace("}", "")
-                        End If
+                    If .linkedTo IsNot Nothing Then
+                        VpOut.WriteLine("Name: " + vbTab + .name + " // " + .linkedTo.name)
+                        VpOut.WriteLine("Cost: " + vbTab + .getCost + " // " + .linkedTo.getCost)
+                    ElseIf .linkedFrom Is Nothing Then
+                        VpOut.WriteLine("Name: " + vbTab + .name)
+                        VpOut.WriteLine("Cost: " + vbTab + .getCost)
                     End If
-                    VpOut.WriteLine("Cost: " + vbTab + VpCost)
                     VpOut.WriteLine("Type: " + vbTab + .type)
                     If .types.Contains("Creature") Then
                         VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
@@ -2307,7 +2321,11 @@ Public Partial Class MainForm
                     Else
                         VpOut.WriteLine("Pow/Tgh: " + vbTab)
                     End If
-                    VpOut.WriteLine("Rules Text: " + vbTab + If(.[text] Is Nothing, "", .[text].Replace("\n", vbCrLf)))
+                    If .linkedTo IsNot Nothing Then
+                        VpOut.WriteLine("Rules Text: " + vbTab + .getRules + "/#/" + .linkedTo.getRules)
+                    ElseIf .linkedFrom Is Nothing Then
+                        VpOut.WriteLine("Rules Text: " + vbTab + .getRules)
+                    End If
                     Select Case .rarity
                         Case "land", "basic land"
                             VpRarity = "Land"
@@ -2331,12 +2349,25 @@ Public Partial Class MainForm
         VpOut.Flush
         VpOut.Close
     End Sub
-    Private Sub BuildDoubles(VpJSONInfos As clsFullInfos)
-    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + "_doubles_en.txt")
+    Private Sub BuildDoubles(VpJSONInfos As clsFullInfos, VpSuffix As String)
+    Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
+    Dim VpDone As New List(Of String)
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
-                If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then
-                    VpOut.WriteLine(.names.Item(1) + "#" + .names.Item(0))
+                If Not VpDone.Contains(.name) Then
+                    If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then
+                        VpOut.WriteLine(.names.Item(1) + "#" + .names.Item(0))
+                        'association croisée
+                        For Each VpMate As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
+                            If VpMate.name = .names.Item(1) Then
+                                VpCard.linkedTo = VpMate
+                                VpMate.linkedFrom = VpCard
+                                Exit For
+                            End If
+                        Next VpMate
+                        VpJSONInfos.special = True
+                    End If
+                    VpDone.Add(.name)
                 End If
             End With
         Next VpCard
@@ -3211,6 +3242,7 @@ Public Partial Class MainForm
     End Class
     <Serializable> _
     Public Class clsFullInfos
+        Public special As Boolean
         Public name As String
         Public code As String
         Public gathererCode As String
@@ -3224,6 +3256,8 @@ Public Partial Class MainForm
         Public translations As Dictionary(Of String, String)
         Public cards As List(Of clsFullCardInfos)
         Public Class clsFullCardInfos
+            Public linkedTo As clsFullCardInfos
+            Public linkedFrom As clsFullCardInfos
             Public id As String
             Public layout As String
             Public name As String
@@ -3275,11 +3309,72 @@ Public Partial Class MainForm
                 Public format As String
                 Public legality As String
             End Class
+            Public Function getForeignName(language As String) As String
+                For Each foreign As clsForeignInfos In foreignData
+                    If foreign.language = language Then
+                        Return foreign.name
+                    End If
+                Next foreign
+                Return name
+            End Function
+            Public Function getMergedColors As List(Of String)
+            Dim mergedColors As List(Of String)
+                If linkedTo Is Nothing Then
+                    Return colors
+                Else
+                    mergedColors = New List(Of String)
+                    For Each color As String In colors
+                        mergedColors.Add(color)
+                    Next color
+                    For Each color As String In linkedTo.colors
+                        If Not mergedColors.Contains(color) Then
+                            mergedColors.Add(color)
+                        End If
+                    Next color
+                    Return mergedColors
+                End If
+            End Function
+            Public Function getCost As String
+            Dim subCosts() As String
+            Dim cost As String
+                cost = ""
+                If manaCost IsNot Nothing Then
+                    subCosts = manaCost.Split("{")
+                    If subCosts.Length > 1 Then
+                        For i As Integer = 1 To subCosts.Length - 1
+                            subCosts(i) = subCosts(i).Replace("}", "")
+                            If subCosts(i).Contains("/") Then
+                                cost += "(" + subCosts(i) + ")"
+                            Else
+                                cost += subCosts(i)
+                            End If
+                        Next i
+                    Else
+                        cost = manaCost.Replace("{", "").Replace("}", "")
+                    End If
+                End If
+                Return cost
+            End Function
+            Public Function getRules As String
+                Return If([text] Is Nothing, "", [text].Replace("\n", vbCrLf))
+            End Function
         End Class
         Public Class clsFullCardInfosComparer
             Implements IComparer(Of clsFullCardInfos)
             Public Function Compare(ByVal x As clsFullCardInfos, ByVal y As clsFullCardInfos) As Integer Implements IComparer(Of clsFullCardInfos).Compare
-                Return x.name.CompareTo(y.name)
+                If x.name = y.name Then
+                    If x.foreignData Is Nothing And y.foreignData IsNot Nothing Then
+                        Return 1
+                    ElseIf x.foreignData IsNot Nothing And y.foreignData Is Nothing Then
+                        Return -1
+                    ElseIf x.foreignData IsNot Nothing And y.foreignData IsNot Nothing Then
+                        Return y.foreignData.Count.CompareTo(x.foreignData.Count)
+                    Else
+                        Return x.name.CompareTo(y.name)
+                    End If
+                Else
+                    Return x.name.CompareTo(y.name)
+                End If
             End Function
         End Class
     End Class
