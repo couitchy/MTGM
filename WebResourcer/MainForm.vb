@@ -2374,6 +2374,30 @@ Public Partial Class MainForm
         VpOut.Flush
         VpOut.Close
     End Sub
+    Private Sub MergeSpoilers(VpSerie As String)
+    '--------------------------------------------------
+    'Fusionne plusieurs listings d'une édition répartie
+    '--------------------------------------------------
+        Call Me.AddToLog("La fusion des spoilers a commencé...", eLogType.Information, True)
+        Call Me.GoMerge(VpSerie, "_titles_fr.txt")
+        Call Me.GoMerge(VpSerie, "_checklist_en.txt")
+        Call Me.GoMerge(VpSerie, "_spoiler_en.txt")
+        Call Me.GoMerge(VpSerie, "_doubles_en.txt")
+        Call Me.AddToLog("La fusion des spoilers est terminée.", eLogType.Information, , True)
+    End Sub
+    Private Sub GoMerge(VpSerie As String, VpSuffix As String)
+    Dim VpPath As String = Me.dlgBrowse.SelectedPath + "\" + VpSerie.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix
+    Dim VpOut As New StreamWriter(VpPath)
+    Dim VpContent As String
+        For Each VpFile As FileInfo In (New DirectoryInfo(Me.dlgBrowse.SelectedPath)).GetFiles("*" + VpSuffix)
+            If VpFile.FullName <> VpPath Then
+                VpContent = (New StreamReader(VpFile.FullName)).ReadToEnd
+                VpOut.Write(VpContent)
+            End If
+        Next VpFile
+        VpOut.Flush
+        VpOut.Close
+    End Sub
     Private Sub ListSubtypes
     '---------------------------------------------------------------------------------------------------
     'Liste les sous-types non traduits et les trie par ordre d'occurrences, du plus répandu au plus rare
@@ -3180,6 +3204,17 @@ Public Partial Class MainForm
             Me.dlgBrowse.ShowDialog
             If Me.dlgBrowse.SelectedPath <> "" Then
                 Call Me.DownloadSpoilers(VpCode)
+            End If
+        End If
+    End Sub
+    Sub MnuSeriesMergeClick(sender As Object, e As EventArgs)
+    Dim VpSerie As String
+        Me.dlgBrowse.SelectedPath = ""
+        Me.dlgBrowse.ShowDialog
+        If Me.dlgBrowse.SelectedPath <> "" Then
+            VpSerie = InputBox("Quel est le nom de la nouvelle édition résultante ?", "Fusion des spoilers", "(nom)")
+            If VpSerie <> "" Then
+                Call Me.MergeSpoilers(VpSerie)
             End If
         End If
     End Sub

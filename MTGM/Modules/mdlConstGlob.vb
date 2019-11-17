@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 37026
+    Public Const CgCodeLines As Integer             = 37077
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "18/10/2016"
     Public Const CgLastUpdateSimu As String         = "19/10/2016"
@@ -93,7 +93,7 @@ Public Module mdlConstGlob
     Public Const CgURL12 As String                  = "/Updates/Series r18.txt"
     Public Const CgURL13 As String                  = "/Updates/MTGM.pdf"
     Public Const CgURL14 As String                  = "/Updates/MD_Trad.log"
-    Public Const CgURL15 As String                  = "/Updates/Tournois r21.txt"
+    Public Const CgURL15 As String                  = "/Updates/Tournois r22.txt"
     Public Const CgURL16 As String                  = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=couitchy@free.fr&lc=FR&item_name=Magic The Gathering Manager&currency_code=EUR&bn=PP%2dDonationsBF"
     Public Const CgURL17 As String                  = "http://mtgm.free.fr"
     Public Const CgURL18 As String                  = "mailto:couitchy@free.fr?subject=Magic The Gathering Manager&body=Votre message ici"

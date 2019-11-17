@@ -67,6 +67,7 @@ Partial Class MainForm
         Me.mnuFindHoles = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeries = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesSpoilers = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuSeriesMerge = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGenR14 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGenR16 = New System.Windows.Forms.ToolStripMenuItem()
@@ -353,7 +354,7 @@ Partial Class MainForm
         '
         'mnuSeries
         '
-        Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
+        Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesMerge, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
         Me.mnuSeries.Name = "mnuSeries"
         Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
         Me.mnuSeries.Text = "Editions"
@@ -364,6 +365,13 @@ Partial Class MainForm
         Me.mnuSeriesSpoilers.Size = New System.Drawing.Size(432, 22)
         Me.mnuSeriesSpoilers.Text = "Récupérer les spoilers"
         AddHandler Me.mnuSeriesSpoilers.Click, AddressOf Me.MnuSeriesSpoilersClick
+        '
+        'mnuSeriesMerge
+        '
+        Me.mnuSeriesMerge.Name = "mnuSeriesMerge"
+        Me.mnuSeriesMerge.Size = New System.Drawing.Size(432, 22)
+        Me.mnuSeriesMerge.Text = "Fusionner des spoilers"
+        AddHandler Me.mnuSeriesMerge.Click, AddressOf Me.mnuSeriesMergeClick
         '
         'mnuSeriesGen
         '
@@ -857,6 +865,7 @@ Partial Class MainForm
     Private mnuCardsExtractMultiverseId As System.Windows.Forms.ToolStripMenuItem
     Private mnuPricesHistoryRebuild As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeriesSpoilers As System.Windows.Forms.ToolStripMenuItem
+    Private mnuSeriesMerge As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeriesGenR16 As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeriesGenR14 As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsExtractDiff5 As System.Windows.Forms.ToolStripMenuItem
