@@ -776,9 +776,9 @@ Public Partial Class MainForm
         VgDBCommand.ExecuteNonQuery
     End Sub
     Private Sub FixMultiverse(Optional VpCode As String = "")
-    '---------------------------------------
-    'Mise à jour des identifiants Multiverse
-    '---------------------------------------
+    '-------------------------------------------------------------------------------------
+    'Mise à jour des identifiants Multiverse et des numéros de cartes au sein des éditions
+    '-------------------------------------------------------------------------------------
     Dim VpSerializer As JavaScriptSerializer
     Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
     Dim VpJSONInfo As clsFullInfos = Nothing
@@ -828,9 +828,9 @@ Public Partial Class MainForm
         End If
     End Sub
     Public Function FixMultiverse2 As Boolean
-    '-----------------------------------------------------------------------
-    'Télécharge et installe une mise à jour pour les identifiants Multiverse
-    '-----------------------------------------------------------------------
+    '---------------------------------------------------------------------------------------------------------------------
+    'Télécharge et installe une mise à jour pour les identifiants Multiverse et les numéros de cartes au sein des éditions
+    '---------------------------------------------------------------------------------------------------------------------
     Dim VpLog As StreamReader
     Dim VpStrs() As String
         Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL22), mdlConstGlob.CgMdMultiverse)

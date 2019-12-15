@@ -2511,6 +2511,59 @@ Public Partial Class MainForm
             Call Me.AddToLog("La modification interactive des traductions est terminée.", eLogType.Information, , True)
         End If
     End Sub
+    Private Sub CompareTitles
+    '---------------------------------------------------------------------------------------------------------------------------
+    'Comparaison différentielle d'un fichier de titres des cartes en français avec leur version courante dans la base de données
+    '---------------------------------------------------------------------------------------------------------------------------
+    Dim VpTxt As StreamReader
+    Dim VpStrs() As String
+    Dim VpTitles As New Dictionary(Of String, String)
+    Dim VpTitlesDB As New Dictionary(Of String, String)
+    Dim VpOut As StreamWriter
+        Me.dlgOpen2.FileName = ""
+        Me.dlgOpen2.ShowDialog
+        If Me.dlgOpen2.FileName <> "" Then
+            Me.dlgSave.FileName = ""
+            Me.dlgSave.ShowDialog
+            If Me.dlgSave.FileName <> "" Then
+                VpTxt = New StreamReader(Me.dlgOpen2.FileName, Encoding.Default)
+                'Parse le contenu du fichier
+                While Not VpTxt.EndOfStream
+                    VpStrs = VpTxt.ReadLine.Split(vbTab)
+                    If Not VpTitles.ContainsKey(VpStrs(0)) Then
+                        VpTitles.Add(VpStrs(0), VpStrs(1))
+                    End If
+                End While
+                VpTxt.Close
+                'Pareil pour la base de données
+                VmDBCommand.CommandText = "Select Distinct Title, TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title <> TitleFR Order By Title;"
+                VmDBReader = VmDBCommand.ExecuteReader
+                With VmDBReader
+                    While .Read
+                        If VpTitlesDB.ContainsKey(.GetString(0)) Then
+                            VpTitlesDB.Item(.GetString(0)) = "."    'force un nom bidon pour être sûr d'être ajouté à la liste des titres devant être mis à jour
+                        Else
+                            VpTitlesDB.Add(.GetString(0), .GetString(1))
+                        End If
+                    End While
+                    .Close
+                End With
+                'Comparaison différentielle
+                Call Me.AddToLog("La comparaison différentielle des titres des cartes en français a commencé...", eLogType.Information, True)
+                VpOut = New StreamWriter(Me.dlgSave.FileName, False, Encoding.UTF8)
+                For Each VpCard As String In VpTitlesDB.Keys
+                    If VpTitles.ContainsKey(VpCard) Then
+                        If VpTitlesDB.Item(VpCard) <> VpTitles.Item(VpCard) Then
+                            VpOut.WriteLine(VpCard + "#" + VpTitles.Item(VpCard))
+                        End If
+                    End If
+                Next VpCard
+                VpOut.Flush
+                VpOut.Close
+                Call Me.AddToLog("La comparaison différentielle des titres des cartes en français est terminée.", eLogType.Information, , True)
+            End If
+        End If
+    End Sub
     Private Sub CheckTexts
     '------------------------------------------------------------------
     'Vérifie la cohérence d'un fichier de textes des cartes en français
@@ -3174,6 +3227,11 @@ Public Partial Class MainForm
     Sub MnuListSubtypesClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             Call Me.ListSubtypes
+        End If
+    End Sub
+    Sub MnuCompareTitlesClick(sender As Object, e As EventArgs)
+        If Not VmDB Is Nothing Then
+            Call Me.CompareTitles
         End If
     End Sub
     Sub MnuBuildDoubleClick(sender As Object, e As EventArgs)

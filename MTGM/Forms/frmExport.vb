@@ -173,6 +173,7 @@ Public Partial Class frmExport
     Dim VpValue As Integer
     Dim VpLast As Boolean
     Dim VpOut As New Dictionary(Of String, Integer)
+        If Not VpStr.Contains(VpSection) Then Return Nothing
         VpJSON = VpStr.Substring(VpStr.IndexOf(VpSection) - 2)
         VpItems = VpJSON.Replace("{""" + VpSection + """:{", "").Replace(",""" + VpSection + """:{", "").Split(", """)
         For Each VpItem As String In VpItems
@@ -408,15 +409,15 @@ Public Partial Class frmExport
                 'On récupère les identifiants Multiverse
                 VpUgs.Count = Me.JSONBypass(VpStr, "Count")
                 VpUgs.Foils = Me.JSONBypass(VpStr, "Foils")
-                VpUgs.Promos = Me.JSONBypass(VpStr, "Promos")
-                VpUgs.Conditions = Me.JSONBypass(VpStr, "Conditions")
+                VpUgs.Promos = Me.JSONBypass(VpStr, "Promos")           'non utilisé pour l'instant
+                VpUgs.Conditions = Me.JSONBypass(VpStr, "Conditions")   'non utilisé pour l'instant
                 For Each VpCardId As String In VpUgs.Count.Keys
                     'Exact match
                     VgDBCommand.CommandText = "Select EncNbr From Card Where MultiverseId = " + VpCardId + ";"
                     VpO = VgDBCommand.ExecuteScalar
                     If Not VpO Is Nothing Then
                         VpQte = VpUgs.Count.Item(VpCardId)
-                        If VpUgs.Foils.ContainsKey(VpCardId) Then
+                        If VpUgs.Foils IsNot Nothing AndAlso VpUgs.Foils.ContainsKey(VpCardId) Then
                             VpQteFoil = VpUgs.Foils.Item(VpCardId)
                             VpConverted.WriteLine(VpO.ToString + "#" + VpQteFoil.ToString + "##True")
                             If VpQte - VpQteFoil > 0 Then
@@ -472,25 +473,34 @@ Public Partial Class frmExport
                                 End If
                             End If
                         'Cas 2 : Urza Gatherer
-                        ElseIf VpStrs.Length = 4 AndAlso IsNumeric(VpStrs(0)) Then
-                            VpQte = CInt(Val(VpStrs(0)))
-                            VpEdition = ""
-                            VpName = VpStrs(1)
-                            VpFoil = False
-                            VpReserve = Not ( VpStrs(3).ToLower = "main" )
+                        ElseIf VpStrs.Length = 18 AndAlso VpStrs(0).StartsWith("""") Then
+                            VpQte = CInt(Val(VpStrs(9)))
+                            VpQteFoil = CInt(Val(VpStrs(10)))
+                            VpEdition = VpStrs(14).Replace("""", "")
+                            VpName = VpStrs(0).Replace("""", "")
                             'Exact match
-                            VgDBCommand.CommandText = "Select Top 1 EncNbr From Card Where Title = '" + VpName.Replace("'", "''") + "';"
+                            VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpName.Replace("'", "''") + "' And (Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "' Or Series.SeriesNM_MtG = '" + VpEdition.Replace("'", "''") + "');"
                             VpO = VgDBCommand.ExecuteScalar
                             If Not VpO Is Nothing Then
-                                VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+                                If VpQteFoil > 0 Then
+                                    VpConverted.WriteLine(VpO.ToString + "#" + (VpQte - VpQteFoil).ToString + "##False")
+                                    VpConverted.WriteLine(VpO.ToString + "#" + VpQteFoil.ToString + "##True")
+                                Else
+                                    VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+                                End If
                             Else
                                 VpNeedLog = True
                                 'Partial match
-                                VgDBCommand.CommandText = "Select Top 1 EncNbr From Card Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + mdlToolbox.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%');"
+                                VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Card.Title + '%' Or Card.Title Like '%" + mdlToolbox.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And (InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM) > 0 Or InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM_MtG) > 0);"
                                 VpO = VgDBCommand.ExecuteScalar
                                 If Not VpO Is Nothing Then
                                     VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
-                                    VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+                                    If VpQteFoil > 0 Then
+                                        VpConverted.WriteLine(VpO.ToString + "#" + (VpQte - VpQteFoil).ToString + "##False")
+                                        VpConverted.WriteLine(VpO.ToString + "#" + VpQteFoil.ToString + "##True")
+                                    Else
+                                        VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##False")
+                                    End If
                                 Else
                                     VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
                                 End If
