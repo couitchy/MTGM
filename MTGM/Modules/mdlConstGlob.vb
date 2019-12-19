@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 37154
+    Public Const CgCodeLines As Integer             = 37173
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "18/10/2016"
     Public Const CgLastUpdateSimu As String         = "19/10/2016"
@@ -100,7 +100,7 @@ Public Module mdlConstGlob
     Public Const CgURL19 As String                  = "/Updates/Rulings.xml"
     Public Const CgURL20 As String                  = "/Updates/MD_SubTypes r19.log"
     Public Const CgURL21 As String                  = "/Updates/MD_SubTypesVF r19.log"
-    Public Const CgURL22 As String                  = "/Updates/MD_Multiverse r21.log"
+    Public Const CgURL22 As String                  = "/Updates/MD_Multiverse r22.log"
     Public Const CgURL23 As String                  = "https://mtgjson.com/json/AllSets.json.zip"
     Public Const CgURL24 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/products/card-name/1/1/true"
     Public Const CgURL25 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
@@ -277,26 +277,27 @@ Public Module mdlConstGlob
     End Enum
     Public Enum eDBVersion
         Unknown = 0 'version inconnue (base corrompue)
-        BDD_v1      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-        BDD_v2      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-        BDD_v3      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-        BDD_v4      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-        BDD_v5      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-        BDD_v6      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-        BDD_v7      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-        BDD_v8      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-        BDD_v9      'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-        BDD_v10     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-        BDD_v11     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
-        BDD_v12     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
-        BDD_v13     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
-        BDD_v14     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
-        BDD_v15     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
-        BDD_v16     'manque tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi
-        BDD_v17     'manque tournois MTGO, MultiverseId, dossiers decks
-        BDD_v18     'manque tournois MTGO, MultiverseId
-        BDD_v19     'manque tournois MTGO
-        BDD_v20     'à jour
+        BDD_v1      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+        BDD_v2      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+        BDD_v3      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+        BDD_v4      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+        BDD_v5      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+        BDD_v6      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+        BDD_v7      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+        BDD_v8      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+        BDD_v9      'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+        BDD_v10     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+        BDD_v11     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
+        BDD_v12     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
+        BDD_v13     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
+        BDD_v14     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
+        BDD_v15     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
+        BDD_v16     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi
+        BDD_v17     'manque UrzaId, tournois MTGO, MultiverseId, dossiers decks
+        BDD_v18     'manque UrzaId, tournois MTGO, MultiverseId
+        BDD_v19     'manque UrzaId, tournois MTGO
+        BDD_v20     'manque UrzaId
+        BDD_v21     'à jour
     End Enum
     Public Enum eDBProvider
         Jet = 0

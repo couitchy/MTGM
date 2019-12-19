@@ -77,7 +77,7 @@ Public Module mdlToolbox
                 VpDBVersion = eDBVersion.BDD_v8
             Else
                 VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Card", Nothing})
-                If VpSchemaTable.Rows.Count <> 22 And CInt(VpSchemaTable.Rows(11)!DATA_TYPE) <> 4 Then
+                If VpSchemaTable.Rows.Count <> 22 And VpSchemaTable.Rows.Count <> 23 And CInt(VpSchemaTable.Rows(11)!DATA_TYPE) <> 4 Then
                     'Si on est ici, BDD version 9
                     VpDBVersion = eDBVersion.BDD_v9
                 Else
@@ -104,7 +104,7 @@ Public Module mdlToolbox
                                     VpDBVersion = eDBVersion.BDD_v14
                                 Else
                                     VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Series", Nothing})
-                                    If VpSchemaTable.Rows.Count <> 33 Then
+                                    If VpSchemaTable.Rows.Count <> 33 And VpSchemaTable.Rows.Count <> 34 Then
                                         'Si on est ici, BDD version 15
                                         VpDBVersion = eDBVersion.BDD_v15
                                     Else
@@ -119,7 +119,7 @@ Public Module mdlToolbox
                                                 VpDBVersion = eDBVersion.BDD_v17
                                             Else
                                                 VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Card", Nothing})
-                                                If VpSchemaTable.Rows.Count <> 22 Then
+                                                If VpSchemaTable.Rows.Count <> 22 And VpSchemaTable.Rows.Count <> 23 Then
                                                     'Si on est ici, BDD version 18
                                                     VpDBVersion = eDBVersion.BDD_v18
                                                 Else
@@ -128,8 +128,14 @@ Public Module mdlToolbox
                                                         'Si on est ici, BDD version 19
                                                         VpDBVersion = eDBVersion.BDD_v19
                                                     Else
-                                                        'Si on est ici, BDD version 20
-                                                        VpDBVersion = eDBVersion.BDD_v20
+                                                        VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Card", Nothing})
+                                                        If VpSchemaTable.Rows.Count <> 23 Then
+                                                            'Si on est ici, BDD version 20
+                                                            VpDBVersion = eDBVersion.BDD_v20
+                                                        Else
+                                                            'Si on est ici, BDD version 21
+                                                            VpDBVersion = eDBVersion.BDD_v21
+                                                        End If
                                                     End If
                                                 End If
                                             End If
@@ -148,10 +154,10 @@ Public Module mdlToolbox
         'Actions à effectuer en conséquence
         If VpDBVersion = eDBVersion.Unknown Then        'Version inconnue
             Return False
-        ElseIf VpDBVersion = eDBVersion.BDD_v20 Then    'Dernière version
+        ElseIf VpDBVersion = eDBVersion.BDD_v21 Then    'Dernière version
             Return True
         Else                                            'Versions intermédiaires
-            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v20)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v21)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
                 Try
                     'Passage version 1 à 2
                     If CInt(VpDBVersion) < 2 Then
@@ -319,6 +325,18 @@ Public Module mdlToolbox
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Update Autorisations Set MTGOoff = 1;"
                         VgDBCommand.ExecuteNonQuery
+                    End If
+                    'Passage version 20 à 21
+                    If CInt(VpDBVersion) < 21 Then
+                        VgDBCommand.CommandText = "Alter Table Card Add UrzaId Long;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Update Card Set UrzaId = 0;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Series Add SeriesNM_UG Text(50) With Compression;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Update Series Set SeriesNM_UG = SeriesNM;"
+                        VgDBCommand.ExecuteNonQuery
+                        Call ShowInformation("Vous devriez mettre à jour les en-têtes (Fichier / Ajouter des éditions / Mettre à jour les en-têtes) ainsi que les identifiants Multiverse pour assurer une compatibilité optimale avec Urza Gatherer...")
                     End If
                 Catch
                     Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")

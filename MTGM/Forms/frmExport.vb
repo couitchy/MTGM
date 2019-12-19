@@ -406,14 +406,14 @@ Public Partial Class frmExport
                 VpConverted = New StreamWriter(VpPath.ToLower.Replace(mdlConstGlob.CgFExtU, mdlConstGlob.CgFExtO))
                 VpStr = VpIn.ReadToEnd
                 VpUgs = New clsUrzaGathererInfos
-                'On récupère les identifiants Multiverse
+                'On récupère les identifiants Urza Gatherer
                 VpUgs.Count = Me.JSONBypass(VpStr, "Count")
                 VpUgs.Foils = Me.JSONBypass(VpStr, "Foils")
                 VpUgs.Promos = Me.JSONBypass(VpStr, "Promos")           'non utilisé pour l'instant
                 VpUgs.Conditions = Me.JSONBypass(VpStr, "Conditions")   'non utilisé pour l'instant
                 For Each VpCardId As String In VpUgs.Count.Keys
                     'Exact match
-                    VgDBCommand.CommandText = "Select EncNbr From Card Where MultiverseId = " + VpCardId + ";"
+                    VgDBCommand.CommandText = "Select EncNbr From Card Where UrzaId = " + VpCardId + ";"
                     VpO = VgDBCommand.ExecuteScalar
                     If Not VpO Is Nothing Then
                         VpQte = VpUgs.Count.Item(VpCardId)

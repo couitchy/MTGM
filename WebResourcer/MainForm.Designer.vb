@@ -837,7 +837,7 @@ Partial Class MainForm
         Me.mnuCardsExtractMultiverseId.Image = CType(resources.GetObject("mnuCardsExtractMultiverseId.Image"),System.Drawing.Image)
         Me.mnuCardsExtractMultiverseId.Name = "mnuCardsExtractMultiverseId"
         Me.mnuCardsExtractMultiverseId.Size = New System.Drawing.Size(278, 22)
-        Me.mnuCardsExtractMultiverseId.Text = "Extraire les identifiants Multiverse"
+        Me.mnuCardsExtractMultiverseId.Text = "Extraire les identifiants Multiverse et autres"
         AddHandler Me.mnuCardsExtractMultiverseId.Click, AddressOf Me.MnuCardsExtractMultiverseIdClick
         '
         'MainForm

@@ -31,6 +31,7 @@ Imports System.Web.Script.Serialization
 Public Partial Class MainForm
     Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
     Private Const CmStrConn As String       = "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
+    'Private Const CmStrConn As String       = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="
     Private Const CmURL0 As String          = "http://magic-ville.fr/fr/"
     Private Const CmURL1 As String          = "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
     Private Const CmURL2 As String          = "http://www.magiccorporation.com/gathering-cartes-view"
@@ -901,22 +902,22 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub ExtractCardsMultiverseId
-    '-----------------------------------
-    'Listing des identifiants Multiverse
-    '-----------------------------------
+    '-----------------------------------------------------------------------------------------------------------------
+    'Listing des identifiants Multiverse, des numéros de cartes au sein des éditions et des identifiants Urza Gatherer
+    '-----------------------------------------------------------------------------------------------------------------
     Dim VpOut As StreamWriter
         Me.dlgSave.FileName = ""
         Me.dlgSave.ShowDialog
         If Me.dlgSave.FileName <> "" Then
             VpOut = New StreamWriter(Me.dlgSave.FileName)
-            Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes a commencé...", eLogType.Information, True)
+            Call Me.AddToLog("L'extraction des identifiants des cartes a commencé...", eLogType.Information, True)
             Me.prgAvance.Style = ProgressBarStyle.Marquee
-            VmDBCommand.CommandText = "Select Title, Series, MultiverseId, CardNbr From Card Order By Title;"
+            VmDBCommand.CommandText = "Select Title, Series, MultiverseId, CardNbr, UrzaId From Card Order By Title;"
             VmDBReader = VmDBCommand.ExecuteReader
             With VmDBReader
                 While .Read
                     Application.DoEvents
-                    VpOut.WriteLine(.GetString(0) + "#" + .GetString(1) + "#" + CLng(.GetValue(2)).ToString + "#" + CLng(.GetValue(3)).ToString)
+                    VpOut.WriteLine(.GetString(0) + "#" + .GetString(1) + "#" + CLng(.GetValue(2)).ToString + "#" + CLng(.GetValue(3)).ToString + "#" + CLng(.GetValue(4)).ToString)
                     Me.txtCur.Text = .GetString(0)
                     If Me.btCancel.Tag Then Exit While
                 End While
@@ -925,9 +926,9 @@ Public Partial Class MainForm
             VpOut.Flush
             VpOut.Close
             If Me.btCancel.Tag Then
-                Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes a été annulée.", eLogType.Warning, , True)
+                Call Me.AddToLog("L'extraction des identifiants des cartes a été annulée.", eLogType.Warning, , True)
             Else
-                Call Me.AddToLog("L'extraction des identifiants Multiverse des cartes est terminée.", eLogType.Information, , True)
+                Call Me.AddToLog("L'extraction des identifiants des cartes est terminée.", eLogType.Information, , True)
             End If
         End If
     End Sub

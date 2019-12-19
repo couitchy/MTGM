@@ -623,6 +623,7 @@ Public Partial Class MainForm
             While Not VpLog.EndOfStream
                 VpStrs = VpLog.ReadLine.Split("#")
                 VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "';"
+                'VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.TitleFR <> Card.Title;"
                 VgDBCommand.ExecuteNonQuery
             End While
             VpLog.Close
@@ -828,9 +829,9 @@ Public Partial Class MainForm
         End If
     End Sub
     Public Function FixMultiverse2 As Boolean
-    '---------------------------------------------------------------------------------------------------------------------
-    'Télécharge et installe une mise à jour pour les identifiants Multiverse et les numéros de cartes au sein des éditions
-    '---------------------------------------------------------------------------------------------------------------------
+    '-----------------------------------------------------------------------------------------------------------------------------------------------------
+    'Télécharge et installe une mise à jour pour les identifiants Multiverse, les numéros de cartes au sein des éditions et les identifiants Urza Gatherer
+    '-----------------------------------------------------------------------------------------------------------------------------------------------------
     Dim VpLog As StreamReader
     Dim VpStrs() As String
         Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL22), mdlConstGlob.CgMdMultiverse)
@@ -838,9 +839,7 @@ Public Partial Class MainForm
             VpLog = New StreamReader(Application.StartupPath + mdlConstGlob.CgMdMultiverse, Encoding.UTF8)
             While Not VpLog.EndOfStream
                 VpStrs = VpLog.ReadLine.Split("#")
-                VgDBCommand.CommandText = "Update Card Set MultiverseId = " + VpStrs(2) + " Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
-                VgDBCommand.ExecuteNonQuery
-                VgDBCommand.CommandText = "Update Card Set CardNbr = " + VpStrs(3) + " Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
+                VgDBCommand.CommandText = "Update Card Set MultiverseId = " + VpStrs(2) + ", CardNbr = " + VpStrs(3) + ", UrzaId = " + VpStrs(4) + " Where Title = '" + VpStrs(0).Replace("'", "''") + "' And Series = '" + VpStrs(1) + "';"
                 VgDBCommand.ExecuteNonQuery
             End While
             VpLog.Close

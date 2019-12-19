@@ -185,7 +185,7 @@ Public Partial Class frmUpdateContent
                     Return False
                 End If
             Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
-                'Appel silencieux pour mise à jour des identifiants Multiverse des cartes
+                'Appel silencieux pour mise à jour des identifiants des cartes
                 If MainForm.VgMe.FixMultiverse2 Then
                     VgOptions.VgSettings.LastUpdateMultiverseIdPatch = VpElement.Serveur
                 Else

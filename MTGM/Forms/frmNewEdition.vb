@@ -258,7 +258,7 @@ Public Partial Class frmNewEdition
                 VgDBCommand.ExecuteNonQuery
                 'Insertion (ou mise à jour) dans la table Spell (Title, LastPrint, Color, Null, Null, myCost, Cost, Nullx32)
                 If VpPrevious Then
-                    VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "' Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
+                    VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "', Color = '" + VpMyCard.MyColor + "', myCost = " + VpMyCard.GetMyCost + ", Cost = " + VpMyCard.Cost + " Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
                 Else
                     VgDBCommand.CommandText = "Insert Into Spell (Title, LastPrint, Color, Goal, Rating, myCost, Cost, CostA, CostB, CostU, CostG, CostR, CostW, CostX, ConvCost, CostLife, CostUnsum, CostSac, CostDisc, Kicker, Buyback, Flashback, Cycling, Madness, Upkeep, UpkeepMana, UpkeepLife, UpkeepSac, UpkeepDisc, Cumulative, Echo, Phasing, Fading, Cantrip, Threshold, Legal1, LegalE, LegalB, Rulings) Values ('" + VpMyCard.Title.Replace("'", "''") + "', '" + VpSerieCD + "', '" + VpMyCard.MyColor + "', Null, Null, " + VpMyCard.GetMyCost + ", " + VpMyCard.Cost + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
                 End If
