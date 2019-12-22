@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 37173
+    Public Const CgCodeLines As Integer             = 37238
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "18/10/2016"
     Public Const CgLastUpdateSimu As String         = "19/10/2016"
@@ -197,6 +197,7 @@ Public Module mdlConstGlob
         MTGArena
         Apprentice
         MWS
+        UrzaGatherer
         Web
     End Enum
     Public Enum eServer

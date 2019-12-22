@@ -74,6 +74,63 @@ Public Partial Class frmExport
         VpOut.Flush
         VpOut.Close
     End Sub
+    Private Sub GoExportJSON(VpPath As String, VpSource As String)
+    Dim VpIsCollection As Boolean = ( VpSource = mdlConstGlob.CgCollection )
+    Dim VpUrzaId As String
+    Dim VpQte As Integer
+    Dim VpQteFoil As Integer
+    Dim VpUgs As New clsUrzaGathererInfos
+    Dim VpJSON As String
+    Dim VpOut As StreamWriter
+    Dim VpSerializer As New JavaScriptSerializer
+        'Initialisation des dictionnaires qui seront sérialisés
+        VpUgs.Count = New Dictionary(Of String, Integer)
+        VpUgs.Foils = New Dictionary(Of String, Integer)
+        VpUgs.Promos = New Dictionary(Of String, Integer)       'non utilisé pour l'instant
+        VpUgs.Conditions = New Dictionary(Of String, Integer)   'non utilisé pour l'instant
+        'Requête
+        VgDBCommand.CommandText = "Select UrzaId, Items, Foil From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join " + If(VpIsCollection, "MyCollection On MyCollection.EncNbr = Card.EncNbr;", "MyGames On MyGames.EncNbr = Card.EncNbr Where GameID = " + mdlToolbox.GetDeckIdFromName(VpSource) + ";")
+        VgDBReader = VgDBCommand.ExecuteReader
+        With VgDBReader
+            While .Read
+                'Récupère l'identifiant Urza Gatherer s'il existe
+                If Not .IsDBNull(0) Then
+                    VpUrzaId = CLng(.GetValue(0)).ToString
+                Else
+                    VpUrzaId = 0
+                End If
+                'Dans ce format, la quantité de cartes est exprimée sous la forme "[quantité totale] dont [quantité foil]"
+                VpQte = CInt(.GetValue(1)) + CInt(.GetValue(2))
+                VpQteFoil = CInt(.GetValue(2))
+                'Ne poursuite que si l'identifiant est valide
+                If VpUrzaId <> 0 Then
+                    'Vérifie qu'on a pas déjà fait le traitement sur des cartes identiques précédentes (auquel cas on somme les quantités)
+                    If VpUgs.Count.ContainsKey(VpUrzaId) Then
+                        VpQte += VpUgs.Count.Item(VpUrzaId)
+                        VpUgs.Count.Remove(VpUrzaId)
+                    End If
+                    If VpUgs.Foils.ContainsKey(VpUrzaId) Then
+                        VpQteFoil += VpUgs.Foils.Item(VpUrzaId)
+                        VpUgs.Foils.Remove(VpUrzaId)
+                    End If
+                    'Insertion effective
+                    If VpQte > 0 Then
+                        VpUgs.Count.Add(VpUrzaId, VpQte)
+                    End If
+                    If VpQteFoil > 0 Then
+                        VpUgs.Foils.Add(VpUrzaId, VpQteFoil)
+                    End If
+                End If
+            End While
+            .Close
+        End With
+        'Sérialisation effective
+        VpJSON = VpSerializer.Serialize(VpUgs)
+        VpOut = New StreamWriter(VpPath)
+        VpOut.Write(VpJSON)
+        VpOut.Flush
+        VpOut.Close
+    End Sub
     Private Sub GoExportWeb(VpPath As String, VpSources As List(Of String))
     Dim VpMyHTML As Stream = Assembly.GetExecutingAssembly.GetManifestResourceStream("MyHTML")
     Dim VpZipStream As ZipInputStream
@@ -447,13 +504,14 @@ Public Partial Class frmExport
                 VpConverted = New StreamWriter(VpPath.ToLower.Replace(mdlConstGlob.CgFExtL, mdlConstGlob.CgFExtO))
                 While Not VpIn.EndOfStream
                     VpStr = VpIn.ReadLine
+                    VpStr = VpStr.Replace(", ", "¤")    'attention, si des noms contiennent une virgule, on ne veut pas splitter dessus
                     If VpStr.Contains(",") Then
                         VpStrs = VpStr.Split(",")
                         'Cas 1 : Magic Online
                         If VpStrs.Length = 7 AndAlso IsNumeric(VpStrs(1)) Then
                             VpQte = CInt(Val(VpStrs(1)))
-                            VpEdition = VpStrs(4)
-                            VpName = VpStrs(0)
+                            VpEdition = VpStrs(4).Replace("¤", ", ")
+                            VpName = VpStrs(0).Replace("¤", ", ")
                             VpFoil = ( VpStrs(6).ToLower = "yes" )
                             'Exact match
                             VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpName.Replace("'", "''") + "' And SeriesCD_MO = '" + VpEdition + "';"
@@ -476,10 +534,10 @@ Public Partial Class frmExport
                         ElseIf VpStrs.Length = 18 AndAlso VpStrs(0).StartsWith("""") Then
                             VpQte = CInt(Val(VpStrs(9)))
                             VpQteFoil = CInt(Val(VpStrs(10)))
-                            VpEdition = VpStrs(14).Replace("""", "")
-                            VpName = VpStrs(0).Replace("""", "")
+                            VpEdition = VpStrs(14).Replace("""", "").Replace("¤", ", ")
+                            VpName = VpStrs(0).Replace("""", "").Replace("¤", ", ")
                             'Exact match
-                            VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpName.Replace("'", "''") + "' And (Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "' Or Series.SeriesNM_MtG = '" + VpEdition.Replace("'", "''") + "');"
+                            VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpName.Replace("'", "''") + "' And Series.SeriesNM_UG = '" + VpEdition.Replace("'", "''") + "';"
                             VpO = VgDBCommand.ExecuteScalar
                             If Not VpO Is Nothing Then
                                 If VpQteFoil > 0 Then
@@ -491,7 +549,7 @@ Public Partial Class frmExport
                             Else
                                 VpNeedLog = True
                                 'Partial match
-                                VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Card.Title + '%' Or Card.Title Like '%" + mdlToolbox.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And (InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM) > 0 Or InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM_MtG) > 0);"
+                                VgDBCommand.CommandText = "Select EncNbr From Card Inner Join Series On Card.Series = Series.SeriesCD Where ('" + VpName.Replace("'", "''") + "' Like '%' + Card.Title + '%' Or Card.Title Like '%" + mdlToolbox.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And InStr('" + VpEdition.Replace("'", "''") + "', Series.SeriesNM_UG) > 0;"
                                 VpO = VgDBCommand.ExecuteScalar
                                 If Not VpO Is Nothing Then
                                     VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
@@ -619,6 +677,8 @@ Public Partial Class frmExport
                 Return mdlConstGlob.CgFExtC
             Case mdlConstGlob.eFormat.MWS
                 Return mdlConstGlob.CgFExtW
+            Case mdlConstGlob.eFormat.UrzaGatherer
+                Return mdlConstGlob.CgFExtU
             Case mdlConstGlob.eFormat.Web
                 Return mdlConstGlob.CgFExtH
             Case Else
@@ -650,7 +710,11 @@ Public Partial Class frmExport
                 Else
                     For Each VpSource As String In Me.lstchkSources.CheckedItems
                         VpPath = Me.dlgBrowser.SelectedPath + "\" + mdlToolbox.AvoidForbiddenChr(VpSource, mdlConstGlob.eForbiddenCharset.Full) + Me.GetExtension
-                        Call Me.GoExport(VpPath, VpSource)
+                        If VmFormat = mdlConstGlob.eFormat.UrzaGatherer Then
+                            Call Me.GoExportJSON(VpPath, VpSource)
+                        Else
+                            Call Me.GoExport(VpPath, VpSource)
+                        End If
                     Next VpSource
                     If VmFormat = mdlConstGlob.eFormat.MTGArena AndAlso Me.lstchkSources.CheckedItems.Count = 1 AndAlso File.Exists(VpPath) Then
                         Clipboard.SetDataObject((New StreamReader(VpPath)).ReadToEnd)

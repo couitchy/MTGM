@@ -106,7 +106,7 @@ Partial Class frmExport
         'cboFormat
         '
         Me.cboFormat.FormattingEnabled = true
-        Me.cboFormat.Items.AddRange(New Object() {"MTGM v2 (*.dk2)", "MTGM (*.dck)", "MTG Arena (*.txt)", "Apprentice (*.dec)", "Magic Workstation (*.mwDeck)", "Site Web (*.html)"})
+        Me.cboFormat.Items.AddRange(New Object() {"MTGM v2 (*.dk2)", "MTGM (*.dck)", "MTG Arena (*.txt)", "Apprentice (*.dec)", "Magic Workstation (*.mwDeck)", "Urza Gatherer (*.ugs)", "Site Web (*.html)"})
         Me.cboFormat.Location = New System.Drawing.Point(109, 133)
         Me.cboFormat.Name = "cboFormat"
         Me.cboFormat.Size = New System.Drawing.Size(212, 21)
