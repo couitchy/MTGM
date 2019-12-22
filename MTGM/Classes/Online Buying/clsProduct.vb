@@ -69,4 +69,9 @@
             Return VmPrices(VmPrices.Count \ 2)
         End Get
     End Property
+    Public ReadOnly Property OffersCount As Integer
+        Get
+            Return VmPrices.Count
+        End Get
+    End Property
 End Class

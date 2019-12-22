@@ -833,19 +833,19 @@ Public Module mdlToolbox
     End Function
     Public Function MyQuality(VpQuality As String) As eQuality
         Select Case VpQuality
-            Case "MT"
+            Case "MT", "Mint"
                 Return eQuality.Mint
-            Case "NM"
+            Case "NM", "Near Mint"
                 Return eQuality.NearMint
-            Case "EX"
+            Case "EX", "Excellent"
                 Return eQuality.Excellent
-            Case "GD"
+            Case "GD", "Good"
                 Return eQuality.Good
-            Case "LP"
+            Case "LP", "Lightly Played", "Light Played"
                 Return eQuality.LightPlayed
-            Case "PL"
+            Case "PL", "Played"
                 Return eQuality.Played
-            Case "PO"
+            Case "PO", "Poor"
                 Return eQuality.Poor
             Case Else
                 Return eQuality.Good
@@ -1624,8 +1624,12 @@ Public Module mdlToolbox
         ElseIf VpMultiverseId <> 0 AndAlso VgOptions.VgSettings.PicturesSource = ePicturesSource.Online Then
             RemoveHandler VppicScanCard.LoadCompleted, AddressOf LoadScanCardCompleted
             AddHandler VppicScanCard.LoadCompleted, AddressOf LoadScanCardCompleted
-            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
-            VppicScanCard.LoadAsync(mdlConstGlob.CgURL0.Replace("#", VpMultiverseId.ToString))
+            Try
+                ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
+                VppicScanCard.LoadAsync(mdlConstGlob.CgURL0.Replace("#", VpMultiverseId.ToString))
+            Catch
+                Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
+            End Try
         ElseIf File.Exists(VgOptions.VgSettings.PicturesFile) Then
             If (New FileInfo(VgOptions.VgSettings.PicturesFile)).Length < CgImgMinLength Then
                 If Not VpSave Then

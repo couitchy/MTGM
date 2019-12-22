@@ -113,7 +113,9 @@ Public Partial Class frmBuyCards
                     VpProduct.AddOffer(VpRemoteCard)
                 End If
             Next VpRemoteCard
-            VmProducts.Add(VpProduct)
+            If VpProduct.OffersCount > 0 Then
+                VmProducts.Add(VpProduct)
+            End If
         Next VpLocalCard
     End Sub
     Private Sub MVFetch(VpCard As String, VpQualities() As mdlConstGlob.eQuality, VpBannedSellers() As String)
@@ -160,36 +162,38 @@ Public Partial Class frmBuyCards
         Next VpElement
         'Parsing des propriétés
         For Each VpElement In VmBrowser.Document.All
-            If VpElement.Name.Contains("[") Then
-                VpCurId = Val(VpElement.Name.Substring(VpElement.Name.IndexOf("[") + 1))
+            If VpElement.Name.Contains("vente_id[") Then
+                VpCurId = Val(VpElement.Name.Substring(VpElement.Name.IndexOf("vente_id[") + 9))
                 'Si l'identifiant a changé, c'est qu'on est sur une nouvelle entrée
                 If VpCurId <> VpLastId Then
                     VpRemoteCard = New clsRemoteCard(VpCard)
                     VmToSell.Add(VpRemoteCard)
                     VpLastId = VpCurId
                 End If
-                'Remplissage des propriétés au fur et à mesure
-                With VpRemoteCard
-                    If VpElement.Name.Contains("qte") Then
-                        .Quantity = CInt(VpElement.InnerText.Substring(VpElement.InnerText.Length - 1))
-                    ElseIf VpElement.Name.Contains("ref") Then
-                        .Edition = VpElement.GetAttribute("value")
-                    ElseIf VpElement.Name.Contains("lang") Then
-                        .Language = mdlToolbox.MyLanguage(VpElement.GetAttribute("value"))
-                    ElseIf VpElement.Name.Contains("etat") Then
-                        .Condition = VpElement.GetAttribute("value")
-                    ElseIf VpElement.Name.Contains("seller") Then
-                        .Seller = New clsSeller(VpElement.GetAttribute("value"))
-                    End If
-                End With
+            'Remplissage des propriétés au fur et à mesure
+            ElseIf VpElement.GetAttribute("href").Contains("?user=") Then
+                VpRemoteCard.Seller = New clsSeller(VpElement.InnerText)
             ElseIf VpElement.GetAttribute("color") = "#3333ff" Then
                 VpRemoteCard.Price = mdlToolbox.MyVal(VpElement.InnerText)
+            ElseIf VpElement.GetAttribute("className") = "O12" Then
+                VpRemoteCard.Language = VpElement.InnerText.ToLower
+                If VpRemoteCard.Language = "vf" Then
+                    VpRemoteCard.Language = "french"
+                ElseIf VpRemoteCard.Language = "vo" Then
+                    VpRemoteCard.Language = "english"
+                End If
+            ElseIf VpElement.GetAttribute("className") = "S11" AndAlso VpElement.GetAttribute("align") = "center" Then
+                VpRemoteCard.Condition = mdlToolbox.MyQuality(VpElement.InnerText)
+            ElseIf VpElement.GetAttribute("className") = "S12" AndAlso VpElement.GetAttribute("align") = "center" AndAlso VpElement.FirstChild Is Nothing Then
+                VpRemoteCard.Quantity = CInt(VpElement.InnerText)
+            ElseIf VpElement.GetAttribute("className") = "S12" AndAlso VpElement.FirstChild IsNot Nothing AndAlso VpElement.FirstChild.TagName = "IMG" Then
+                VpRemoteCard.Edition = VpElement.InnerText.Trim
             End If
         Next VpElement
         'Supprime de la collection tout ce qui ne respecte pas les critères actifs
         For Each VpRemoteCard In VmToSell
             With VpRemoteCard
-                If Not ( Array.IndexOf(mdlConstGlob.CgBuyLanguage, .Language.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, .Condition) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .Seller.Name.ToLower) < 0) ) Then
+                If Not (.Edition <> "" AndAlso Array.IndexOf(mdlConstGlob.CgBuyLanguage, .Language.ToLower) >= 0 AndAlso Array.IndexOf(VpQualities, .Condition) >= 0 AndAlso (VpBannedSellers Is Nothing OrElse VpBannedSellers.Length = 0 OrElse Array.IndexOf(VpBannedSellers, .Seller.Name.ToLower) < 0) ) Then
                     VpToRemove.Add(VpRemoteCard)
                 End If
             End With
