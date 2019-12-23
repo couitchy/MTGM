@@ -2,15 +2,15 @@ Imports System.Data.OleDb
 Public Module mdlConstGlob
     Public Const CgCodeLines As Integer             = 37251
     Public Const CGNClasses As Integer              = 93
-    Public Const CgLastUpdateAut As String          = "18/10/2016"
-    Public Const CgLastUpdateSimu As String         = "19/10/2016"
-    Public Const CgLastUpdateTxtVF As String        = "20/10/2016"
-    Public Const CgLastUpdateRulings As String      = "16/10/2016"
+    Public Const CgLastUpdateAut As String          = "26/10/2019"
+    Public Const CgLastUpdateSimu As String         = "26/10/2019"
+    Public Const CgLastUpdateTxtVF As String        = "17/10/2019"
+    Public Const CgLastUpdateRulings As String      = "14/10/2019"
     Public Const CgLastUpdatePictPatch As String    = "27/12/2014"
-    Public Const CgLastUpdateTradPatch As String    = "09/01/2017"
+    Public Const CgLastUpdateTradPatch As String    = "15/12/2019"
     Public Const CgLastUpdateSubsPatch As String    = "04/04/2015"
-    Public Const CgLastUpdateSubsVFPatch As String  = "03/04/2015"
-    Public Const CgLastUpdateMultiIdPatch As String = "19/10/2016"
+    Public Const CgLastUpdateSubsVFPatch As String  = "10/05/2018"
+    Public Const CgLastUpdateMultiIdPatch As String = "26/10/2019"
     Public Const CgProject As String                = "Magic_The_Gathering_Manager.MainForm"
     Public Const CgMe As String                     = "Moi"
     Public Const CgNCriterions As Integer           = 8
