@@ -8,4 +8,6 @@ Ce logiciel est protégé par la loi relative au droit d'auteur et par les convent
 
 Vous êtes en revanche libre d'utiliser ce logiciel gratuitement, de le recommander et/ou de le diffuser à vos proches si vous en êtes satisfait. Pour une diffusion hors d'un cadre restreint (site Web par exemple), il conviendra de contacter l'auteur.
 
+Tous les textes et les visuels des cartes, les logos des éditions et des symboles Magic: the Gathering © sont des marques déposées et la propriété de Wizards of the Coast (WoC), Hasbro, LLC. Magic the Gathering Manager n'est ni approuvé, ni supporté, ni affilié d'aucune manière que ce soit à WoC.
+
 Développement réalisé par Couitchy et compilé sous Microsoft .NET Framework 3.5
