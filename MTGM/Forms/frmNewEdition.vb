@@ -196,6 +196,7 @@ Public Partial Class frmNewEdition
     Dim VpSerieCD As String
     Dim VpEncNbr As Long
     Dim VpPrevious As Boolean
+    Dim VpNewer As Boolean
     Dim VpType As String
     Dim VpFound As Boolean
     Dim VpIndex As Integer
@@ -214,6 +215,11 @@ Public Partial Class frmNewEdition
         'Vérifie si la carte a déjà été éditée dans une édition précédente
         VgDBCommand.CommandText = "Select LastPrint From Spell Where Title = '" + VpCarac(0).Replace("'", "''") + "';"
         VpPrevious = Not ( VgDBCommand.ExecuteScalar Is Nothing )
+        'Si c'est le cas, récupère la date de sortie de l'édition en question
+        If VpPrevious Then
+            VgDBCommand.CommandText = "Select Release From Series Where SeriesCD = '" + VgDBCommand.ExecuteScalar.ToString + "';"
+            VpNewer = ( VmEditionHeader.Release > CDate(VgDBCommand.ExecuteScalar) )
+        End If
         'Parcours de la checklist
         Do While Not VpFile.EndOfStream
             VpLine = VpFile.ReadLine.Trim
@@ -258,7 +264,11 @@ Public Partial Class frmNewEdition
                 VgDBCommand.ExecuteNonQuery
                 'Insertion (ou mise à jour) dans la table Spell (Title, LastPrint, Color, Null, Null, myCost, Cost, Nullx32)
                 If VpPrevious Then
-                    VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "', Color = '" + VpMyCard.MyColor + "', myCost = " + VpMyCard.GetMyCost + ", Cost = " + VpMyCard.Cost + " Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
+                    If VpNewer Then
+                        VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "', Color = '" + VpMyCard.MyColor + "', myCost = " + VpMyCard.GetMyCost + ", Cost = " + VpMyCard.Cost + " Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
+                    Else
+                        VgDBCommand.CommandText = "Update Spell Set LastPrint = '" + VpSerieCD + "' Where Title = '" + VpMyCard.Title.Replace("'", "''") + "';"
+                    End If
                 Else
                     VgDBCommand.CommandText = "Insert Into Spell (Title, LastPrint, Color, Goal, Rating, myCost, Cost, CostA, CostB, CostU, CostG, CostR, CostW, CostX, ConvCost, CostLife, CostUnsum, CostSac, CostDisc, Kicker, Buyback, Flashback, Cycling, Madness, Upkeep, UpkeepMana, UpkeepLife, UpkeepSac, UpkeepDisc, Cumulative, Echo, Phasing, Fading, Cantrip, Threshold, Legal1, LegalE, LegalB, Rulings) Values ('" + VpMyCard.Title.Replace("'", "''") + "', '" + VpSerieCD + "', '" + VpMyCard.MyColor + "', Null, Null, " + VpMyCard.GetMyCost + ", " + VpMyCard.Cost + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
                 End If
