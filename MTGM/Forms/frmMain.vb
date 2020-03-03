@@ -767,6 +767,26 @@ Public Partial Class MainForm
         VgDBCommand.CommandText = "Update Card Inner Join TextesFR On Card.Title = TextesFR.CardName Set Card.Type = 'E' Where InStr(TexteFR, 'enchantez ') > 0 And Card.Title <> 'Necromancy' And Card.Type = 'T';"
         VgDBCommand.ExecuteNonQuery
     End Sub
+    Private Sub FixCost
+    '-------------------------------------------------------------------
+    'Correction a posteriori des coûts convertis pour les doubles cartes
+    '-------------------------------------------------------------------
+    Dim VpCosts As New Dictionary(Of String, Integer)
+        'Cherche dans la base tous les coûts concernés, et recalcule la valeur correcte
+        VgDBCommand.CommandText = "Select Distinct Card.Title, Spell.Cost From Card Inner Join Spell On Card.Title = Spell.Title Where InStr(Card.Title, '//') > 0;"
+        VgDBReader = VgDBCommand.ExecuteReader
+        With VgDBReader
+            While .Read
+                VpCosts.Add(.GetString(0), mdlToolbox.MyCost(.GetString(1)))
+            End While
+            .Close
+        End With
+        'Mise à jour effective
+        For Each VpCard As String In VpCosts.Keys
+            VgDBCommand.CommandText = "Update Spell Set myCost = " + VpCosts.Item(VpCard).ToString + " Where Title = '" + VpCard.Replace("'", "''") + "';"
+            VgDBCommand.ExecuteNonQuery
+        Next VpCard
+    End Sub
     Private Sub FixRarete
     '--------------------------------
     'Suppression des degrés de rareté
@@ -3207,6 +3227,12 @@ Public Partial Class MainForm
     Sub MnuFixAssocClick(sender As Object, e As EventArgs)
         If mdlToolbox.DBOK Then
             Call Me.FixAssoc
+            Call mdlToolbox.ShowInformation("Terminé !")
+        End If
+    End Sub
+    Sub MnuFixCostClick(sender As Object, e As EventArgs)
+        If mdlToolbox.DBOK Then
+            Call Me.FixCost
             Call mdlToolbox.ShowInformation("Terminé !")
         End If
     End Sub

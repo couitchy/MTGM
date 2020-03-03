@@ -114,6 +114,7 @@ Partial Class MainForm
         Me.mnuFixGames = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixDivers = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixAssoc = New System.Windows.Forms.ToolStripMenuItem
+        Me.mnuFixCost = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixPic = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixFR2 = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuCollapseRarete = New System.Windows.Forms.ToolStripMenuItem
@@ -962,7 +963,7 @@ Partial Class MainForm
         '
         'mnuFixDivers
         '
-        Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixAssoc, Me.mnuFixPic, Me.mnuFixFR2, Me.mnuCollapseRarete})
+        Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixAssoc, Me.mnuFixCost, Me.mnuFixPic, Me.mnuFixFR2, Me.mnuCollapseRarete})
         Me.mnuFixDivers.Image = CType(resources.GetObject("mnuFixDivers.Image"),System.Drawing.Image)
         Me.mnuFixDivers.Name = "mnuFixDivers"
         Me.mnuFixDivers.Size = New System.Drawing.Size(277, 22)
@@ -974,6 +975,13 @@ Partial Class MainForm
         Me.mnuFixAssoc.Size = New System.Drawing.Size(233, 22)
         Me.mnuFixAssoc.Text = "Associations"
         AddHandler Me.mnuFixAssoc.Click, AddressOf Me.MnuFixAssocClick
+        '
+        'mnuFixCost
+        '
+        Me.mnuFixCost.Name = "mnuFixCost"
+        Me.mnuFixCost.Size = New System.Drawing.Size(233, 22)
+        Me.mnuFixCost.Text = "Coûts convertis"
+        AddHandler Me.mnuFixCost.Click, AddressOf Me.MnuFixCostClick
         '
         'mnuFixPic
         '
@@ -2056,6 +2064,7 @@ Partial Class MainForm
         Me.ResumeLayout(false)
         Me.PerformLayout
     End Sub
+    Private mnuFixCost As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseIdOne As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseIdAll As System.Windows.Forms.ToolStripMenuItem
     Private mnuClipTitle As System.Windows.Forms.ToolStripMenuItem

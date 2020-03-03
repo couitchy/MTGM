@@ -789,16 +789,23 @@ Public Module mdlToolbox
     '---------------------------------------------------------------------
     'Retourne le coût converti de mana de l'invocation passée en paramètre
     '---------------------------------------------------------------------
-    Dim VpColorless As Integer
+    Dim VpStrs() As String
         If VpStr = "0" Then
             Return 0
+        ElseIf VpStr.Contains(" // ") Then
+            VpStrs = VpStr.Split(New String() {" // "}, StringSplitOptions.None)
+            Return MyInnerCost(VpStrs(0)) + MyInnerCost(VpStrs(1))
         Else
-            VpColorless = Val(VpStr)
-            If VpColorless <> 0 Then
-                Return VpStr.Replace(VpColorless.ToString.Trim, "").Length + VpColorless - 4 * StrCount(VpStr, "(")
-            Else
-                Return VpStr.Length - 4 * StrCount(VpStr, "(")
-            End If
+            Return MyInnerCost(VpStr)
+        End If
+    End Function
+    Private Function MyInnerCost(VpStr As String) As Integer
+    Dim VpColorless As Integer
+        VpColorless = Val(VpStr)
+        If VpColorless <> 0 Then
+            Return VpStr.Replace(VpColorless.ToString.Trim, "").Length + VpColorless - 4 * StrCount(VpStr, "(")
+        Else
+            Return VpStr.Length - 4 * StrCount(VpStr, "(")
         End If
     End Function
     Public Function MyTxt(VpCard As String, VpVF As Boolean, VpDownFace As Boolean) As String
