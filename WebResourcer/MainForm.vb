@@ -1696,6 +1696,12 @@ Public Partial Class MainForm
                 Return "commander2019#" + VpStr
             Case "TE"
                 Return "throneofeldraine#" + VpStr
+            Case "BR"
+                Return "battleroyaleboxset#" + VpStr
+            Case "TB"
+                Return "therosbeyonddeath#" + VpStr
+            Case "UC"
+                Return "unsanctioned#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2026,6 +2032,12 @@ Public Partial Class MainForm
                 Return "C9"
             Case "throneofeldraine"
                 Return "TE"
+            Case "battleroyaleboxset"
+                Return "BR"
+            Case "therosbeyonddeath"
+                Return "TB"
+            Case "unsanctioned"
+                Return "UC"
             Case Else
                 Return ""
         End Select
