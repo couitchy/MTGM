@@ -912,7 +912,7 @@ Public Partial Class MainForm
             VpOut = New StreamWriter(Me.dlgSave.FileName)
             Call Me.AddToLog("L'extraction des identifiants des cartes a commencé...", eLogType.Information, True)
             Me.prgAvance.Style = ProgressBarStyle.Marquee
-            VmDBCommand.CommandText = "Select Title, Series, MultiverseId, CardNbr, UrzaId From Card Order By Title;"
+            VmDBCommand.CommandText = "Select Title, Series, MultiverseId, CardNbr, IIf(UrzaId Is Null, 0, UrzaId) From Card Order By Title;"
             VmDBReader = VmDBCommand.ExecuteReader
             With VmDBReader
                 While .Read

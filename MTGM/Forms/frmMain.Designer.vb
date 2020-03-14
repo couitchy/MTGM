@@ -106,6 +106,7 @@ Partial Class MainForm
         Me.mnuFixMultiverseId = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixMultiverseIdAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFixMultiverseIdOne = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuFixUrzaId = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixCreatures = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixSerie = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixSerie2 = New System.Windows.Forms.ToolStripMenuItem
@@ -861,7 +862,7 @@ Partial Class MainForm
         '
         'mnuFixTable
         '
-        Me.mnuFixTable.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixTxtVF, Me.mnuFixSubTypes, Me.mnuFixPrices, Me.mnuFixOnlyVO, Me.mnuFixFR, Me.mnuFixMultiverseId, Me.mnuFixCreatures, Me.mnuFixSerie, Me.mnuFixSerie2, Me.mnuSeparator10, Me.mnuFixCollec, Me.mnuFixGames})
+        Me.mnuFixTable.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixTxtVF, Me.mnuFixSubTypes, Me.mnuFixPrices, Me.mnuFixOnlyVO, Me.mnuFixFR, Me.mnuFixMultiverseId, Me.mnuFixUrzaId, Me.mnuFixCreatures, Me.mnuFixSerie, Me.mnuFixSerie2, Me.mnuSeparator10, Me.mnuFixCollec, Me.mnuFixGames})
         Me.mnuFixTable.Image = CType(resources.GetObject("mnuFixTable.Image"),System.Drawing.Image)
         Me.mnuFixTable.Name = "mnuFixTable"
         Me.mnuFixTable.Size = New System.Drawing.Size(277, 22)
@@ -922,6 +923,13 @@ Partial Class MainForm
         Me.mnuFixMultiverseIdOne.Size = New System.Drawing.Size(152, 22)
         Me.mnuFixMultiverseIdOne.Text = "Edition"
         AddHandler Me.mnuFixMultiverseIdOne.Click, AddressOf Me.MnuFixMultiverseIdOneClick
+        '
+        'mnuFixUrzaId
+        '
+        Me.mnuFixUrzaId.Name = "mnuFixUrzaId"
+        Me.mnuFixUrzaId.Size = New System.Drawing.Size(206, 22)
+        Me.mnuFixUrzaId.Text = "Identifiants Urza Gatherer manquants"
+        AddHandler Me.mnuFixUrzaId.Click, AddressOf Me.MnuFixUrzaIdClick
         '
         'mnuFixCreatures
         '
@@ -2195,6 +2203,7 @@ Partial Class MainForm
     Public prgAvance As System.Windows.Forms.ToolStripProgressBar
     Private mnuFixFR As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseId As System.Windows.Forms.ToolStripMenuItem
+    Private mnuFixUrzaId As System.Windows.Forms.ToolStripMenuItem
     Private mnuDBSelect As System.Windows.Forms.ToolStripMenuItem
     Private mnuTranslate As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixTxtVF As System.Windows.Forms.ToolStripMenuItem

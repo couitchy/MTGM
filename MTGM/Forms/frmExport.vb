@@ -208,6 +208,7 @@ Public Partial Class frmExport
                 End While
                 .Close
             End With
+            VpSerializer.MaxJsonLength = Integer.MaxValue
             VpJSON = VpSerializer.Serialize(VpContent)
             If Not Directory.Exists(Me.dlgBrowser.SelectedPath + "\data") Then
                 Directory.CreateDirectory(Me.dlgBrowser.SelectedPath + "\data")

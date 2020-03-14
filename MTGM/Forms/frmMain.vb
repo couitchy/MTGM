@@ -596,7 +596,7 @@ Public Partial Class MainForm
     Dim VpNewName As String
         VgDBCommand.CommandText = "Update CardFR Inner Join Card On Card.EncNbr = CardFR.EncNbr Set CardFR.TitleFR = Card.Title Where CardFR.TitleFR In (Null, '');"
         VgDBCommand.ExecuteNonQuery
-        VgDBCommand.CommandText = "SELECT Title, EncNbr FROM (Select Card.Title, Card.Series, Card.EncNbr From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title = TitleFR And Not Series In ('CH', 'AL', 'BE', 'UN', 'AN', 'AQ', 'LE', 'DK', 'FE')) WHERE Title In (Select Card.Title From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title <> TitleFR) ORDER BY Series;"
+        VgDBCommand.CommandText = "Select Title, EncNbr From (Select Card.Title, Card.Series, Card.EncNbr From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title = TitleFR And Not Series In ('CH', 'AL', 'BE', 'UN', 'AN', 'AQ', 'LE', 'DK', 'FE')) Where Title In (Select Card.Title From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Title <> TitleFR) Order By Series;"
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
             While .Read
@@ -869,6 +869,39 @@ Public Partial Class MainForm
         End If
         Return True
     End Function
+    Private Sub FixUrza
+    '--------------------------------------------------------------------------------------
+    'Complète les identifiants Urza Gatherer manquants à partir des identifiants Multiverse
+    '--------------------------------------------------------------------------------------
+    Dim VpFile As StreamReader
+    Dim VpStr As String
+    Dim VpStrSub As String
+    Dim VpStrs() As String
+        Me.dlgOpen4.FileName = ""
+        Me.dlgOpen4.ShowDialog
+        If Me.dlgOpen4.FileName <> "" Then
+            VpFile = New StreamReader(Me.dlgOpen4.FileName)
+            Do While Not VpFile.EndOfStream
+                VpStr = VpFile.ReadLine
+                If VpStr.Contains(""",") Then
+                    VpStrSub = VpStr.Substring(VpStr.LastIndexOf(""",") + 2)
+                    VpStrs = VpStrSub.Split(",")
+                    If VpStrs.Length = 4 AndAlso VpStrs(1) <> "0" Then
+                        VgDBCommand.CommandText = "Update Card Set UrzaId = " + VpStrs(0) + " Where MultiverseId = " + VpStrs(1) + ";"
+                        VgDBCommand.ExecuteNonQuery
+                    ElseIf VpStrs(1) = "0" Then
+                        VpStrSub = VpStr.Replace(", ", "¤").Replace("""", "")
+                        VpStrs = VpStrSub.Split(",")
+                        If VpStrs.Length = 19 Then
+                            VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.UrzaId = " + VpStrs(15) + " Where Card.Title = '" + VpStrs(0).Replace("¤", ", ").Replace("'", "''") + "' And Series.SeriesNM = '" + VpStrs(14).Replace(":", "").Replace("¤", ", ").Replace("'", "''") + "';"
+                            VgDBCommand.ExecuteNonQuery
+                        End If
+                    End If
+                End If
+            Loop
+            VpFile.Close
+        End If
+    End Sub
     Private Sub GoFind
     '------------------------------------------
     'Déclenche la procédure de recherche simple
@@ -3263,6 +3296,14 @@ Public Partial Class MainForm
             VpCode = InputBox("Quel est le code de l'édition dont il manque les identifiants Multiverse ?", "Récupération des identifiants Multiverse", "(code)")
             If VpCode <> "" Then
                 Call Me.FixMultiverse(VpCode.ToUpper)
+                Call mdlToolbox.ShowInformation("Terminé !")
+            End If
+        End If
+    End Sub
+    Sub MnuFixUrzaIdClick(sender As Object, e As EventArgs)
+        If mdlToolbox.DBOK Then
+            If MessageBox.Show("Cette opération peut prendre beaucoup de temps..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                Call Me.FixUrza
                 Call mdlToolbox.ShowInformation("Terminé !")
             End If
         End If
