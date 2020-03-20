@@ -711,6 +711,7 @@ Partial Class MainForm
         Me.wbMV.Size = New System.Drawing.Size(656, 224)
         Me.wbMV.TabIndex = 15
         AddHandler Me.wbMV.DocumentCompleted, AddressOf Me.WbMVDocumentCompleted
+        AddHandler Me.wbMV.NewWindow, AddressOf Me.WbMVNewWindow
         '
         'tabInfo
         '

@@ -3164,6 +3164,9 @@ Public Partial Class MainForm
     Sub WbMVDocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
         VmIsComplete = True
     End Sub
+    Sub WbMVNewWindow(sender As Object, e As System.ComponentModel.CancelEventArgs)
+        e.Cancel = True
+    End Sub
     Sub MnuSeriesGenR14Click(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             Call Me.BuildHeaders(True)
