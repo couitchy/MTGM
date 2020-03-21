@@ -1,98 +1,98 @@
 <html>
 <head>
-	<title>Liste des éditions</title>
-	<link rel="icon" href="./img/favicon.ico">
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/magiccollectionviewer.css" rel="stylesheet">
-	<script src="js/series.js"></script>
-	<script src="js/jquery.js"></script>
-	<script src="js/fs.js"></script>
-	<script type="text/javascript">var todo = new Array();</script>
-	<style>
+    <title>Liste des éditions</title>
+    <link rel="icon" href="./img/favicon.ico">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/magiccollectionviewer.css" rel="stylesheet">
+    <script src="js/series.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/fs.js"></script>
+    <script type="text/javascript">var todo = new Array();</script>
+    <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
 </head>
 <body>
-	<div class="container">
-		<div>
-			<img src="./img/magic.jpg" style="width:20%;height:10%"> <img align="right" src="./img/manas.png" style="width:30%;height:10%">
-		</div>
-		<div>
-			<img align="center" src="./img/head2.jpg" style="width:100%">
-		</div>
-		<div>
-			<p><br><br>Le tableau ci-dessous présente la liste des éditions gérées par <b>Magic Collection Viewer</b>.</p>
-		</div>
-		<div>
-			<script type="text/javascript">
-				function fileExists (filename) {
-					var response = jQuery.ajax({
-						url: filename,
-						type: 'HEAD',
-						async: false
-					}).status;
-					return (response != "200") ? false : true;
-				}
+    <div class="container">
+        <div>
+            <img src="./img/magic.jpg" style="width:20%;height:10%"> <img align="right" src="./img/manas.png" style="width:30%;height:10%">
+        </div>
+        <div>
+            <img align="center" src="./img/head2.jpg" style="width:100%">
+        </div>
+        <div>
+            <p><br><br>Le tableau ci-dessous présente la liste des éditions gérées par <b>Magic Collection Viewer</b>.</p>
+        </div>
+        <div>
+            <script type="text/javascript">
+                function fileExists (filename) {
+                    var response = jQuery.ajax({
+                        url: filename,
+                        type: 'HEAD',
+                        async: false
+                    }).status;
+                    return (response != "200") ? false : true;
+                }
 
-				function writeSerie (index) {
-					document.write('<tr>');
-					document.write('<td>'+series[index][2]+'</td>');
-					document.write('<td>'+series[index][1]+'</td>');
-					document.write('<td>'+index+'</td>');
-					document.write('<td>'+series[index][0]+'</td>');
-					var logo = "./img/logos/"+series[index][0]+".gif"
-					var symbole = "./img/symboles/"+series[index][0]+".gif"
-					document.write('<td><img src="'+logo+'" onError="this.src=\'./img/logos/default.gif\';"></td>');
-					document.write('<td><img src="'+symbole+'" onError="this.src=\'./img/symboles/default.gif\';"></td>');
-					document.write('<td>'+series[index][4]+'</td>');
-					document.write('<td>'+series[index][3]+'</td>');
-					document.write('</tr>');
-				}
+                function writeSerie (index) {
+                    document.write('<tr>');
+                    document.write('<td>'+series[index][2]+'</td>');
+                    document.write('<td>'+series[index][1]+'</td>');
+                    document.write('<td>'+index+'</td>');
+                    document.write('<td>'+series[index][0]+'</td>');
+                    var logo = "./img/logos/"+series[index][0]+".gif"
+                    var symbole = "./img/symboles/"+series[index][0]+".gif"
+                    document.write('<td><img src="'+logo+'" onError="this.src=\'./img/logos/default.gif\';"></td>');
+                    document.write('<td><img src="'+symbole+'" onError="this.src=\'./img/symboles/default.gif\';"></td>');
+                    document.write('<td>'+series[index][4]+'</td>');
+                    document.write('<td>'+series[index][3]+'</td>');
+                    document.write('</tr>');
+                }
 
-				var todo = "";
-				for (i=0; i<codes_mtgm.length; i++) {
-					var index = codes_mtgm[i];
-					if ( null == series[index] ) {
-						todo+=index+" ";
-					}
-				}
-				if ( todo != "" ){
-					document.write('<p style="color:red;">Liste des code éditions gérés sous MTGM mais pas sous Magic Collection Viewer : '+todo+'<br><br></p>');
-				}
-				document.write('<table class="table table-striped">');
-				document.write('<tr>');
-				document.write('<th>Nom en Français</th>');
-				document.write('<th>Nom en Anglais</th>');
-				document.write('<th>Code MTGM</th>');
-				document.write('<th>Code MTGO</th>');
-				document.write('<th>Logo</th>');
-				document.write('<th>Symbole</th>');
-				document.write('<th>Date de parution</th>');
-				document.write('<th>Nombre de cartes</th>');
-				document.write('</tr>');
+                var todo = "";
+                for (i=0; i<codes_mtgm.length; i++) {
+                    var index = codes_mtgm[i];
+                    if ( null == series[index] ) {
+                        todo+=index+" ";
+                    }
+                }
+                if ( todo != "" ){
+                    document.write('<p style="color:red;">Liste des code éditions gérés sous MTGM mais pas sous Magic Collection Viewer : '+todo+'<br><br></p>');
+                }
+                document.write('<table class="table table-striped">');
+                document.write('<tr>');
+                document.write('<th>Nom en Français</th>');
+                document.write('<th>Nom en Anglais</th>');
+                document.write('<th>Code MTGM</th>');
+                document.write('<th>Code MTGO</th>');
+                document.write('<th>Logo</th>');
+                document.write('<th>Symbole</th>');
+                document.write('<th>Date de parution</th>');
+                document.write('<th>Nombre de cartes</th>');
+                document.write('</tr>');
 
-				for (i = 0; i < arrayClassementEdition.length; i++){
-					document.write('<tr><th colspan=9 style="background-color:#87CEEB">'+arrayLibelleClassementEdition[i]+'</th></tr>');
+                for (i = 0; i < arrayClassementEdition.length; i++){
+                    document.write('<tr><th colspan=9 style="background-color:#87CEEB">'+arrayLibelleClassementEdition[i]+'</th></tr>');
 
-					var serie = eval(arrayClassementEdition[i]);
-					for (j=0; j<serie.length; j++) {
-						var index = serie[j];
-						if ( index instanceof Array ){
-							document.write('<tr><th colspan=9 style="background-color:#EEE8AA">'+index[0]+'</th></tr>');
-							for (k=1;k<index.length;k++){
-								index2 = index[k];
-								writeSerie(index2);
-							}
-						} else if ( null != series[index] ) {
-							writeSerie(index);
-						}
-					}
-				}
-			</script>
-		</table>
-		</div>
-	</div>
+                    var serie = eval(arrayClassementEdition[i]);
+                    for (j=0; j<serie.length; j++) {
+                        var index = serie[j];
+                        if ( index instanceof Array ){
+                            document.write('<tr><th colspan=9 style="background-color:#EEE8AA">'+index[0]+'</th></tr>');
+                            for (k=1;k<index.length;k++){
+                                index2 = index[k];
+                                writeSerie(index2);
+                            }
+                        } else if ( null != series[index] ) {
+                            writeSerie(index);
+                        }
+                    }
+                }
+            </script>
+        </table>
+        </div>
+    </div>
 </body>
 </html>

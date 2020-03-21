@@ -1,156 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Magic Collection Viewer</title>
-	<link rel="icon" href="./img/favicon.ico">
-	<!-- Bootstrap -->
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/magiccollectionviewer.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Magic Collection Viewer</title>
+    <link rel="icon" href="./img/favicon.ico">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/magiccollectionviewer.css" rel="stylesheet">
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
-	<script src="js/jquery.js"></script>
-	<script src="js/knockout.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/series.js"></script>
-	<script type="text/javascript">var collection='./data/collection.json'</script>
+    <script src="js/jquery.js"></script>
+    <script src="js/knockout.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/series.js"></script>
+    <script type="text/javascript">var collection='./data/collection.json'</script>
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand">Magic Collection Viewer</a>
-				<div class="nav-collapse collapse">
-					<ul class="nav">
-						<li class="active"><a href="index.html">Collection</a></li>
-						<li class="disabled"><a>Select edition : </a></li>
-					</ul>
-				</div><!--/.nav-collapse -->
-				<form class="navbar-form pull-left">
-					<select id='editions' data-bind="options: seriesList, optionsText: 'SeriesNM_FR', value: editionToShow, optionsCaption: 'All editions'"></select>
-			    </form>
-			    <form class="navbar-search pull-right">
-			    	<input type="text" class="search-query" placeholder="Trouver (nom VF/VO ou type)" data-bind="value: searchField, valueUpdate: 'afterkeydown'">
-			    </form>
-				<ul class="nav">
-					<li class="active"><a href="editions.html" target="_blank">Liste des éditions</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div class="container">
-		<div>
-			<img src="./img/magic.jpg" style="width:20%;height:30%"> <img align="right" src="./img/manas.png" style="width:30%;height:30%">
-		</div>
-		<div>
-			<img align="center" src="./img/head.jpg" style="width:100%;">
-		</div>
-		<span data-bind="ifnot: editionToShow">
-			<table class="table table-striped">
-			<tr><th>Nombre de cartes différentes</th><td colspan="4"><span data-bind="text: nbCardsCollection"></span></td></tr>
-			<tr><th>Nombre de cartes totales</th><td colspan="4"><span data-bind="text: nbCardsCollectionTotal"></span></td></tr>
-			<tr><th>Rareté des cartes</th><td><img src="./img/rarity/C.gif"></td><td><img src="./img/rarity/U.gif"></td><td><img src="./img/rarity/R.gif"></td><td><img src="./img/rarity/M.gif"></td></tr>
-			<tr><th></th><td><span data-bind="text: collectionCommon"></span></td><td><span data-bind="text: collectionUnco"></span></td><td><span data-bind="text: collectionRare"></span></td><td><span data-bind="text: collectionMythique"></span></td></tr>
-			<tr><th>Prix des cartes possédées</th><td colspan="4"><span data-bind="text: collectionPrice"></span> €</td></tr>
-			<tr><th>Nombre d'éditions différentes</th><td colspan="4"><span data-bind="text: seriesListLength"></span></td></tr>
-			</table>
-		</span>
-		<span data-bind="if: editionToShow">
-			<table class="table table-striped">
-			<tr><th><img data-bind='attr: { src: EditionLogo }' onError="this.src='./img/logos/default.gif';"/></th><td colspan="2"><span data-bind="text: editionToShow().SeriesNM_MtG"></span></td><td colspan="2"><span data-bind="text: editionToShow().SeriesNM_FR"></span>
-			<tr><th>Codes</th><td colspan="2"><span data-bind="text: editionToShow().Series"></span></td><td colspan="2"><span data-bind="text: editionToShow().Folder"></span></td></tr>
-			<tr><th>Année</th><td colspan="4"><span data-bind="text: editionToShow().Year"></span></td></tr>
-			<tr><th>Nombre de cartes de l'édition</th><td colspan="4"><span data-bind="text: editionToShow().NbCards"></span></td></tr>
-			<tr><th>Symbole</th><td colspan="4"><img data-bind='attr: { src: EditionSymbole }' onError="this.src='./img/symboles/default.gif';"/></td></tr>
-			<tr><th>Nombre de cartes différentes possédées</th><td colspan="4"><span data-bind="text: nbCards"></span></td></tr>
-			<tr><th>Nombre de cartes totales possédées</th><td colspan="4"><span data-bind="text: nbCardsTotal"></span></td></tr>
-			<tr><th>Rareté des cartes</th><td><img src="./img/rarity/C.gif"></td><td><img src="./img/rarity/U.gif"></td><td><img src="./img/rarity/R.gif"></td><td><img src="./img/rarity/M.gif"></td></tr>
-			<tr><th></th><td><span data-bind="text: editionCommon"></span></td><td><span data-bind="text: editionUnco"></span></td><td><span data-bind="text: editionRare"></span></td><td><span data-bind="text: editionMythique"></span></td></tr>
-			<tr><th>Prix des cartes possédées</th><td colspan="4"><span data-bind="text: editionPrice"></span> €</td></tr>
-			</table>
-		</span>
-		<div>
-			<script type="text/javascript">
-				var arrayCatEng = new Array("white", "blue", "green", "red", "black", "multi", "artifacts", "lands");
-				var arrayCatFr = new Array("blanches", "bleues", "vertes", "rouges", "noires", "multicolores", "artefacts", "terrains");
-				for (i = 0; i < arrayCatEng.length; i++){
-					document.write('<div data-bind="with: '+arrayCatEng[i]+'">');
-					document.write('<div data-bind="if: nbColoredCards() > 0">');
-					document.write('<img src="./img/line.png" style="width:100%;height:9px">');
-					document.write('<h2><img src="./img/colors/'+arrayCatFr[i]+'.jpg" style="width:105px;height:125px;align=left;vertical-align:middle"> Cartes '+arrayCatFr[i]+' - <span data-bind="text: nbColoredCards"></span> cartes <img src="./img/colors/'+arrayCatFr[i]+'2.jpg" width=192px height=125px align=right></h2>');
-					document.write('<table class="table table-striped">');
-					document.write('<thead><tr>')
-					document.write('<th id="nameFr'+arrayCatEng[i]+'" data-bind="click: sort">Nom FR</th>');
-					document.write('<th id="nameEn'+arrayCatEng[i]+'" data-bind="click: sort">Nom VO</th>');
-					document.write('<th id="typeFr'+arrayCatEng[i]+'" data-bind="click: sort">Type</th>');
-					document.write('<th id="seriesFr'+arrayCatEng[i]+'" data-bind="click: sort">Edition</th>');
-					document.write('<th id="rarity'+arrayCatEng[i]+'" data-bind="click: sort">Rareté</th>');
-					document.write('<th>Cout de mana</th>');
-					document.write('<th>Stock</th>');
-					document.write('</tr></thead>');
-					document.write('<tbody data-bind="foreach: pagedList"><tr>');
-					document.write('<td data-bind="text: TitleFR"></td>');
-					document.write('<td data-bind="text: Title"></td>');
-					document.write('<td data-bind="text: SubTypeVF"></td>');
-					document.write('<td data-bind="text: SeriesNM_FR"></td>');
-					document.write('<td><img data-bind="attr: { src: RarityIcon }"/></td>');
-					document.write('<td data-bind="foreach: Mana"><img data-bind="attr: { src: icon }" width="19px" height="19px"  /></td>');
-					document.write('<td data-bind="text: Items"></td>');
-					document.write('<td class="buttons"><a href="#details" role="button" class="btn btn-primary" data-bind="click: $root.details" data-toggle="modal">View Details</a></td>');
-					document.write('</tr></tbody></table>');
-					document.write('<div class="pagination pagination-right">');
-					document.write('<ul><li data-bind="css: { disabled: pageIndex() === 0 }"><a href="#" data-bind="click: firstPage">First</a></li></ul>');
-					document.write('<ul><li data-bind="css: { disabled: pageIndex() === 0 }"><a href="#" data-bind="click: previousPage">Previous</a></li></ul>');
-					document.write('<ul><li data-bind="css: { disabled: pageIndex() === maxPageIndex() }"><a href="#" data-bind="click: nextPage">Next</a></li></ul>');
-					document.write('<ul><li data-bind="css: { disabled: pageIndex() === maxPageIndex() }"><a href="#" data-bind="click: lastPage">Last</a></li></ul>');
-					document.write('</div></div></div>');
-				}
-			</script>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand">Magic Collection Viewer</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li class="active"><a href="index.html">Collection</a></li>
+                        <li class="disabled"><a>Select edition : </a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+                <form class="navbar-form pull-left">
+                    <select id='editions' data-bind="options: seriesList, optionsText: 'SeriesNM_FR', value: editionToShow, optionsCaption: 'All editions'"></select>
+                </form>
+                <form class="navbar-search pull-right">
+                    <input type="text" class="search-query" placeholder="Trouver (nom VF/VO ou type)" data-bind="value: searchField, valueUpdate: 'afterkeydown'">
+                </form>
+                <ul class="nav">
+                    <li class="active"><a href="editions.html" target="_blank">Liste des éditions</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div>
+            <img src="./img/magic.jpg" style="width:20%;height:30%"> <img align="right" src="./img/manas.png" style="width:30%;height:30%">
+        </div>
+        <div>
+            <img align="center" src="./img/head.jpg" style="width:100%;">
+        </div>
+        <span data-bind="ifnot: editionToShow">
+            <table class="table table-striped">
+            <tr><th>Nombre de cartes différentes</th><td colspan="4"><span data-bind="text: nbCardsCollection"></span></td></tr>
+            <tr><th>Nombre de cartes totales</th><td colspan="4"><span data-bind="text: nbCardsCollectionTotal"></span></td></tr>
+            <tr><th>Rareté des cartes</th><td><img src="./img/rarity/C.gif"></td><td><img src="./img/rarity/U.gif"></td><td><img src="./img/rarity/R.gif"></td><td><img src="./img/rarity/M.gif"></td></tr>
+            <tr><th></th><td><span data-bind="text: collectionCommon"></span></td><td><span data-bind="text: collectionUnco"></span></td><td><span data-bind="text: collectionRare"></span></td><td><span data-bind="text: collectionMythique"></span></td></tr>
+            <tr><th>Prix des cartes possédées</th><td colspan="4"><span data-bind="text: collectionPrice"></span> €</td></tr>
+            <tr><th>Nombre d'éditions différentes</th><td colspan="4"><span data-bind="text: seriesListLength"></span></td></tr>
+            </table>
+        </span>
+        <span data-bind="if: editionToShow">
+            <table class="table table-striped">
+            <tr><th><img data-bind='attr: { src: EditionLogo }' onError="this.src='./img/logos/default.gif';"/></th><td colspan="2"><span data-bind="text: editionToShow().SeriesNM_MtG"></span></td><td colspan="2"><span data-bind="text: editionToShow().SeriesNM_FR"></span>
+            <tr><th>Codes</th><td colspan="2"><span data-bind="text: editionToShow().Series"></span></td><td colspan="2"><span data-bind="text: editionToShow().Folder"></span></td></tr>
+            <tr><th>Année</th><td colspan="4"><span data-bind="text: editionToShow().Year"></span></td></tr>
+            <tr><th>Nombre de cartes de l'édition</th><td colspan="4"><span data-bind="text: editionToShow().NbCards"></span></td></tr>
+            <tr><th>Symbole</th><td colspan="4"><img data-bind='attr: { src: EditionSymbole }' onError="this.src='./img/symboles/default.gif';"/></td></tr>
+            <tr><th>Nombre de cartes différentes possédées</th><td colspan="4"><span data-bind="text: nbCards"></span></td></tr>
+            <tr><th>Nombre de cartes totales possédées</th><td colspan="4"><span data-bind="text: nbCardsTotal"></span></td></tr>
+            <tr><th>Rareté des cartes</th><td><img src="./img/rarity/C.gif"></td><td><img src="./img/rarity/U.gif"></td><td><img src="./img/rarity/R.gif"></td><td><img src="./img/rarity/M.gif"></td></tr>
+            <tr><th></th><td><span data-bind="text: editionCommon"></span></td><td><span data-bind="text: editionUnco"></span></td><td><span data-bind="text: editionRare"></span></td><td><span data-bind="text: editionMythique"></span></td></tr>
+            <tr><th>Prix des cartes possédées</th><td colspan="4"><span data-bind="text: editionPrice"></span> €</td></tr>
+            </table>
+        </span>
+        <div>
+            <script type="text/javascript">
+                var arrayCatEng = new Array("white", "blue", "green", "red", "black", "multi", "artifacts", "lands");
+                var arrayCatFr = new Array("blanches", "bleues", "vertes", "rouges", "noires", "multicolores", "artefacts", "terrains");
+                for (i = 0; i < arrayCatEng.length; i++){
+                    document.write('<div data-bind="with: '+arrayCatEng[i]+'">');
+                    document.write('<div data-bind="if: nbColoredCards() > 0">');
+                    document.write('<img src="./img/line.png" style="width:100%;height:9px">');
+                    document.write('<h2><img src="./img/colors/'+arrayCatFr[i]+'.jpg" style="width:105px;height:125px;align=left;vertical-align:middle"> Cartes '+arrayCatFr[i]+' - <span data-bind="text: nbColoredCards"></span> cartes <img src="./img/colors/'+arrayCatFr[i]+'2.jpg" width=192px height=125px align=right></h2>');
+                    document.write('<table class="table table-striped">');
+                    document.write('<thead><tr>')
+                    document.write('<th id="nameFr'+arrayCatEng[i]+'" data-bind="click: sort">Nom FR</th>');
+                    document.write('<th id="nameEn'+arrayCatEng[i]+'" data-bind="click: sort">Nom VO</th>');
+                    document.write('<th id="typeFr'+arrayCatEng[i]+'" data-bind="click: sort">Type</th>');
+                    document.write('<th id="seriesFr'+arrayCatEng[i]+'" data-bind="click: sort">Edition</th>');
+                    document.write('<th id="rarity'+arrayCatEng[i]+'" data-bind="click: sort">Rareté</th>');
+                    document.write('<th>Cout de mana</th>');
+                    document.write('<th>Stock</th>');
+                    document.write('</tr></thead>');
+                    document.write('<tbody data-bind="foreach: pagedList"><tr>');
+                    document.write('<td data-bind="text: TitleFR"></td>');
+                    document.write('<td data-bind="text: Title"></td>');
+                    document.write('<td data-bind="text: SubTypeVF"></td>');
+                    document.write('<td data-bind="text: SeriesNM_FR"></td>');
+                    document.write('<td><img data-bind="attr: { src: RarityIcon }"/></td>');
+                    document.write('<td data-bind="foreach: Mana"><img data-bind="attr: { src: icon }" width="19px" height="19px"  /></td>');
+                    document.write('<td data-bind="text: Items"></td>');
+                    document.write('<td class="buttons"><a href="#details" role="button" class="btn btn-primary" data-bind="click: $root.details" data-toggle="modal">View Details</a></td>');
+                    document.write('</tr></tbody></table>');
+                    document.write('<div class="pagination pagination-right">');
+                    document.write('<ul><li data-bind="css: { disabled: pageIndex() === 0 }"><a href="#" data-bind="click: firstPage">First</a></li></ul>');
+                    document.write('<ul><li data-bind="css: { disabled: pageIndex() === 0 }"><a href="#" data-bind="click: previousPage">Previous</a></li></ul>');
+                    document.write('<ul><li data-bind="css: { disabled: pageIndex() === maxPageIndex() }"><a href="#" data-bind="click: nextPage">Next</a></li></ul>');
+                    document.write('<ul><li data-bind="css: { disabled: pageIndex() === maxPageIndex() }"><a href="#" data-bind="click: lastPage">Last</a></li></ul>');
+                    document.write('</div></div></div>');
+                }
+            </script>
 
-			<!-- Modal -->
-			<div class="modal hide fade" id="details" tabindex="-1" role="dialog" aria-labelledby="cardDetailsLabel" aria-hidden="true">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h3 id="cardDetailsLabel" data-bind="text: Label" ></h3>
-				</div>
-				<div class="modal-body">
-					<div class="container-fluid">
-				   	 	<div class="row-fluid">
-				   	 		<div class="span6">
-				    			<img id="cardImage" data-bind='attr: { src: Image }' width="360px" height="515px" onError="this.src='./img/cards/default.jpg';" />
-				    		</div>
-				    		<div class="span6">
-				    			 <table class="table table-striped">
-			       		            <tr><th>Nom VF : </th><td data-bind="text: TitleFR"></td></tr>
-			       		            <tr><th>Nom VO : </th><td data-bind="text: Title"></td></tr>
-			       		            <tr><th>Edition : </th><td data-bind="text: SeriesNM_FR"></td></tr>
-									<tr><th>Rareté : </th><td><img data-bind='attr: { src: RarityIcon }'/></td></tr>
-			       		            <tr>
-			       		            	<th>Cout de mana : </th>
-			       		            	<td data-bind="foreach: Mana">
-								            	<img data-bind='attr: { src: icon }' width="19px" height="19px"  />
-								         </td>
-								    </tr>
-								    <tr><th>Type : </th><td data-bind="text: SubTypeVF"></td></tr>
-								    <tr><th>Stock : </th><td data-bind="text: Items"></td></tr>
-								    <tr><th>Prix : </th><td><span data-bind="text: Price"></span> €</td></tr>
-								    <tr><td colspan="2" data-bind="html: TexteFRHTML"></td></tr>
-								</table>
-				    		</div>
-				    	</div>
-				    </div>
+            <!-- Modal -->
+            <div class="modal hide fade" id="details" tabindex="-1" role="dialog" aria-labelledby="cardDetailsLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="cardDetailsLabel" data-bind="text: Label" ></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <img id="cardImage" data-bind='attr: { src: Image }' width="360px" height="515px" onError="this.src='./img/cards/default.jpg';" />
+                            </div>
+                            <div class="span6">
+                                 <table class="table table-striped">
+                                    <tr><th>Nom VF : </th><td data-bind="text: TitleFR"></td></tr>
+                                    <tr><th>Nom VO : </th><td data-bind="text: Title"></td></tr>
+                                    <tr><th>Edition : </th><td data-bind="text: SeriesNM_FR"></td></tr>
+                                    <tr><th>Rareté : </th><td><img data-bind='attr: { src: RarityIcon }'/></td></tr>
+                                    <tr>
+                                        <th>Cout de mana : </th>
+                                        <td data-bind="foreach: Mana">
+                                                <img data-bind='attr: { src: icon }' width="19px" height="19px"  />
+                                         </td>
+                                    </tr>
+                                    <tr><th>Type : </th><td data-bind="text: SubTypeVF"></td></tr>
+                                    <tr><th>Stock : </th><td data-bind="text: Items"></td></tr>
+                                    <tr><th>Prix : </th><td><span data-bind="text: Price"></span> €</td></tr>
+                                    <tr><td colspan="2" data-bind="html: TexteFRHTML"></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- ko script -->
-	<script src="js/container.js"></script>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ko script -->
+    <script src="js/container.js"></script>
 </body>
 </html>

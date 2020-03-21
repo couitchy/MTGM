@@ -5,7 +5,7 @@ var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','C
 // List of MTGM codes
 var codes_mtgm=["1E","3B","3W","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AR","BB","BE","BG","BK","BR","BT","BZ","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GP","GR","GS","GW","GX","HD","HM","HP","IA","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MH","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","OD","OG","ON","OR","P1","P2","P3","PC","PG","PH","PI","PR","PS","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SH","SI","SK","SL","SM","SS","ST","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
 
-// Structure of array 
+// Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
 var series = new Array();
 // Core sets
@@ -47,7 +47,7 @@ series['TB'] = new Array('THB','Theros Beyond Death','Theros par-delà la mort','
 var horsbloc = new Array('Premières Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
-series['AC'] = new Array('ALL','Alliances','Alliances','199','1996'); 
+series['AC'] = new Array('ALL','Alliances','Alliances','199','1996');
 series['CS'] = new Array('CSP','Coldsnap','Souffle Glaciaire','155','2006');
 var iceage = new Array('Bloc Ere Glaciaire','IA','AC','CS');
 // Mirage Block
@@ -304,7 +304,7 @@ series['ME'] = new Array('MED','Masters Edition','','195','2007');
 var online = new Array('ME');
 
 // Promotionnal Sets
-series['HP'] = new Array('HP','Harper Prism','','5','1996'); 
+series['HP'] = new Array('HP','Harper Prism','','5','1996');
 series['PR'] = new Array('PTC','Prerelease Events','','86','1997');
 series['JG'] = new Array('JG','Judge Gift','','93','1998');
 series['FM'] = new Array('FNM','Friday Night Magic','','75','2000');
