@@ -280,11 +280,9 @@
         var self = this;
         self.cards = ko.observableArray([]);
         self.seriesList = ko.observableArray([]);
-        //self.lots = ko.observableArray([]);
-        self.loadUrl = collection;
 
         // Load initial state from server, convert it to Item instances, then populate self.items
-        $.getJSON(self.loadUrl, function(allData) {
+        function loadResults(allData) {
             var mappedItems = $.map(allData, function(item) { return new Card(item) });
             self.cards(mappedItems);
             // manage series in order to get only distincts edition
@@ -301,7 +299,8 @@
                 return (a.SeriesNM_FR().localeCompare( b.SeriesNM_FR()) < 0) ? -1 : 1;
             });
             self.seriesList(uniqueSeriesArray);
-        });
+        }
+        loadResults(JSON.parse(collection));
 
         // Manage details panel
         self.selectedCard = ko.observable();

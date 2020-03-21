@@ -210,10 +210,11 @@ Public Partial Class frmExport
             End With
             VpSerializer.MaxJsonLength = Integer.MaxValue
             VpJSON = VpSerializer.Serialize(VpContent)
+            VpJSON = "var collection = '" + VpJSON.Replace("\", "\\") + "';"
             If Not Directory.Exists(Me.dlgBrowser.SelectedPath + "\data") Then
                 Directory.CreateDirectory(Me.dlgBrowser.SelectedPath + "\data")
             End If
-            VpOut = New StreamWriter(Me.dlgBrowser.SelectedPath + "\data\collection.json")
+            VpOut = New StreamWriter(Me.dlgBrowser.SelectedPath + "\data\collection.js")
             VpOut.Write(VpJSON)
             VpOut.Flush
             VpOut.Close
