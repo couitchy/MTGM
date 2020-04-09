@@ -1702,6 +1702,8 @@ Public Partial Class MainForm
                 Return "therosbeyonddeath#" + VpStr
             Case "UC"
                 Return "unsanctioned#" + VpStr
+            Case "AT"
+                Return "anthologies#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2038,6 +2040,8 @@ Public Partial Class MainForm
                 Return "TB"
             Case "unsanctioned"
                 Return "UC"
+            Case "anthologies"
+                Return "AT"
             Case Else
                 Return ""
         End Select
