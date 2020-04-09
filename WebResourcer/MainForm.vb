@@ -2544,7 +2544,7 @@ Public Partial Class MainForm
             Me.dlgSave.ShowDialog
             If Me.dlgSave.FileName <> "" Then
                 VpTxt = New StreamReader(Me.dlgOpen2.FileName, Encoding.Default)
-                'Parse le contenu du fichier
+                'Parse le contenu du fichier (ce fichier doit avoir été généré avec la requête Access : Select Distinct Card.Title, CardFR.TitleFR From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.Title <> CardFR.TitleFR Order By Card.Title;)
                 While Not VpTxt.EndOfStream
                     VpStrs = VpTxt.ReadLine.Split(vbTab)
                     If Not VpTitles.ContainsKey(VpStrs(0)) Then

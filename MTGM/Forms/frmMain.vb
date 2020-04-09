@@ -622,8 +622,7 @@ Public Partial Class MainForm
             VpLog = New StreamReader(Application.StartupPath + mdlConstGlob.CgMdTrad)
             While Not VpLog.EndOfStream
                 VpStrs = VpLog.ReadLine.Split("#")
-                VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "';"
-                'VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.TitleFR <> Card.Title;"
+                VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.TitleFR <> Card.Title;"
                 VgDBCommand.ExecuteNonQuery
             End While
             VpLog.Close
