@@ -45,7 +45,7 @@
         Return mdlToolbox.MyCost(VmCost).ToString
     End Function
     Public Function MyType As String
-        '(C = creature, I = instant, A = artefact, E = enchant-creature, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)
+        '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)
         If VmType.Contains("Artifact") Then
             Return "A"
         ElseIf VmType.Contains("Instant") Then
@@ -116,7 +116,7 @@
     End Function
     Public Function MyColor As String
     Dim VpMyType As String
-        If VmColor = "" Then    'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'une machination, d'un arpenteur incolore ou d'un jeton
+        If VmType.Contains("Token") OrElse VmColor = "" Then    'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'une machination, d'un arpenteur incolore ou d'un jeton
             VpMyType = Me.MyType
             Select Case VpMyType
                 Case "H", "Q", "Y", "Z", "P"

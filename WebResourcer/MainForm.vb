@@ -1704,6 +1704,8 @@ Public Partial Class MainForm
                 Return "unsanctioned#" + VpStr
             Case "AT"
                 Return "anthologies#" + VpStr
+            Case "GN"
+                Return "gamenight2019#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2042,6 +2044,8 @@ Public Partial Class MainForm
                 Return "UC"
             Case "anthologies"
                 Return "AT"
+            Case "gamenight2019"
+                Return "GN"
             Case Else
                 Return ""
         End Select
@@ -2254,6 +2258,7 @@ Public Partial Class MainForm
     Private Sub BuildAllTitles(VpJSONInfos As clsFullInfos, VpSuffix As String)
     Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpAlready As New List(Of String)
+        'Cards
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
                 If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing AndAlso .foreignData.Count > 0 Then
@@ -2266,6 +2271,15 @@ Public Partial Class MainForm
                 End If
             End With
         Next VpCard
+        'Tokens
+        For Each VpToken As clsFullInfos.clsFullCardInfos In VpJSONInfos.tokens
+            With VpToken
+                If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing AndAlso .foreignData.Count > 0 Then
+                    VpOut.WriteLine(.name + "#" + .getForeignName("French"))
+                    VpAlready.Add(.name)
+                End If
+            End With
+        Next VpToken
         VpOut.Flush
         VpOut.Close
     End Sub
@@ -2273,7 +2287,9 @@ Public Partial Class MainForm
     Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpColors As String
     Dim VpDone As New List(Of String)
+    Dim VpNumberMax As Integer = 0
         VpOut.WriteLine("#" + vbTab + "Name" + vbTab + "Artist" + vbTab + "Color" + vbTab + "Rarity" + vbTab + "Set")
+        'Cards
         VpJSONInfos.cards.Sort(New clsFullInfos.clsFullCardInfosComparer)
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
@@ -2311,8 +2327,37 @@ Public Partial Class MainForm
                     End If
                     VpDone.Add(.name)
                 End If
+                VpNumberMax = Math.Max(VpNumberMax, CInt(.number))
             End With
         Next VpCard
+        'Tokens
+        VpJSONInfos.tokens.Sort(New clsFullInfos.clsFullCardInfosComparer)
+        For Each VpToken As clsFullInfos.clsFullCardInfos In VpJSONInfos.tokens
+            With VpToken
+                If .colors Is Nothing OrElse .colors.Count = 0 Then
+                    VpColors = "/"
+                Else
+                    VpColors = ""
+                    For Each VpColor As String In .getMergedColors
+                        Select Case VpColor.ToUpper
+                            Case "W"
+                                VpColor = "White"
+                            Case "U"
+                                VpColor = "Blue"
+                            Case "R"
+                                VpColor = "Red"
+                            Case "G"
+                                VpColor = "Green"
+                            Case "B"
+                                VpColor = "Black"
+                            Case Else
+                        End Select
+                        VpColors += "/" + VpColor
+                    Next VpColor
+                End If
+                VpOut.WriteLine((VpNumberMax + CInt(.number)).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
+            End With
+        Next VpToken
         VpOut.Flush
         VpOut.Close
     End Sub
@@ -2320,6 +2365,7 @@ Public Partial Class MainForm
     Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpRarity As String
     Dim VpDone As New List(Of String)
+        'Cards
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
                 If Not VpDone.Contains(.name) Then
@@ -2363,6 +2409,24 @@ Public Partial Class MainForm
                 End If
             End With
         Next VpCard
+        'Tokens
+        For Each VpToken As clsFullInfos.clsFullCardInfos In VpJSONInfos.tokens
+            With VpToken
+                VpOut.WriteLine("Name: " + vbTab + .name)
+                VpOut.WriteLine("Cost: " + vbTab + .getCost)
+                VpOut.WriteLine("Type: " + vbTab + .type)
+                If .types.Contains("Creature") Then
+                    VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
+                ElseIf .types.Contains("Planeswalker") Then
+                    VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
+                Else
+                    VpOut.WriteLine("Pow/Tgh: " + vbTab)
+                End If
+                VpOut.WriteLine("Rules Text: " + vbTab + .getRules)
+                VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " Token")
+                VpOut.WriteLine("")
+            End With
+        Next VpToken
         VpOut.Flush
         VpOut.Close
     End Sub
@@ -3368,6 +3432,7 @@ Public Partial Class MainForm
         Public onlineOnly As Boolean
         Public translations As Dictionary(Of String, String)
         Public cards As List(Of clsFullCardInfos)
+        Public tokens As List(Of clsFullCardInfos)
         Public Class clsFullCardInfos
             Public linkedTo As clsFullCardInfos
             Public linkedFrom As clsFullCardInfos
