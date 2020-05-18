@@ -2211,16 +2211,17 @@ Public Partial Class MainForm
     '-----------------------------------------------------------------------------------------------------------
     'Construit les fichiers (listing avec traduction, checklist, spoilerlist) nécessaires à l'ajout de l'édition
     '-----------------------------------------------------------------------------------------------------------
+    Dim VpCodeSafe As String = If(VpCode.ToUpper = "CON", "_" + VpCode, VpCode)
     Dim VpClient As New WebClient
     Dim VpSerializer As JavaScriptSerializer
     Dim VpJSONInfos As clsFullInfos = Nothing
         'Récupération du json
         Call Me.AddToLog("Téléchargement des informations depuis MTG JSON...", eLogType.Information)
         Application.DoEvents
-        VpClient.DownloadFile(CmURL7.Replace("###", VpCode.ToUpper), Me.dlgBrowse.SelectedPath + "\" + VpCode + ".json")
+        VpClient.DownloadFile(CmURL7.Replace("###", VpCode.ToUpper), Me.dlgBrowse.SelectedPath + "\" + VpCodeSafe + ".json")
         VpSerializer = New JavaScriptSerializer
         VpSerializer.MaxJsonLength = Integer.MaxValue
-        VpJSONInfos = VpSerializer.Deserialize(Of clsFullInfos)((New StreamReader(Me.dlgBrowse.SelectedPath + "\" + VpCode + ".json")).ReadToEnd)
+        VpJSONInfos = VpSerializer.Deserialize(Of clsFullInfos)((New StreamReader(Me.dlgBrowse.SelectedPath + "\" + VpCodeSafe + ".json")).ReadToEnd)
         'Infos sur l'édition
         Call Me.AddToLog("*** Nom VO : " + VpJSONInfos.name, eLogType.Information)
         If VpJSONInfos.translations IsNot Nothing AndAlso VpJSONInfos.translations.ContainsKey("fr") Then
@@ -2327,7 +2328,7 @@ Public Partial Class MainForm
                     End If
                     VpDone.Add(.name)
                 End If
-                VpNumberMax = Math.Max(VpNumberMax, CInt(.number))
+                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace(Char.ConvertFromUtf32(&H2605), "")))
             End With
         Next VpCard
         'Tokens
