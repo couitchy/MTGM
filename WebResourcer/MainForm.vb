@@ -2328,7 +2328,7 @@ Public Partial Class MainForm
                     End If
                     VpDone.Add(.name)
                 End If
-                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace(Char.ConvertFromUtf32(&H2605), "")))
+                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
             End With
         Next VpCard
         'Tokens

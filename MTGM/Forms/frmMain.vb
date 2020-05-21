@@ -1078,7 +1078,7 @@ Public Partial Class MainForm
             Me.tvwExplore.SelectedNode.EnsureVisible
         End If
     End Sub
-    Private Sub ReloadWithHistory
+    Public Sub ReloadWithHistory
     Dim VpHistory As String = Me.SaveNode(Me.tvwExplore.SelectedNode)
     Dim VpMyRoot As Integer = Me.GetRootIndex(Me.MyRoot)
         Call Me.LoadTvw

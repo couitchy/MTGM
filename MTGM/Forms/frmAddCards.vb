@@ -289,7 +289,11 @@ Public Partial Class frmAddCards
         VmOwner.BringToFront
         Me.Hide
         If VgOptions.VgSettings.AutoRefresh Then
-            Call VmOwner.LoadTvw
+            If VmOwner.tvwExplore.SelectedNode IsNot Nothing Then
+                Call VmOwner.ReloadWithHistory
+            Else
+                Call VmOwner.LoadTvw
+            End If
         End If
     End Sub
     Sub FrmAddCardsLoad(sender As Object, e As EventArgs)
