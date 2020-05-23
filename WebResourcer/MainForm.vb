@@ -1928,6 +1928,8 @@ Public Partial Class MainForm
                 Return "MA"
             Case "eldritchmoon"
                 Return "EM"
+            Case "FromtheVaultLore"
+                Return "V9"
             Case "kaladesh"
                 Return "KD"
             Case "kaladeshinventions"
@@ -2328,7 +2330,7 @@ Public Partial Class MainForm
                     End If
                     VpDone.Add(.name)
                 End If
-                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
+                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace("a", "").Replace("b", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
             End With
         Next VpCard
         'Tokens
@@ -2480,6 +2482,196 @@ Public Partial Class MainForm
         VpOut.Flush
         VpOut.Close
     End Sub
+    Private Sub VirtualAdd
+    '---------------------------------------------------------------------------------------------------
+    'Simule l'ajout de nouvelles éditions afin de s'assurer que les spoilers sont syntaxiquement valides
+    '---------------------------------------------------------------------------------------------------
+    Dim VpDir As New DirectoryInfo(Me.dlgBrowse.SelectedPath)
+    Dim VpFound As New List(Of String)
+    Dim VpStr As String
+        Call Me.AddToLog("La simulation d'ajout d'éditions a commencé...", eLogType.Information)
+        For Each VpFile As FileInfo In VpDir.GetFiles("*.txt")
+            If VpFile.Name.Contains("_checklist_en") OrElse VpFile.Name.Contains("_spoiler_en") OrElse VpFile.Name.Contains("_titles_fr") OrElse VpFile.Name.Contains("_doubles_en") Then
+                VpStr = VpFile.Name.Replace("_checklist_en", "").Replace("_spoiler_en", "").Replace("_titles_fr", "").Replace("_doubles_en", "").Replace(".txt", "")
+                If Not VpFound.Contains(VpStr) AndAlso Not VpStr.Contains("_special") Then
+                    VpFound.Add(VpStr)
+                End If
+            End If
+        Next VpFile
+        Call Me.AddToLog("*** Traitement de " + VpFound.Count.ToString + " édition(s)", eLogType.Information)
+        For Each VpSerie As String In VpFound
+            VpStr = Me.SerieCode(VpSerie)
+            If VpStr = "" Then
+                Call Me.AddToLog("Le code édition associé à " + VpSerie + " n'a pas été trouvé", eLogType.Warning)
+            Else
+                Call Me.AddToLog("Code édition trouvé pour " + VpSerie + " : " + VpStr, eLogType.Information)
+            End If
+            Application.DoEvents
+        Next VpSerie
+        For Each VpSerie As String In VpFound
+            Call Me.AddToLog("*** Analyse de l'édition " + VpSerie, eLogType.Information)
+            Call Me.AddNewEdition(Path.Combine(Me.dlgBrowse.SelectedPath, VpSerie + "#.txt"))
+            Application.DoEvents
+        Next VpSerie
+        Call Me.AddToLog("La simulation d'ajout d'éditions est terminée.", eLogType.Information)
+    End Sub
+    Private Sub AddNewEdition(VpEditionPath As String)
+    '---------------------------------------------------------------------------------------
+    'Ajoute à la base de données l'ensemble des cartes présentes dans les fichiers spécifiés
+    '---------------------------------------------------------------------------------------
+    Dim VpFile As New StreamReader(VpEditionPath.Replace("#", "_spoiler_en"), Encoding.Default)
+    Dim VpCounter As Integer = 0
+    Dim VpStrs() As String
+        'Ajout des cartes
+        Do While Not VpFile.EndOfStream
+            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpFile)) Then
+                VpCounter = VpCounter + 1
+            End If
+        Loop
+        VpFile.Close
+        'Traduction
+        If File.Exists(VpEditionPath.Replace("#", "_titles_fr")) Then
+            VpFile = New StreamReader(VpEditionPath.Replace("#", "_titles_fr"), Encoding.Default)
+            While Not VpFile.EndOfStream
+                VpStrs = VpFile.ReadLine.Split("#")
+                'VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.EncNbr >= " + VmEncNbr0.ToString + ";"
+                'VgDBCommand.ExecuteNonQuery
+            End While
+            VpFile.Close
+        End If
+        'Gestion des doubles cartes éventuelles
+        If File.Exists(VpEditionPath.Replace("#", "_doubles_en")) Then
+            VpFile = New StreamReader(VpEditionPath.Replace("#", "_doubles_en"), Encoding.Default)
+            While Not VpFile.EndOfStream
+                VpStrs = VpFile.ReadLine.Split("#")
+                'VpEncNbrDown = mdlToolbox.GetEncNbr(VpStrs(0), VpSerieCD)
+                'VpEncNbrTop = mdlToolbox.GetEncNbr(VpStrs(1), VpSerieCD)
+                'VgDBCommand.CommandText = "Insert Into CardDouble(EncNbrDownFace, EncNbrTopFace) Values (" + VpEncNbrDown.ToString + ", " + VpEncNbrTop.ToString + ");"
+                'VgDBCommand.ExecuteNonQuery
+                'VgDBCommand.CommandText = "Update Card Set SpecialDoubleCard = True Where Card.EncNbr = " + VpEncNbrDown.ToString + ";"
+                'VgDBCommand.ExecuteNonQuery
+                'VgDBCommand.CommandText = "Update Card Set SpecialDoubleCard = True Where Card.EncNbr = " + VpEncNbrTop.ToString + ";"
+                'VgDBCommand.ExecuteNonQuery
+            End While
+            VpFile.Close
+        End If
+        Call Me.AddToLog(VpCounter.ToString + " carte(s) ont été vérifiée(s) avec succès...", eLogType.Information)
+    End Sub
+    Private Function AddNewCard(VpEditionPath As String, VpCarac() As String) As Boolean
+    Dim VpFile As StreamReader
+    Dim VpLine As String
+    Dim VpFLine As String
+    Dim VpComplement As List(Of String)
+    Dim VpMyCard As clsMyCard
+    Dim VpType As String
+    Dim VpFound As Boolean
+    Dim VpIndex As Integer
+    Dim VpLen As Integer
+        If VpCarac Is Nothing Then Return False
+        VpFile = New StreamReader(VpEditionPath.Replace("#", "_checklist_en"), Encoding.Default)
+        VpComplement = New List(Of String)
+        'Parcours de la checklist
+        Do While Not VpFile.EndOfStream
+            VpLine = VpFile.ReadLine.Trim
+            VpFLine = VpLine.Replace(vbTab, " ")
+            'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
+            If VpFLine.Contains(" " + VpCarac(0) + " ") Then
+                VpIndex = VpLine.IndexOf(VpCarac(0))
+                VpLen = VpCarac(0).Length
+                VpFound = True
+            '(évite les erreurs dues au caractère apostrophe dans des charsets exotiques !)
+            ElseIf VpFLine.Contains(" " + VpCarac(0).Replace("'", "") + " ") Then
+                VpIndex = VpLine.IndexOf(VpCarac(0).Replace("'", ""))
+                VpLen = VpCarac(0).Length - 1
+                VpFound = True
+            Else
+                VpFound = False
+            End If
+            If VpFound Then
+                'à la recherche du nom de l'auteur, de la couleur et de la rareté de la carte (attention, remplacement des tabulations)
+                VpLine = VpLine.Substring(VpIndex + VpLen).Replace(vbTab, "  ").Trim
+                While VpLine.Contains("  ")
+                    VpComplement.Add(VpLine.Substring(0, VpLine.IndexOf("  ")))
+                    VpLine = VpLine.Substring(VpLine.IndexOf("  ") + 2)
+                End While
+                VpComplement.Add(VpLine)
+                'On sort dès qu'on a trouvé, inutile de parcourir tout le fichier
+                Exit Do
+            End If
+        Loop
+        VpFile.Close
+        If VpComplement.Count = 0 Then
+            Call Me.AddToLog("Impossible de trouver la correspondance pour la carte " + VpCarac(0) + "...", eLogType.Warning)
+            Return False
+        Else
+            Try
+                VpMyCard = New clsMyCard(VpCarac, VpComplement)
+                'Insertion dans la table Card (Series, Title, EncNbr, MultiverseId, 1, Null, Rarity, Type, SubType, 1, 0, Null, 'N', Null, Null, Author, False, 10, 10, CardText, Null)
+                'VgDBCommand.CommandText = "Insert Into Card (Series, Title, EncNbr, MultiverseId, Versions, CardNbr, Rarity, Type, SubType, myPrice, Price, PriceDate, Condition, FoilPrice, FoilDate, Artist, CenterText, TextSize, FlavorSize, CardText, FlavorText, SpecialDoubleCard) Values ('" + VpSerieCD + "', '" + VpMyCard.Title.Replace("'", "''") + "', " + VpEncNbr.ToString + ", 0, 1, Null, '" + VpMyCard.Rarity + "', '" + VpMyCard.MyType + "', " + VpMycard.MySubType + ", 1, 0, Null, 'N', Null, Null, '" + VpMyCard.Author.Replace("'", "''") + "', False, 10, 10, " + VpMyCard.MyCardText + ", Null, False);"
+                'VgDBCommand.ExecuteNonQuery
+                'Insertion dans la table CardFR où par défaut le nom français sera le nom anglais jusqu'à mise à jour (EncNbr, TitleFR)
+                'VgDBCommand.CommandText = "Insert Into CardFR Values (" + VpEncNbr.ToString + ", '" + VpMyCard.Title.Replace("'", "''") + "');"
+                'VgDBCommand.ExecuteNonQuery
+                'Insertion (ou mise à jour) dans la table Spell (Title, LastPrint, Color, Null, Null, myCost, Cost, Nullx32)
+                'VgDBCommand.CommandText = "Insert Into Spell (Title, LastPrint, Color, Goal, Rating, myCost, Cost, CostA, CostB, CostU, CostG, CostR, CostW, CostX, ConvCost, CostLife, CostUnsum, CostSac, CostDisc, Kicker, Buyback, Flashback, Cycling, Madness, Upkeep, UpkeepMana, UpkeepLife, UpkeepSac, UpkeepDisc, Cumulative, Echo, Phasing, Fading, Cantrip, Threshold, Legal1, LegalE, LegalB, Rulings) Values ('" + VpMyCard.Title.Replace("'", "''") + "', '" + VpSerieCD + "', '" + VpMyCard.MyColor + "', Null, Null, " + VpMyCard.GetMyCost + ", " + VpMyCard.Cost + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
+                'VgDBCommand.ExecuteNonQuery
+                VpType = VpMyCard.MyType
+                'Si c'est une nouvelle créature (ou créature-artefact ou arpenteur), insertion dans la table Creature (Title, Power, Tough, Nullx37)
+                If VpType = "P" Or VpType = "U" Or VpType = "C" Or ( VpType = "A" And VpMyCard.Power <> "" And VpMyCard.Tough <> "") Then
+                    'VgDBCommand.CommandText = "Insert Into Creature Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyPower + ", " + VpMyCard.MyTough + ", Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null, Null);"
+                    'VgDBCommand.ExecuteNonQuery
+                End If
+                'Si c'est une nouvelle carte, insertion dans la table TextesFR où par défaut le texte français sera le texte anglais jusqu'à mise à jour (CardName, TexteFR)
+                Try
+                    'VgDBCommand.CommandText = "Insert Into TextesFR (CardName, TexteFR) Values ('" + VpMyCard.Title.Replace("'", "''") + "', " + VpMyCard.MyCardText + ");"
+                    'VgDBCommand.ExecuteNonQuery
+                Catch   'Trappe d'erreur au cas où une mise à jour de textes VF a été faite avant que l'édition n'ait été ajoutée (auquel cas TextesFR est déjà bon et il n'y a rien de plus à faire)
+                End Try
+            Catch
+                Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpCarac(0) + "...", eLogType.Warning)
+                Return False
+            End Try
+        End If
+        Return True
+    End Function
+    Private Function ParseNewCard(VpFile As StreamReader) As String()
+    Const CpAlternateStart As String    = "Card Name:"
+    Const CpAlternateStart2 As String   = "Name:"
+    Dim CpBalises() As String           = {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}        
+    Dim VpLine As String
+    Dim VpCarac(0 To CpBalises.Length - 1) As String
+    Dim VpFound As Boolean
+    Dim VpMulti As Boolean
+        VpLine = VpFile.ReadLine.Trim
+        If VpLine.StartsWith(CpBalises(0)) Or VpLine.StartsWith(CpAlternateStart) Or VpLine.StartsWith(CpAlternateStart2) Then
+            For VpI As Integer = 0 To CpBalises.Length - 2
+                VpFound = False
+                VpMulti = False
+                Do
+                    'Analyse de la ligne selon les balises
+                    If VpLine.StartsWith(CpBalises(VpI)) Or VpI = 0 Then
+                        VpCarac(VpI) = VpLine.Replace(CpBalises(VpI), "").Replace(CpAlternateStart, "").Replace(CpAlternateStart2, "").Trim
+                        VpFound = True
+                        If VpI = 4 Then 'La 5ème balise (indicée 4) "Rules Text:" est une balise dont le contenu peut prendre plusieurs lignes
+                            VpMulti = True
+                        End If
+                    ElseIf VpMulti And VpLine.StartsWith(CpBalises(VpI + 1)) Then 'si on voit la balise suivante, c'est qu'on a fini
+                        VpMulti = False
+                    ElseIf VpMulti Then
+                        VpCarac(VpI) = VpCarac(VpI) + vbCrLf + VpLine
+                    End If
+                    'Préaparation de la ligne suivante
+                    If Not VpFile.EndOfStream Then
+                        VpLine = VpFile.ReadLine.Trim
+                    Else
+                        Exit Do 'si tout se passe bien, cette ligne ne devrait jamais être exécutée avant l'insertion de la dernière carte
+                    End If
+                Loop Until VpFound And Not VpMulti
+            Next VpI
+            Return VpCarac
+        End If
+        Return Nothing
+    End Function
     Private Sub ListSubtypes
     '---------------------------------------------------------------------------------------------------
     'Liste les sous-types non traduits et les trie par ordre d'occurrences, du plus répandu au plus rare
@@ -3361,6 +3553,13 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
+    Sub MnuSeriesVirtualAddClick(sender As Object, e As EventArgs)
+        Me.dlgBrowse.SelectedPath = ""
+        Me.dlgBrowse.ShowDialog
+        If Me.dlgBrowse.SelectedPath <> "" Then
+            Call Me.VirtualAdd
+        End If
+    End Sub
     Public Class clsPriceFilesComparer
         Implements IComparer(Of FileSystemInfo)
         Public Function Compare(ByVal x As FileSystemInfo, ByVal y As FileSystemInfo) As Integer Implements IComparer(Of FileSystemInfo).Compare
@@ -3556,5 +3755,238 @@ Public Partial Class MainForm
                 End If
             End Function
         End Class
+    End Class
+    Public Class clsMyCard
+        Private VmTitle As String
+        Private VmCost As String
+        Private VmType As String
+        Private VmSubType As String
+        Private VmPower As String
+        Private VmTough As String
+        Private VmCardText As String
+        Private VmAuthor As String
+        Private VmColor As String
+        Private VmRarity As String
+        Public Sub New(VpCarac() As String, Optional VpComplement As List(Of String) = Nothing)
+        Dim VpStrs() As String
+            If VpCarac Is Nothing Then Exit Sub
+            'Titre, coût, type, sous-type, attaque, défense, texte détaillé
+            VmTitle = VpCarac(0).Trim
+            VmCost = VpCarac(1).Trim
+            VpStrs = VpCarac(2).Replace("—", "-").Split(New String() {" - "}, StringSplitOptions.None)
+            VmType = VpStrs(0).Trim
+            If VpStrs.Length > 1 Then
+                VmSubType = VpStrs(1).Trim
+            Else
+                VmSubType = ""
+            End If
+            If VpCarac(3).Contains("/") Then
+                VpStrs = VpCarac(3).Split("/")
+                VmPower = VpStrs(0).Replace("(", "").Trim
+                VmTough = VpStrs(1).Replace(")", "").Trim
+            Else
+                VmPower = ""
+                VmTough = ""
+            End If
+            VmCardText = VpCarac(4)
+            'Auteur, couleur, rareté
+            If Not VpComplement Is Nothing Then
+                VmAuthor = VpComplement.Item(0).ToString.Trim
+                VmColor = VpComplement.Item(1).ToString.Trim
+                If VmColor.Contains("/") Then
+                    VmColor = "Multicolor"
+                End If
+                VmRarity = VpComplement.Item(2).ToString.Trim
+            End If
+        End Sub
+        Public Function GetMyCost As String
+            Return Me.MyCost(VmCost).ToString
+        End Function
+        Public Function MyType As String
+            '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)
+            If VmType.Contains("Artifact") Then
+                Return "A"
+            ElseIf VmType.Contains("Instant") Then
+                Return "I"
+            ElseIf VmType.Contains("Enchantment") Then
+                If VmSubType = "Aura" Then
+                    Return "E"
+                Else
+                    Return "T"
+                End If
+            ElseIf VmType.Contains("Token") Then
+                Return "K"
+            ElseIf VmType.Contains("Creature") Or VmType.Contains("Summon") Then
+                If VmCardText.Trim = "" Then
+                    Return "C"      'pas de texte : créature "classique"
+                Else
+                    Return "U"      'texte descriptif : créature avec capacité
+                End If
+            ElseIf VmType.Contains("Land") Then
+                Return "L"
+            ElseIf VmType.Contains("Sorcery") Then
+                Return "S"
+            ElseIf VmType.Contains("Interrupt") Then
+                Return "N"
+            ElseIf VmType.Contains("Planeswalker") Then
+                Return "P"
+            ElseIf VmType.Contains("Plane") Then
+                Return "Q"
+            ElseIf VmType.Contains("Phenomenon") Then
+                Return "H"
+            ElseIf VmType.Contains("Conspiracy") Then
+                Return "Y"
+            ElseIf VmType.Contains("Scheme") Then
+                Return "Z"
+            Else
+                Return ""
+            End If
+        End Function
+        Public Function MySubType As String
+            If VmSubType = "" Then
+                Return "Null"
+            ElseIf VmType.Contains("Artifact Creature") Then
+                Return "'Creature " + VmSubType.Replace("'", "''") + "'"
+            Else
+                Return "'" + VmSubType.Replace("'", "''") + "'"
+            End If
+        End Function
+        Public Function MyPower As String
+            If VmPower = "" Then
+                Return "'0'"
+            Else
+                Return "'" + VmPower + "'"
+            End If
+        End Function
+        Public Function MyTough As String
+            If VmTough = "" Then
+                Return "'0'"
+            Else
+                Return "'" + VmTough + "'"
+            End If
+        End Function
+        Public Function MyCardText As String
+            If VmCardText = "" Then
+                Return "Null"
+            Else
+                Return "'" + VmCardText.Replace("'", "''").Replace("/#/", vbCrLf + vbCrLf + "----" + vbCrLf + vbCrLf) + "'"
+            End If
+        End Function
+        Public Function MyColor As String
+        Dim VpMyType As String
+            If VmType.Contains("Token") OrElse VmColor = "" Then    'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'une machination, d'un arpenteur incolore ou d'un jeton
+                VpMyType = Me.MyType
+                Select Case VpMyType
+                    Case "H", "Q", "Y", "Z", "P"
+                        Return "A"
+                    Case "K"
+                        Return "T"
+                    Case Else
+                        Return VpMyType
+                End Select
+            Else
+                Select Case VmColor
+                    Case "Colorless (Artifact)", "Colorless", "Artifact", "A"
+                        Return "A"
+                    Case "Black", "B"
+                        Return "B"
+                    Case "Green", "G"
+                        Return "G"
+                    Case "Colorless (Land)", "Land", "L"
+                        Return "L"
+                    Case "Multicolor", "Z"
+                        Return "M"
+                    Case "Red", "R"
+                        Return "R"
+                    Case "Blue", "U"
+                        Return "U"
+                    Case "White", "W"
+                        Return "W"
+                    'Cas mal géré des double cartes
+                    Case "X"
+                        Return "X"
+                    Case Else
+                        Return ""
+                End Select
+            End If
+        End Function
+        Public ReadOnly Property Title As String
+            Get
+                Return VmTitle
+            End Get
+        End Property
+        Public ReadOnly Property Cost As String
+            Get
+                If VmCost <> "" Then
+                    Return "'" + VmCost + "'"
+                Else
+                    Return "Null"
+                End If
+            End Get
+        End Property
+        Public ReadOnly Property Type As String
+            Get
+                Return VmType
+            End Get
+        End Property
+        Public ReadOnly Property SubType As String
+            Get
+                Return VmSubType
+            End Get
+        End Property
+        Public ReadOnly Property Power As String
+            Get
+                Return VmPower
+            End Get
+        End Property
+        Public ReadOnly Property Tough As String
+            Get
+                Return VmTough
+            End Get
+        End Property
+        Public ReadOnly Property CardText As String
+            Get
+                Return VmCardText
+            End Get
+        End Property
+        Public ReadOnly Property Author As String
+            Get
+                Return VmAuthor
+            End Get
+        End Property
+        Public ReadOnly Property Rarity As String
+            Get
+                Return VmRarity
+            End Get
+        End Property
+        Private Function MyCost(VpStr As String) As Integer
+        Dim VpStrs() As String
+            If VpStr = "0" Then
+                Return 0
+            ElseIf VpStr.Contains(" // ") Then
+                VpStrs = VpStr.Split(New String() {" // "}, StringSplitOptions.None)
+                Return MyInnerCost(VpStrs(0)) + MyInnerCost(VpStrs(1))
+            Else
+                Return MyInnerCost(VpStr)
+            End If
+        End Function
+        Private Function MyInnerCost(VpStr As String) As Integer
+        Dim VpColorless As Integer
+            VpColorless = Val(VpStr)
+            If VpColorless <> 0 Then
+                Return VpStr.Replace(VpColorless.ToString.Trim, "").Length + VpColorless - 4 * StrCount(VpStr, "(")
+            Else
+                Return VpStr.Length - 4 * StrCount(VpStr, "(")
+            End If
+        End Function
+        Private Function StrCount(VpStr As String, VpChar As String) As Integer
+        Dim VpCounter As Integer = 0
+            For VpI As Integer = 0 To VpStr.Length - 1
+                If VpStr.Substring(VpI, 1) = VpChar Then
+                    VpCounter = VpCounter + 1
+                End If
+            Next VpI
+            Return VpCounter
+        End Function
     End Class
 End Class
