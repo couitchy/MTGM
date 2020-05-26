@@ -1527,7 +1527,7 @@ Public Partial Class MainForm
             Case "M6"
                 Return "magic2015#" + VpStr
             Case "DP"
-                Return "duelsoftheplansewalkers#" + VpStr
+                Return "duelsoftheplaneswalkers#" + VpStr
             Case "FM"
                 Return "fridaynightmagic#" + VpStr
             Case "IS"
@@ -1557,7 +1557,7 @@ Public Partial Class MainForm
             Case "DT"
                 Return "dragonsoftarkir#" + VpStr
             Case "DJ"
-                Return "DuelDecksKioravsElspeth#" + VpStr
+                Return "DuelDecksElspethvsKiora#" + VpStr
             Case "MU"
                 Return "modernmasters2015#" + VpStr
             Case "OR"
@@ -1868,7 +1868,7 @@ Public Partial Class MainForm
                 Return "CY"
             Case "magic2015"
                 Return "M6"
-            Case "duelsoftheplansewalkers"
+            Case "duelsoftheplaneswalkers"
                 Return "DP"
             Case "fridaynightmagic"
                 Return "FM"
@@ -1898,7 +1898,7 @@ Public Partial Class MainForm
                 Return "FR"
             Case "dragonsoftarkir"
                 Return "DT"
-            Case "DuelDecksKioravsElspeth"
+            Case "DuelDecksElspethvsKiora"
                 Return "DJ"
             Case "modernmasters2015"
                 Return "MU"
