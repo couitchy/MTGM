@@ -2063,7 +2063,7 @@ Public Partial Class MainForm
         If Me.dlgSave.FileName <> "" Then
             VpTxt = New StreamWriter(Me.dlgSave.FileName)
             Call Me.AddToLog("La construction du fichier d'en-têtes a commencé...", eLogType.Information, True)
-            VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR, SeriesCD_MO, SeriesCD_MW From Series;"
+            VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR, SeriesCD_MO, SeriesCD_MW From Series Order By Release;"
             VmDBReader = VmDBCommand.ExecuteReader
             With VmDBReader
                 While .Read
@@ -2358,7 +2358,7 @@ Public Partial Class MainForm
                         VpColors += "/" + VpColor
                     Next VpColor
                 End If
-                VpOut.WriteLine((VpNumberMax + CInt(.number.ToString.Replace("T", "").Replace("CH", ""))).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
+                VpOut.WriteLine((VpNumberMax + CInt(.number.ToString.Replace("T", "").Replace("CH", "").Replace("a", "").Replace("b", ""))).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
             End With
         Next VpToken
         VpOut.Flush
@@ -2382,7 +2382,7 @@ Public Partial Class MainForm
                     VpOut.WriteLine("Type: " + vbTab + .type)
                     If .types.Contains("Creature") Then
                         VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
-                    ElseIf .types.Contains("Planeswalker") Then
+                    ElseIf .types.Contains("Planeswalker") AndAlso .loyalty IsNot Nothing Then
                         VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
                     Else
                         VpOut.WriteLine("Pow/Tgh: " + vbTab)
