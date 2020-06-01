@@ -2324,13 +2324,13 @@ Public Partial Class MainForm
                         Next VpColor
                     End If
                     If .linkedTo IsNot Nothing Then
-                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "") + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
                     ElseIf .linkedFrom Is Nothing Then
-                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
                     End If
                     VpDone.Add(.name)
                 End If
-                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace("a", "").Replace("b", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
+                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
             End With
         Next VpCard
         'Tokens
