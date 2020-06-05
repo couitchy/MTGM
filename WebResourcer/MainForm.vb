@@ -3881,8 +3881,10 @@ Public Partial Class MainForm
                         Return "A"
                     Case "K"
                         Return "T"
+                    Case "L"
+                        Return "L"
                     Case Else
-                        Return VpMyType
+                        Return "A"
                 End Select
             Else
                 Select Case VmColor
@@ -3906,7 +3908,7 @@ Public Partial Class MainForm
                     Case "X"
                         Return "X"
                     Case Else
-                        Return ""
+                        Return "A"
                 End Select
             End If
         End Function
