@@ -1706,6 +1706,8 @@ Public Partial Class MainForm
                 Return "anthologies#" + VpStr
             Case "GN"
                 Return "gamenight2019#" + VpStr
+            Case "IK"
+                Return "ikorialairofbehemoths#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2048,6 +2050,8 @@ Public Partial Class MainForm
                 Return "AT"
             Case "gamenight2019"
                 Return "GN"
+            Case "ikorialairofbehemoths"
+                Return "IK"
             Case Else
                 Return ""
         End Select
@@ -2330,7 +2334,7 @@ Public Partial Class MainForm
                     End If
                     VpDone.Add(.name)
                 End If
-                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
+                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace("A", "").Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
             End With
         Next VpCard
         'Tokens
@@ -3814,7 +3818,7 @@ Public Partial Class MainForm
                 Else
                     Return "T"
                 End If
-            ElseIf VmType.Contains("Token") Then
+            ElseIf VmType.Contains("Token") Or VmType.Contains("Emblem") Or VmType.Contains("Card") Then
                 Return "K"
             ElseIf VmType.Contains("Creature") Or VmType.Contains("Summon") Then
                 If VmCardText.Trim = "" Then
