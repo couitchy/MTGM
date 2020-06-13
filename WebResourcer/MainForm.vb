@@ -2362,7 +2362,7 @@ Public Partial Class MainForm
                         VpColors += "/" + VpColor
                     Next VpColor
                 End If
-                VpOut.WriteLine((VpNumberMax + CInt(.number.ToString.Replace("T", "").Replace("CH", "").Replace("a", "").Replace("b", ""))).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
+                VpOut.WriteLine((VpNumberMax + CInt(.number.ToString.Replace(Char.ConvertFromUtf32(&H2605), "").Replace("T", "").Replace("CH", "").Replace("a", "").Replace("b", ""))).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
             End With
         Next VpToken
         VpOut.Flush
