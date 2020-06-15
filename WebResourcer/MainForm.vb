@@ -25,8 +25,9 @@ Imports System.Data
 Imports System.Data.OleDb
 Imports System.Net
 Imports System.IO
-Imports System.Text
 Imports System.Threading
+Imports System.Text
+Imports System.Text.RegularExpressions
 Imports System.Web.Script.Serialization
 Public Partial Class MainForm
     Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
@@ -2328,13 +2329,13 @@ Public Partial Class MainForm
                         Next VpColor
                     End If
                     If .linkedTo IsNot Nothing Then
-                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "") + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                        VpOut.WriteLine(Me.RemoveLetters(.number.ToString) + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
                     ElseIf .linkedFrom Is Nothing Then
-                        VpOut.WriteLine(.number.ToString.Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "") + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                        VpOut.WriteLine(Me.RemoveLetters(.number.ToString) + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
                     End If
                     VpDone.Add(.name)
                 End If
-                VpNumberMax = Math.Max(VpNumberMax, CInt(.number.ToString.Replace("A", "").Replace("a", "").Replace("b", "").Replace("c", "").Replace("d", "").Replace("e", "").Replace("f", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")))
+                VpNumberMax = Math.Max(VpNumberMax, CInt(Me.RemoveLetters(.number.ToString)))
             End With
         Next VpCard
         'Tokens
@@ -2362,12 +2363,15 @@ Public Partial Class MainForm
                         VpColors += "/" + VpColor
                     Next VpColor
                 End If
-                VpOut.WriteLine((VpNumberMax + CInt(.number.ToString.Replace(Char.ConvertFromUtf32(&H2605), "").Replace("T", "").Replace("CH", "").Replace("a", "").Replace("b", ""))).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
+                VpOut.WriteLine((VpNumberMax + CInt(Me.RemoveLetters(.number.ToString))).ToString + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + "C" + vbTab + VpJSONInfos.name)
             End With
         Next VpToken
         VpOut.Flush
         VpOut.Close
     End Sub
+    Private Function RemoveLetters(VpStr As String) As String
+        Return Regex.Replace(VpStr, "[^0-9.]", "").Replace(Char.ConvertFromUtf32(&H2605), "").Replace(Char.ConvertFromUtf32(&H2020), "")
+    End Function
     Private Sub BuildSpoilerList(VpJSONInfos As clsFullInfos, VpSuffix As String)
     Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpRarity As String
