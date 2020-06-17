@@ -1709,6 +1709,16 @@ Public Partial Class MainForm
                 Return "gamenight2019#" + VpStr
             Case "IK"
                 Return "ikorialairofbehemoths#" + VpStr
+            Case "C0"
+                Return "commander2020#" + VpStr
+            Case "O2"
+                Return "mastersedition2#" + VpStr
+            Case "O3"
+                Return "mastersedition3#" + VpStr
+            Case "O4"
+                Return "mastersedition4#" + VpStr
+            Case "SV"
+                Return "salvat2011#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2053,6 +2063,16 @@ Public Partial Class MainForm
                 Return "GN"
             Case "ikorialairofbehemoths"
                 Return "IK"
+            Case "commander2020"
+                Return "C0"
+            Case "mastersedition2"
+                Return "O2"
+            Case "mastersedition3"
+                Return "O3"
+            Case "mastersedition4"
+                Return "O4"
+            Case "salvat2011"
+                Return "SV"
             Case Else
                 Return ""
         End Select

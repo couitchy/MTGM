@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GN","GP","GR","GS","GW","GX","HD","HM","HP","IA","IK","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MG","MH","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","OD","OG","ON","OR","P1","P2","P3","PC","PG","PH","PI","PR","PS","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SH","SI","SK","SL","SM","SS","ST","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
+var codes_mtgm=["1E","3B","3W","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GN","GP","GR","GS","GW","GX","HD","HM","HP","IA","IK","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MG","MH","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PG","PH","PI","PR","PS","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SH","SI","SK","SL","SM","SS","ST","SV","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -189,6 +189,7 @@ series['PG'] = new Array('PG','','Pégase','600','2006');
 series['CT'] = new Array('CST','Coldsnap Theme Decks','','62','2007');
 series['AH'] = new Array('ARC','Archenemy','','4x60+20','2010');
 series['DP'] = new Array('DPA','Duel of the Planeswalkers','','5x60','2010');
+series['SV'] = new Array('PS1','Salvat 2011','','600','2011');
 series['MS'] = new Array('MMA','Modern Masters','','229','2013');
 series['CY'] = new Array('CNS','Conspiracy','','210','2014');
 series['MU'] = new Array('MM2','Modern Masters 2015','','249','2015');
@@ -202,7 +203,7 @@ series['CB'] = new Array('CM2','Commander Anthology Volume II','','400','2018');
 series['UM'] = new Array('UMA','Ultimate Masters','','254','2018');
 series['UT'] = new Array('PUM','Ultimate Box Topper','','40','2018');
 series['MH'] = new Array('MH1','Modern Horizons','Horizons du Modern','254','2019');
-var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH');
+var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH');
 
 // Masterpiece Series
 series['ZX'] = new Array('EXP','Zendikar Expeditions','','45','2016');
@@ -281,7 +282,8 @@ series['C6'] = new Array('C16','Commander 2016','','5x100','2016');
 series['C7'] = new Array('C17','Commander 2017','','4x100','2017');
 series['C8'] = new Array('C18','Commander 2018','','4x100','2018');
 series['C9'] = new Array('C19','Commander 2019','','4x100','2019');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9');
+series['C0'] = new Array('C20','Commander 2020','','5x100','2020');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0');
 
 // Introductory Sets
 series['IS'] = new Array('ITP','Introductory Two-Player Set','','4x30','1996');
@@ -304,7 +306,10 @@ var nonlegal = new Array('UG','UH','UB','UC');
 
 // Online Exclusive Sets
 series['ME'] = new Array('MED','Masters Edition','','195','2007');
-var online = new Array('ME');
+series['O2'] = new Array('ME2','Masters Edition II','','245','2008');
+series['O3'] = new Array('ME3','Masters Edition III','','230','2009');
+series['O4'] = new Array('ME4','Masters Edition IV','','269','2011');
+var online = new Array('ME','O2','O3','O4');
 
 // Promotionnal Sets
 series['HP'] = new Array('HP','Harper Prism','','5','1996');
