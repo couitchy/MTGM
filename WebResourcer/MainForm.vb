@@ -1479,6 +1479,8 @@ Public Partial Class MainForm
                 Return "innistrad#" + VpStr
             Case "DA"
                 Return "darkascension#" + VpStr
+            Case "S1"
+                Return "starter1999#" + VpStr
             Case "S2"
                 Return "starter2000#" + VpStr
             Case "R3"
@@ -1833,6 +1835,8 @@ Public Partial Class MainForm
                 Return "IN"
             Case "darkascension"
                 Return "DA"
+            Case "starter1999"
+                Return "S1"
             Case "starter2000"
                 Return "S2"
             Case "graveborn"
