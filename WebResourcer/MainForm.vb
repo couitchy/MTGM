@@ -1721,6 +1721,22 @@ Public Partial Class MainForm
                 Return "mastersedition4#" + VpStr
             Case "SV"
                 Return "salvat2011#" + VpStr
+            Case "RV"
+                Return "revisededition#" + VpStr
+            Case "UN"
+                Return "unlimitededition#" + VpStr
+            Case "AN"
+                Return "arabiannights#" + VpStr
+            Case "AQ"
+                Return "antiquities#" + VpStr
+            Case "DK"
+                Return "thedark#" + VpStr
+            Case "CE"
+                Return "collectorsedition#" + VpStr
+            Case "IC"
+                Return "internationalcollectorsedition#" + VpStr
+            Case "SG"
+                Return "summermagic#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2077,6 +2093,22 @@ Public Partial Class MainForm
                 Return "O4"
             Case "salvat2011"
                 Return "SV"
+            Case "revisededition"
+                Return "RV"
+            Case "unlimitededition"
+                Return "UN"
+            Case "arabiannights"
+                Return "AN"
+            Case "antiquities"
+                Return "AQ"
+            Case "thedark"
+                Return "DK"
+            Case "collectorsedition"
+                Return "CE"
+            Case "internationalcollectorsedition"
+                Return "IC"
+            Case "summermagic"
+                Return "SG"
             Case Else
                 Return ""
         End Select
