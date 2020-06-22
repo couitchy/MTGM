@@ -1737,6 +1737,12 @@ Public Partial Class MainForm
                 Return "internationalcollectorsedition#" + VpStr
             Case "SG"
                 Return "summermagic#" + VpStr
+            Case "PD"
+                Return "dragoncon#" + VpStr
+            Case "AL"
+                Return "limitededitionalpha#" + VpStr
+            Case "BE"
+                Return "limitededitionbeta#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2109,6 +2115,12 @@ Public Partial Class MainForm
                 Return "IC"
             Case "summermagic"
                 Return "SG"
+            Case "dragoncon"
+                Return "PD"
+            Case "limitededitionalpha"
+                Return "AL"
+            Case "limitededitionbeta"
+                Return "BE"
             Case Else
                 Return ""
         End Select
