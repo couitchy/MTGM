@@ -1743,6 +1743,16 @@ Public Partial Class MainForm
                 Return "limitededitionalpha#" + VpStr
             Case "BE"
                 Return "limitededitionbeta#" + VpStr
+            Case "4B"
+                Return "4thBB#" + VpStr
+            Case "LP"
+                Return "dcilegendmembership#" + VpStr
+            Case "DX"
+                Return "DuelDecksMirrodinPurevsNewPhyrexia#" + VpStr
+            Case "MI"
+                Return "magazineinserts#" + VpStr
+            Case "PT"
+                Return "protourcollectorset#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2121,6 +2131,16 @@ Public Partial Class MainForm
                 Return "AL"
             Case "limitededitionbeta"
                 Return "BE"
+            Case "4thBB"
+                Return "4B"
+            Case "dcilegendmembership"
+                Return "LP"
+            Case "DuelDecksMirrodinPurevsNewPhyrexia"
+                Return "DX"
+            Case "magazineinserts"
+                Return "MI"
+            Case "protourcollectorset"
+                Return "PT"
             Case Else
                 Return ""
         End Select

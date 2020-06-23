@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CE","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GN","GP","GR","GS","GW","GX","HD","HM","HP","IA","IC","IK","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MG","MH","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SG","SH","SI","SK","SL","SM","SS","ST","SV","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CE","CF","CH","CK","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GC","GK","GN","GP","GR","GS","GW","GX","HD","HM","HP","IA","IC","IK","IM","IN","IS","IV","JG","JN","JU","KD","KI","KT","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MD","ME","MG","MH","MI","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SG","SH","SI","SK","SL","SM","SS","ST","SV","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VS","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -17,6 +17,7 @@ series['SG'] = new Array('SUM','Summer Magic','','306','1994');
 series['3B'] = new Array('3ED','3rd Edition (Black Border)','3e Edition (Bords noirs)','306','1994');
 series['3W'] = new Array('3ED','3rd Edition (White Border)','3e Edition (Bords blancs)','306','1994');
 series['4E'] = new Array('4ED','4th Edition','4e Edition','378','1995');
+series['4B'] = new Array('4BB','4th Edition (Black Border)','4e Edition (Bords noirs)','378','1995');
 series['5E'] = new Array('5ED','5th Edition','5e Edition','449','1997');
 series['6E'] = new Array('6ED','6th Edition','6e Edition','350','1999');
 series['7E'] = new Array('7ED','7th Edition','7e Edition','350','2001');
@@ -32,7 +33,7 @@ series['M6'] = new Array('M15','Magic 2015','Edition 2015','269','2014');
 series['OR'] = new Array('ORI','Magic Origins','Magic Origins','272','2015');
 series['M9'] = new Array('M19','Magic 2019','Edition 2019','279','2018');
 series['M0'] = new Array('M20','Magic 2020','Edition 2020','280','2019');
-var bases = new Array('AL','BE','UN','RV','SG','3B','3W','4E','5E','6E','7E','8E','9E','1E','M1','M2','M3','M4','M5','M6','OR','M9','M0');
+var bases = new Array('AL','BE','UN','RV','SG','3B','3W','4E','4B','5E','6E','7E','8E','9E','1E','M1','M2','M3','M4','M5','M6','OR','M9','M0');
 
 // Extensions
 // No Block
@@ -221,6 +222,7 @@ series['D6'] = new Array('DDE','Duel Decks: Phyrexia vs. The Coalition','','2x60
 series['D2'] = new Array('DDF','Duel Decks: Elspeth vs. Tezzeret','','2x60','2010');
 series['D7'] = new Array('DDG','Duel Decks: Knights vs. Dragons','','2x60','2011');
 series['D8'] = new Array('DDH','Duel Decks: Ajani vs. Nicol Bolas','','2x60','2011');
+series['DX'] = new Array('TD2','Duel Decks: Mirrodin Pure vs. New Phyrexia','','2x60','2011');
 series['D9'] = new Array('DDI','Duel Decks: Venser vs. Koth','','2x60','2012');
 series['DG'] = new Array('DDJ','Duel Decks: Izzet vs. Golgari','','2x60','2012');
 series['D0'] = new Array('DDK','Duel Decks: Sorin vs. Tibalt','','2x60','2013');
@@ -234,7 +236,7 @@ series['DR'] = new Array('DDR','Duel Decks: Nissa vs. Ob Nixilis','','2x60','201
 series['DL'] = new Array('DDS','Duel Decks: Mind vs. Might','','2x60','2017');
 series['DU'] = new Array('DDT','Duel Decks: Merfolk vs. Goblins','','2x60','2017');
 series['DV'] = new Array('DDU','Duel Decks: Elves vs. Inventors','','2x60','2018');
-var dueldecks = new Array('D3','D5','D1','D4','D6','D2','D7','D8','D9','DG','D0','DD','DB','DH','DJ','DC','DQ','DR','DL','DU','DV');
+var dueldecks = new Array('D3','D5','D1','D4','D6','D2','D7','D8','DX','D9','DG','D0','DD','DB','DH','DJ','DC','DQ','DR','DL','DU','DV');
 
 // From The Vault
 series['V1'] = new Array('DRB','From The Vault: Dragons','','15','2008');
@@ -316,8 +318,11 @@ var online = new Array('ME','O2','O3','O4');
 series['CE'] = new Array('CED','Collectors\' Edition','','363','1993');
 series['IC'] = new Array('CEI','International Collectors\' Edition','','363','1993');
 series['PD'] = new Array('PDR','Dragon Con','','1','1994');
-series['HP'] = new Array('HP','Harper Prism','','5','1996');
-series['PR'] = new Array('PTC','Prerelease Events','','86','1997');
+series['HP'] = new Array('HP','HarperPrism','','5','1994');
+series['MI'] = new Array('PME','Magazine Inserts','','32','1995');
+series['LP'] = new Array('PLG','DCI Legend Membership','','2','1995');
+series['PT'] = new Array('PLG','Pro Tour Collector Set','','307','1996');
+series['PR'] = new Array('PPR','Prerelease Events','','86','1997');
 series['JG'] = new Array('JG','Judge Gift','','93','1998');
 series['FM'] = new Array('FNM','Friday Night Magic','','75','2000');
 series['RT'] = new Array('REP','Release Events','','45','2003');
@@ -327,4 +332,4 @@ series['GX'] = new Array('GPX','Grand Prix','','11','2007');
 series['MG'] = new Array('MGD','Magic Game Day','','34','2007');
 series['MY'] = new Array('MYD','Mythic Edition','','16','2018');
 series['GK'] = new Array('GK1','Guilds of Ravnica Guild Kits','','5x60','2018');
-var promo = new Array('CE','IC','PD','HP','PR','JG','FM','RT','MP','GW','GX','MG','MY','GK');
+var promo = new Array('CE','IC','PD','HP','MI','LP','PT','PR','JG','FM','RT','MP','GW','GX','MG','MY','GK');
