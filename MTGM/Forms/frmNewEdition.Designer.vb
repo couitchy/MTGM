@@ -71,6 +71,8 @@ Partial Class frmNewEdition
         Me.cmdAutoPrevious = New System.Windows.Forms.Button
         Me.cmdAutoNext = New System.Windows.Forms.Button
         Me.chkAllNone = New System.Windows.Forms.CheckBox
+        Me.optSortDate = New System.Windows.Forms.RadioButton
+        Me.optSortName = New System.Windows.Forms.RadioButton
         Me.grpData.SuspendLayout
         Me.splitH.Panel1.SuspendLayout
         Me.splitH.Panel2.SuspendLayout
@@ -393,6 +395,8 @@ Partial Class frmNewEdition
         '
         'grpAuto
         '
+        Me.grpAuto.Controls.Add(Me.optSortName)
+        Me.grpAuto.Controls.Add(Me.optSortDate)
         Me.grpAuto.Controls.Add(Me.chkAllNone)
         Me.grpAuto.Controls.Add(Me.lblStatus)
         Me.grpAuto.Controls.Add(Me.lblAuto2)
@@ -469,6 +473,32 @@ Partial Class frmNewEdition
         Me.cmdAutoNext.UseVisualStyleBackColor = true
         AddHandler Me.cmdAutoNext.Click, AddressOf Me.CmdAutoNextClick
         '
+        'optSortDate
+        '
+        Me.optSortDate.AutoSize = true
+        Me.optSortDate.Checked = true
+        Me.optSortDate.Location = New System.Drawing.Point(76, 120)
+        Me.optSortDate.Name = "optSortDate"
+        Me.optSortDate.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.optSortDate.Size = New System.Drawing.Size(79, 17)
+        Me.optSortDate.TabIndex = 13
+        Me.optSortDate.TabStop = true
+        Me.optSortDate.Text = "Tri par date"
+        Me.optSortDate.UseVisualStyleBackColor = True
+        AddHandler Me.optSortDate.CheckedChanged, AddressOf Me.OptSortCheckedChanged
+        '
+        'optSortName
+        '
+        Me.optSortName.AutoSize = true
+        Me.optSortName.Location = New System.Drawing.Point(161, 120)
+        Me.optSortName.Name = "optSortName"
+        Me.optSortName.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.optSortName.Size = New System.Drawing.Size(63, 17)
+        Me.optSortName.TabIndex = 14
+        Me.optSortName.Text = "par nom"
+        Me.optSortName.UseVisualStyleBackColor = true
+        AddHandler Me.optSortName.CheckedChanged, AddressOf Me.OptSortCheckedChanged
+        '
         'chkAllNone
         '
         Me.chkAllNone.AutoSize = true
@@ -512,6 +542,8 @@ Partial Class frmNewEdition
         Me.grpAuto.PerformLayout
         Me.ResumeLayout(false)
     End Sub
+    Private optSortDate As System.Windows.Forms.RadioButton
+    Private optSortName As System.Windows.Forms.RadioButton
     Private chkAllNone As System.Windows.Forms.CheckBox
     Private optUpdate As System.Windows.Forms.RadioButton
     Private lblStatus As System.Windows.Forms.Label

@@ -3,11 +3,13 @@ Imports System.Text
 Imports System.Globalization
 Public Partial Class frmNewEdition
     Private VmEditionHeader As New clsEditionHeader
+    Private VmEditions As List(Of Object)
     Private VmEncNbr0 As Long = -1
     Private VmBusy As Boolean = False
     Public Sub New
         Call Me.InitializeComponent
         Me.picMagic.Image = Image.FromFile(VgOptions.VgSettings.MagicBack)
+        VmEditions = New List(Of Object)
     End Sub
     Private Function InsertHeader As Boolean
     '----------------------------------------------------------------
@@ -148,10 +150,12 @@ Public Partial Class frmNewEdition
     Dim VpMustAdd As Boolean
     Dim VpWidth As Integer
     Dim VpMaxWidth As Integer = Integer.MinValue
+    Dim VpFirstQuery As Boolean
         If Not File.Exists(Application.StartupPath + mdlConstGlob.CgUpSeries) Then
             Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL12), mdlConstGlob.CgUpSeries)
         End If
         If File.Exists(Application.StartupPath + mdlConstGlob.CgUpSeries) Then
+            VpFirstQuery = ( VmEditions.Count = 0 )
             VpAlready = Me.BuildList("Select UCase(SeriesNM) From Series;")
             VpSeriesInfos = New StreamReader(Application.StartupPath + mdlConstGlob.CgUpSeries)
             Do While Not VpSeriesInfos.EndOfStream
@@ -168,6 +172,9 @@ Public Partial Class frmNewEdition
                     If VpMustAdd Then
                         VpNew.Add(VpLine)
                         Me.chkNewEditionAuto.Items.Add(VpInfos(2), False)
+                        If VpFirstQuery Then
+                            VmEditions.Add(VpInfos(2))
+                        End If
                         VpWidth = TextRenderer.MeasureText(VpInfos(2), Me.chkNewEditionAuto.Font).Width
                         VpMaxWidth = Math.Max(VpWidth, VpMaxWidth)
                     End If
@@ -521,6 +528,14 @@ Public Partial Class frmNewEdition
     End Sub
     Sub OptManualCheckedChanged(sender As Object, e As EventArgs)
         Me.lnklblAssist.Enabled = Me.optManual.Checked
+    End Sub
+    Sub OptSortCheckedChanged(sender As Object, e As EventArgs)
+        VmBusy = True
+        Me.chkNewEditionAuto.Items.Clear
+        Me.chkNewEditionAuto.Sorted = Me.optSortName.Checked
+        Me.chkNewEditionAuto.Items.AddRange(VmEditions.ToArray)
+        Me.chkAllNone.Checked = False
+        VmBusy = False
     End Sub
     Sub ChkAllNoneCheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
         If VmBusy Then Exit Sub
