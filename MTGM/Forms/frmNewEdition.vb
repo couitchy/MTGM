@@ -556,6 +556,7 @@ Public Partial Class frmNewEdition
                 VpInfos = VpLine.Split("#")
                 If VpInfos(2) = VpToAdd.ToString Then
                     Call Me.UpdateSerie(VpInfos, VpMulti)
+                    VmEditions.Remove(VpToAdd)
                     Exit For
                 End If
             Next VpLine
