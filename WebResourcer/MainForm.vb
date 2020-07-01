@@ -1745,6 +1745,8 @@ Public Partial Class MainForm
                 Return "limitededitionbeta#" + VpStr
             Case "4B"
                 Return "4thBB#" + VpStr
+            Case "4E"
+                Return "4thWB#" + VpStr
             Case "LP"
                 Return "dcilegendmembership#" + VpStr
             Case "DX"
@@ -1753,6 +1755,134 @@ Public Partial Class MainForm
                 Return "magazineinserts#" + VpStr
             Case "PT"
                 Return "protourcollectorset#" + VpStr
+            Case "5E"
+                Return "5th#" + VpStr
+            Case "6E"
+                Return "6th#" + VpStr
+            Case "7E"
+                Return "7th#" + VpStr
+            Case "8E"
+                Return "8th#" + VpStr
+            Case "9E"
+                Return "9th#" + VpStr
+            Case "L1"
+                Return "arenaleague1996#" + VpStr
+            Case "L2"
+                Return "arenaleague1999#" + VpStr
+            Case "L3"
+                Return "arenaleague2000#" + VpStr
+            Case "L4"
+                Return "arenaleague2001#" + VpStr
+            Case "L5"
+                Return "arenaleague2002#" + VpStr
+            Case "L6"
+                Return "arenaleague2003#" + VpStr
+            Case "L7"
+                Return "arenaleague2004#" + VpStr
+            Case "L8"
+                Return "arenaleague2005#" + VpStr
+            Case "L9"
+                Return "arenaleague2006#" + VpStr
+            Case "CL"
+                Return "celebrationcards#" + VpStr
+            Case "EX"
+                Return "exodus#" + VpStr
+            Case "JU"
+                Return "judgment#" + VpStr
+            Case "JR"
+                Return "juniorsuperseries#" + VpStr
+            Case "LG"
+                Return "legions#" + VpStr
+            Case "MM"
+                Return "mercadianmasques#" + VpStr
+            Case "MC"
+                Return "microprosepromos#" + VpStr
+            Case "MR"
+                Return "mirage#" + VpStr
+            Case "MD"
+                Return "mirrodin#" + VpStr
+            Case "GB"
+                Return "multiversegiftbox#" + VpStr
+            Case "NE"
+                Return "nemesis#" + VpStr
+            Case "OD"
+                Return "odyssey#" + VpStr
+            Case "ON"
+                Return "onslaught#" + VpStr
+            Case "PS"
+                Return "planeshift#" + VpStr
+            Case "P2"
+                Return "portalsecondage#" + VpStr
+            Case "P3"
+                Return "portalthreekingdoms#" + VpStr
+            Case "P1"
+                Return "portal#" + VpStr
+            Case "PY"
+                Return "prophecy#" + VpStr
+            Case "SC"
+                Return "scourge#" + VpStr
+            Case "SH"
+                Return "stronghold#" + VpStr
+            Case "TP"
+                Return "tempest#" + VpStr
+            Case "TO"
+                Return "torment#" + VpStr
+            Case "UG"
+                Return "unglued#" + VpStr
+            Case "UD"
+                Return "urzasdestiny#" + VpStr
+            Case "UL"
+                Return "urzaslegacy#" + VpStr
+            Case "US"
+                Return "urzassaga#" + VpStr
+            Case "VG"
+                Return "vanguard#" + VpStr
+            Case "VS"
+                Return "visions#" + VpStr
+            Case "WL"
+                Return "weatherlight#" + VpStr
+            Case "W1"
+                Return "worldchampionshipdecks1997#" + VpStr
+            Case "W2"
+                Return "worldchampionshipdecks1998#" + VpStr
+            Case "W3"
+                Return "worldchampionshipdecks1999#" + VpStr
+            Case "W4"
+                Return "worldchampionshipdecks2000#" + VpStr
+            Case "W5"
+                Return "worldchampionshipdecks2001#" + VpStr
+            Case "W6"
+                Return "worldchampionshipdecks2002#" + VpStr
+            Case "W7"
+                Return "worldchampionshipdecks2003#" + VpStr
+            Case "W8"
+                Return "worldchampionshipdecks2004#" + VpStr
+            Case "W0"
+                Return "worldchampionshippromos#" + VpStr
+            Case "AP"
+                Return "apocalypse#" + VpStr
+            Case "IV"
+                Return "invasion#" + VpStr
+            Case "BK"
+                Return "betrayersofkamigawa#" + VpStr
+            Case "CK"
+                Return "championsofkamigawa#" + VpStr
+            Case "SK"
+                Return "saviorsofkamigawa#" + VpStr
+            Case "AC"
+                Return "alliances#" + VpStr
+            Case "CH"
+                Return "chronicles#" + VpStr
+            Case "FE"
+                Return "fallenempires#" + VpStr
+            Case "HP"
+                Return "harperprism#" + VpStr
+            Case "HM"
+                Return "homelands#" + VpStr
+            Case "IA"
+                Return "iceage#" + VpStr
+            Case "LE"
+                Return "legends#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2133,6 +2263,8 @@ Public Partial Class MainForm
                 Return "BE"
             Case "4thBB"
                 Return "4B"
+            Case "4thWB"
+                Return "4E"
             Case "dcilegendmembership"
                 Return "LP"
             Case "DuelDecksMirrodinPurevsNewPhyrexia"
@@ -2141,6 +2273,134 @@ Public Partial Class MainForm
                 Return "MI"
             Case "protourcollectorset"
                 Return "PT"
+            Case "5th"
+                Return "5E"
+            Case "6th"
+                Return "6E"
+            Case "7th"
+                Return "7E"
+            Case "8th"
+                Return "8E"
+            Case "9th"
+                Return "9E"
+            Case "arenaleague1996"
+                Return "L1"
+            Case "arenaleague1999"
+                Return "L2"
+            Case "arenaleague2000"
+                Return "L3"
+            Case "arenaleague2001"
+                Return "L4"
+            Case "arenaleague2002"
+                Return "L5"
+            Case "arenaleague2003"
+                Return "L6"
+            Case "arenaleague2004"
+                Return "L7"
+            Case "arenaleague2005"
+                Return "L8"
+            Case "arenaleague2006"
+                Return "L9"
+            Case "celebrationcards"
+                Return "CL"
+            Case "exodus"
+                Return "EX"
+            Case "judgment"
+                Return "JU"
+            Case "juniorsuperseries"
+                Return "JR"
+            Case "legions"
+                Return "LG"
+            Case "mercadianmasques"
+                Return "MM"
+            Case "microprosepromos"
+                Return "MC"
+            Case "mirage"
+                Return "MR"
+            Case "mirrodin"
+                Return "MD"
+            Case "multiversegiftbox"
+                Return "GB"
+            Case "nemesis"
+                Return "NE"
+            Case "odyssey"
+                Return "OD"
+            Case "onslaught"
+                Return "ON"
+            Case "planeshift"
+                Return "PS"
+            Case "portalsecondage"
+                Return "P2"
+            Case "portalthreekingdoms"
+                Return "P3"
+            Case "portal"
+                Return "P1"
+            Case "prophecy"
+                Return "PY"
+            Case "scourge"
+                Return "SC"
+            Case "stronghold"
+                Return "SH"
+            Case "tempest"
+                Return "TP"
+            Case "torment"
+                Return "TO"
+            Case "unglued"
+                Return "UG"
+            Case "urzasdestiny"
+                Return "UD"
+            Case "urzaslegacy"
+                Return "UL"
+            Case "urzassaga"
+                Return "US"
+            Case "vanguard"
+                Return "VG"
+            Case "visions"
+                Return "VS"
+            Case "weatherlight"
+                Return "WL"
+            Case "worldchampionshipdecks1997"
+                Return "W1"
+            Case "worldchampionshipdecks1998"
+                Return "W2"
+            Case "worldchampionshipdecks1999"
+                Return "W3"
+            Case "worldchampionshipdecks2000"
+                Return "W4"
+            Case "worldchampionshipdecks2001"
+                Return "W5"
+            Case "worldchampionshipdecks2002"
+                Return "W6"
+            Case "worldchampionshipdecks2003"
+                Return "W7"
+            Case "worldchampionshipdecks2004"
+                Return "W8"
+            Case "worldchampionshippromos"
+                Return "W0"
+            Case "apocalypse"
+                Return "AP"
+            Case "invasion"
+                Return "IV"
+            Case "betrayersofkamigawa"
+                Return "BK"
+            Case "championsofkamigawa"
+                Return "CK"
+            Case "saviorsofkamigawa"
+                Return "SK"
+            Case "alliances"
+                Return "AC"
+            Case "chronicles"
+                Return "CH"
+            Case "fallenempires"
+                Return "FE"
+            Case "harperprism"
+                Return "HP"
+            Case "homelands"
+                Return "HM"
+            Case "iceage"
+                Return "IA"
+            Case "legends"
+                Return "LE"
             Case Else
                 Return ""
         End Select
