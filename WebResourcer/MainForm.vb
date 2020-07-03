@@ -2865,12 +2865,28 @@ Public Partial Class MainForm
             Application.DoEvents
         Next VpSerie
         For Each VpSerie As String In VpFound
+            For Each VpSuffix As String In New String() {"_spoiler_en.txt", "_checklist_en.txt", "_doubles_en.txt", "_titles_fr.txt"}
+                Call Me.CheckEncoding(Path.Combine(Me.dlgBrowse.SelectedPath, VpSerie + VpSuffix))
+            Next VpSuffix
+        Next VpSerie
+        For Each VpSerie As String In VpFound
             Call Me.AddToLog("*** Analyse de l'édition " + VpSerie, eLogType.Information)
             Call Me.AddNewEdition(Path.Combine(Me.dlgBrowse.SelectedPath, VpSerie + "#.txt"))
             Application.DoEvents
         Next VpSerie
         Call Me.AddToLog("La simulation d'ajout d'éditions est terminée.", eLogType.Information)
     End Sub
+    Private Sub CheckEncoding(VpPath As String)
+        If File.Exists(VpPath) Then
+            If Not Me.IsANSI(File.ReadAllBytes(VpPath)) Then
+                Call Me.AddToLog("Le fichier " + VpPath + " n'est pas encodé en ANSI...", eLogType.Warning)
+            End If
+        End If
+    End Sub
+    Private Function IsANSI(VpText As Byte()) As Boolean
+        'Vérifie que l'indicateur BOM n'est pas présent mais il faudrait faire mieux
+        Return ( VpText(0) <> &HEF )
+    End Function
     Private Sub AddNewEdition(VpEditionPath As String)
     '---------------------------------------------------------------------------------------
     'Ajoute à la base de données l'ensemble des cartes présentes dans les fichiers spécifiés
@@ -2880,7 +2896,7 @@ Public Partial Class MainForm
     Dim VpStrs() As String
         'Ajout des cartes
         Do While Not VpFile.EndOfStream
-            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpFile)) Then
+            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpEditionPath, VpFile)) Then
                 VpCounter = VpCounter + 1
             End If
         Loop
@@ -2890,6 +2906,9 @@ Public Partial Class MainForm
             VpFile = New StreamReader(VpEditionPath.Replace("#", "_titles_fr"), Encoding.Default)
             While Not VpFile.EndOfStream
                 VpStrs = VpFile.ReadLine.Split("#")
+                If VpStrs.Length <> 2 OrElse VpStrs(1).EndsWith(vbTab) OrElse VpStrs(1).EndsWith(" ") Then
+                    Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpStrs(0) + "(_titles_)...", eLogType.Warning)
+                End If
                 'VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.EncNbr >= " + VmEncNbr0.ToString + ";"
                 'VgDBCommand.ExecuteNonQuery
             End While
@@ -2900,6 +2919,9 @@ Public Partial Class MainForm
             VpFile = New StreamReader(VpEditionPath.Replace("#", "_doubles_en"), Encoding.Default)
             While Not VpFile.EndOfStream
                 VpStrs = VpFile.ReadLine.Split("#")
+                If VpStrs.Length <> 2 OrElse VpStrs(1).EndsWith(vbTab) OrElse VpStrs(1).EndsWith(" ") Then
+                    Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpStrs(0) + "(_doubles_)...", eLogType.Warning)
+                End If
                 'VpEncNbrDown = mdlToolbox.GetEncNbr(VpStrs(0), VpSerieCD)
                 'VpEncNbrTop = mdlToolbox.GetEncNbr(VpStrs(1), VpSerieCD)
                 'VgDBCommand.CommandText = "Insert Into CardDouble(EncNbrDownFace, EncNbrTopFace) Values (" + VpEncNbrDown.ToString + ", " + VpEncNbrTop.ToString + ");"
@@ -2929,6 +2951,9 @@ Public Partial Class MainForm
         'Parcours de la checklist
         Do While Not VpFile.EndOfStream
             VpLine = VpFile.ReadLine.Trim
+            If VpLine.EndsWith(vbTab) Then
+                Call Me.AddToLog("Le fichier " + VpEditionPath + " contient des tabulations superflues...", eLogType.Warning)
+            End If
             VpFLine = VpLine.Replace(vbTab, " ")
             'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
             If VpFLine.Contains(" " + VpCarac(0) + " ") Then
@@ -2984,13 +3009,13 @@ Public Partial Class MainForm
                 Catch   'Trappe d'erreur au cas où une mise à jour de textes VF a été faite avant que l'édition n'ait été ajoutée (auquel cas TextesFR est déjà bon et il n'y a rien de plus à faire)
                 End Try
             Catch
-                Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpCarac(0) + "...", eLogType.Warning)
+                Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpCarac(0) + "(_checklist_)...", eLogType.Warning)
                 Return False
             End Try
         End If
         Return True
     End Function
-    Private Function ParseNewCard(VpFile As StreamReader) As String()
+    Private Function ParseNewCard(VpEditionPath As String, VpFile As StreamReader) As String()
     Const CpAlternateStart As String    = "Card Name:"
     Const CpAlternateStart2 As String   = "Name:"
     Dim CpBalises() As String           = {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}        
@@ -2999,6 +3024,9 @@ Public Partial Class MainForm
     Dim VpFound As Boolean
     Dim VpMulti As Boolean
         VpLine = VpFile.ReadLine.Trim
+        If VpLine.EndsWith(vbTab) Then
+            Call Me.AddToLog("Le fichier " + VpEditionPath + " contient des tabulations superflues...", eLogType.Warning)
+        End If
         If VpLine.StartsWith(CpBalises(0)) Or VpLine.StartsWith(CpAlternateStart) Or VpLine.StartsWith(CpAlternateStart2) Then
             For VpI As Integer = 0 To CpBalises.Length - 2
                 VpFound = False
