@@ -2601,7 +2601,7 @@ Public Partial Class MainForm
         Call Me.BuildDoubles(VpJSONInfos, "_doubles_en.txt")
         'Listings alternatifs (éventuellement)
         If VpJSONInfos.special Then
-            If MessageBox.Show("L'édition semble contenir des cartes spéciales (double face ou double carte ou aventure)" + vbCrLf + "Voulez-vous générer les listings alternatifs ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+            If MessageBox.Show("L'édition semble contenir au moins une carte spéciale [double carte, double sens (haut-bas), double face (recto-verso), aventure]." + vbCrLf + "Voulez-vous générer les listings alternatifs ?" + vbCrLf + vbCrLf + vbCrLf + "RAPPEL :" + vbCrLf + vbCrLf + " - les doubles cartes et les aventures possèdent une entrée unique Nom 1 // Nom 2 (le fichier _doubles_ ne doit pas les mentionner)" + vbCrLf + vbCrLf + " - les doubles sens et les doubles faces possèdent deux entrées distinctes Nom 1 et Nom 2 (elles sont liées par le fichier _doubles_)", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
                 Call Me.AddToLog("Construction des listings alternatifs...", eLogType.Information)
                 Application.DoEvents
                 Call Me.BuildAllTitles(VpJSONInfos, "_titles_fr_special.txt")
@@ -2614,16 +2614,22 @@ Public Partial Class MainForm
     Private Sub BuildAllTitles(VpJSONInfos As clsFullInfos, VpSuffix As String)
     Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpAlready As New List(Of String)
+    Dim VpSkip As Boolean
         'Cards
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
                 If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing AndAlso .foreignData.Count > 0 Then
+                    VpSkip = True
                     If .linkedTo IsNot Nothing Then
                         VpOut.WriteLine(.name + " // " + .linkedTo.name + "#" + .getForeignName("French") + " // " + .linkedTo.getForeignName("French"))
+                        VpSkip = False
                     ElseIf .linkedFrom Is Nothing Then
                         VpOut.WriteLine(.name + "#" + .getForeignName("French"))
+                        VpSkip = False
                     End If
-                    VpAlready.Add(.name)
+                    If Not VpSkip Then
+                        VpAlready.Add(.name)
+                    End If
                 End If
             End With
         Next VpCard
@@ -2644,6 +2650,7 @@ Public Partial Class MainForm
     Dim VpColors As String
     Dim VpDone As New List(Of String)
     Dim VpNumberMax As Integer = 0
+    Dim VpSkip As Boolean
         VpOut.WriteLine("#" + vbTab + "Name" + vbTab + "Artist" + vbTab + "Color" + vbTab + "Rarity" + vbTab + "Set")
         'Cards
         VpJSONInfos.cards.Sort(New clsFullInfos.clsFullCardInfosComparer)
@@ -2676,12 +2683,17 @@ Public Partial Class MainForm
                             VpColors += "/" + VpColor
                         Next VpColor
                     End If
+                    VpSkip = True
                     If .linkedTo IsNot Nothing Then
                         VpOut.WriteLine(Me.RemoveLetters(.number.ToString) + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                        VpSkip = False
                     ElseIf .linkedFrom Is Nothing Then
                         VpOut.WriteLine(Me.RemoveLetters(.number.ToString) + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.name)
+                        VpSkip = False
                     End If
-                    VpDone.Add(.name)
+                    If Not VpSkip Then
+                        VpDone.Add(.name)
+                    End If
                 End If
                 VpNumberMax = Math.Max(VpNumberMax, CInt(Me.RemoveLetters(.number.ToString)))
             End With
@@ -2724,47 +2736,53 @@ Public Partial Class MainForm
     Dim VpOut As New StreamWriter(Me.dlgBrowse.SelectedPath + "\" + VpJSONInfos.name.ToLower.Replace(":", "").Replace(" ", "") + VpSuffix)
     Dim VpRarity As String
     Dim VpDone As New List(Of String)
+    Dim VpSkip As Boolean
         'Cards
         For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.cards
             With VpCard
                 If Not VpDone.Contains(.name) Then
+                    VpSkip = True
                     If .linkedTo IsNot Nothing Then
                         VpOut.WriteLine("Name: " + vbTab + .name + " // " + .linkedTo.name)
                         VpOut.WriteLine("Cost: " + vbTab + .getCost + " // " + .linkedTo.getCost)
+                        VpSkip = False
                     ElseIf .linkedFrom Is Nothing Then
                         VpOut.WriteLine("Name: " + vbTab + .name)
                         VpOut.WriteLine("Cost: " + vbTab + .getCost)
+                        VpSkip = False
                     End If
-                    VpOut.WriteLine("Type: " + vbTab + .type)
-                    If .types.Contains("Creature") Then
-                        VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
-                    ElseIf .types.Contains("Planeswalker") AndAlso .loyalty IsNot Nothing Then
-                        VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
-                    Else
-                        VpOut.WriteLine("Pow/Tgh: " + vbTab)
+                    If Not VpSkip Then
+                        VpOut.WriteLine("Type: " + vbTab + .type)
+                        If .types.Contains("Creature") Then
+                            VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
+                        ElseIf .types.Contains("Planeswalker") AndAlso .loyalty IsNot Nothing Then
+                            VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
+                        Else
+                            VpOut.WriteLine("Pow/Tgh: " + vbTab)
+                        End If
+                        If .linkedTo IsNot Nothing Then
+                            VpOut.WriteLine("Rules Text: " + vbTab + .getRules + "/#/" + .linkedTo.getRules)
+                        ElseIf .linkedFrom Is Nothing Then
+                            VpOut.WriteLine("Rules Text: " + vbTab + .getRules)
+                        End If
+                        Select Case .rarity
+                            Case "land", "basic land"
+                                VpRarity = "Land"
+                            Case "common"
+                                VpRarity = "Common"
+                            Case "uncommon"
+                                VpRarity = "Uncommon"
+                            Case "rare"
+                                VpRarity = "Rare"
+                            Case "mythic", "mythic rare"
+                                VpRarity = "Mythic Rare"
+                            Case Else
+                                VpRarity = .rarity
+                        End Select
+                        VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + VpRarity)
+                        VpOut.WriteLine("")
+                        VpDone.Add(.name)
                     End If
-                    If .linkedTo IsNot Nothing Then
-                        VpOut.WriteLine("Rules Text: " + vbTab + .getRules + "/#/" + .linkedTo.getRules)
-                    ElseIf .linkedFrom Is Nothing Then
-                        VpOut.WriteLine("Rules Text: " + vbTab + .getRules)
-                    End If
-                    Select Case .rarity
-                        Case "land", "basic land"
-                            VpRarity = "Land"
-                        Case "common"
-                            VpRarity = "Common"
-                        Case "uncommon"
-                            VpRarity = "Uncommon"
-                        Case "rare"
-                            VpRarity = "Rare"
-                        Case "mythic", "mythic rare"
-                            VpRarity = "Mythic Rare"
-                        Case Else
-                            VpRarity = .rarity
-                    End Select
-                    VpOut.WriteLine("Set/Rarity: " + vbTab + VpJSONInfos.name + " " + VpRarity)
-                    VpOut.WriteLine("")
-                    VpDone.Add(.name)
                 End If
             End With
         Next VpCard
@@ -2884,6 +2902,7 @@ Public Partial Class MainForm
         End If
     End Sub
     Private Function IsANSI(VpText As Byte()) As Boolean
+        If VpText.Length = 0 Then Return True
         'Vérifie que l'indicateur BOM n'est pas présent mais il faudrait faire mieux
         Return ( VpText(0) <> &HEF )
     End Function
