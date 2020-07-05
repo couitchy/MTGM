@@ -3072,6 +3072,8 @@ Public Partial Class MainForm
                 Loop Until VpFound And Not VpMulti
             Next VpI
             Return VpCarac
+        ElseIf VpLine <> "" Then
+            Call Me.AddToLog("Ligne parasite trouvée (_spoiler_, position approximative : " + VpFile.BaseStream.Position.ToString + ")", eLogType.Warning)
         End If
         Return Nothing
     End Function
