@@ -2581,6 +2581,7 @@ Public Partial Class MainForm
         'Récupération du json
         Call Me.AddToLog("Téléchargement des informations depuis MTG JSON...", eLogType.Information)
         Application.DoEvents
+        ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
         VpClient.DownloadFile(CmURL7.Replace("###", VpCode.ToUpper), Me.dlgBrowse.SelectedPath + "\" + VpCodeSafe + ".json")
         VpSerializer = New JavaScriptSerializer
         VpSerializer.MaxJsonLength = Integer.MaxValue
@@ -2918,12 +2919,19 @@ Public Partial Class MainForm
     '---------------------------------------------------------------------------------------
     'Ajoute à la base de données l'ensemble des cartes présentes dans les fichiers spécifiés
     '---------------------------------------------------------------------------------------
-    Dim VpFile As New StreamReader(VpEditionPath.Replace("#", "_spoiler_en"), Encoding.Default)
+    Dim VpFile As StreamReader
     Dim VpCounter As Integer = 0
     Dim VpStrs() As String
+    Dim VpSet As String = ""
+    Dim VpConfusion As Boolean = False
+        If Not File.Exists(VpEditionPath.Replace("#", "_spoiler_en")) Then
+            Call Me.AddToLog("Le fichier spoiler n'existe pas...", eLogType.Warning)
+            Return
+        End If
+        VpFile = New StreamReader(VpEditionPath.Replace("#", "_spoiler_en"), Encoding.Default)
         'Ajout des cartes
         Do While Not VpFile.EndOfStream
-            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpEditionPath, VpFile)) Then
+            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpEditionPath, VpFile, VpSet, VpConfusion), VpSet, VpConfusion) Then
                 VpCounter = VpCounter + 1
             End If
         Loop
@@ -2962,7 +2970,7 @@ Public Partial Class MainForm
         End If
         Call Me.AddToLog(VpCounter.ToString + " carte(s) ont été vérifiée(s) avec succès...", eLogType.Information)
     End Sub
-    Private Function AddNewCard(VpEditionPath As String, VpCarac() As String) As Boolean
+    Private Function AddNewCard(VpEditionPath As String, VpCarac() As String, VpSet As String, ByRef VpConfusion As Boolean) As Boolean
     Dim VpFile As StreamReader
     Dim VpLine As String
     Dim VpFLine As String
@@ -3012,6 +3020,10 @@ Public Partial Class MainForm
             Call Me.AddToLog("Impossible de trouver la correspondance pour la carte " + VpCarac(0) + "...", eLogType.Warning)
             Return False
         Else
+            If VpComplement.Item(VpComplement.Count - 1) <> VpSet And Not VpConfusion Then
+                Call Me.AddToLog("Confusion sur le nom de l'édition (" + VpSet + " ou " + VpComplement.Item(VpComplement.Count - 1) + ")", eLogType.Warning)
+                VpConfusion = True
+            End If
             Try
                 VpMyCard = New clsMyCard(VpCarac, VpComplement)
                 'Insertion dans la table Card (Series, Title, EncNbr, MultiverseId, 1, Null, Rarity, Type, SubType, 1, 0, Null, 'N', Null, Null, Author, False, 10, 10, CardText, Null)
@@ -3042,10 +3054,11 @@ Public Partial Class MainForm
         End If
         Return True
     End Function
-    Private Function ParseNewCard(VpEditionPath As String, VpFile As StreamReader) As String()
+    Private Function ParseNewCard(VpEditionPath As String, VpFile As StreamReader, ByRef VpSet As String, ByRef VpConfusion As Boolean) As String()
     Const CpAlternateStart As String    = "Card Name:"
     Const CpAlternateStart2 As String   = "Name:"
     Dim CpBalises() As String           = {"CardName:", "Cost:", "Type:", "Pow/Tgh:", "Rules Text:", "Set/Rarity:"}        
+    Dim VpStr As String
     Dim VpLine As String
     Dim VpCarac(0 To CpBalises.Length - 1) As String
     Dim VpFound As Boolean
@@ -3074,6 +3087,15 @@ Public Partial Class MainForm
                     'Préaparation de la ligne suivante
                     If Not VpFile.EndOfStream Then
                         VpLine = VpFile.ReadLine.Trim
+                        If VpLine.StartsWith(CpBalises(5)) Then
+                            VpStr = VpLine.Replace(CpBalises(5), "").Replace(vbTab, "").Replace("Token", "").Replace("Mythic Rare", "").Replace("Rare", "").Replace("Uncommon", "").Replace("Common", "").Replace("Land", "").Trim
+                            If VpSet = "" Then
+                                VpSet = VpStr
+                            ElseIf VpSet <> VpStr And Not VpConfusion Then
+                                Call Me.AddToLog("Confusion sur le nom de l'édition (" + VpSet + " ou " + VpStr + ")", eLogType.Warning)
+                                VpConfusion = True
+                            End If
+                        End If
                     Else
                         Exit Do 'si tout se passe bien, cette ligne ne devrait jamais être exécutée avant l'insertion de la dernière carte
                     End If
