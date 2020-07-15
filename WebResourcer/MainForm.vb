@@ -1883,6 +1883,10 @@ Public Partial Class MainForm
                 Return "iceage#" + VpStr
             Case "LE"
                 Return "legends#" + VpStr
+            Case "HH"
+                Return "happyholidays#" + VpStr
+            Case "CM"
+                Return "champsandstates#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2401,6 +2405,10 @@ Public Partial Class MainForm
                 Return "IA"
             Case "legends"
                 Return "LE"
+            Case "happyholidays"
+                Return "HH"
+            Case "champsandstates"
+                Return "CM"
             Case Else
                 Return ""
         End Select
