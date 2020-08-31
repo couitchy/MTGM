@@ -46,7 +46,7 @@
     End Function
     Public Function MyType As String
         '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)
-        If VmType.Contains("Artifact") Then
+        If VmType.Contains("Artifact") And Not VmType.Contains("Token") Then
             Return "A"
         ElseIf VmType.Contains("Instant") Then
             Return "I"

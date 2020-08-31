@@ -1814,6 +1814,7 @@ Public Module mdlToolbox
         Call SecureDelete(Application.StartupPath + CgUpPic + CgPicUpExt)
         Call SecureDelete(Application.StartupPath + CgMdSubTypes)
         Call SecureDelete(Application.StartupPath + CgMdSubTypesVF)
+        Call SecureDelete(Application.StartupPath + CgMdShippingCosts)
         For Each VpFile As FileInfo In (New DirectoryInfo(Application.StartupPath)).GetFiles("*_en.txt")
             Call SecureDelete(VpFile.FullName)
         Next VpFile

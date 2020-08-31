@@ -443,6 +443,7 @@ Partial Class MainForm
         Me.imglstCarac.Images.SetKeyName(57, "_le.png")
         Me.imglstCarac.Images.SetKeyName(58, "_lo.png")
         Me.imglstCarac.Images.SetKeyName(59, "_lp.png")
+        Me.imglstCarac.Images.SetKeyName(60, "_ll.png")
         '
         'cmnuTvw
         '

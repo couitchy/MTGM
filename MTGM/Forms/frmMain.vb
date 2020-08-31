@@ -579,8 +579,8 @@ Public Partial Class MainForm
                         End If
                     Next VpCard
                 Next VpSerie
-                Call SecureDelete(Application.StartupPath + CgUpMultiverse)
-                Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
+                Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse)
+                Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse2)
             Else
                 Call mdlToolbox.ShowWarning("Impossible de trouver le fichier '" + mdlConstGlob.CgUpMultiverse + "'")
             End If
@@ -840,8 +840,8 @@ Public Partial Class MainForm
                     End Try
                 Next VpCard
             Next VpSerie
-            Call SecureDelete(Application.StartupPath + CgUpMultiverse)
-            Call SecureDelete(Application.StartupPath + CgUpMultiverse2)
+            Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse)
+            Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse2)
         Else
             Call mdlToolbox.ShowWarning("Impossible de trouver le fichier '" + mdlConstGlob.CgUpMultiverse + "'")
         End If
@@ -2005,6 +2005,8 @@ Public Partial Class MainForm
                         VpImgIndex = 58
                     Case "p"
                         VpImgIndex = 59
+                    Case "l"
+                        VpImgIndex = 60
                     Case Else
                         VpImgIndex = -1
                 End Select
