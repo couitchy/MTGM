@@ -295,7 +295,7 @@ Public Partial Class frmNewEdition
                     End Try
                 End If
             Catch
-                Call mdlToolbox.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + "...")
+                Call mdlToolbox.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + " (" + VpSerieCD + ")...")
                 Return False
             End Try
         End If

@@ -56,7 +56,7 @@
             Else
                 Return "T"
             End If
-        ElseIf VmType.Contains("Token") Or VmType.Contains("Emblem") Or VmType.Contains("Card") Then
+        ElseIf VmType.Contains("Token") Or VmType.Contains("Emblem") Or VmType.Contains("Card") Or VmType.Contains("Vanguard") Then
             Return "K"
         ElseIf VmType.Contains("Creature") Or VmType.Contains("Summon") Then
             If VmCardText.Trim = "" Then

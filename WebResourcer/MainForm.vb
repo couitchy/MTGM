@@ -139,7 +139,7 @@ Public Partial Class MainForm
             VpOut.WriteLine("#Country;Code;Value max.;Quantity max.;Cost")
             For Each VpCountry As String In CmCountriesId
                 VpStr = Me.HTMLfromRequest(CmURL8.Replace(CmId2, VpCountry))
-                VpStr = VpStr.Substring(VpStr.IndexOf(CmKey9) + 15).Replace("&#x20AC;", "€").Replace(CmKey9B, ";")
+                VpStr = VpStr.Substring(VpStr.IndexOf(CmKey9) + 15).Replace("&#x20AC;", "€").Replace(CmKey9B, ";").Replace("&amp;", "&")
                 VpStrs = VpStr.Split(New String() {CmKey9C}, StringSplitOptions.None)
                 For Each VpStr2 As String In VpStrs
                     VpStrs2 = VpStr2.Split(";")
@@ -178,6 +178,7 @@ Public Partial Class MainForm
     Dim VpStr As String = ""
         VpRequest = WebRequest.Create(VpURL)
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0"
             VpAnswer = VpRequest.GetResponse().GetResponseStream()
             VpCurByte = VpAnswer.ReadByte
@@ -1887,6 +1888,14 @@ Public Partial Class MainForm
                 Return "happyholidays#" + VpStr
             Case "CM"
                 Return "champsandstates#" + VpStr
+            Case "X2"
+                Return "doublemasters#" + VpStr
+            Case "N1"
+                Return "magic2021#" + VpStr
+            Case "SU"
+                Return "SignatureSpellbookChandra#" + VpStr
+            Case "WP"
+                Return "warofthesparkpromos#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2409,6 +2418,14 @@ Public Partial Class MainForm
                 Return "HH"
             Case "champsandstates"
                 Return "CM"
+            Case "doublemasters"
+                Return "X2"
+            Case "magic2021"
+                Return "N1"
+            Case "SignatureSpellbookChandra"
+                Return "SU"
+            Case "warofthesparkpromos"
+                Return "WP"
             Case Else
                 Return ""
         End Select

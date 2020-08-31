@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CE","CF","CH","CK","CL","CM","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","IK","IM","IN","IS","IV","JG","JN","JR","JU","KD","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MM","MP","MR","MS","MT","MU","MV","MW","MY","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SG","SH","SI","SK","SL","SM","SS","ST","SV","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WS","WW","XL","XP","YR","ZK","ZX"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CD","CE","CF","CH","CK","CL","CM","CS","CT","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","IK","IM","IN","IS","IV","JG","JN","JR","JU","KD","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MM","MP","MR","MS","MT","MU","MV","MW","MY","N1","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SG","SH","SI","SK","SL","SM","SS","ST","SU","SV","TB","TC","TD","TE","TH","TO","TP","TS","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","XL","XP","YR","ZK","ZX"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -33,7 +33,8 @@ series['M6'] = new Array('M15','Magic 2015','Edition 2015','269','2014');
 series['OR'] = new Array('ORI','Magic Origins','Magic Origins','272','2015');
 series['M9'] = new Array('M19','Magic 2019','Edition 2019','279','2018');
 series['M0'] = new Array('M20','Magic 2020','Edition 2020','280','2019');
-var bases = new Array('AL','BE','UN','RV','SG','3B','3W','4E','4B','5E','6E','7E','8E','9E','1E','M1','M2','M3','M4','M5','M6','OR','M9','M0');
+series['N1'] = new Array('M21','Magic 2021','Edition 2021','274','2020');
+var bases = new Array('AL','BE','UN','RV','SG','3B','3W','4E','4B','5E','6E','7E','8E','9E','1E','M1','M2','M3','M4','M5','M6','OR','M9','M0','N1');
 
 // Extensions
 // No Block
@@ -205,7 +206,8 @@ series['CB'] = new Array('CM2','Commander Anthology Volume II','','400','2018');
 series['UM'] = new Array('UMA','Ultimate Masters','','254','2018');
 series['UT'] = new Array('PUM','Ultimate Box Topper','','40','2018');
 series['MH'] = new Array('MH1','Modern Horizons','Horizons du Modern','254','2019');
-var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH');
+series['X2'] = new Array('2XM','Double Masters','','332','2020');
+var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH','X2');
 
 // Masterpiece Series
 series['ZX'] = new Array('EXP','Zendikar Expeditions','','45','2016');
@@ -267,7 +269,8 @@ var giant = new Array('BB');
 // Signature Spellbook
 series['SS'] = new Array('SS1','Signature Spellbook: Jace','','9','2018');
 series['ST'] = new Array('SS2','Signature Spellbook: Gideon','','9','2019');
-var spellbook = new Array('SS','ST');
+series['SU'] = new Array('SS3','Signature Spellbook: Chandra','','9','2020');
+var spellbook = new Array('SS','ST','SU');
 
 // Global Series
 series['GS'] = new Array('GS1','Global Series: Jiang Yanggu and Mu Yanling','','60','2018');
@@ -357,4 +360,5 @@ series['GW'] = new Array('GRC','WPN - Gateway','','84','2008');
 series['JG'] = new Array('JG','Judge Gift','','67','2013');
 series['MY'] = new Array('MYD','Mythic Edition','','16','2018');
 series['GK'] = new Array('GK1','Guilds of Ravnica Guild Kits','','5x60','2018');
-var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK');
+series['WP'] = new Array('PWA','War of the Spark Promos','','174','2019');
+var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP');

@@ -408,7 +408,7 @@ Partial Class MainForm
         '
         Me.mnuSeriesGenR16.Name = "mnuSeriesGenR16"
         Me.mnuSeriesGenR16.Size = New System.Drawing.Size(93, 22)
-        Me.mnuSeriesGenR16.Text = "R18"
+        Me.mnuSeriesGenR16.Text = "R19"
         AddHandler Me.mnuSeriesGenR16.Click, AddressOf Me.MnuSeriesGenR16Click
         '
         'mnuBuildDouble
