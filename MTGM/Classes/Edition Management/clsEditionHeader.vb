@@ -150,7 +150,7 @@ Public Class clsEditionHeader
     Public Property NotesEdition As String
         Get
             If VmNotesEdition = "" Then
-                Return "N/C"
+                Return "N/A"
             Else
                 Return VmNotesEdition
             End If

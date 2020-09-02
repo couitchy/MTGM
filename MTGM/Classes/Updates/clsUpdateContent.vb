@@ -81,7 +81,7 @@ Public Class clsUpdateContent
     Public ReadOnly Property Locale As String
         Get
             If VmLocale = "" Then
-                Return "N/C"
+                Return "N/A"
             Else
                 Return VmLocale
             End If

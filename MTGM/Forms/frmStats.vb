@@ -253,7 +253,7 @@ Public Partial Class frmStats
             End With
         End If
         If Me.lstTournoiForbid.Items.Count = 0 Then
-            Me.lstTournoiForbid.Items.Add("N/C")
+            Me.lstTournoiForbid.Items.Add("N/A")
         End If
         Me.lstTournoiForbid.Sorted = True
     End Sub

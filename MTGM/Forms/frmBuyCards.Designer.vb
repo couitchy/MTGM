@@ -330,7 +330,7 @@ Partial Class frmBuyCards
         Me.txtTot.Name = "txtTot"
         Me.txtTot.Size = New System.Drawing.Size(79, 20)
         Me.txtTot.TabIndex = 1
-        Me.txtTot.Text = "N/C"
+        Me.txtTot.Text = "N/A"
         Me.txtTot.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'lblTot
