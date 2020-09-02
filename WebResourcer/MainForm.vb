@@ -3399,6 +3399,96 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
+    Private Sub BuildStamps
+    '-------------------------------------------------------------------
+    'Construit les fichiers ContenuStamp r20.txt et ContenuSizes r20.txt
+    '-------------------------------------------------------------------
+    Dim VpPath As String
+    Dim VpFiles() As String
+    Dim VpStamps As New List(Of String)
+    Dim VpSizes As New List(Of Integer)
+    Dim VpOut As StreamWriter
+        Me.dlgBrowse.SelectedPath = ""
+        Me.dlgBrowse.ShowDialog
+        If Me.dlgBrowse.SelectedPath <> "" Then
+            Call Me.AddToLog("La construction des fichiers d'horodatage a commencé...", eLogType.Information, True)
+            'SP images
+            VpPath = Path.GetFullPath(Me.dlgBrowse.SelectedPath + "\..\Archivage\Images des cartes")
+            If Directory.Exists(VpPath) Then
+                VpFiles = Directory.GetFiles(VpPath, "*.dat")
+                Array.Sort(VpFiles, New clsNumericComparer)
+                VpSizes.Add(Math.Round((New FileInfo(VpFiles(VpFiles.Length - 1))).Length / 1024))
+            Else
+                Call Me.AddToLog("Impossible de trouver le dossier : " + VpPath, eLogType.Warning)
+            End If
+            'prix
+            Call Me.BuildStamp("\..\Archivage\Prix", VpStamps, VpSizes, True)
+            'autorisations tournois
+            Call Me.BuildStamp("\..\Archivage\Autorisations en tournois", VpStamps, VpSizes, True)
+            'modèles / historiques
+            Call Me.BuildStamp2("\..\Archivage\Base", "Patch r13.mdb", VpStamps, VpSizes)
+            'textes VF
+            Call Me.BuildStamp2("\..\Archivage\Base", "TextesVF.txt", VpStamps, VpSizes)
+            'rulings
+            Call Me.BuildStamp("\..\Archivage\Règles spécifiques", VpStamps, VpSizes, False)
+            'patch images
+            Call Me.BuildStamp2("\..\Archivage\Images des cartes", "MD_Pict.dat", VpStamps, VpSizes)
+            'patch title VF
+            Call Me.BuildStamp2("\..\Archivage\Base", "MD_Trad.log", VpStamps, VpSizes)
+            'patch subtypes
+            Call Me.BuildStamp2("\..\Archivage\Base", "MD_SubTypes r19.log", VpStamps, VpSizes)
+            'patch subtypes vf
+            Call Me.BuildStamp2("\..\Archivage\Base", "MD_SubTypesVF r19.log", VpStamps, VpSizes)
+            'patch multiverse id
+            Call Me.BuildStamp2("\..\Archivage\Base", "MD_Multiverse r22.log", VpStamps, VpSizes)
+            '==> ContenuStamp r20.txt
+            VpOut = New StreamWriter(Path.Combine(Me.dlgBrowse.SelectedPath, "ContenuStamp r20.txt"))
+            For Each VpStamp As Date In VpStamps
+                VpOut.WriteLine(VpStamp.ToString("dd/MM/yyyy"))
+            Next VpStamp
+            VpOut.Flush
+            VpOut.Close
+            '==> ContenuSizes r20.txt
+            VpOut = New StreamWriter(Path.Combine(Me.dlgBrowse.SelectedPath, "ContenuSizes r20.txt"))
+            For Each VpSize As Integer In VpSizes
+                VpOut.WriteLine(Format(VpSize, "00000"))
+            Next VpSize
+            VpOut.Flush
+            VpOut.Close
+            Call Me.AddToLog("La construction des fichiers d'horodatage est terminée.", eLogType.Information, , True)
+        End If
+    End Sub
+    Private Sub BuildStamp(VpRelativePath As String, ByRef VpStamps As List(Of String), ByRef VpSizes As List(Of Integer), VpInside As Boolean)
+    Dim VpPath As String
+    Dim VpF() As FileInfo
+    Dim VpF0 As FileInfo
+        VpPath = Path.GetFullPath(Me.dlgBrowse.SelectedPath + VpRelativePath)
+        If Directory.Exists(VpPath) Then
+            VpF = (New DirectoryInfo(VpPath)).GetFiles
+            Array.Sort(VpF, New clsPriceFilesComparer)
+            VpF0 = VpF(VpF.Length - 1)
+            VpSizes.Add(Math.Round(VpF0.Length / 1024))
+            If VpInside Then
+                VpStamps.Add(File.ReadAllLines(VpF0.FullName)(0))
+            Else
+                VpStamps.Add(VpF0.LastWriteTime.ToString("dd/MM/yyyy"))
+            End If
+        Else
+            Call Me.AddToLog("Impossible de trouver le dossier : " + VpPath, eLogType.Warning)
+        End If
+    End Sub
+    Private Sub BuildStamp2(VpRelativePath As String, VpFile As String, ByRef VpStamps As List(Of String), ByRef VpSizes As List(Of Integer))
+    Dim VpPath As String
+    Dim VpF0 As FileInfo
+        VpPath = Path.GetFullPath(Me.dlgBrowse.SelectedPath + VpRelativePath)
+        If Directory.Exists(VpPath) Then
+            VpF0 = New FileInfo(Path.Combine(VpPath, VpFile))
+            VpSizes.Add(Math.Round(VpF0.Length / 1024))
+            VpStamps.Add(VpF0.LastWriteTime.ToString("dd/MM/yyyy"))
+        Else
+            Call Me.AddToLog("Impossible de trouver le dossier : " + VpPath, eLogType.Warning)
+        End If
+    End Sub
     Private Sub BuildDouble
     '----------------------------------------------------------------------------------------------------------------------------
     'Construit le fichier des doubles cartes pour l'édition demandée, avec les infos déjà dans la base (associations recto-verso)
@@ -3792,7 +3882,7 @@ Public Partial Class MainForm
     End Sub
     Sub MnuPricesHistoryRebuildClick(sender As Object, e As EventArgs)
     Dim VpDir As DirectoryInfo
-    Dim VpFiles As FileSystemInfo()
+    Dim VpFiles As FileInfo()
         If Not VmDB Is Nothing Then
             Me.dlgBrowse.SelectedPath = ""
             Me.dlgBrowse.ShowDialog
@@ -3800,9 +3890,9 @@ Public Partial Class MainForm
                 VmDBCommand.CommandText = "Delete * From PricesHistory;"
                 VmDBCommand.ExecuteNonQuery
                 VpDir = New DirectoryInfo(Me.dlgBrowse.SelectedPath)
-                VpFiles = VpDir.GetFileSystemInfos("Prices (*.txt")
+                VpFiles = VpDir.GetFiles("Prices (*.txt")
                 Array.Sort(VpFiles, New clsPriceFilesComparer)
-                For Each VpFile As FileSystemInfo In VpFiles
+                For Each VpFile As FileInfo In VpFiles
                     Call Me.FillPricesHistory(VpFile.FullName)
                 Next VpFile
             End If
@@ -3963,6 +4053,9 @@ Public Partial Class MainForm
             Call Me.CompareTitles
         End If
     End Sub
+    Sub MnuBuildStampsClick(sender As Object, e As EventArgs)
+        Call Me.BuildStamps
+    End Sub
     Sub MnuBuildDoubleClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             Call Me.BuildDouble
@@ -4012,9 +4105,17 @@ Public Partial Class MainForm
             Call Me.VirtualAdd
         End If
     End Sub
+    Public Class clsNumericComparer
+        Implements IComparer(Of String)
+        Public Function Compare(ByVal x As String, ByVal y As String) As Integer Implements IComparer(Of String).Compare
+            Dim xx As String = x.Substring(x.LastIndexOf("\") + 1)
+            Dim yy As String = y.Substring(y.LastIndexOf("\") + 1)
+            Return Val(xx.Replace("SP", "")).CompareTo(Val(yy.Replace("SP", "")))
+        End Function
+    End Class
     Public Class clsPriceFilesComparer
-        Implements IComparer(Of FileSystemInfo)
-        Public Function Compare(ByVal x As FileSystemInfo, ByVal y As FileSystemInfo) As Integer Implements IComparer(Of FileSystemInfo).Compare
+        Implements IComparer(Of FileInfo)
+        Public Function Compare(ByVal x As FileInfo, ByVal y As FileInfo) As Integer Implements IComparer(Of FileInfo).Compare
             Return x.LastWriteTime.CompareTo(y.LastWriteTime)
         End Function
     End Class

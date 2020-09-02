@@ -73,6 +73,7 @@ Partial Class MainForm
         Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGenR14 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGenR16 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuBuildStamps = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPrices = New System.Windows.Forms.ToolStripMenuItem()
@@ -363,7 +364,7 @@ Partial Class MainForm
         '
         'mnuSeries
         '
-        Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesMerge, Me.mnuSeriesVirtualAdd, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
+        Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesMerge, Me.mnuSeriesVirtualAdd, Me.mnuSeriesGen, Me.mnuBuildStamps, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
         Me.mnuSeries.Name = "mnuSeries"
         Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
         Me.mnuSeries.Text = "Editions"
@@ -410,6 +411,13 @@ Partial Class MainForm
         Me.mnuSeriesGenR16.Size = New System.Drawing.Size(93, 22)
         Me.mnuSeriesGenR16.Text = "R19"
         AddHandler Me.mnuSeriesGenR16.Click, AddressOf Me.MnuSeriesGenR16Click
+        '
+        'mnuBuildStamps
+        '
+        Me.mnuBuildStamps.Name = "mnuBuildStamps"
+        Me.mnuBuildStamps.Size = New System.Drawing.Size(432, 22)
+        Me.mnuBuildStamps.Text = "Construire les fichiers d'horodatage"
+        AddHandler Me.mnuBuildStamps.Click, AddressOf Me.MnuBuildStampsClick
         '
         'mnuBuildDouble
         '
@@ -897,6 +905,7 @@ Partial Class MainForm
     Private mnuCardReplaceTitle As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixTxtVO As System.Windows.Forms.ToolStripMenuItem
     Private mnuFindHoles As System.Windows.Forms.ToolStripMenuItem
+    Private mnuBuildStamps As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuCheckTrad As System.Windows.Forms.ToolStripMenuItem
