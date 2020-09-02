@@ -1178,6 +1178,7 @@ Public Module mdlToolbox
     Dim VpCopy As Process
         Cursor.Current = Cursors.WaitCursor
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
         Catch
             'Si on arrive là c'est qu'on n'a pas les droits d'écriture => on télécharge dans un dossier temporaire et on lance la copie en demandant les droits d'admin

@@ -802,6 +802,7 @@ Public Partial Class MainForm
     Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
     Dim VpJSONInfo As clsFullInfos = Nothing
     Dim VpSerieCD As String
+    Dim VpCode0 As String = VpCode
         VgDBCommand.CommandText = "Update Card Set MultiverseId = EncNbr Where MultiverseId Is Null;"
         VgDBCommand.ExecuteNonQuery
         VgDBCommand.CommandText = "Update Card Set CardNbr = 0 Where CardNbr Is Null;"
@@ -809,6 +810,11 @@ Public Partial Class MainForm
         'Essaie de télécharger le fichier JSON général depuis Internet
         If Not File.Exists(Application.StartupPath + mdlConstGlob.CgUpMultiverse) Then
             Call mdlToolbox.DownloadUnzip(New Uri(If(VpCode = "", CgURL23, CgURL23.Replace("AllSets", VpCode))), mdlConstGlob.CgUpMultiverse2, mdlConstGlob.CgUpMultiverse)
+            If Not File.Exists(Application.StartupPath + mdlConstGlob.CgUpMultiverse) And VpCode <> "" Then
+                VpCode = InputBox("Préciser le code de l'édition sur 3, 4 ou 5 caractères" + vbCrLf + "(MTGM -> MTGJSON)", "Code édition", VpCode)
+                If VpCode = "" Then Return
+                Call mdlToolbox.DownloadUnzip(New Uri(CgURL23.Replace("AllSets", VpCode)), mdlConstGlob.CgUpMultiverse2, mdlConstGlob.CgUpMultiverse)
+            End If
         End If
         'Si ça a réussi on peut passer à la mise à jour effective
         If File.Exists(Application.StartupPath + mdlConstGlob.CgUpMultiverse) Then
@@ -823,8 +829,13 @@ Public Partial Class MainForm
             End If
             For Each VpSerie As String In VpJSONInfos.Keys
                 VpSerieCD = VpSerie
-                If VpSerie.Length = 4 Then  'code d'add-on d'extension, seules les 3 dernières lettres comptent
-                    VpSerieCD = VpSerie.Substring(1)
+                If VpSerie.Length <> 3 Then 'code d'add-on d'extension pas sur 3 caractères, il faut éventuellement demander à l'utilisateur de faire la correspondance
+                    If VpCode0 = "" OrElse VpCode0.Length <> 3 Then
+                        VpSerieCD = InputBox("Préciser le code de l'édition sur 3 caractères" + vbCrLf + "(MTGJSON -> MTGM)", "Code édition", VpSerieCD)
+                        If VpSerieCD = "" Then Return
+                    Else
+                        VpSerieCD = VpCode0
+                    End If
                 End If
                 For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
                     Try
@@ -843,7 +854,25 @@ Public Partial Class MainForm
             Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse)
             Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse2)
         Else
-            Call mdlToolbox.ShowWarning("Impossible de trouver le fichier '" + mdlConstGlob.CgUpMultiverse + "'")
+            Call mdlToolbox.ShowWarning("Impossible de trouver le fichier JSON" + If(VpCode <> "", " (" + VpCode + ")", ""))
+        End If
+    End Sub
+    Private Sub FixMultiverseNew
+    Dim VpCodes As New List(Of String)
+        'Récupère les codes des éditions dont les cartes n'ont pas d'identifiant Multiverse
+        VgDBCommand.CommandText = "Select Distinct SeriesCD_MO From Card Inner Join Series On Card.Series = Series.SeriesCD Where MultiverseId = 0;"
+        VgDBReader = VgDBCommand.ExecuteReader
+        With VgDBReader
+            While .Read
+                VpCodes.Add(.GetString(0))
+            End While
+            .Close
+        End With
+        If MessageBox.Show(VpCodes.Count.ToString + " édition(s) à traiter..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+            'Appels individuels
+            For Each VpCode As String In VpCodes
+                Call Me.FixMultiverse(VpCode)
+            Next VpCode
         End If
     End Sub
     Public Function FixMultiverse2 As Boolean
@@ -3296,6 +3325,14 @@ Public Partial Class MainForm
             VpCode = InputBox("Quel est le code de l'édition dont il manque les identifiants Multiverse ?", "Récupération des identifiants Multiverse", "(code)")
             If VpCode <> "" Then
                 Call Me.FixMultiverse(VpCode.ToUpper)
+                Call mdlToolbox.ShowInformation("Terminé !")
+            End If
+        End If
+    End Sub
+    Sub MnuFixMultiverseIdNewClick(ByVal sender As Object, ByVal e As EventArgs)
+        If mdlToolbox.DBOK Then
+            If MessageBox.Show("Cette opération peut prendre beaucoup de temps..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                Call Me.FixMultiverseNew
                 Call mdlToolbox.ShowInformation("Terminé !")
             End If
         End If

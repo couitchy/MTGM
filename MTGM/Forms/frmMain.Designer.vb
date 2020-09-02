@@ -106,6 +106,7 @@ Partial Class MainForm
         Me.mnuFixMultiverseId = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixMultiverseIdAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFixMultiverseIdOne = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuFixMultiverseIdNew = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFixUrzaId = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixCreatures = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixSerie = New System.Windows.Forms.ToolStripMenuItem
@@ -906,7 +907,7 @@ Partial Class MainForm
         '
         'mnuFixMultiverseId
         '
-        Me.mnuFixMultiverseId.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixMultiverseIdAll, Me.mnuFixMultiverseIdOne})
+        Me.mnuFixMultiverseId.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixMultiverseIdAll, Me.mnuFixMultiverseIdOne, Me.mnuFixMultiverseIdNew})
         Me.mnuFixMultiverseId.Name = "mnuFixMultiverseId"
         Me.mnuFixMultiverseId.Size = New System.Drawing.Size(206, 22)
         Me.mnuFixMultiverseId.Text = "Identifiants Multiverse manquants"
@@ -924,6 +925,13 @@ Partial Class MainForm
         Me.mnuFixMultiverseIdOne.Size = New System.Drawing.Size(152, 22)
         Me.mnuFixMultiverseIdOne.Text = "Edition"
         AddHandler Me.mnuFixMultiverseIdOne.Click, AddressOf Me.MnuFixMultiverseIdOneClick
+        '
+        'mnuFixMultiverseIdNew
+        '
+        Me.mnuFixMultiverseIdNew.Name = "mnuFixMultiverseIdNew"
+        Me.mnuFixMultiverseIdNew.Size = New System.Drawing.Size(152, 22)
+        Me.mnuFixMultiverseIdNew.Text = "Nouvelles éditions"
+        AddHandler Me.mnuFixMultiverseIdNew.Click, AddressOf Me.MnuFixMultiverseIdNewClick
         '
         'mnuFixUrzaId
         '
@@ -2074,6 +2082,7 @@ Partial Class MainForm
         Me.PerformLayout
     End Sub
     Private mnuFixCost As System.Windows.Forms.ToolStripMenuItem
+    Private mnuFixMultiverseIdNew As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseIdOne As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseIdAll As System.Windows.Forms.ToolStripMenuItem
     Private mnuClipTitle As System.Windows.Forms.ToolStripMenuItem
