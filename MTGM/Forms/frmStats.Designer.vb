@@ -92,13 +92,13 @@ Partial Class frmStats
         Me.tabAutorisations = New System.Windows.Forms.TabPage()
         Me.lstTournoiForbid = New System.Windows.Forms.ListBox()
         Me.grpAutorisations = New System.Windows.Forms.GroupBox()
-        Me.picAutMulti = New System.Windows.Forms.PictureBox()
+        Me.picAutO = New System.Windows.Forms.PictureBox()
         Me.picAutM = New System.Windows.Forms.PictureBox()
         Me.picAutT1 = New System.Windows.Forms.PictureBox()
         Me.picAutT15 = New System.Windows.Forms.PictureBox()
         Me.picAutT2 = New System.Windows.Forms.PictureBox()
-        Me.picAutBloc = New System.Windows.Forms.PictureBox()
-        Me.picAut1V1 = New System.Windows.Forms.PictureBox()
+        Me.picAutP = New System.Windows.Forms.PictureBox()
+        Me.picAutH = New System.Windows.Forms.PictureBox()
         Me.lblAutorisations = New System.Windows.Forms.Label()
         Me.grdDetails = New SourceGrid2.Grid()
         Me.cmnuHisto = New System.Windows.Forms.ContextMenuStrip(Me.components)
@@ -137,13 +137,13 @@ Partial Class frmStats
         Me.grpCreatures.SuspendLayout
         Me.tabAutorisations.SuspendLayout
         Me.grpAutorisations.SuspendLayout
-        CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).BeginInit
+        CType(Me.picAutO,System.ComponentModel.ISupportInitialize).BeginInit
         CType(Me.picAutM,System.ComponentModel.ISupportInitialize).BeginInit
         CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).BeginInit
         CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).BeginInit
         CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).BeginInit
-        CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).BeginInit
-        CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).BeginInit
+        CType(Me.picAutP,System.ComponentModel.ISupportInitialize).BeginInit
+        CType(Me.picAutH,System.ComponentModel.ISupportInitialize).BeginInit
         Me.cmnuHisto.SuspendLayout
         Me.SuspendLayout
         '
@@ -799,13 +799,13 @@ Partial Class frmStats
         '
         'grpAutorisations
         '
-        Me.grpAutorisations.Controls.Add(Me.picAutMulti)
+        Me.grpAutorisations.Controls.Add(Me.picAutO)
         Me.grpAutorisations.Controls.Add(Me.picAutM)
         Me.grpAutorisations.Controls.Add(Me.picAutT1)
         Me.grpAutorisations.Controls.Add(Me.picAutT15)
         Me.grpAutorisations.Controls.Add(Me.picAutT2)
-        Me.grpAutorisations.Controls.Add(Me.picAutBloc)
-        Me.grpAutorisations.Controls.Add(Me.picAut1V1)
+        Me.grpAutorisations.Controls.Add(Me.picAutP)
+        Me.grpAutorisations.Controls.Add(Me.picAutH)
         Me.grpAutorisations.Dock = System.Windows.Forms.DockStyle.Top
         Me.grpAutorisations.Location = New System.Drawing.Point(3, 16)
         Me.grpAutorisations.Name = "grpAutorisations"
@@ -813,15 +813,15 @@ Partial Class frmStats
         Me.grpAutorisations.TabIndex = 15
         Me.grpAutorisations.TabStop = false
         '
-        'picAutMulti
+        'picAutO
         '
-        Me.picAutMulti.Location = New System.Drawing.Point(276, 10)
-        Me.picAutMulti.Name = "picAutMulti"
-        Me.picAutMulti.Size = New System.Drawing.Size(35, 25)
-        Me.picAutMulti.TabIndex = 6
-        Me.picAutMulti.TabStop = false
-        Me.picAutMulti.Tag = "Multi"
-        AddHandler Me.picAutMulti.Click, AddressOf Me.PicAutClick
+        Me.picAutO.Location = New System.Drawing.Point(276, 10)
+        Me.picAutO.Name = "picAutO"
+        Me.picAutO.Size = New System.Drawing.Size(35, 25)
+        Me.picAutO.TabIndex = 6
+        Me.picAutO.TabStop = false
+        Me.picAutO.Tag = "MTGO"
+        AddHandler Me.picAutO.Click, AddressOf Me.PicAutClick
         '
         'picAutM
         '
@@ -863,25 +863,25 @@ Partial Class frmStats
         Me.picAutT2.Tag = "T2"
         AddHandler Me.picAutT2.Click, AddressOf Me.PicAutClick
         '
-        'picAutBloc
+        'picAutP
         '
-        Me.picAutBloc.Location = New System.Drawing.Point(194, 10)
-        Me.picAutBloc.Name = "picAutBloc"
-        Me.picAutBloc.Size = New System.Drawing.Size(35, 25)
-        Me.picAutBloc.TabIndex = 1
-        Me.picAutBloc.TabStop = false
-        Me.picAutBloc.Tag = "Bloc"
-        AddHandler Me.picAutBloc.Click, AddressOf Me.PicAutClick
+        Me.picAutP.Location = New System.Drawing.Point(194, 10)
+        Me.picAutP.Name = "picAutP"
+        Me.picAutP.Size = New System.Drawing.Size(35, 25)
+        Me.picAutP.TabIndex = 1
+        Me.picAutP.TabStop = false
+        Me.picAutP.Tag = "Pioneer"
+        AddHandler Me.picAutP.Click, AddressOf Me.PicAutClick
         '
-        'picAut1V1
+        'picAutH
         '
-        Me.picAut1V1.Location = New System.Drawing.Point(235, 10)
-        Me.picAut1V1.Name = "picAut1V1"
-        Me.picAut1V1.Size = New System.Drawing.Size(35, 25)
-        Me.picAut1V1.TabIndex = 0
-        Me.picAut1V1.TabStop = false
-        Me.picAut1V1.Tag = "[1V1]"
-        AddHandler Me.picAut1V1.Click, AddressOf Me.PicAutClick
+        Me.picAutH.Location = New System.Drawing.Point(235, 10)
+        Me.picAutH.Name = "picAutH"
+        Me.picAutH.Size = New System.Drawing.Size(35, 25)
+        Me.picAutH.TabIndex = 0
+        Me.picAutH.TabStop = false
+        Me.picAutH.Tag = "Historic"
+        AddHandler Me.picAutH.Click, AddressOf Me.PicAutClick
         '
         'lblAutorisations
         '
@@ -1018,21 +1018,21 @@ Partial Class frmStats
         '
         Me.imglstAutorisations.ImageStream = CType(resources.GetObject("imglstAutorisations.ImageStream"),System.Windows.Forms.ImageListStreamer)
         Me.imglstAutorisations.TransparentColor = System.Drawing.Color.Transparent
-        Me.imglstAutorisations.Images.SetKeyName(0, "_a1vs1.png")
-        Me.imglstAutorisations.Images.SetKeyName(1, "_a1vs1no.png")
-        Me.imglstAutorisations.Images.SetKeyName(2, "_aBloc.png")
-        Me.imglstAutorisations.Images.SetKeyName(3, "_aBlocno.png")
-        Me.imglstAutorisations.Images.SetKeyName(4, "_aMulti.png")
-        Me.imglstAutorisations.Images.SetKeyName(5, "_aMultino.png")
-        Me.imglstAutorisations.Images.SetKeyName(6, "_aT1.png")
-        Me.imglstAutorisations.Images.SetKeyName(7, "_aT1no.png")
-        Me.imglstAutorisations.Images.SetKeyName(8, "_aT1r.png")
-        Me.imglstAutorisations.Images.SetKeyName(9, "_aT2.png")
-        Me.imglstAutorisations.Images.SetKeyName(10, "_aT2no.png")
-        Me.imglstAutorisations.Images.SetKeyName(11, "_aT15.png")
-        Me.imglstAutorisations.Images.SetKeyName(12, "_aT15no.png")
-        Me.imglstAutorisations.Images.SetKeyName(13, "_aTM.png")
-        Me.imglstAutorisations.Images.SetKeyName(14, "_aTMno.png")
+        Me.imglstAutorisations.Images.SetKeyName(0, "_aT1.png")
+        Me.imglstAutorisations.Images.SetKeyName(1, "_aT1no.png")
+        Me.imglstAutorisations.Images.SetKeyName(2, "_aT1r.png")
+        Me.imglstAutorisations.Images.SetKeyName(3, "_aT2.png")
+        Me.imglstAutorisations.Images.SetKeyName(4, "_aT2no.png")
+        Me.imglstAutorisations.Images.SetKeyName(5, "_aT15.png")
+        Me.imglstAutorisations.Images.SetKeyName(6, "_aT15no.png")
+        Me.imglstAutorisations.Images.SetKeyName(7, "_aTM.png")
+        Me.imglstAutorisations.Images.SetKeyName(8, "_aTMno.png")
+        Me.imglstAutorisations.Images.SetKeyName(9, "_aTP.png")
+        Me.imglstAutorisations.Images.SetKeyName(10, "_aTPno.png")
+        Me.imglstAutorisations.Images.SetKeyName(11, "_aTH.png")
+        Me.imglstAutorisations.Images.SetKeyName(12, "_aTHno.png")
+        Me.imglstAutorisations.Images.SetKeyName(13, "_aMTGO.png")
+        Me.imglstAutorisations.Images.SetKeyName(14, "_aMTGOno.png")
         '
         'frmStats
         '
@@ -1073,18 +1073,18 @@ Partial Class frmStats
         Me.tabAutorisations.ResumeLayout(false)
         Me.tabAutorisations.PerformLayout
         Me.grpAutorisations.ResumeLayout(false)
-        CType(Me.picAutMulti,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.picAutO,System.ComponentModel.ISupportInitialize).EndInit
         CType(Me.picAutM,System.ComponentModel.ISupportInitialize).EndInit
         CType(Me.picAutT1,System.ComponentModel.ISupportInitialize).EndInit
         CType(Me.picAutT15,System.ComponentModel.ISupportInitialize).EndInit
         CType(Me.picAutT2,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.picAutBloc,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.picAut1V1,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.picAutP,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.picAutH,System.ComponentModel.ISupportInitialize).EndInit
         Me.cmnuHisto.ResumeLayout(false)
         Me.ResumeLayout(false)
     End Sub
     Private imglstAutorisations As System.Windows.Forms.ImageList
-    Private picAutMulti As System.Windows.Forms.PictureBox
+    Private picAutO As System.Windows.Forms.PictureBox
     Private picAutM As System.Windows.Forms.PictureBox
     Private chartManaCurve As NPlot.Windows.PlotSurface2D
     Private cmnuHistCardsPrice8 As System.Windows.Forms.ToolStripMenuItem
@@ -1103,8 +1103,8 @@ Partial Class frmStats
     Private cmdHistPrices As System.Windows.Forms.Button
     Private lstTournoiForbid As System.Windows.Forms.ListBox
     Private lblAutorisations As System.Windows.Forms.Label
-    Private picAut1V1 As System.Windows.Forms.PictureBox
-    Private picAutBloc As System.Windows.Forms.PictureBox
+    Private picAutH As System.Windows.Forms.PictureBox
+    Private picAutP As System.Windows.Forms.PictureBox
     Private picAutT2 As System.Windows.Forms.PictureBox
     Private picAutT15 As System.Windows.Forms.PictureBox
     Private picAutT1 As System.Windows.Forms.PictureBox

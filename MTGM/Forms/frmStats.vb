@@ -138,49 +138,49 @@ Public Partial Class frmStats
     'Chargement des autorisations tournois pour la sélection
     '-------------------------------------------------------
     Dim VpHas1ItemRestr As Boolean = False
-        'Autorisations T1
+        'Autorisations Vintage
         If Not Me.GetAutorisation("T1", VpHas1ItemRestr) Then
-            Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(7)
+            Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(0)
         ElseIf VpHas1ItemRestr Then
-            Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(8)
+            Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(1)
         Else
-            Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(6)
+            Me.picAutT1.Image = Me.imglstAutorisations.Images.Item(2)
         End If
-        'Autorisations T1.5
+        'Autorisations Legacy
         If Me.GetAutorisation("T15") Then
-            Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(11)
+            Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(5)
         Else
-            Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(12)
+            Me.picAutT15.Image = Me.imglstAutorisations.Images.Item(6)
         End If
-        'Autorisations M
+        'Autorisations Modern
         If Me.GetAutorisation("M") Then
-            Me.picAutM.Image = Me.imglstAutorisations.Images.Item(13)
+            Me.picAutM.Image = Me.imglstAutorisations.Images.Item(7)
         Else
-            Me.picAutM.Image = Me.imglstAutorisations.Images.Item(14)
+            Me.picAutM.Image = Me.imglstAutorisations.Images.Item(8)
         End If
-        'Autorisations T2
+        'Autorisations Standard
         If Me.GetAutorisation("T2") Then
-            Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(9)
+            Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(3)
         Else
-            Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(10)
+            Me.picAutT2.Image = Me.imglstAutorisations.Images.Item(4)
         End If
-        'Autorisations Bloc
-        If Me.GetAutorisation("Bloc") Then
-            Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(2)
+        'Autorisations Pioneer
+        If Me.GetAutorisation("Pioneer") Then
+            Me.picAutP.Image = Me.imglstAutorisations.Images.Item(9)
         Else
-            Me.picAutBloc.Image = Me.imglstAutorisations.Images.Item(3)
+            Me.picAutP.Image = Me.imglstAutorisations.Images.Item(10)
         End If
-        'Autorisations 1 vs 1
-        If Me.GetAutorisation("[1V1]") Then
-            Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(0)
+        'Autorisations Historic
+        If Me.GetAutorisation("Historic") Then
+            Me.picAutH.Image = Me.imglstAutorisations.Images.Item(11)
         Else
-            Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(1)
+            Me.picAutH.Image = Me.imglstAutorisations.Images.Item(12)
         End If
-        'Autorisations Multi
-        If Me.GetAutorisation("Multi") Then
-            Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(4)
+        'Autorisations Magic Online
+        If Me.GetAutorisation("MTGO") Then
+            Me.picAutO.Image = Me.imglstAutorisations.Images.Item(13)
         Else
-            Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(5)
+            Me.picAutO.Image = Me.imglstAutorisations.Images.Item(14)
         End If
     End Sub
     Private Function GetAutorisation(VpTournoiType As String, Optional ByRef VpHas1ItemRestr As Boolean = False) As Boolean
