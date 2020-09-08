@@ -2074,8 +2074,10 @@ Public Partial Class MainForm
             Me.picAut1V1.Image = Me.imglstAutorisations.Images.Item(2)
             Me.picAutMulti.Image = Me.imglstAutorisations.Images.Item(8)
             Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(24)
+            Me.picAutP.Image = Me.imglstAutorisations.Images.Item(30)
+            Me.picAutH.Image = Me.imglstAutorisations.Images.Item(27)
         Else
-            VgDBCommand.CommandText = "Select T1, T1r, T15, T2, M, Bloc, Blocoff, [1V1], Multi, MTGO, MTGOoff From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
+            VgDBCommand.CommandText = "Select T1, T1r, T15, T2, M, Bloc, Blocoff, [1V1], Multi, MTGO, MTGOoff, Pioneer, Historic From Autorisations Where Title = '" + VpCard.Replace("'", "''") + "';"
             VgDBReader = VgDBCommand.ExecuteReader
             With VgDBReader
                 If .Read Then
@@ -2132,6 +2134,18 @@ Public Partial Class MainForm
                         Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(22)
                     Else
                         Me.picAutMTGO.Image = Me.imglstAutorisations.Images.Item(23)
+                    End If
+                    'Autorisations Pioneer
+                    If .GetBoolean(11) Then
+                        Me.picAutP.Image = Me.imglstAutorisations.Images.Item(28)
+                    Else
+                        Me.picAutP.Image = Me.imglstAutorisations.Images.Item(29)
+                    End If
+                    'Autorisations Historic
+                    If .GetBoolean(12) Then
+                        Me.picAutH.Image = Me.imglstAutorisations.Images.Item(25)
+                    Else
+                        Me.picAutH.Image = Me.imglstAutorisations.Images.Item(26)
                     End If
                 Else
                     Call Me.LoadAutorisations("")
