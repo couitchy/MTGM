@@ -115,6 +115,7 @@ Partial Class MainForm
         Me.mnuFixCollec = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixGames = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixDivers = New System.Windows.Forms.ToolStripMenuItem
+        Me.mnuFixColors = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixAssoc = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixCost = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixPic = New System.Windows.Forms.ToolStripMenuItem
@@ -984,11 +985,18 @@ Partial Class MainForm
         '
         'mnuFixDivers
         '
-        Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixAssoc, Me.mnuFixCost, Me.mnuFixPic, Me.mnuFixFR2, Me.mnuCollapseRarete})
+        Me.mnuFixDivers.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFixColors, Me.mnuFixAssoc, Me.mnuFixCost, Me.mnuFixPic, Me.mnuFixFR2, Me.mnuCollapseRarete})
         Me.mnuFixDivers.Image = CType(resources.GetObject("mnuFixDivers.Image"),System.Drawing.Image)
         Me.mnuFixDivers.Name = "mnuFixDivers"
         Me.mnuFixDivers.Size = New System.Drawing.Size(277, 22)
         Me.mnuFixDivers.Text = "Corrections"
+        '
+        'mnuFixColors
+        '
+        Me.mnuFixColors.Name = "mnuFixColors"
+        Me.mnuFixColors.Size = New System.Drawing.Size(233, 22)
+        Me.mnuFixColors.Text = "Couleurs"
+        AddHandler Me.mnuFixColors.Click, AddressOf Me.MnuFixColorsClick
         '
         'mnuFixAssoc
         '
@@ -2189,6 +2197,7 @@ Partial Class MainForm
     Private mnuRestorePrev As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeparator10 As System.Windows.Forms.ToolStripSeparator
     Private mnuFixAssoc As System.Windows.Forms.ToolStripMenuItem
+    Private mnuFixColors As System.Windows.Forms.ToolStripMenuItem
     Private mnuInfosDL As System.Windows.Forms.ToolStripMenuItem
     Private mnuCancel As System.Windows.Forms.ToolStripMenuItem
     Public btDownload As System.Windows.Forms.ToolStripSplitButton

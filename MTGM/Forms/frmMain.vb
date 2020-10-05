@@ -743,6 +743,32 @@ Public Partial Class MainForm
         VgDBCommand.CommandText = "Delete * From Series Where SeriesCD Not In (Select Distinct Series From Card);"
         VgDBCommand.ExecuteNonQuery
     End Sub
+    Private Sub FixColors
+    '------------------------------------------------------------------------------------------------------------------------------
+    'Correction a posteriori d'un bug initial lors de l'ajout dans la base de nouvelles cartes dont la couleur n'est pas référencée
+    '------------------------------------------------------------------------------------------------------------------------------
+    Dim VpColorless As New List(Of String)
+        'Cherche dans la base toutes les cartes concernées, et demande confirmation
+        VgDBCommand.CommandText = "Select Title, Color From Spell Where ( Color = 'U' And InStr(Cost, 'U') = 0 ) Or ( Color = 'R' And InStr(Cost, 'R') = 0 ) Or ( Color = 'G' And InStr(Cost, 'G') = 0 ) Or ( Color = 'B' And InStr(Cost, 'B') = 0 ) Or ( Color = 'W' And InStr(Cost, 'W') = 0 );"
+        VgDBReader = VgDBCommand.ExecuteReader
+        With VgDBReader
+            While .Read
+                Select Case mdlToolbox.ShowQuestion("La carte " + .GetString(0) + " est-elle bien à classer parmi les " + mdlToolbox.FormatTitle("Spell.Color", .GetString(1)) + " ?" + vbCrLf + "Cliquez sur 'Non' pour qu'elle devienne incolore.", MessageBoxButtons.YesNoCancel)
+                    Case DialogResult.No
+                        VpColorless.Add(.GetString(0))
+                    Case DialogResult.Cancel
+                        Exit While
+                    Case Else
+                End Select
+            End While
+            .Close
+        End With
+        'Mise à jour effective
+        For Each VpCard As String In VpColorless
+            VgDBCommand.CommandText = "Update Spell Set Color = 'A' Where Title = '" + VpCard.Replace("'", "''") + "';"
+            VgDBCommand.ExecuteNonQuery
+        Next VpCard
+    End Sub
     Private Sub FixAssoc
     '------------------------------------------------------------------------------------------------------------------------------------------
     'Correction a posteriori d'un bug initial lors de l'ajout dans la base de nouvelles cartes d'artefacts dont la couleur n'est pas référencée
@@ -3297,6 +3323,12 @@ Public Partial Class MainForm
             For VpI As Integer = 0 To 10
                 Call Me.FixCreatures(VpI.ToString)
             Next VpI
+            Call mdlToolbox.ShowInformation("Terminé !")
+        End If
+    End Sub
+    Sub MnuFixColorsClick(sender As Object, e As EventArgs)
+        If mdlToolbox.DBOK Then
+            Call Me.FixColors
             Call mdlToolbox.ShowInformation("Terminé !")
         End If
     End Sub
