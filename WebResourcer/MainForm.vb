@@ -1896,6 +1896,18 @@ Public Partial Class MainForm
                 Return "SignatureSpellbookChandra#" + VpStr
             Case "WP"
                 Return "warofthesparkpromos#" + VpStr
+            Case "JP"
+                Return "jumpstart#" + VpStr
+            Case "MX"
+                Return "mysterybooster#" + VpStr
+            Case "SR"
+                Return "secretlairultimateedition#" + VpStr
+            Case "ZR"
+                Return "zendikarrising#" + VpStr
+            Case "ZC"
+                Return "zendikarrisingcommander#" + VpStr
+            Case "ZY"
+                Return "zendikarrisingexpeditions#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2426,6 +2438,18 @@ Public Partial Class MainForm
                 Return "SU"
             Case "warofthesparkpromos"
                 Return "WP"
+            Case "jumpstart"
+                Return "JP"
+            Case "mysterybooster"
+                Return "MX"
+            Case "secretlairultimateedition"
+                Return "SR"
+            Case "zendikarrising"
+                Return "ZR"
+            Case "zendikarrisingcommander"
+                Return "ZC"
+            Case "zendikarrisingexpeditions"
+                Return "ZY"
             Case Else
                 Return ""
         End Select
