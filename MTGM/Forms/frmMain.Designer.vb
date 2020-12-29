@@ -886,7 +886,7 @@ Partial Class MainForm
         '
         Me.mnuFixSubTypes.Name = "mnuFixSubTypes"
         Me.mnuFixSubTypes.Size = New System.Drawing.Size(206, 22)
-        Me.mnuFixSubTypes.Text = "Sous-types"
+        Me.mnuFixSubTypes.Text = "Sous-types / Super-types (Légendaires)"
         AddHandler Me.mnuFixSubTypes.Click, AddressOf Me.MnuFixSubTypesActivate
         '
         'mnuFixPrices

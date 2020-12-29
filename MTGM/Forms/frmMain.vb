@@ -521,6 +521,7 @@ Public Partial Class MainForm
     '--------------------------------------------
     Dim VpSerializer As JavaScriptSerializer
     Dim VpJSONInfos As Dictionary(Of String, clsFullInfos) = Nothing
+    Dim VpEdition As String
     Dim VpSubType As String
     Dim VpSubTypeVF As String
     Dim VpNewItems As List(Of String)
@@ -546,18 +547,21 @@ Public Partial Class MainForm
                 VpSerializer = New JavaScriptSerializer
                 VpSerializer.MaxJsonLength = Integer.MaxValue
                 VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + mdlConstGlob.CgUpMultiverse)).ReadToEnd)
-                For Each VpSerie As String In VpJSONInfos.Keys
-                    For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
+                Me.IsMainReaderBusy = True
+                Call Me.InitBars(VpJSONInfos.Keys.Count)
+                For Each VpCode As String In VpJSONInfos.Keys
+                    VpEdition = VpJSONInfos.Item(VpCode).name
+                    For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpCode).cards
                         'Pour chaque carte légendaire trouvée
                         If VpCard.supertypes IsNot Nothing AndAlso VpCard.supertypes.Contains("Legendary") Then
-                            VgDBCommand.CommandText = "Select Card.SubType From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+                            VgDBCommand.CommandText = "Select Card.SubType From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And (Series.SeriesCD_MO = '" + VpCode + "' Or Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "');"
                             VpSubType = mdlToolbox.SafeGetScalarText
                             'si leur sous-type dans la base ne contient pas déjà 'Legend'
                             If Not VpSubType.Contains("Legend") Then
                                 'si le sous-type est vide
                                 If VpSubType = "" Then
                                     'on le met à 'Legendary'
-                                    VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.SubType = 'Legendary' Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+                                    VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.SubType = 'Legendary' Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And (Series.SeriesCD_MO = '" + VpCode + "' Or Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "');"
                                     VgDBCommand.ExecuteNonQuery
                                 Else
                                     'si le sous-type existe dans la table de traduction des sous-types
@@ -572,13 +576,17 @@ Public Partial Class MainForm
                                         End If
                                     End If
                                     'on met à jour l'entrée en rajoutant ' Legend' à la fin
-                                    VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.SubType = '" + VpSubType.Replace("'", "''") + " Legend' Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerie + "';"
+                                    VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.SubType = '" + VpSubType.Replace("'", "''") + " Legend' Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And (Series.SeriesCD_MO = '" + VpCode + "' Or Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "');"
                                     VgDBCommand.ExecuteNonQuery
                                 End If
                             End If
                         End If
                     Next VpCard
-                Next VpSerie
+                    Me.prgAvance.Increment(1)
+                    Application.DoEvents
+                Next VpCode
+                Me.prgAvance.Visible = False
+                Me.IsMainReaderBusy = False
                 Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse)
                 Call mdlToolbox.SecureDelete(Application.StartupPath + CgUpMultiverse2)
             Else
@@ -3300,7 +3308,7 @@ Public Partial Class MainForm
     Sub MnuFixSubTypesActivate(ByVal sender As Object, ByVal e As EventArgs)
     Dim VpFull As Boolean
         If mdlToolbox.DBOK Then
-            VpFull = ( MessageBox.Show("Corriger également les super-types (cette opération peut prendre beaucoup de temps) ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes )
+            VpFull = ( MessageBox.Show("Corriger également les super-types (cette opération peut prendre beaucoup de temps et utiliser jusqu'à 1 Go de RAM) ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes )
             Call Me.FixSubTypesDB(VpFull)
             Call mdlToolbox.ShowInformation("Terminé !")
         End If

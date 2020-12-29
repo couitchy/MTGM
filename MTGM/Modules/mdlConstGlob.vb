@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 38675
+    Public Const CgCodeLines As Integer             = 38683
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -53,8 +53,8 @@ Public Module mdlConstGlob
     Public Const CgColViewerZipRes As String        = "\CollectionViewer.zip"
     Public Const CgUpDFile As String                = "\Magic The Gathering Manager.new"
     Public Const CgDownDFile As String              = "\Magic The Gathering Manager.bak"
-    Public Const CgUpMultiverse As String           = "\AllSets-x.json"
-    Public Const CgUpMultiverse2 As String          = "\AllSets-x.json.zip"
+    Public Const CgUpMultiverse As String           = "\AllPrintings.json"
+    Public Const CgUpMultiverse2 As String          = "\AllPrintings.json.zip"
     Public Const CgUpDDB As String                  = "\Images DB.mdb"
     Public Const CgUpDDBb As String                 = "\Patch.mdb"
     Public Const CgUpDDBd As String                 = "Images%20DB.dat"
@@ -101,7 +101,7 @@ Public Module mdlConstGlob
     Public Const CgURL20 As String                  = "/Updates/MD_SubTypes r19.log"
     Public Const CgURL21 As String                  = "/Updates/MD_SubTypesVF r19.log"
     Public Const CgURL22 As String                  = "/Updates/MD_Multiverse r22.log"
-    Public Const CgURL23 As String                  = "https://mtgjson.com/json/AllSets.json.zip"
+    Public Const CgURL23 As String                  = "https://mtgjson.com/json/AllPrintings.json.zip"
     Public Const CgURL24 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/products/card-name/1/1/true"
     Public Const CgURL25 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
     Public Const CgURL26 As String                  = "http://magic-ville.fr/fr/"
