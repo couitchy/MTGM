@@ -546,7 +546,12 @@ Public Partial Class MainForm
                 VpNewItems = New List(Of String)
                 VpSerializer = New JavaScriptSerializer
                 VpSerializer.MaxJsonLength = Integer.MaxValue
-                VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + mdlConstGlob.CgUpMultiverse)).ReadToEnd)
+                Try
+                    VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + mdlConstGlob.CgUpMultiverse)).ReadToEnd)
+                Catch VpEx As OutOfMemoryException
+                    Call mdlToolbox.ShowWarning("Mémoire insuffisante..." + vbCrLf + "Fermez des applications et ré-essayez.")
+                    Return
+                End Try
                 Me.IsMainReaderBusy = True
                 Call Me.InitBars(VpJSONInfos.Keys.Count)
                 For Each VpCode As String In VpJSONInfos.Keys
