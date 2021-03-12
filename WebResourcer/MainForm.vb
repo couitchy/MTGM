@@ -1038,6 +1038,7 @@ Public Partial Class MainForm
                 VpStr = VpStr.Replace("&#8212;", "-")
                 VpStr = VpStr.Replace("&#8217;", "'")
                 VpStr = VpStr.Replace("&quot;", """")
+                VpStr = VpStr.Replace("&amp;", "&")
                 VpStr = VpStr.Replace("&lt;&gt;","!c!")
                 VpStr = VpStr.Replace("<img src=""/images/magic/manas/micro/", "!")
                 VpStr = VpStr.Replace("<img src=""images/smileys/", "!")
@@ -1914,6 +1915,8 @@ Public Partial Class MainForm
                 Return "commandercollectiongreen#" + VpStr
             Case "CC"
                 Return "commanderlegends#" + VpStr
+            Case "KH"
+                Return "kaldheim#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2462,6 +2465,8 @@ Public Partial Class MainForm
                 Return "CG"
             Case "commanderlegends"
                 Return "CC"
+            Case "kaldheim"
+                Return "KH"
             Case Else
                 Return ""
         End Select
