@@ -1192,6 +1192,9 @@ Public Module mdlToolbox
         Cursor.Current = Cursors.WaitCursor
         Try
             ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
+        Catch
+        End Try
+        Try
             VgClient.DownloadFile(VpURI, Application.StartupPath + VpOutput)
         Catch
             'Si on arrive là c'est qu'on n'a pas les droits d'écriture => on télécharge dans un dossier temporaire et on lance la copie en demandant les droits d'admin

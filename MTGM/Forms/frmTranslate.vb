@@ -7,7 +7,9 @@ Public Partial Class frmTranslate
     Private Const CmURL     As String  = "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
     Private Const CmId      As String  = "#cardname#"
     Private Const CmKey     As String  = "gathering-cartes-view"
+    Private Const CmKey2    As String  = "title"
     Private Const CmFrench  As Integer = 2
+    Private Const CmFrAlter As Integer = 1
     Private VmOwner As MainForm
     Public Sub New(VpOwner As MainForm)
         Call Me.InitializeComponent
@@ -34,8 +36,11 @@ Public Partial Class frmTranslate
             End While
             VpStrs = VpStr.Split(New String() {CmKey}, StringSplitOptions.None)
             VpStr = VpStrs(CmFrench)
-            VpStr = VpStr.Substring(VpStr.IndexOf("""") + 2)
-            VpStr = VpStr.Substring(0, VpStr.IndexOf("<"))
+            If Not VpStr.Contains(CmKey2) Then
+                VpStr = VpStrs(CmFrAlter)
+            End If
+            VpStrs = VpStr.Split("""")
+            VpStr = VpStrs(CmFrench)
             VpStr = VpStr.Replace("&#039;", "'")    'Petite feinte entre guillemet simple et apostrophe
             Return VpStr
         Catch

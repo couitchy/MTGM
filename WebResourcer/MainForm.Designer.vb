@@ -148,7 +148,7 @@ Partial Class MainForm
         '
         'mnuFile
         '
-        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBOpen, Me.mnuDBReady, Me.mnuINIReady, Me.mnuSeparator, Me.mnuExit})
+        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBOpen, Me.mnuDBReady, Me.mnuINIReady, Me.mnuBuildStamps, Me.mnuSeparator, Me.mnuExit})
         Me.mnuFile.Name = "mnuFile"
         Me.mnuFile.Size = New System.Drawing.Size(54, 20)
         Me.mnuFile.Text = "Fichier"
@@ -364,7 +364,7 @@ Partial Class MainForm
         '
         'mnuSeries
         '
-        Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesMerge, Me.mnuSeriesVirtualAdd, Me.mnuSeriesGen, Me.mnuBuildStamps, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
+        Me.mnuSeries.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesSpoilers, Me.mnuSeriesMerge, Me.mnuSeriesVirtualAdd, Me.mnuSeriesGen, Me.mnuBuildDouble, Me.mnuFixTxtVO, Me.mnuFindHoles})
         Me.mnuSeries.Name = "mnuSeries"
         Me.mnuSeries.Size = New System.Drawing.Size(152, 22)
         Me.mnuSeries.Text = "Editions"
@@ -414,9 +414,10 @@ Partial Class MainForm
         '
         'mnuBuildStamps
         '
+        Me.mnuBuildStamps.Image = CType(resources.GetObject("mnuINIReady.Image"),System.Drawing.Image)
         Me.mnuBuildStamps.Name = "mnuBuildStamps"
         Me.mnuBuildStamps.Size = New System.Drawing.Size(432, 22)
-        Me.mnuBuildStamps.Text = "Construire les fichiers d'horodatage"
+        Me.mnuBuildStamps.Text = "Préparer les .TXT d'horodatage"
         AddHandler Me.mnuBuildStamps.Click, AddressOf Me.MnuBuildStampsClick
         '
         'mnuBuildDouble

@@ -37,11 +37,17 @@ Partial Class frmNewEdition
         Me.grpData = New System.Windows.Forms.GroupBox
         Me.cmdOK = New System.Windows.Forms.Button
         Me.splitH = New System.Windows.Forms.SplitContainer
+        Me.cmdBrowsetxtDoubles = New System.Windows.Forms.Button
+        Me.cmdBrowsetxtTraductions = New System.Windows.Forms.Button
         Me.cmdBrowsetxtSpoilerList = New System.Windows.Forms.Button
         Me.cmdBrowsetxtCheckList = New System.Windows.Forms.Button
+        Me.txtDoubles = New System.Windows.Forms.TextBox
+        Me.txtTraductions = New System.Windows.Forms.TextBox
         Me.txtSpoilerList = New System.Windows.Forms.TextBox
         Me.txtCheckList = New System.Windows.Forms.TextBox
         Me.lblSpoilerList = New System.Windows.Forms.Label
+        Me.lblTraductions = New System.Windows.Forms.Label
+        Me.lblDoubles = New System.Windows.Forms.Label
         Me.lblCheckList = New System.Windows.Forms.Label
         Me.lblData = New System.Windows.Forms.Label
         Me.chkNewEdition = New System.Windows.Forms.CheckedListBox
@@ -114,10 +120,16 @@ Partial Class frmNewEdition
         '
         'splitH.Panel1
         '
+        Me.splitH.Panel1.Controls.Add(Me.cmdBrowsetxtDoubles)
+        Me.splitH.Panel1.Controls.Add(Me.cmdBrowsetxtTraductions)
         Me.splitH.Panel1.Controls.Add(Me.cmdBrowsetxtSpoilerList)
         Me.splitH.Panel1.Controls.Add(Me.cmdBrowsetxtCheckList)
+        Me.splitH.Panel1.Controls.Add(Me.txtDoubles)
+        Me.splitH.Panel1.Controls.Add(Me.txtTraductions)
         Me.splitH.Panel1.Controls.Add(Me.txtSpoilerList)
         Me.splitH.Panel1.Controls.Add(Me.txtCheckList)
+        Me.splitH.Panel1.Controls.Add(Me.lblDoubles)
+        Me.splitH.Panel1.Controls.Add(Me.lblTraductions)
         Me.splitH.Panel1.Controls.Add(Me.lblSpoilerList)
         Me.splitH.Panel1.Controls.Add(Me.lblCheckList)
         Me.splitH.Panel1.Controls.Add(Me.lblData)
@@ -129,12 +141,32 @@ Partial Class frmNewEdition
         Me.splitH.SplitterDistance = 142
         Me.splitH.TabIndex = 1
         '
+        'cmdBrowsetxtDoubles
+        '
+        Me.cmdBrowsetxtDoubles.Location = New System.Drawing.Point(406, 119)
+        Me.cmdBrowsetxtDoubles.Name = "cmdBrowsetxtDoubles"
+        Me.cmdBrowsetxtDoubles.Size = New System.Drawing.Size(20, 20)
+        Me.cmdBrowsetxtDoubles.TabIndex = 17
+        Me.cmdBrowsetxtDoubles.Text = "."
+        Me.cmdBrowsetxtDoubles.UseVisualStyleBackColor = true
+        AddHandler Me.cmdBrowsetxtDoubles.Click, AddressOf Me.CmdBrowseClick
+        '
+        'cmdBrowsetxtTraductions
+        '
+        Me.cmdBrowsetxtTraductions.Location = New System.Drawing.Point(406, 97)
+        Me.cmdBrowsetxtTraductions.Name = "cmdBrowsetxtTraductions"
+        Me.cmdBrowsetxtTraductions.Size = New System.Drawing.Size(20, 20)
+        Me.cmdBrowsetxtTraductions.TabIndex = 15
+        Me.cmdBrowsetxtTraductions.Text = "."
+        Me.cmdBrowsetxtTraductions.UseVisualStyleBackColor = true
+        AddHandler Me.cmdBrowsetxtTraductions.Click, AddressOf Me.CmdBrowseClick
+        '
         'cmdBrowsetxtSpoilerList
         '
-        Me.cmdBrowsetxtSpoilerList.Location = New System.Drawing.Point(406, 90)
+        Me.cmdBrowsetxtSpoilerList.Location = New System.Drawing.Point(406, 75)
         Me.cmdBrowsetxtSpoilerList.Name = "cmdBrowsetxtSpoilerList"
         Me.cmdBrowsetxtSpoilerList.Size = New System.Drawing.Size(20, 20)
-        Me.cmdBrowsetxtSpoilerList.TabIndex = 6
+        Me.cmdBrowsetxtSpoilerList.TabIndex = 13
         Me.cmdBrowsetxtSpoilerList.Text = "."
         Me.cmdBrowsetxtSpoilerList.UseVisualStyleBackColor = true
         AddHandler Me.cmdBrowsetxtSpoilerList.Click, AddressOf Me.CmdBrowseClick
@@ -144,29 +176,61 @@ Partial Class frmNewEdition
         Me.cmdBrowsetxtCheckList.Location = New System.Drawing.Point(406, 53)
         Me.cmdBrowsetxtCheckList.Name = "cmdBrowsetxtCheckList"
         Me.cmdBrowsetxtCheckList.Size = New System.Drawing.Size(20, 20)
-        Me.cmdBrowsetxtCheckList.TabIndex = 5
+        Me.cmdBrowsetxtCheckList.TabIndex = 11
         Me.cmdBrowsetxtCheckList.Text = "."
         Me.cmdBrowsetxtCheckList.UseVisualStyleBackColor = true
         AddHandler Me.cmdBrowsetxtCheckList.Click, AddressOf Me.CmdBrowseClick
         '
+        'txtDoubles
+        '
+        Me.txtDoubles.Location = New System.Drawing.Point(95, 119)
+        Me.txtDoubles.Name = "txtDoubles"
+        Me.txtDoubles.Size = New System.Drawing.Size(305, 20)
+        Me.txtDoubles.TabIndex = 16
+        '
+        'txtTraductions
+        '
+        Me.txtTraductions.Location = New System.Drawing.Point(95, 97)
+        Me.txtTraductions.Name = "txtTraductions"
+        Me.txtTraductions.Size = New System.Drawing.Size(305, 20)
+        Me.txtTraductions.TabIndex = 14
+        '
         'txtSpoilerList
         '
-        Me.txtSpoilerList.Location = New System.Drawing.Point(80, 90)
+        Me.txtSpoilerList.Location = New System.Drawing.Point(95, 75)
         Me.txtSpoilerList.Name = "txtSpoilerList"
-        Me.txtSpoilerList.Size = New System.Drawing.Size(320, 20)
-        Me.txtSpoilerList.TabIndex = 4
+        Me.txtSpoilerList.Size = New System.Drawing.Size(305, 20)
+        Me.txtSpoilerList.TabIndex = 12
         '
         'txtCheckList
         '
-        Me.txtCheckList.Location = New System.Drawing.Point(80, 53)
+        Me.txtCheckList.Location = New System.Drawing.Point(95, 53)
         Me.txtCheckList.Name = "txtCheckList"
-        Me.txtCheckList.Size = New System.Drawing.Size(320, 20)
-        Me.txtCheckList.TabIndex = 3
+        Me.txtCheckList.Size = New System.Drawing.Size(305, 20)
+        Me.txtCheckList.TabIndex = 10
+        '
+        'lblDoubles
+        '
+        Me.lblDoubles.AutoSize = true
+        Me.lblDoubles.Location = New System.Drawing.Point(12, 122)
+        Me.lblDoubles.Name = "lblDoubles"
+        Me.lblDoubles.Size = New System.Drawing.Size(62, 13)
+        Me.lblDoubles.TabIndex = 1
+        Me.lblDoubles.Text = "Doubles (opt.) - "
+        '
+        'lblTraductions
+        '
+        Me.lblTraductions.AutoSize = true
+        Me.lblTraductions.Location = New System.Drawing.Point(12, 100)
+        Me.lblTraductions.Name = "lblTraductions"
+        Me.lblTraductions.Size = New System.Drawing.Size(62, 13)
+        Me.lblTraductions.TabIndex = 1
+        Me.lblTraductions.Text = "Traductions - "
         '
         'lblSpoilerList
         '
         Me.lblSpoilerList.AutoSize = true
-        Me.lblSpoilerList.Location = New System.Drawing.Point(12, 93)
+        Me.lblSpoilerList.Location = New System.Drawing.Point(12, 78)
         Me.lblSpoilerList.Name = "lblSpoilerList"
         Me.lblSpoilerList.Size = New System.Drawing.Size(63, 13)
         Me.lblSpoilerList.TabIndex = 2
@@ -188,8 +252,7 @@ Partial Class frmNewEdition
         Me.lblData.Name = "lblData"
         Me.lblData.Size = New System.Drawing.Size(388, 29)
         Me.lblData.TabIndex = 0
-        Me.lblData.Text = "Choisissez une édition dont les cartes ne sont pas encore référencées ainsi que l"& _
-        "es deux fichiers Wizard of The Coast les accompagnant :"
+        Me.lblData.Text = "Choisissez une édition dont les cartes ne sont pas encore référencées ainsi que les fichiers Wizard of The Coast les accompagnant :"
         '
         'chkNewEdition
         '
@@ -575,10 +638,16 @@ Partial Class frmNewEdition
     Private cmdOK As System.Windows.Forms.Button
     Private lblCheckList As System.Windows.Forms.Label
     Private lblSpoilerList As System.Windows.Forms.Label
+    Private lblTraductions As System.Windows.Forms.Label
+    Private lblDoubles As System.Windows.Forms.Label
     Private txtCheckList As System.Windows.Forms.TextBox
     Private txtSpoilerList As System.Windows.Forms.TextBox
+    Private txtTraductions As System.Windows.Forms.TextBox
+    Private txtDoubles As System.Windows.Forms.TextBox
     Private cmdBrowsetxtCheckList As System.Windows.Forms.Button
     Private cmdBrowsetxtSpoilerList As System.Windows.Forms.Button
+    Private cmdBrowsetxtTraductions As System.Windows.Forms.Button
+    Private cmdBrowsetxtDoubles As System.Windows.Forms.Button
     Private chkNewEdition As System.Windows.Forms.CheckedListBox
     Private splitH As System.Windows.Forms.SplitContainer
 End Class

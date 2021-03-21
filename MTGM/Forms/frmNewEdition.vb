@@ -85,8 +85,8 @@ Public Partial Class frmNewEdition
             'La suite est comme en mode manuel
             Me.txtCheckList.Text = Application.StartupPath + VpChecker
             Me.txtSpoilerList.Text = Application.StartupPath + VpSpoiler
-            Me.txtSpoilerList.Tag = Application.StartupPath + VpTrad
-            Me.txtCheckList.Tag = Application.StartupPath + VpDouble
+            Me.txtTraductions.Text = Application.StartupPath + VpTrad
+            Me.txtDoubles.Text = Application.StartupPath + VpDouble
             Me.chkNewEdition.Tag = VpInfos(2)
             If Not File.Exists(Me.txtCheckList.Text) Or Not File.Exists(Me.txtSpoilerList.Text) Then
                 Call mdlToolbox.ShowWarning(mdlConstGlob.CgErr0)
@@ -358,10 +358,10 @@ Public Partial Class frmNewEdition
         Loop
         VpFile.Close
         'Traduction
-        If Not Me.txtSpoilerList.Tag Is Nothing AndAlso File.Exists(Me.txtSpoilerList.Tag.ToString) Then
+        If File.Exists(Me.txtTraductions.Text) Then
             Me.lblStatus.Text = "Traduction en cours..."
             Application.DoEvents
-            VpFile = New StreamReader(Me.txtSpoilerList.Tag.ToString, Encoding.Default)
+            VpFile = New StreamReader(Me.txtTraductions.Text, Encoding.Default)
             While Not VpFile.EndOfStream
                 VpStrs = VpFile.ReadLine.Split("#")
                 VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.EncNbr >= " + VmEncNbr0.ToString + ";"
@@ -370,11 +370,11 @@ Public Partial Class frmNewEdition
             VpFile.Close
         End If
         'Gestion des doubles cartes éventuelles
-        If Not Me.txtCheckList.Tag Is Nothing AndAlso File.Exists(Me.txtCheckList.Tag.ToString) Then
+        If File.Exists(Me.txtDoubles.Text) Then
             Me.lblStatus.Text = "Association des doubles cartes en cours..."
             Application.DoEvents
             VpSerieCD = mdlToolbox.GetSerieCodeFromName(Me.chkNewEdition.Tag)
-            VpFile = New StreamReader(Me.txtCheckList.Tag.ToString, Encoding.Default)
+            VpFile = New StreamReader(Me.txtDoubles.Text, Encoding.Default)
             While Not VpFile.EndOfStream
                 VpStrs = VpFile.ReadLine.Split("#")
                 VpEncNbrDown = mdlToolbox.GetEncNbr(VpStrs(0), VpSerieCD)
