@@ -394,6 +394,8 @@ Public Partial Class frmNewEdition
         End If
         Me.txtCheckList.Text = ""
         Me.txtSpoilerList.Text = ""
+        Me.txtTraductions.Text = ""
+        Me.txtDoubles.Text = ""
         Call Me.CheckLoad
     End Sub
     Private Function BuildList(VpSQL As String) As List(Of String)
