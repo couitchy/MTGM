@@ -1917,6 +1917,16 @@ Public Partial Class MainForm
                 Return "commanderlegends#" + VpStr
             Case "KH"
                 Return "kaldheim#" + VpStr
+            Case "KF"
+                Return "kaldheimcommander#" + VpStr
+            Case "TX"
+                Return "timespiralremastered#" + VpStr
+            Case "SX"
+                Return "strixhavenschoolofmages#" + VpStr
+            Case "SY"
+                Return "strixhavenmysticalarchive#" + VpStr
+            Case "CX"
+                Return "commander2021#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2467,6 +2477,16 @@ Public Partial Class MainForm
                 Return "CC"
             Case "kaldheim"
                 Return "KH"
+            Case "kaldheimcommander"
+                Return "KF"
+            Case "timespiralremastered"
+                Return "TX"
+            Case "strixhavenschoolofmages"
+                Return "SX"
+            Case "strixhavenmysticalarchive"
+                Return "SY"
+            Case "commander2021"
+                Return "CX"
             Case Else
                 Return ""
         End Select
@@ -3146,7 +3166,7 @@ Public Partial Class MainForm
                     If Not VpFile.EndOfStream Then
                         VpLine = VpFile.ReadLine.Trim
                         If VpLine.StartsWith(CpBalises(5)) Then
-                            VpStr = VpLine.Replace(CpBalises(5), "").Replace(vbTab, "").Replace("Token", "").Replace("Mythic Rare", "").Replace("Rare", "").Replace("Uncommon", "").Replace("Common", "").Replace("Land", "").Trim
+                            VpStr = VpLine.Replace(CpBalises(5), "").Replace(vbTab, "").Replace("Special", "").Replace("special", "").Replace("Token", "").Replace("Mythic Rare", "").Replace("Rare", "").Replace("Uncommon", "").Replace("Common", "").Replace("Land", "").Trim
                             If VpSet = "" Then
                                 VpSet = VpStr
                             ElseIf VpSet <> VpStr And Not VpConfusion Then
