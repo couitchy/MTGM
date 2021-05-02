@@ -237,15 +237,22 @@ Public Partial Class frmBuyCards
     Dim VpRequest As HttpWebRequest
     Dim VpSerializer As New JavaScriptSerializer
     Dim VpWebResponse As HttpWebResponse
+    Dim VpOutput As tRequest
         ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
         VpURL = VpURL.Replace("'", "%27")                   'cas non gérés par EscapeUriString
         VpSerializer.MaxJsonLength = Integer.MaxValue
         VpRequest = HttpWebRequest.Create(VpURL)
+        VpRequest.KeepAlive = False
+        VpRequest.Timeout = 5000
+        VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+        VpRequest.ServicePoint.MaxIdleTime = 5000
         VpRequest.Method = "GET"
         VpRequest.Headers.Clear
         VpRequest.Headers.Add(HttpRequestHeader.Authorization, (New clsOAuthHeader).GetAuthorizationHeader(VpRequest.Method, VpURL))
         VpWebResponse = VpRequest.GetResponse
-        Return VpSerializer.Deserialize(Of tRequest)((New StreamReader(VpWebResponse.GetResponseStream)).ReadToEnd)
+        VpOutput = VpSerializer.Deserialize(Of tRequest)((New StreamReader(VpWebResponse.GetResponseStream)).ReadToEnd)
+        VpRequest.Abort
+        Return VpOutput
     End Function
     Private Function Extract(VpCard As String, VpToSell As List(Of clsRemoteCard)) As List(Of clsRemoteCard)
     '-------------------------------------------------------------------------------------------------------------------------------------------

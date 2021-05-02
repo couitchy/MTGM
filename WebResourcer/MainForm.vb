@@ -180,6 +180,10 @@ Public Partial Class MainForm
         Try
             ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0"
+            VpRequest.KeepAlive = False
+            VpRequest.Timeout = 5000
+            VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+            VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse().GetResponseStream()
             VpCurByte = VpAnswer.ReadByte
             While VpCurByte <> -1
@@ -195,6 +199,7 @@ Public Partial Class MainForm
                 VpStr = (New StreamReader(Me.dlgOpen4.FileName)).ReadToEnd
             End If
         End Try
+        VpRequest.Abort
         Return VpStr
     End Function
     Private Function GetPrice(VpIn As String) As String

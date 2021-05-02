@@ -1049,14 +1049,19 @@ Public Module mdlToolbox
     Dim VpAnswer As Stream
     Dim VpBuf() As Byte
     Dim VpStamp As String
-            VpRequest = WebRequest.Create(VgOptions.VgSettings.DownloadServer + CgURL1C)
-            VpResponse = VpRequest.GetResponse
-            VpAnswer = VpResponse.GetResponseStream
-            'Lecture du fichier sur Internet
-            ReDim VpBuf(0 To VpResponse.ContentLength - 1)
-            VpAnswer.Read(VpBuf, 0, VpBuf.Length)
-            VpStamp = New ASCIIEncoding().GetString(VpBuf)
-            Return VpStamp
+        VpRequest = WebRequest.Create(VgOptions.VgSettings.DownloadServer + CgURL1C)
+        VpRequest.KeepAlive = False
+        VpRequest.Timeout = 5000
+        VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+        VpRequest.ServicePoint.MaxIdleTime = 5000
+        VpResponse = VpRequest.GetResponse
+        VpAnswer = VpResponse.GetResponseStream
+        'Lecture du fichier sur Internet
+        ReDim VpBuf(0 To VpResponse.ContentLength - 1)
+        VpAnswer.Read(VpBuf, 0, VpBuf.Length)
+        VpStamp = New ASCIIEncoding().GetString(VpBuf)
+        VpRequest.Abort
+        Return VpStamp
     End Function
     Public Sub CheckForPicUpdates
     '-------------------------------------------------------------------------
@@ -1116,8 +1121,13 @@ Public Module mdlToolbox
         'Fichier d'historique des versions
         Call DownloadNow(New Uri(VgOptions.VgSettings.DownloadServer + CgURL7), CgHSTFile)
         'Vérification horodatage
+        VpRequest = Nothing
         Try
             VpRequest = WebRequest.Create(If(VpBeta, VgOptions.VgSettings.DownloadServer + CgURL1B, VgOptions.VgSettings.DownloadServer + CgURL1))
+            VpRequest.KeepAlive = False
+            VpRequest.Timeout = 5000
+            VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+            VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             'Lecture du fichier horodaté sur Internet
             VpAnswer.Read(VpBuf, 0, 19)
@@ -1158,6 +1168,10 @@ Public Module mdlToolbox
             VgTimer.Stop
             If VpExplicit Then
                 Call ShowWarning(CgDL3b)
+            End If
+        Finally
+            If VpRequest IsNot Nothing Then
+                VpRequest.Abort
             End If
         End Try
         Call MainForm.VgMe.StatusText(VpOldText)

@@ -21,12 +21,17 @@ Public Partial Class frmUpdateContent
     Dim VpRequest As HttpWebRequest
     Dim VpAnswer As Stream
     Dim VpBuf(0 To 117) As Byte
-    DIm VpLength As Integer
+    Dim VpLength As Integer
+        VpRequest = Nothing
         Try
             'Gestion cas 0
             VpStamps(0) = mdlToolbox.GetPictSP
             'Gestion cas 1 à 10
             VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1D)
+            VpRequest.KeepAlive = False
+            VpRequest.Timeout = 5000
+            VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+            VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             VpAnswer.Read(VpBuf, 0, VpBuf.Length)
             VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)  'gestion cr ou cr+lf
@@ -41,6 +46,10 @@ Public Partial Class frmUpdateContent
         Catch
             Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
             Return Nothing
+        Finally
+            If VpRequest IsNot Nothing Then
+                VpRequest.Abort
+            End If
         End Try
     End Function
     Private Function GetSizes As Integer()
@@ -51,9 +60,14 @@ Public Partial Class frmUpdateContent
     Dim VpRequest As HttpWebRequest
     Dim VpAnswer As Stream
     Dim VpBuf(0 To 74) As Byte
-    DIm VpLength As Integer
+    Dim VpLength As Integer
+        VpRequest = Nothing
         Try
             VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1E)
+            VpRequest.KeepAlive = False
+            VpRequest.Timeout = 5000
+            VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+            VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             VpAnswer.Read(VpBuf, 0, VpBuf.Length)
             VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
@@ -69,6 +83,10 @@ Public Partial Class frmUpdateContent
         Catch
             Call mdlToolbox.ShowWarning(mdlConstGlob.CgDL3b)
             Return Nothing
+        Finally
+            If VpRequest IsNot Nothing Then
+                VpRequest.Abort
+            End If
         End Try
     End Function
     Private Function CompareStamp(VpType As clsUpdateContent.EgMAJContenu, VpStamp As String, VpSize As Integer) As clsUpdateContent
@@ -258,7 +276,7 @@ Public Partial Class frmUpdateContent
     '- les modèles et historiques (.xml)
     '- le texte des cartes en vf (.xml)
     '- les régles spécifiques des cartes en vo (.xml)
-    '- les éditions (liste serveur | PAS ENCORE GERE)
+    '- les éditions (liste serveur | PAS ENCORE GÉRÉ)
     '- le titre des cartes en vf (.xml)
     '- les corrections sur les images (.xml)
     '- les corrections sur les titres des cartes (.xml)

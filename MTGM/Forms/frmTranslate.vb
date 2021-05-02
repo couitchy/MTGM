@@ -25,8 +25,13 @@ Public Partial Class frmTranslate
     Dim VpStr As String = ""            'Chaîne support
     Dim VpStrs() As String              'Séparations de la chaîne
     Dim VpCurByte As Integer            'Octet courant
+        VpRequest = Nothing
         Try
             VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn.Replace(" ", "+")))
+            VpRequest.KeepAlive = False
+            VpRequest.Timeout = 5000
+            VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+            VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse().GetResponseStream()
             VpCurByte = VpAnswer.ReadByte
             While VpCurByte <> -1
@@ -46,6 +51,10 @@ Public Partial Class frmTranslate
         Catch
             If Me.chkAlert.Checked Then
                 Call mdlToolbox.ShowWarning("Un problème est survenu lors de la traduction de la carte " + VpIn + "...")
+            End If
+        Finally
+            If VpRequest IsNot Nothing Then
+                VpRequest.Abort
             End If
         End Try
         Return VpIn
