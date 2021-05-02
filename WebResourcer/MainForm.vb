@@ -33,7 +33,7 @@ Public Partial Class MainForm
     Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA"(lpApplicationName As String, lpKeyName As String, lpString As String, ByVal lpFileName As String) As Integer
     Private Const CmStrConn As String       = "Provider=Microsoft.Jet.OLEDB.4.0;OLE DB Services=-1;Data Source="
     'Private Const CmStrConn As String       = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="
-    Private Const CmURL0 As String          = "http://magic-ville.fr/fr/"
+    Private Const CmURL0 As String          = "https://www.magic-ville.com/fr/"
     Private Const CmURL1 As String          = "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
     Private Const CmURL2 As String          = "http://www.magiccorporation.com/gathering-cartes-view"
     Private Const CmURL3 As String          = "http://www.magiccorporation.com/scan/"
@@ -308,7 +308,7 @@ Public Partial Class MainForm
     Dim VpCards As New List(Of String)
     Dim VpCanAdd As Boolean = ( VpStartAfter = "" )
         Me.prgAvance.Style = ProgressBarStyle.Marquee
-        VmDBCommand.CommandText = "Select Distinct Title From Card Order By Title Asc;"
+        VmDBCommand.CommandText = "Select Distinct Title From Card Where Type <> 'K' Order By Title Asc;"
         VmDBReader = VmDBCommand.ExecuteReader
         With VmDBReader
             While .Read
@@ -3980,7 +3980,7 @@ Public Partial Class MainForm
     Sub MnuCardsExtractDiffClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             'Select Distinct Card.Title From Card Where Card.Type <> 'K' And Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '"', ''), '?', '')) Order By Card.Title Asc;
-            Call Me.ExtractCards("Select Distinct Card.Title From Card Where Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Card.Title) Order By Card.Title Asc;")
+            Call Me.ExtractCards("Select Distinct Card.Title From Card Where Card.Type <> 'K' And Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Card.Title) Order By Card.Title Asc;")
             Call Me.AddToLog("Utiliser la requête Access pour éviter les doublons...", eLogType.Warning)
         End If
     End Sub

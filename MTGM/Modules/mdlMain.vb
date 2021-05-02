@@ -77,14 +77,17 @@ Public Module mdlMain
             VgImgSeries.TransparentColor = System.Drawing.Color.Transparent
             For Each VpIcon As String In System.IO.Directory.GetFiles(Application.StartupPath + CgIcons, "*" + CgIconsExt)
                 If File.Exists(VpIcon) Then
-                    VpHandle = Image.FromFile(VpIcon)
-                    VpKey = VpIcon.Substring(VpIcon.LastIndexOf("\") + 1)
-                    If Not VgImgSeries.Images.Keys.Contains(VpKey) Then
-                        VgImgSeries.Images.Add(VpKey, VpHandle)
-                    End If
-                    If Not VpImgSeries.Images.Keys.Contains(VpKey) Then
-                        VpImgSeries.Images.Add(VpKey, VpHandle)
-                    End If
+                    Try
+                        VpHandle = Image.FromFile(VpIcon)
+                        VpKey = VpIcon.Substring(VpIcon.LastIndexOf("\") + 1)
+                        If Not VgImgSeries.Images.Keys.Contains(VpKey) Then
+                            VgImgSeries.Images.Add(VpKey, VpHandle)
+                        End If
+                        If Not VpImgSeries.Images.Keys.Contains(VpKey) Then
+                            VpImgSeries.Images.Add(VpKey, VpHandle)
+                        End If
+                    Catch
+                    End Try
                 End If
             Next VpIcon
         End If
