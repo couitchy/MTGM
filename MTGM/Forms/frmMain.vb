@@ -555,8 +555,8 @@ Public Partial Class MainForm
                 Me.IsMainReaderBusy = True
                 Call Me.InitBars(VpJSONInfos.Keys.Count)
                 For Each VpCode As String In VpJSONInfos.Keys
-                    VpEdition = VpJSONInfos.Item(VpCode).name
-                    For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpCode).cards
+                    VpEdition = VpJSONInfos.Item(VpCode).data.name
+                    For Each VpCard As clsFullInfos.clsFullDataInfos.clsFullCardInfos In VpJSONInfos.Item(VpCode).data.cards
                         'Pour chaque carte légendaire trouvée
                         If VpCard.supertypes IsNot Nothing AndAlso VpCard.supertypes.Contains("Legendary") Then
                             VgDBCommand.CommandText = "Select Card.SubType From Card Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And (Series.SeriesCD_MO = '" + VpCode + "' Or Series.SeriesNM = '" + VpEdition.Replace("'", "''") + "');"
@@ -852,11 +852,11 @@ Public Partial Class MainForm
         VgDBCommand.ExecuteNonQuery
         'Essaie de télécharger le fichier JSON général depuis Internet
         If Not File.Exists(Application.StartupPath + mdlConstGlob.CgUpMultiverse) Then
-            Call mdlToolbox.DownloadUnzip(New Uri(If(VpCode = "", CgURL23, CgURL23.Replace("AllSets", VpCode))), mdlConstGlob.CgUpMultiverse2, mdlConstGlob.CgUpMultiverse)
+            Call mdlToolbox.DownloadUnzip(New Uri(If(VpCode = "", CgURL23, CgURL23.Replace("AllPrintings", VpCode))), mdlConstGlob.CgUpMultiverse2, mdlConstGlob.CgUpMultiverse)
             If Not File.Exists(Application.StartupPath + mdlConstGlob.CgUpMultiverse) And VpCode <> "" Then
                 VpCode = InputBox("Préciser le code de l'édition sur 3, 4 ou 5 caractères" + vbCrLf + "(MTGM -> MTGJSON)", "Code édition", VpCode)
                 If VpCode = "" Then Return
-                Call mdlToolbox.DownloadUnzip(New Uri(CgURL23.Replace("AllSets", VpCode)), mdlConstGlob.CgUpMultiverse2, mdlConstGlob.CgUpMultiverse)
+                Call mdlToolbox.DownloadUnzip(New Uri(CgURL23.Replace("AllPrintings", VpCode)), mdlConstGlob.CgUpMultiverse2, mdlConstGlob.CgUpMultiverse)
             End If
         End If
         'Si ça a réussi on peut passer à la mise à jour effective
@@ -864,10 +864,12 @@ Public Partial Class MainForm
             VpSerializer = New JavaScriptSerializer
             VpSerializer.MaxJsonLength = Integer.MaxValue
             If VpCode <> "" Then
+                'Traitement unique
                 VpJSONInfo = VpSerializer.Deserialize(Of clsFullInfos)((New StreamReader(Application.StartupPath + mdlConstGlob.CgUpMultiverse)).ReadToEnd)
                 VpJSONInfos = New Dictionary(Of String, clsFullInfos)
                 VpJSONInfos.Add(VpCode, VpJSONInfo)
             Else
+                'Traitement multiple
                 VpJSONInfos = VpSerializer.Deserialize(Of Dictionary(Of String, clsFullInfos))((New StreamReader(Application.StartupPath + mdlConstGlob.CgUpMultiverse)).ReadToEnd)
             End If
             For Each VpSerie As String In VpJSONInfos.Keys
@@ -880,10 +882,10 @@ Public Partial Class MainForm
                         VpSerieCD = VpCode0
                     End If
                 End If
-                For Each VpCard As clsFullInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).cards
+                For Each VpCard As clsFullInfos.clsFullDataInfos.clsFullCardInfos In VpJSONInfos.Item(VpSerie).data.cards
                     Try
-                        If VpCard.multiverseid <> 0 Then
-                            VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.MultiverseId = " + VpCard.multiverseid.ToString + " Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerieCD + "';"
+                        If CLng(Val(VpCard.identifiers.multiverseId)) <> 0 Then
+                            VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.MultiverseId = " + VpCard.identifiers.multiverseId + " Where Card.Title = '" + VpCard.name.Replace("'", "''") + "' And Series.SeriesCD_MO = '" + VpSerieCD + "';"
                             VgDBCommand.ExecuteNonQuery
                         End If
                         If VpCard.number <> 0 Then

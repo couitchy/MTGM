@@ -4281,7 +4281,6 @@ Public Partial Class MainForm
                 Public power As String
                 Public toughness As String
                 Public loyalty As Object
-                Public multiverseid As Long
                 Public variations As List(Of String)
                 Public imageName As String
                 Public watermark As String
@@ -4294,6 +4293,7 @@ Public Partial Class MainForm
                 Public starter As Boolean
                 Public rulings As List(Of clsRulingsInfos)
                 Public foreignData As List(Of clsForeignInfos)
+                Public identifiers As clsIdentifierInfos
                 Public printings As List(Of String)
                 Public originalText As String
                 Public originalType As String
@@ -4307,7 +4307,13 @@ Public Partial Class MainForm
                 Public Class clsForeignInfos
                     Public language As String
                     Public name As String
-                    Public multiverseid As Long
+                    Public multiverseId As Long
+                End Class
+                Public Class clsIdentifierInfos
+                    Public mtgoId As String
+                    Public multiverseId As String
+                    Public scryfallId As String
+                    Public tcgplayerProductId As String
                 End Class
                 Public Class clsLegalityInfos
                     Public format As String

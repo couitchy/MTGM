@@ -11,6 +11,6 @@ Public Partial Class frmExceptionBox
         Application.Exit
     End Sub
     Sub CmdSendClick(ByVal sender As Object, ByVal e As EventArgs)
-        Process.Start("mailto:couitchy@free.fr?subject=[Bug] Magic The Gathering Manager&body=MTGM " + Application.ProductVersion.ToString + " " + Environment.OSVersion.ToString + " " + VmException)
+        Process.Start("mailto:couitchy@free.fr?subject=[Bug] Magic The Gathering Manager&body=" + Uri.EscapeDataString("MTGM " + Application.ProductVersion.ToString + vbCrLf + Environment.OSVersion.ToString + vbCrLf + VmException))
     End Sub
 End Class

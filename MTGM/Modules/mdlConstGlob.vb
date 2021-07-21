@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 38873
+    Public Const CgCodeLines As Integer             = 38966
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -101,7 +101,7 @@ Public Module mdlConstGlob
     Public Const CgURL20 As String                  = "/Updates/MD_SubTypes r19.log"
     Public Const CgURL21 As String                  = "/Updates/MD_SubTypesVF r19.log"
     Public Const CgURL22 As String                  = "/Updates/MD_Multiverse r22.log"
-    Public Const CgURL23 As String                  = "https://mtgjson.com/json/AllPrintings.json.zip"
+    Public Const CgURL23 As String                  = "https://mtgjson.com/api/v5/AllPrintings.json.zip"
     Public Const CgURL24 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/products/card-name/1/1/true"
     Public Const CgURL25 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
     Public Const CgURL26 As String                  = "https://www.magic-ville.com/fr/"
