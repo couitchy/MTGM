@@ -95,6 +95,7 @@ Partial Class MainForm
         Me.mnuAddCards = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuRemCards = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuRemScores = New System.Windows.Forms.ToolStripMenuItem
+        Me.mnuRemEditions = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuRemCollec = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuRemGames = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuFixTable = New System.Windows.Forms.ToolStripMenuItem
@@ -841,11 +842,18 @@ Partial Class MainForm
         '
         'mnuRemCards
         '
-        Me.mnuRemCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuRemScores, Me.mnuRemCollec, Me.mnuRemGames})
+        Me.mnuRemCards.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuRemEditions, Me.mnuRemScores, Me.mnuRemCollec, Me.mnuRemGames})
         Me.mnuRemCards.Image = CType(resources.GetObject("mnuRemCards.Image"),System.Drawing.Image)
         Me.mnuRemCards.Name = "mnuRemCards"
         Me.mnuRemCards.Size = New System.Drawing.Size(277, 22)
         Me.mnuRemCards.Text = "Purger la table"
+        '
+        'mnuRemEditions
+        '
+        Me.mnuRemEditions.Name = "mnuRemEditions"
+        Me.mnuRemEditions.Size = New System.Drawing.Size(172, 22)
+        Me.mnuRemEditions.Text = "Editions"
+        AddHandler Me.mnuRemEditions.Click, AddressOf Me.MnuRemEditionsActivate
         '
         'mnuRemScores
         '
@@ -2247,6 +2255,7 @@ Partial Class MainForm
     Private mnuExcelGen As System.Windows.Forms.ToolStripMenuItem
     Private mnuDeleteACard As System.Windows.Forms.ToolStripMenuItem
     Private mnuMoveACard As System.Windows.Forms.ToolStripMenuItem
+    Private mnuRemEditions As System.Windows.Forms.ToolStripMenuItem
     Private mnuRemScores As System.Windows.Forms.ToolStripMenuItem
     Private mnuPerfs As System.Windows.Forms.ToolStripMenuItem
     Private mnucAddCards As System.Windows.Forms.ToolStripMenuItem

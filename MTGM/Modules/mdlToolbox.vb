@@ -1446,8 +1446,12 @@ Public Module mdlToolbox
     'Retourne la dernière date de mise à jour des prix
     '-------------------------------------------------
     Dim VpDate As Date
-        VgDBCommand.CommandText = "Select Top 1 PriceDate From Card Order By PriceDate Desc;"
-        VpDate = VgDBCommand.ExecuteScalar
+        VpDate = New DateTime(1970, 1, 1)
+        Try
+            VgDBCommand.CommandText = "Select Top 1 PriceDate From Card Order By PriceDate Desc;"
+            VpDate = VgDBCommand.ExecuteScalar
+        Catch
+        End Try
         If VpDate.Subtract(Date.Now).Days > 0 Then
             'Si on est là c'est que la date n'est pas valide (on ne peut pas avoir des prix dans le futur !) => on force la mise à jour en retournant une date d'il y a un an
             Return New DateTime(Date.Now.Year - 1, Date.Now.Month, Date.Now.Day)

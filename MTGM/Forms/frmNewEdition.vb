@@ -214,8 +214,12 @@ Public Partial Class frmNewEdition
         'Code la nouvelle édition
         VpSerieCD = mdlToolbox.GetSerieCodeFromName(Me.chkNewEdition.Tag)
         'Dernier numéro d'identification de carte utilisé
-        VgDBCommand.CommandText = "Select Max(EncNbr) From Card;"
-        VpEncNbr = CLng(VgDBCommand.ExecuteScalar) + 1
+        Try
+            VgDBCommand.CommandText = "Select Max(EncNbr) From Card;"
+            VpEncNbr = CLng(VgDBCommand.ExecuteScalar) + 1
+        Catch
+            VpEncNbr = 1
+        End Try
         If VmEncNbr0 = -1 Then
             VmEncNbr0 = VpEncNbr
         End If
@@ -294,7 +298,13 @@ Public Partial Class frmNewEdition
                     Catch   'Trappe d'erreur au cas où une mise à jour de textes VF a été faite avant que l'édition n'ait été ajoutée (auquel cas TextesFR est déjà bon et il n'y a rien de plus à faire)
                     End Try
                 End If
-            Catch
+            Catch VpEx As Exception
+                #If DEBUG Then
+                    Debug.Print("---- " + VpMyCard.Title + " (" + VpSerieCD + ") ----")
+                    Debug.Print(VgDBCommand.CommandText)
+                    Debug.Print(VpEx.Message + vbCrLf + VpEx.StackTrace)
+                    Return False
+                #End If
                 Call mdlToolbox.ShowWarning("Erreur lors de l'insertion de la carte " + VpMyCard.Title + " (" + VpSerieCD + ")...")
                 Return False
             End Try

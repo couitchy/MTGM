@@ -3867,7 +3867,9 @@ Public Partial Class MainForm
             ReDim Preserve VpEncNbrs(0 To VpEncNbrs.Length - 2)
             For VpI As Integer = 1 To VpEncNbrs.Length - 1
                 If VpEncNbrs(VpI) > 1 + VpEncNbrs(VpI - 1) Then
-                    'Debug.Print("Emplacement dispo. entre : " + VpEncNbrs(VpI - 1).ToString + " et " + VpEncNbrs(VpI).ToString)
+                    #If DEBUG Then
+                        Debug.Print("Emplacement dispo. entre : " + VpEncNbrs(VpI - 1).ToString + " et " + VpEncNbrs(VpI).ToString)
+                    #End If    
                     If Math.Abs(VpEncNbrs(VpI - 1) - VpMin) < VpBestFitDelta Then
                         VpBestFitDelta = Math.Abs(VpEncNbrs(VpI - 1) - VpMin)
                         VpBestFit = VpEncNbrs(VpI - 1)

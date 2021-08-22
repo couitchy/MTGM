@@ -2940,6 +2940,33 @@ Public Partial Class MainForm
     Sub MnuRemScoresActivate(ByVal sender As Object, ByVal e As EventArgs)
         Call Me.ManageDelete(sender, "Delete * From MyScores", "Êtes-vous sûr de vouloir supprimer de manière permanente l'ensemble des scores comptés jusqu'à présent ?")
     End Sub
+    Sub MnuRemEditionsActivate(ByVal sender As Object, ByVal e As EventArgs)
+        If mdlToolbox.DBOK Then
+            If mdlToolbox.ShowQuestion("Cette opération va supprimer toutes les éditions de la base de données." + vbCrLf + "Toutes les cartes saisies seront perdues." + vbCrLf + "Continuer ?") = System.Windows.Forms.DialogResult.Yes Then
+                VgDBCommand.CommandText = "Delete CardDouble.* From CardDouble Inner Join Card On CardDouble.EncNbrDownFace = Card.EncNbr;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete CardDouble.* From CardDouble Inner Join Card On CardDouble.EncNbrTopFace = Card.EncNbr;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete PricesHistory.* From PricesHistory Inner Join Card On PricesHistory.EncNbr = Card.EncNbr;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete CardFR.* From CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete MyCollection.* From MyCollection Inner Join Card On MyCollection.EncNbr = Card.EncNbr;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete MyGames.* From MyGames Inner Join Card On MyGames.EncNbr = Card.EncNbr;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete * From Card;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete * From Series;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete * From Creature;"
+                VgDBCommand.ExecuteNonQuery
+                VgDBCommand.CommandText = "Delete * From Spell;"
+                VgDBCommand.ExecuteNonQuery
+                Call mdlToolbox.ShowInformation("Terminé !")
+            End If
+        End If
+    End Sub
     Sub MnuFixCollecActivate(ByVal sender As Object, ByVal e As EventArgs)
         VgDBCommand.CommandText = "Drop Index EncNbr On MyCollection;"
         VgDBCommand.ExecuteNonQuery
