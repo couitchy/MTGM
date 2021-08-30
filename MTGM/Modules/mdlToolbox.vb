@@ -643,6 +643,8 @@ Public Module mdlToolbox
                         Return "Phénomènes"
                     Case "Y"
                         Return "Conspirations"
+                    Case "W"
+                        Return "Donjons"
                     Case "Z"
                         Return "Machinations"
                     Case "K"

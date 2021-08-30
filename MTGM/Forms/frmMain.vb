@@ -2443,6 +2443,10 @@ Public Partial Class MainForm
                 Return 51
             Case "P"
                 Return 52
+            Case "W"
+                Return 0
+            Case "K"
+                Return 0
             Case Else
                 Return 0
         End Select

@@ -1932,6 +1932,12 @@ Public Partial Class MainForm
                 Return "strixhavenmysticalarchive#" + VpStr
             Case "CX"
                 Return "commander2021#" + VpStr
+            Case "AD"
+                Return "adventuresintheforgottenrealms#" + VpStr
+            Case "AE"
+                Return "adventuresintheforgottenrealmspromos#" + VpStr
+            Case "CR"
+                Return "forgottenrealmscommander#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2492,6 +2498,12 @@ Public Partial Class MainForm
                 Return "SY"
             Case "commander2021"
                 Return "CX"
+            Case "adventuresintheforgottenrealms"
+                Return "AD"
+            Case "adventuresintheforgottenrealmspromos"
+                Return "AE"
+            Case "forgottenrealmscommander"
+                Return "CR"
             Case Else
                 Return ""
         End Select
@@ -4438,7 +4450,7 @@ Public Partial Class MainForm
             Return Me.MyCost(VmCost).ToString
         End Function
         Public Function MyType As String
-            '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy)
+            '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy, Z = scheme, W = dungeon)
             If VmType.Contains("Artifact") Then
                 Return "A"
             ElseIf VmType.Contains("Instant") Then
@@ -4473,6 +4485,8 @@ Public Partial Class MainForm
                 Return "Y"
             ElseIf VmType.Contains("Scheme") Then
                 Return "Z"
+            ElseIf VmType.Contains("Dungeon") Then
+                Return "W"
             Else
                 Return ""
             End If
@@ -4509,10 +4523,10 @@ Public Partial Class MainForm
         End Function
         Public Function MyColor As String
         Dim VpMyType As String
-            If VmType.Contains("Token") OrElse VmColor = "" Then    'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'une machination, d'un arpenteur incolore ou d'un jeton
+            If VmType.Contains("Token") OrElse VmColor = "" Then    'dans les dernières versions du gatherer, il n'y a rien lorsqu'il s'agit d'un artefact, d'un terrain, d'un plan, d'un phénomène, d'une machination, d'un donjon, d'un arpenteur incolore ou d'un jeton
                 VpMyType = Me.MyType
                 Select Case VpMyType
-                    Case "H", "Q", "Y", "Z", "P"
+                    Case "H", "Q", "Y", "Z", "W", "P"
                         Return "A"
                     Case "K"
                         Return "T"
