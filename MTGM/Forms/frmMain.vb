@@ -635,7 +635,7 @@ Public Partial Class MainForm
             While Not VpLog.EndOfStream
                 VpStrs = VpLog.ReadLine.Split("#")
                 VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "'"
-                If Not VpStrs(0).Contains("//") Then
+                If Not (VpStrs(0).Contains("//") OrElse VpStrs(0).Contains("+")) Then
                     VgDBCommand.CommandText += " And CardFR.TitleFR <> Card.Title"
                 End If
                 VgDBCommand.CommandText += ";"

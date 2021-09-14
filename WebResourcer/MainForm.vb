@@ -1938,6 +1938,8 @@ Public Partial Class MainForm
                 Return "adventuresintheforgottenrealmspromos#" + VpStr
             Case "CR"
                 Return "forgottenrealmscommander#" + VpStr
+            Case "MJ"
+                Return "modernhorizons2#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2504,6 +2506,8 @@ Public Partial Class MainForm
                 Return "AE"
             Case "forgottenrealmscommander"
                 Return "CR"
+            Case "modernhorizons2"
+                Return "MJ"
             Case Else
                 Return ""
         End Select

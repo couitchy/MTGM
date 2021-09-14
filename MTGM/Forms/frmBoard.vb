@@ -693,6 +693,9 @@ Public Partial Class frmBoard
     Sub BtDeClick(sender As Object, e As EventArgs)
         Call mdlToolbox.ShowInformation("Le lancer de dé a donné : " + mdlConstGlob.VgRandom.Next(1, 7).ToString)
     End Sub
+    Sub BtDe20Click(sender As Object, e As EventArgs)
+        Call mdlToolbox.ShowInformation("Le lancer de dé a donné : " + mdlConstGlob.VgRandom.Next(1, 21).ToString)
+    End Sub
     Sub BtPieceClick(sender As Object, e As EventArgs)
         Call mdlToolbox.ShowInformation("Le lancer de pièce a donné : " + If(mdlConstGlob.VgRandom.Next(1, 3) = 1, "pile", "face"))
     End Sub

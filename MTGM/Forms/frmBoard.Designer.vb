@@ -48,6 +48,7 @@ Partial Class frmBoard
         Me.btNextRound = New System.Windows.Forms.ToolStripButton
         Me.btSeparator2 = New System.Windows.Forms.ToolStripSeparator
         Me.btDe = New System.Windows.Forms.ToolStripButton
+        Me.btDe20 = New System.Windows.Forms.ToolStripButton
         Me.btPiece = New System.Windows.Forms.ToolStripButton
         Me.btAnchorDown = New System.Windows.Forms.ToolStripButton
         Me.btAnchorUp = New System.Windows.Forms.ToolStripButton
@@ -146,7 +147,7 @@ Partial Class frmBoard
         '
         'toolStrip
         '
-        Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btReserveSwap, Me.btReserve, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btNextRound, Me.btSeparator2, Me.btDe, Me.btPiece, Me.btAnchorDown, Me.btAnchorUp})
+        Me.toolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btNewPartie, Me.btMulligan, Me.btReserveSwap, Me.btReserve, Me.btSeparator0, Me.btLives, Me.btPoisons, Me.btSeparator1, Me.btTurns, Me.btNextRound, Me.btSeparator2, Me.btDe, Me.btDe20, Me.btPiece, Me.btAnchorDown, Me.btAnchorUp})
         Me.toolStrip.Location = New System.Drawing.Point(0, 0)
         Me.toolStrip.Name = "toolStrip"
         Me.toolStrip.Size = New System.Drawing.Size(855, 54)
@@ -276,10 +277,23 @@ Partial Class frmBoard
         Me.btDe.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btDe.Name = "btDe"
         Me.btDe.Size = New System.Drawing.Size(74, 51)
-        Me.btDe.Text = "Dé"
+        Me.btDe.Text = "Dé 6"
         Me.btDe.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
         Me.btDe.ToolTipText = "1 dé 6"
         AddHandler Me.btDe.Click, AddressOf Me.BtDeClick
+        '
+        'btDe20
+        '
+        Me.btDe20.AutoSize = false
+        Me.btDe20.Image = CType(resources.GetObject("btDe.Image"),System.Drawing.Image)
+        Me.btDe20.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btDe20.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btDe20.Name = "btDe20"
+        Me.btDe20.Size = New System.Drawing.Size(74, 51)
+        Me.btDe20.Text = "Dé 20"
+        Me.btDe20.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+        Me.btDe20.ToolTipText = "1 dé 20"
+        AddHandler Me.btDe20.Click, AddressOf Me.BtDe20Click
         '
         'btPiece
         '
@@ -979,6 +993,7 @@ Partial Class frmBoard
     End Sub
     Private btReserveSwap As System.Windows.Forms.ToolStripButton
     Private btPiece As System.Windows.Forms.ToolStripButton
+    Private btDe20 As System.Windows.Forms.ToolStripButton
     Private btDe As System.Windows.Forms.ToolStripButton
     Private btSeparator2 As System.Windows.Forms.ToolStripSeparator
     Private btNextRound As System.Windows.Forms.ToolStripButton
