@@ -4002,8 +4002,8 @@ Public Partial Class MainForm
     End Sub
     Sub MnuCardsExtractDiffClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
-            'Select Distinct Card.Title From Card Where Card.Type <> 'K' And Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '"', ''), '?', '')) Order By Card.Title Asc;
-            Call Me.ExtractCards("Select Distinct Card.Title From Card Where Card.Type <> 'K' And Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Card.Title) Order By Card.Title Asc;")
+            'Select Distinct Card.Title From Card Where (Card.Type <> 'K' Or InStr(Card.Title, 'Emblem') > 0) And Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Replace(Replace(Replace(Replace(Card.Title, ':', ''), '/', ''), '"', ''), '?', '')) Order By Card.Title Asc;
+            Call Me.ExtractCards("Select Distinct Card.Title From Card Where (Card.Type <> 'K' Or InStr(Card.Title, 'Emblem') > 0) And Not Exists (Select CardPictures.Title From CardPictures Where CardPictures.Title = Card.Title) Order By Card.Title Asc;")
             Call Me.AddToLog("Utiliser la requête Access pour éviter les doublons...", eLogType.Warning)
         End If
     End Sub

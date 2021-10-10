@@ -904,12 +904,52 @@ Public Partial Class MainForm
     End Sub
     Private Sub FixMultiverseNew
     Dim VpCodes As New List(Of String)
+    Dim VpIgnoredCodes As New List(Of String)
+        'Codes d'éditions à ignorer
+        VpIgnoredCodes.Add("CEL")
+        VpIgnoredCodes.Add("CMP")
+        VpIgnoredCodes.Add("DD3")
+        VpIgnoredCodes.Add("ELP")
+        VpIgnoredCodes.Add("GTW")
+        VpIgnoredCodes.Add("GUR")
+        VpIgnoredCodes.Add("JSS")
+        VpIgnoredCodes.Add("L01")
+        VpIgnoredCodes.Add("L02")
+        VpIgnoredCodes.Add("L03")
+        VpIgnoredCodes.Add("L04")
+        VpIgnoredCodes.Add("L05")
+        VpIgnoredCodes.Add("L06")
+        VpIgnoredCodes.Add("L07")
+        VpIgnoredCodes.Add("L08")
+        VpIgnoredCodes.Add("L09")
+        VpIgnoredCodes.Add("MYD")
+        VpIgnoredCodes.Add("PDR")
+        VpIgnoredCodes.Add("PLG")
+        VpIgnoredCodes.Add("PLP")
+        VpIgnoredCodes.Add("PME")
+        VpIgnoredCodes.Add("PPR")
+        VpIgnoredCodes.Add("PS1")
+        VpIgnoredCodes.Add("PTH")
+        VpIgnoredCodes.Add("PUM")
+        VpIgnoredCodes.Add("PWA")
+        VpIgnoredCodes.Add("VAN")
+        VpIgnoredCodes.Add("W00")
+        VpIgnoredCodes.Add("W01")
+        VpIgnoredCodes.Add("W02")
+        VpIgnoredCodes.Add("W03")
+        VpIgnoredCodes.Add("W04")
+        VpIgnoredCodes.Add("W97")
+        VpIgnoredCodes.Add("W98")
+        VpIgnoredCodes.Add("W99")
+        VpIgnoredCodes.Add("WOR")
         'Récupère les codes des éditions dont les cartes n'ont pas d'identifiant Multiverse
         VgDBCommand.CommandText = "Select Distinct SeriesCD_MO From Card Inner Join Series On Card.Series = Series.SeriesCD Where MultiverseId = 0;"
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
             While .Read
-                VpCodes.Add(.GetString(0))
+                If Not VpIgnoredCodes.Contains(.GetString(0)) Then
+                    VpCodes.Add(.GetString(0))
+                End If
             End While
             .Close
         End With
@@ -958,7 +998,7 @@ Public Partial Class MainForm
                 If VpStr.Contains(""",") Then
                     VpStrSub = VpStr.Substring(VpStr.LastIndexOf(""",") + 2)
                     VpStrs = VpStrSub.Split(",")
-                    If VpStrs.Length = 4 AndAlso VpStrs(1) <> "0" Then
+                    If VpStrs.Length = 8 AndAlso VpStrs(1) <> "0" Then
                         VgDBCommand.CommandText = "Update Card Set UrzaId = " + VpStrs(0) + " Where MultiverseId = " + VpStrs(1) + ";"
                         VgDBCommand.ExecuteNonQuery
                     ElseIf VpStrs(1) = "0" Then
@@ -1181,7 +1221,7 @@ Public Partial Class MainForm
             Else
                 Call mdlToolbox.InitGrid(Me.grdPropCard, New String() {"Edition", "Rareté", "Prix (€)", "Prix foil (€)", "Stock", "Stock foil"})
             End If
-            Call mdlToolbox.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur"})
+            Call mdlToolbox.InitGrid(Me.grdPropPicture, New String() {"Edition", "Illustrateur", "N°"})
         End If
     End Sub
     Private Sub CheckGridBusy
@@ -1761,11 +1801,11 @@ Public Partial Class MainForm
             Call ShowWarning(CgErr3)
         Else
             'Préparation des requêtes
-            VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)" + If(Me.IsInAdvSearch And Not VpTransformed, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + mdlConstGlob.CgSFromSearch + ".EncNbr", "") + ") As T1"
-            VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)" + If(Me.IsInAdvSearch And Not VpTransformed, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + mdlConstGlob.CgSFromSearch + ".EncNbr", "") + ") As T1"
+            VpSQLGeneralCreatures = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Card.SubType, SubTypes.SubTypeVF, Creature.Tough, Creature.Power, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist, Card.CardNbr From ((((Card Inner Join Creature On Card.Title = Creature.Title) Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD) Left Join SubTypes On Card.SubType = SubTypes.SubTypeVO)" + If(Me.IsInAdvSearch And Not VpTransformed, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + mdlConstGlob.CgSFromSearch + ".EncNbr", "") + ") As T1"
+            VpSQLGeneralAll = "(Select Card.EncNbr, Card.Title, Card.Series, Card.Price, Card.PriceDate, Card.Rarity, Card.CardText, Spell.Cost, Series.SeriesNM, Series.SeriesNM_FR, Card.FoilPrice, Card.FoilDate, Spell.Rulings, Series.Release, Card.Artist, Card.CardNbr From ((Card Inner Join Spell On Card.Title = Spell.Title) Inner Join Series On Card.Series = Series.SeriesCD)" + If(Me.IsInAdvSearch And Not VpTransformed, " Inner Join " + VmAdvSearch + " On Card.EncNbr = " + mdlConstGlob.CgSFromSearch + ".EncNbr", "") + ") As T1"
             VpSQLStockInfosDecksFoil = "(Select GameID, EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyGames Where Reserve = " + VpReserve.ToString + " And " + Me.Restriction + "True Group By GameID, EncNbr) As T2"
             VpSQLStockInfosCollecFoil = "(Select EncNbr, Sum(IIf(Foil, Null, Items)) As MyItems, Sum(IIf(Foil, Items, Null)) As MyItemsFoil From MyCollection Group By EncNbr) As T2"
-            VpSQLColumnsRequired = "Select T1.Series, T1.Price, T1.PriceDate, T1.Rarity, T1.CardText, T1.Cost, T1.SeriesNM, T1.SeriesNM_FR, T1.FoilPrice, T1.FoilDate, T1.Rulings, T1.Release, T1.Artist"
+            VpSQLColumnsRequired = "Select T1.Series, T1.Price, T1.PriceDate, T1.Rarity, T1.CardText, T1.Cost, T1.SeriesNM, T1.SeriesNM_FR, T1.FoilPrice, T1.FoilDate, T1.Rulings, T1.Release, T1.Artist, T1.CardNbr"
             VpSQLTitleCriteria = " Where T1.Title = '" + VpCard.Replace("'", "''") + "'"
             VpSQLSorting = " Order By T1.Release"
             VpSQLJointure = If((Me.btShowAll.Enabled And Me.btShowAll.Checked) Or VpTransformed, " Left", " Inner")
@@ -1830,6 +1870,11 @@ Public Partial Class MainForm
                         'Colonne illustrateur
                         Try
                             Me.grdPropPicture(VpRow, 1) = New Cells.Cell(.GetString(.GetOrdinal("Artist")))
+                        Catch
+                        End Try
+                        'Colonne numéro
+                        Try
+                            Me.grdPropPicture(VpRow, 2) = New Cells.Cell(.GetValue(.GetOrdinal("CardNbr")))
                         Catch
                         End Try
                         'Colonne rareté
