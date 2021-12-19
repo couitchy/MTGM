@@ -635,7 +635,7 @@ Public Partial Class MainForm
             While Not VpLog.EndOfStream
                 VpStrs = VpLog.ReadLine.Split("#")
                 VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "'"
-                If Not (VpStrs(0).Contains("//") OrElse VpStrs(0).Contains("+")) Then
+                If Not ( VpStrs(0).Contains("//") OrElse VpStrs.Length > 2 ) Then
                     VgDBCommand.CommandText += " And CardFR.TitleFR <> Card.Title"
                 End If
                 VgDBCommand.CommandText += ";"
@@ -3057,7 +3057,7 @@ Public Partial Class MainForm
     '---------------------------------------------
     'Changement de la sélection active d'affichage
     '---------------------------------------------
-    Dim VpDeckMode As Boolean = Not (sender Is Me.mnuDispCollection Or sender Is Me.mnuDispAdvSearch)
+    Dim VpDeckMode As Boolean = Not ( sender Is Me.mnuDispCollection Or sender Is Me.mnuDispAdvSearch )
         Call Me.CheckGridBusy
         Call Me.ManageDispMenu(sender.Text, VpDeckMode)
         If Not e Is Nothing Then
@@ -3563,7 +3563,7 @@ Public Partial Class MainForm
                 VpDownFace = Me.IsDownFace(VpNode)
                 VpTransformed = Me.IsTransformed(VpNode)
                 VpNames = Me.GetTransformedTag(VpNode.Tag.Value, VpDownFace Xor VpTransformed, VpDownFace, Me.IsInVFMode And (VpNode.Tag.Value = VpNode.Tag.Value2))
-                If Me.ShowCard(VpNames.Value, VpNames.MultiverseId, Not (VpDownFace Xor VpTransformed), Not VpTransformed, Me.IsReserveSelected) Then
+                If Me.ShowCard(VpNames.Value, VpNames.MultiverseId, Not ( VpDownFace Xor VpTransformed ), Not VpTransformed, Me.IsReserveSelected) Then
                     'Met à jour le noeud de l'arbre
                     VpNode.Text = If(Me.IsInVFMode, VpNames.Value2, VpNames.Value)
                     'Mémorise la référence de l'image

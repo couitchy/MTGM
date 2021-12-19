@@ -123,7 +123,7 @@ Public Partial Class frmPerfs
         'Si on ne tient pas compte des versions des jeux, le diagramme est bipolaire
         If Not VpHandleGamesVersions Then
             'Cas 1 : jeu 1 contre jeu 2
-            If Not (VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal)) Then
+            If Not ( VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) ) Then
                 'Cas 1.1 : 1 contre 2
                 Call Me.GetNVictoires(VpJeuLocal, VpJeuAdv, VpVicLocal, VpVicAdv, True, "", "")
                 'Cas 1.2 : 2 contre 1

@@ -7,79 +7,115 @@ Public Class clsFullInfos
         Public version As String
     End Class
     Public Class clsFullDataInfos
-        Public special As Boolean
-        Public name As String
-        Public code As String
-        Public gathererCode As String
-        Public oldCode As String
-        Public magicCardsInfoCode As String
-        Public releaseDate As String
-        Public border As String
-        Public type As String
+        Public baseSetSize As Integer
         Public block As String
-        Public onlineOnly As Boolean
+        Public code As String
+        Public isFoilOnly As Boolean
+        Public isOnlineOnly As Boolean
+        Public keyruneCode As String
+        Public mcmId As Integer
+        Public mcmIdExtras As Integer
+        Public mcmName As String
+        Public mtgoCode As String
+        Public name As String
+        Public parentCode As String
+        Public releaseDate As String
+        Public tcgplayerGroupId As Integer
+        Public totalSetSize As Integer
+        Public type As String
         Public translations As Dictionary(Of String, String)
         Public cards As List(Of clsFullCardInfos)
         Public tokens As List(Of clsFullCardInfos)
         Public Class clsFullCardInfos
             Public linkedTo As clsFullCardInfos
             Public linkedFrom As clsFullCardInfos
-            Public id As String
+            Public artist As String
+            Public availability As List(Of String)
+            Public borderColor As String
+            Public colorIdentity As List(Of String)
+            Public colorIndicator As List(Of String)
+            Public colors As List(Of String)
+            Public convertedManaCost As Single
+            Public edhrecRank As Integer
+            Public faceConvertedManaCost As Single
+            Public faceManaValue As Single
+            Public faceName As String
+            Public finishes As List(Of String)
+            Public foreignData As List(Of clsForeignInfos)
+            Public frameEffects As List(Of String)
+            Public frameVersion As String
+            Public hasFoil As Boolean
+            Public hasNonFoil As Boolean
+            Public identifiers As clsIdentifierInfos
+            Public isPromo As Boolean
+            Public isReprint As Boolean
+            Public isStarter As Boolean
+            Public isTimeshifted As Boolean
+            Public keywords As List(Of String)
             Public layout As String
+            Public legalities As List(Of clsLegalityInfos)
+            Public loyalty As Object
+            Public manaCost As String
+            Public manaValue As Single
             Public name As String
             Public names As List(Of String)
-            Public manaCost As String
-            Public cmc As Single
-            Public colors As List(Of String)
-            Public colorIdentity As List(Of String)
-            Public type As String
-            Public supertypes As List(Of String)
-            Public types As List(Of String)
-            Public subtypes As List(Of String)
-            Public rarity As String
-            Public [text] As String
-            Public artist As String
             Public number As String
-            Public power As String
-            Public toughness As String
-            Public loyalty As Object
-            Public variations As List(Of String)
-            Public imageName As String
-            Public watermark As String
-            Public border As String
-            Public timeshifted As Boolean
-            Public hand As Integer
-            Public life As Integer
-            Public reserved As Boolean
-            Public releaseDate As String
-            Public starter As Boolean
-            Public rulings As List(Of clsRulingsInfos)
-            Public foreignData As List(Of clsForeignInfos)
-            Public identifiers As clsIdentifierInfos
-            Public printings As List(Of String)
             Public originalText As String
             Public originalType As String
-            Public legalities As List(Of clsLegalityInfos)
-            Public source As String
+            Public otherFaceIds As List(Of String)
+            Public power As String
+            Public printings As List(Of String)
+            Public promoTypes As List(Of String)
+            Public rarity As String
+            Public rulings As List(Of clsRulingsInfos)
+            Public setCode As String
+            Public side As String
+            Public subtypes As List(Of String)
+            Public supertypes As List(Of String)
+            Public [text] As String
+            Public toughness As String
+            Public type As String
+            Public types As List(Of String)
             Public uuid As String
+            Public variations As List(Of String)
+            Public watermark As String
             Public Class clsRulingsInfos
                 Public [date] As String
                 Public [text] As String
             End Class
             Public Class clsForeignInfos
                 Public language As String
-                Public name As String
                 Public multiverseId As Long
+                Public name As String
+                Public [text] As String
+                Public type As String
             End Class
             Public Class clsIdentifierInfos
+                Public cardKingdomFoilId As String
+                Public cardKingdomId As String
+                Public mcmId As String
+                Public mcmMetaId As String
+                Public mtgArenaId As String
+                Public mtgjsonV4Id As String
                 Public mtgoId As String
                 Public multiverseId As String
                 Public scryfallId As String
+                Public scryfallIllustrationId As String
+                Public scryfallOracleId As String
                 Public tcgplayerProductId As String
             End Class
             Public Class clsLegalityInfos
-                Public format As String
-                Public legality As String
+                Public brawl As String
+                Public commander As String
+                Public duel As String
+                Public future As String
+                Public historic As String
+                Public historicbrawl As String
+                Public legacy As String
+                Public modern As String
+                Public pioneer As String
+                Public standard As String
+                Public vintage As String
             End Class
             Public Function getForeignName(language As String) As String
                 For Each foreign As clsForeignInfos In foreignData

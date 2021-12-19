@@ -69,7 +69,7 @@ Public Class clsSimulGame
     'Désengage toutes les cartes
     '---------------------------
         For Each VpCard As clsCard In VmDeckCopy        'Le faire sur VmDeckCopy permet de n'oublier aucune carte
-            If Not (VpCard.IsSpecial AndAlso VpCard.Speciality.DoesntUntap) Then
+            If Not ( VpCard.IsSpecial AndAlso VpCard.Speciality.DoesntUntap ) Then
                 VpCard.Tapped = False
             End If
         Next VpCard
