@@ -1940,6 +1940,20 @@ Public Partial Class MainForm
                 Return "forgottenrealmscommander#" + VpStr
             Case "MJ"
                 Return "modernhorizons2#" + VpStr
+            Case "IH"
+                Return "innistradmidnighthunt#" + VpStr
+            Case "IP"
+                Return "innistradmidnighthuntpromos#" + VpStr
+            Case "ID"
+                Return "midnighthuntcommander#" + VpStr
+            Case "IW"
+                Return "innistradcrimsonvow#" + VpStr
+            Case "VP"
+                Return "innistradcrimsonvowpromos#" + VpStr
+            Case "IE"
+                Return "crimsonvowcommander#" + VpStr
+            Case "CI"
+                Return "commandercollectionblack#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2508,6 +2522,20 @@ Public Partial Class MainForm
                 Return "CR"
             Case "modernhorizons2"
                 Return "MJ"
+            Case "innistradmidnighthunt"
+                Return "IH"
+            Case "innistradmidnighthuntpromos"
+                Return "IP"
+            Case "midnighthuntcommander"
+                Return "ID"
+            Case "innistradcrimsonvow"
+                Return "IW"
+            Case "innistradcrimsonvowpromos"
+                Return "VP"
+            Case "crimsonvowcommander"
+                Return "IE"
+            Case "commandercollectionblack"
+                Return "CI"
             Case Else
                 Return ""
         End Select
