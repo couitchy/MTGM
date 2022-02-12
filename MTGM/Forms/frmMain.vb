@@ -956,6 +956,9 @@ Public Partial Class MainForm
         If MessageBox.Show(VpCodes.Count.ToString + " édition(s) à traiter..." + vbCrLf + "Continuer ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
             'Appels individuels
             For Each VpCode As String In VpCodes
+                #If DEBUG Then
+                    Debug.Print("Traitement de : " + VpCode + "...")
+                #End If
                 Call Me.FixMultiverse(VpCode)
             Next VpCode
         End If
@@ -998,7 +1001,7 @@ Public Partial Class MainForm
                 If VpStr.Contains(""",") Then
                     VpStrSub = VpStr.Substring(VpStr.LastIndexOf(""",") + 2)
                     VpStrs = VpStrSub.Split(",")
-                    If VpStrs.Length = 8 AndAlso VpStrs(1) <> "0" Then
+                    If VpStrs.Length = 9 AndAlso VpStrs(1) <> "0" Then
                         VgDBCommand.CommandText = "Update Card Set UrzaId = " + VpStrs(0) + " Where MultiverseId = " + VpStrs(1) + ";"
                         VgDBCommand.ExecuteNonQuery
                     ElseIf VpStrs(1) = "0" Then

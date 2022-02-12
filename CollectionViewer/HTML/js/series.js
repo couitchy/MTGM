@@ -45,15 +45,15 @@ series['DK'] = new Array('DRK','The Dark','','119','1994');
 series['FE'] = new Array('FEM','Fallen Empires','','187','1994');
 series['HM'] = new Array('HML','Homelands','','140','1995');
 series['DO'] = new Array('DOM','Dominaria','Dominaria','280','2018');
-series['TE'] = new Array('ELD','Throne of Eldraine','Le Trône d\'Eldraine','269','2019');
-series['TB'] = new Array('THB','Theros Beyond Death','Theros par-delà la mort','254','2020');
-series['IK'] = new Array('IKO','Ikoria: Lair of Behemoths','Ikoria : La Terre des Béhémoths','274','2020');
+series['TE'] = new Array('ELD','Throne of Eldraine','Le TrÃ´ne d\'Eldraine','269','2019');
+series['TB'] = new Array('THB','Theros Beyond Death','Theros par-delÃ  la mort','254','2020');
+series['IK'] = new Array('IKO','Ikoria: Lair of Behemoths','Ikoria : La Terre des BÃ©hÃ©moths','274','2020');
 series['ZR'] = new Array('ZNR','Zendikar Rising','Renaissance de Zendikar','280','2020');
 series['KH'] = new Array('KHM','Kaldheim','Kaldheim','285','2021');
-series['SX'] = new Array('STX','Strixhaven: School of Mages','Strixhaven : L\'Académie des Mages','275','2021');
-series['AD'] = new Array('AFR','D&D: Adventures in the Forgotten Realms','D&D : Aventures dans les Royaumes Oubliés','281','2021');
+series['SX'] = new Array('STX','Strixhaven: School of Mages','Strixhaven : L\'AcadÃ©mie des Mages','275','2021');
+series['AD'] = new Array('AFR','D&D: Adventures in the Forgotten Realms','D&D : Aventures dans les Royaumes OubliÃ©s','281','2021');
 series['IH'] = new Array('MID','Innistrad: Midnight Hunt','Innistrad : Chasse de Minuit','277','2021');
-series['IW'] = new Array('VOW','Innistrad: Crimson Vow','Innistrad : Noce Écarlate','277','2021');
+series['IW'] = new Array('VOW','Innistrad: Crimson Vow','Innistrad : Noce Ã‰carlate','277','2021');
 var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
@@ -66,19 +66,19 @@ series['VS'] = new Array('VIS','Visions','Visions','167','1997');
 series['WL'] = new Array('WTH','Weatherlight','Aquilon','167','1997');
 var mirage = new Array('Bloc Mirage','MR','VS','WL');
 // Tempest Block
-series['TP'] = new Array('TMP','Tempest','Tempête','350','1997');
+series['TP'] = new Array('TMP','Tempest','TempÃªte','350','1997');
 series['SH'] = new Array('STH','Stronghold','Forteresse','143','1998');
 series['EX'] = new Array('EXO','Exodus','Exode','143','1998');
-var tempest = new Array('Bloc Tempête','TP','SH','EX');
+var tempest = new Array('Bloc TempÃªte','TP','SH','EX');
 // Urza Block
-series['US'] = new Array('USG','Urza\'s Saga','L\'Epopée d\'Urza','350','1998');
-series['UL'] = new Array('ULG','Urza\'s Legacy','L\'Héritage d\'Urza','143','1999');
-series['UD'] = new Array('UDS','Urza\'s Destiny','La Destinée d\'Urza','143','1999');
+series['US'] = new Array('USG','Urza\'s Saga','L\'EpopÃ©e d\'Urza','350','1998');
+series['UL'] = new Array('ULG','Urza\'s Legacy','L\'HÃ©ritage d\'Urza','143','1999');
+series['UD'] = new Array('UDS','Urza\'s Destiny','La DestinÃ©e d\'Urza','143','1999');
 var urza = new Array('Bloc Urza','US','UL','UD');
 // Masques Block
 series['MM'] = new Array('MMQ','Mercadian Masques','Les Masques de Mercadia','350','1999');
-series['NE'] = new Array('NEM','Nemesis','Némésis','143','2000');
-series['PY'] = new Array('PCY','Prophecy','Prophétie','143','2000');
+series['NE'] = new Array('NEM','Nemesis','NÃ©mÃ©sis','143','2000');
+series['PY'] = new Array('PCY','Prophecy','ProphÃ©tie','143','2000');
 var mercadia = new Array('Bloc Mercadia','MM','NE','PY');
 // Invasion Block
 series['IV'] = new Array('INV','Invasion','Invasion','350','2000');
@@ -86,27 +86,27 @@ series['PS'] = new Array('PLS','Planeshift','Planeshift','143','2000');
 series['AP'] = new Array('APC','Apocalypse','Apocalypse','143','2000');
 var invasion = new Array('Bloc Invasion','IV','PS','AP');
 // Odyssey Block
-series['OD'] = new Array('ODY','Odyssey','Odysée','350','2001');
+series['OD'] = new Array('ODY','Odyssey','OdysÃ©e','350','2001');
 series['TO'] = new Array('TOR','Torment','Tourment','143','2002');
 series['JU'] = new Array('JUD','Judgment','Jugement','143','2002');
 var odyssey = new Array('Bloc Odyssey','OD','TO','JU');
 // Onslaught Block
 series['ON'] = new Array('ONS','Onslaught','Carnage','350','2002');
-series['LG'] = new Array('LGN','Legions','Légions','145','2003');
-series['SC'] = new Array('SCG','Scourge','Fléau','143','2003');
+series['LG'] = new Array('LGN','Legions','LÃ©gions','145','2003');
+series['SC'] = new Array('SCG','Scourge','FlÃ©au','143','2003');
 var carnage = new Array('Bloc Carnage','ON','LG','SC');
 // Mirrodin Block
 series['MD'] = new Array('MRD','Mirrodin','Mirrodin','306','2003');
 series['DS'] = new Array('DST','Darksteel','Sombracier','165','2004');
-series['FD'] = new Array('5DN','Fifth Dawn','La Cinquième Aube','165','2004');
+series['FD'] = new Array('5DN','Fifth Dawn','La CinquiÃ¨me Aube','165','2004');
 var mirrodin = new Array('Bloc Mirrodin','MD','DS','FD');
 // Kamigawa Block
 series['CK'] = new Array('CHK','Champions of Kamigawa','Guerriers de Kamigawa','306','2004');
-series['BK'] = new Array('BOK','Betrayers of Kamigawa','Traîtres de Kamigawa','165','2005');
-series['SK'] = new Array('SOK','Saviors of Kamigawa','Libérateurs de Kamigawa','165','2005');
+series['BK'] = new Array('BOK','Betrayers of Kamigawa','TraÃ®tres de Kamigawa','165','2005');
+series['SK'] = new Array('SOK','Saviors of Kamigawa','LibÃ©rateurs de Kamigawa','165','2005');
 var kamigawa = new Array('Bloc Kamigawa','CK','BK','SK');
 // Ravnica Block
-series['RA'] = new Array('RAV','Ravnica: City of Guilds','Ravnica : La Cité des Guildes','306','2005');
+series['RA'] = new Array('RAV','Ravnica: City of Guilds','Ravnica : La CitÃ© des Guildes','306','2005');
 series['GP'] = new Array('GPT','Guildpact','Le Pacte des Guildes','165','2006');
 series['DI'] = new Array('DIS','Dissension','Discorde','180','2006');
 var ravnica = new Array('Bloc Ravnica','RA','GP','DI');
@@ -119,7 +119,7 @@ series['TX'] = new Array('TSR','Time Spiral Remastered','Spirale Temporelle Rema
 var spirale = new Array('Bloc Spirale Temporelle','TS','TD','PC','FS','TX');
 // Lorwyn Block
 series['LW'] = new Array('LRW','Lorwyn','Lorwyn','301','2007');
-series['MT'] = new Array('MOR','Morningtide','Lèveciel','150','2008');
+series['MT'] = new Array('MOR','Morningtide','LÃ¨veciel','150','2008');
 var lorwyn = new Array('Bloc Lorwyn','LW','MT');
 // Shadowmoor Block
 series['SM'] = new Array('SHM','Shadowmoor','Sombrelande','301','2008');
@@ -137,13 +137,13 @@ series['RI'] = new Array('ROE','Rise of the Eldrazi','L\'Ascension des Eldrazi',
 var zendikar = new Array('Bloc Zendikar','ZK','WW','RI');
 // Scars Of Mirrodin Block
 series['SD'] = new Array('SOM','Scars of Mirrodin','Les Cicatrices de Mirrodin','249','2010');
-series['MB'] = new Array('MBS','Mirrodin Besieged','Mirrodin Assiégé','155','2011');
+series['MB'] = new Array('MBS','Mirrodin Besieged','Mirrodin AssiÃ©gÃ©','155','2011');
 series['NP'] = new Array('NPH','New Phyrexia','La Nouvelle Phyrexia','175','2011');
 var cicatrices = new Array('Bloc Cicatrices De Mirrodin','SD','MB','NP');
 // Innistrad Block
 series['IN'] = new Array('ISD','Innistrad','Innistrad','264','2011');
 series['DA'] = new Array('DKA','Dark Ascension','Obscure Ascension','158','2012');
-series['YR'] = new Array('AVR','Avacyn Restored','Avacyn Ressucitée','244','2012');
+series['YR'] = new Array('AVR','Avacyn Restored','Avacyn RessucitÃ©e','244','2012');
 var innistrad = new Array('Bloc Innistrad','IN','DA','YR');
 // Return To Ravnica Block
 series['RR'] = new Array('RTR','Return To Ravnica','Retour sur Ravnica','274','2012');
@@ -151,13 +151,13 @@ series['GC'] = new Array('GTC','Gatecrash','Insurrection','249','2013');
 series['DZ'] = new Array('DGM','Dragon\'s Maze','Le Labyrinthe du Dragon','156','2013');
 var retourRavnica = new Array('Bloc Retour Sur Ravnica','RR','GC','DZ');
 // Theros Block
-series['TH'] = new Array('THS','Theros','Théros','249','2013');
-series['BG'] = new Array('BNG','Born Of The Gods','Créations Divines','165','2014');
+series['TH'] = new Array('THS','Theros','ThÃ©ros','249','2013');
+series['BG'] = new Array('BNG','Born Of The Gods','CrÃ©ations Divines','165','2014');
 series['JN'] = new Array('JOU','Journey To Nyx','Incursion dans Nyx','165','2014');
 var theros = new Array('Bloc Theros','TH','BG','JN');
 // Khans of Tarkir Block
 series['KT'] = new Array('KTK','Khans of Tarkir','Les Khans de Tarkir','269','2014');
-series['FR'] = new Array('FRF','Fate Reforged','Destin Reforgé','185','2015');
+series['FR'] = new Array('FRF','Fate Reforged','Destin ReforgÃ©','185','2015');
 series['DT'] = new Array('DTK','Dragons of Tarkir','Les Dragons de Tarkir','264','2015');
 var tarkir = new Array('Bloc Khans De Tarkir','KT','FR','DT');
 // Battle for Zendikar Block
@@ -165,12 +165,12 @@ series['BZ'] = new Array('BFZ','Battle for Zendikar','La Bataille de Zendikar','
 series['OG'] = new Array('OGW','Oath of the Gatewatch','Le serment des Sentinelles','186','2016');
 var battlezen = new Array('Bloc La Bataille De Zendikar','BZ','OG');
 // Shadows over Innistrad Block
-series['SI'] = new Array('SOI','Shadows over Innistrad','Ténèbres sur Innistrad','297','2016');
-series['EM'] = new Array('EMN','Eldritch Moon','La Lune Hermétique','205','2016');
-var shadowsinni = new Array('Bloc Ténèbres Sur Innistrad','SI','EM');
+series['SI'] = new Array('SOI','Shadows over Innistrad','TÃ©nÃ¨bres sur Innistrad','297','2016');
+series['EM'] = new Array('EMN','Eldritch Moon','La Lune HermÃ©tique','205','2016');
+var shadowsinni = new Array('Bloc TÃ©nÃ¨bres Sur Innistrad','SI','EM');
 // Kaladesh Block
 series['KD'] = new Array('KLD','Kaladesh','Kaladesh','264','2016');
-series['ER'] = new Array('AER','Aether Revolt','La Révolte éthérique','184','2017');
+series['ER'] = new Array('AER','Aether Revolt','La RÃ©volte Ã©thÃ©rique','184','2017');
 var kalad = new Array('Bloc Kaladesh','KD','ER');
 // Amonkhet Block
 series['AK'] = new Array('AKH','Amonkhet','Amonkhet','269','2017');
@@ -183,7 +183,7 @@ series['RX'] = new Array('RIX','Rivals of Ixalan','Les Combattants d\'Ixalan','1
 var ixa = new Array('Bloc Ixalan','XL','XP','RX');
 // Guilds of Ravnica Block
 series['GR'] = new Array('GRN','Guilds of Ravnica','Les Guildes de Ravnica','259','2018');
-series['RG'] = new Array('RNA','Ravnica Allegiance','L\'Allégeance de Ravnica','259','2019');
+series['RG'] = new Array('RNA','Ravnica Allegiance','L\'AllÃ©geance de Ravnica','259','2019');
 series['WS'] = new Array('WAR','War of the Spark','La Guerre des Planeswalkers','264','2019');
 var guildrav = new Array('Bloc Guildes de Ravnica','GR','RG','WS');
 var extensions = new Array(horsbloc,iceage,mirage,tempest,urza,mercadia,invasion,odyssey,carnage,mirrodin,kamigawa,ravnica,spirale,lorwyn,sombrelande,alara,zendikar,cicatrices,innistrad,retourRavnica,theros,tarkir,battlezen,shadowsinni,kalad,amonk,ixa,guildrav);
@@ -195,7 +195,7 @@ series['AT'] = new Array('ATH','Anthologies','','120','1998');
 series['BR'] = new Array('BRB','Battle Royale','','4x40','1999');
 series['BT'] = new Array('BTD','Beatdown','','2x61','2000');
 series['DM'] = new Array('DKM','Deckmasters','','2x62','2001');
-series['PG'] = new Array('PG','','Pégase','600','2006');
+series['PG'] = new Array('PG','','PÃ©gase','600','2006');
 series['CT'] = new Array('CST','Coldsnap Theme Decks','','62','2007');
 series['AH'] = new Array('ARC','Archenemy','','4x60+20','2010');
 series['DP'] = new Array('DPA','Duel of the Planeswalkers','','5x60','2010');
@@ -300,7 +300,7 @@ series['C8'] = new Array('C18','Commander 2018','','4x100','2018');
 series['C9'] = new Array('C19','Commander 2019','','4x100','2019');
 series['C0'] = new Array('C20','Commander 2020','','5x100','2020');
 series['ZC'] = new Array('ZNC','Zendikar Rising Commander','','2x100','2020');
-series['CC'] = new Array('CMR','Commander Legends','Commander Légendes','2x100','2020');
+series['CC'] = new Array('CMR','Commander Legends','Commander LÃ©gendes','2x100','2020');
 series['KF'] = new Array('KHC','Kaldheim Commander','','2x100','2021');
 series['CX'] = new Array('C21','Commander 2021','','5x100','2021');
 series['CR'] = new Array('AFC','D&D: Adventures in the Forgotten Realms Commander','','4x100','2021');
