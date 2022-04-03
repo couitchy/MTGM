@@ -60,6 +60,7 @@ Partial Class MainForm
         Me.mnuCompareTrad = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuListSubtypes = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCompareTitles = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCardsTradTitles = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem()
@@ -256,7 +257,7 @@ Partial Class MainForm
         '
         'mnuTrad
         '
-        Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad, Me.mnuListSubtypes, Me.mnuCompareTitles})
+        Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad, Me.mnuListSubtypes, Me.mnuCompareTitles, Me.mnuCardsTradTitles})
         Me.mnuTrad.Image = CType(resources.GetObject("mnuTrad.Image"),System.Drawing.Image)
         Me.mnuTrad.Name = "mnuTrad"
         Me.mnuTrad.Size = New System.Drawing.Size(278, 22)
@@ -317,6 +318,13 @@ Partial Class MainForm
         Me.mnuCompareTitles.Size = New System.Drawing.Size(398, 22)
         Me.mnuCompareTitles.Text = "Comparaison différentielle de titres VF"
         AddHandler Me.mnuCompareTitles.Click, AddressOf Me.MnuCompareTitlesClick
+        '
+        'mnuCardsTradTitles
+        '
+        Me.mnuCardsTradTitles.Name = "mnuCardsTradTitles"
+        Me.mnuCardsTradTitles.Size = New System.Drawing.Size(398, 22)
+        Me.mnuCardsTradTitles.Text = "Traductions de titres VF"
+        AddHandler Me.mnuCardsTradTitles.Click, AddressOf Me.MnuCardsTradTitlesClick
         '
         'mnuCardsAut
         '
@@ -910,6 +918,7 @@ Partial Class MainForm
     Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuCheckTrad As System.Windows.Forms.ToolStripMenuItem
+    Private mnuCardsTradTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuCompareTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuListSubtypes As System.Windows.Forms.ToolStripMenuItem
     Private mnuCompareTrad As System.Windows.Forms.ToolStripMenuItem

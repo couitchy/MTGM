@@ -42,6 +42,7 @@ Public Partial Class MainForm
     Private Const CmURL6 As String          = "http://magiccards.info/query?q=%2B%2Be%3A###%2Fen&v=spoiler&s=issue"
     Private Const CmURL7 As String          = "https://mtgjson.com/api/v5/###.json"
     Private Const CmURL8 As String          = "https://www.cardmarket.com/en/Help/ShippingCosts?origin=#country#&destination=FR#Show_shipping_costs"
+    Private Const CmURL9 As String          = "http://www.magiccorporation.com/mc.php?rub=cartes&op=search&word=#cardname#&search=2"
     Private Const CmId1 As String           = "#cardname#"
     Private Const CmId2 As String           = "#country#"
     Private Const CmKey0 As String          = "recherche_titre"
@@ -68,6 +69,7 @@ Public Partial Class MainForm
     Private Const CmKey9 As String          = "<tbody><tr><td>"
     Private Const CmKey9B As String         = "</td><td>"
     Private Const CmKey9C As String         = "</td></tr><tr><td>"
+    Private Const CmKey10 As String         = "title"
     Private Const CmFrench  As Integer      = 2
     Private Const CmMe As String            = "Moi"
     Private Const CmStamp As String         = "ContenuStamp r14.txt"
@@ -1016,6 +1018,47 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
+    Private Function GetTitleVF(VpIn As String) As String
+    '---------------------------------------------------------------------
+    'Cherche la traduction en ligne du nom de la carte passée en paramètre
+    '---------------------------------------------------------------------
+    Dim VpRequest As HttpWebRequest
+    Dim VpAnswer As Stream
+    Dim VpStr As String = ""
+    Dim VpStrs() As String
+    Dim VpCurByte As Integer
+        VpRequest = Nothing
+        Try
+            VpRequest = WebRequest.Create(CmURL9.Replace(CmId1, VpIn.Replace(" ", "+")))
+            VpRequest.KeepAlive = False
+            VpRequest.Timeout = 5000
+            VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
+            VpRequest.ServicePoint.MaxIdleTime = 5000
+            VpAnswer = VpRequest.GetResponse().GetResponseStream()
+            VpCurByte = VpAnswer.ReadByte
+            While VpCurByte <> -1
+                VpStr = VpStr + (Encoding.Default.GetString(New Byte() {VpCurByte}))
+                VpCurByte = VpAnswer.ReadByte
+                Application.DoEvents
+            End While
+            VpStrs = VpStr.Split(New String() {CmKey1}, StringSplitOptions.None)
+            VpStr = VpStrs(CmFrench)
+            If Not VpStr.Contains(CmKey10) Then
+                VpStr = VpStrs(1)
+            End If
+            VpStrs = VpStr.Split("""")
+            VpStr = VpStrs(CmFrench)
+            VpStr = VpStr.Replace("&#039;", "'")
+            Return VpStr
+        Catch
+            Call Me.AddToLog("Un problème est survenu lors de la traduction de la carte " + VpIn + "...", eLogType.Warning)
+        Finally
+            If VpRequest IsNot Nothing Then
+                VpRequest.Abort
+            End If
+        End Try
+        Return VpIn
+    End Function
     Private Function GetTextVF(VpIn As String) As String
     '------------------------------------------------------------
     'Retourne le texte français pour la carte passée en paramètre
@@ -1954,6 +1997,12 @@ Public Partial Class MainForm
                 Return "crimsonvowcommander#" + VpStr
             Case "CI"
                 Return "commandercollectionblack#" + VpStr
+            Case "ND"
+                Return "kamigawaneondynasty#" + VpStr
+            Case "NC"
+                Return "kamigawaneondynastypromos#" + VpStr
+            Case "NB"
+                Return "neondynastycommander#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2536,6 +2585,12 @@ Public Partial Class MainForm
                 Return "IE"
             Case "commandercollectionblack"
                 Return "CI"
+            Case "kamigawaneondynasty"
+                Return "ND"
+            Case "kamigawaneondynastypromos"
+                Return "NC"
+            Case "neondynastycommander"
+                Return "NB"
             Case Else
                 Return ""
         End Select
@@ -4174,6 +4229,14 @@ Public Partial Class MainForm
         If Not VmDB Is Nothing Then
             Call Me.CompareTitles
         End If
+    End Sub
+    Sub MnuCardsTradTitlesClick(sender As Object, e As EventArgs)
+    Dim VpCardFR As String
+        For Each VpCard As String In ("liste des cartes à traduire à séparer par un #").Split("#")
+            VpCardFR = Me.GetTitleVF(VpCard)
+            Call Me.AddToLog("La traduction de " + VpCard + " est " + VpCardFR, eLogType.Information)
+            Debug.Print(VpCard + "#" + VpCardFR)
+        Next VpCard
     End Sub
     Sub MnuBuildStampsClick(sender As Object, e As EventArgs)
         Call Me.BuildStamps
