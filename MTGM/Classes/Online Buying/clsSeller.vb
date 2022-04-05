@@ -26,9 +26,9 @@ Public Class clsSeller
         Me.New("")
     End Sub
     Public Function GetMarginalShippingCostFor(VpQuantity As Integer, VpUnitPrice As Single) As Single
-    '-------------------------------------------------------------------------------------------------------------
-    'Retourne le coût marginal sur les frais de port qui serait engendré par l'acquisition détaillée en paramètres
-    '-------------------------------------------------------------------------------------------------------------
+    '------------------------------------------------------------------------------------------------------------
+    'Retourne le coût marginal sur les frais de port qui serait engendré par l'acquisition détaillée en paramètre
+    '------------------------------------------------------------------------------------------------------------
         Return clsShipping.GetShippingCostFor(VmBought + VpQuantity, VmBoughtValue + VpUnitPrice * VpQuantity, VmShippingPolicy) - Me.ShippingCost
     End Function
     Public Function GetBoughtCards As List(Of clsRemoteCard)

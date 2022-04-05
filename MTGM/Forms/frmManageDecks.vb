@@ -111,9 +111,9 @@ Public Partial Class frmManageDecks
         End If
     End Function
     Private Sub SwapDeckId2(VpTable As String, VpId1 As String, VpId2 As String)
-    '----------------------------------------------------------------
-    'Intervertit les identifiants des deux decks passés en paramètres
-    '----------------------------------------------------------------
+    '---------------------------------------------------------------
+    'Intervertit les identifiants des deux decks passés en paramètre
+    '---------------------------------------------------------------
         VgDBCommand.CommandText = "Update " + VpTable + " Set GameID = -1 Where GameID = " + VpId1 + ";"
         VgDBCommand.ExecuteNonQuery
         VgDBCommand.CommandText = "Update " + VpTable + " Set Parent = -1 Where Parent = " + VpId1 + ";"
