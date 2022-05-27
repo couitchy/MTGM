@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","MM","MP","MR","MS","MT","MU","MV","MW","MX","MY","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SC","SD","SG","SH","SI","SK","SL","SM","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TO","TP","TS","TX","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","MM","MP","MR","MS","MT","MU","MV","MW","MX","MY","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TO","TP","TS","TX","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -55,7 +55,8 @@ series['AD'] = new Array('AFR','D&D: Adventures in the Forgotten Realms','D&D : 
 series['IH'] = new Array('MID','Innistrad: Midnight Hunt','Innistrad : Chasse de Minuit','277','2021');
 series['IW'] = new Array('VOW','Innistrad: Crimson Vow','Innistrad : Noce Écarlate','277','2021');
 series['ND'] = new Array('NEO','Kamigawa: Neon Dynasty','Kamigawa : La Dynastie Néon','302','2022');
-var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND');
+series['SA'] = new Array('SNC','Streets of New Capenna','Les rues de la Nouvelle-Capenna','281','2022');
+var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
 series['AC'] = new Array('ALL','Alliances','Alliances','199','1996');
@@ -300,15 +301,16 @@ series['C7'] = new Array('C17','Commander 2017','','4x100','2017');
 series['C8'] = new Array('C18','Commander 2018','','4x100','2018');
 series['C9'] = new Array('C19','Commander 2019','','4x100','2019');
 series['C0'] = new Array('C20','Commander 2020','','5x100','2020');
-series['ZC'] = new Array('ZNC','Zendikar Rising Commander','','2x100','2020');
+series['ZC'] = new Array('ZNC','Zendikar Rising Commander','Commander : Renaissance de Zendikar','2x100','2020');
 series['CC'] = new Array('CMR','Commander Legends','Commander Légendes','2x100','2020');
-series['KF'] = new Array('KHC','Kaldheim Commander','','2x100','2021');
+series['KF'] = new Array('KHC','Kaldheim Commander','Commander : Kaldheim','2x100','2021');
 series['CX'] = new Array('C21','Commander 2021','','5x100','2021');
-series['CR'] = new Array('AFC','D&D: Adventures in the Forgotten Realms Commander','','4x100','2021');
-series['ID'] = new Array('MIC','Innistrad: Midnight Hunt Commander','','2x100','2021');
-series['IE'] = new Array('VOC','Innistrad: Crimson Vow Commander','','2x100','2021');
-series['NB'] = new Array('NEC','Kamigawa: Neon Dynasty Commander','','2x100','2022');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','NB');
+series['CR'] = new Array('AFC','D&D: Adventures in the Forgotten Realms Commander','D&D : Commander : Aventures dans les Royaumes Oubliés','4x100','2021');
+series['ID'] = new Array('MIC','Innistrad: Midnight Hunt Commander','Commander : Innistrad : Chasse de Minuit','2x100','2021');
+series['IE'] = new Array('VOC','Innistrad: Crimson Vow Commander','Commander : Innistrad : Noce Écarlate','2x100','2021');
+series['NB'] = new Array('NEC','Kamigawa: Neon Dynasty Commander','Commander : Kamigawa : La Dynastie Néon','2x100','2022');
+series['SB'] = new Array('NCC','Streets of New Capenna Commander','Commander : Les rues de la Nouvelle-Capenna','5x100','2022');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB');
 
 // Introductory Sets
 series['IS'] = new Array('ITP','Introductory Two-Player Set','','4x30','1996');
@@ -388,4 +390,5 @@ series['IP'] = new Array('PMI','Innistrad: Midnight Hunt Promos','','100','2021'
 series['VP'] = new Array('PVO','Innistrad: Crimson Vow Promos','','100','2021');
 series['CI'] = new Array('CC2','Commander Collection: Black','','8','2021');
 series['NC'] = new Array('PNE','Kamigawa: Neon Dynasty Promos','','100','2022');
-var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC');
+series['SE'] = new Array('PSN','Streets of New Capenna Promos','','80','2022');
+var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE');

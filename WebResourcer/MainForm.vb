@@ -2003,6 +2003,12 @@ Public Partial Class MainForm
                 Return "kamigawaneondynastypromos#" + VpStr
             Case "NB"
                 Return "neondynastycommander#" + VpStr
+            Case "SA"
+                Return "streetsofnewcapenna#" + VpStr
+            Case "SB"
+                Return "newcapennacommander#" + VpStr
+            Case "SE"
+                Return "streetsofnewcapennapromos#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2591,6 +2597,12 @@ Public Partial Class MainForm
                 Return "NC"
             Case "neondynastycommander"
                 Return "NB"
+            Case "streetsofnewcapenna"
+                Return "SA"
+            Case "newcapennacommander"
+                Return "SB"
+            Case "streetsofnewcapennapromos"
+                Return "SE"
             Case Else
                 Return ""
         End Select
