@@ -21,7 +21,13 @@ Public Partial Class frmNewEdition
                 VgDBCommand.CommandText = "Insert Into Series (SeriesCD, SeriesCD_MO, SeriesCD_MW, SeriesNM, SeriesNM_MtG, SeriesNM_FR, LegalE, LegalS, Border, Release, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, Notes) Values ('" + .SeriesCD + "', '" + .SeriesCD_MO + "', '" + .SeriesCD_MW + "', '" + .SeriesNM.Replace("'", "''") + "', '" + .SeriesNM_MtG.Replace("'", "''") + "', '" + .SeriesNM_FR.Replace("'", "''") + "', True, True, " + .GetBorder(.Border) + ", " + mdlToolbox.GetDate(.Release) + ", " + .TotCards.ToString + ", " + .TotCards.ToString + ", " + .Rare.ToString + ", " + .Uncommon.ToString + ", " + .Common.ToString + ", " + .Land.ToString + ", True, '" + .NotesEdition.Replace("'", "''") + "');"
                 VgDBCommand.ExecuteNonQuery
             End With
-        Catch
+        Catch VpEx As Exception
+            #If DEBUG Then
+                Debug.Print("---- " + VmEditionHeader.SeriesNM + " (" + VmEditionHeader.SeriesCD + ", " + VmEditionHeader.SeriesCD_MO + ", " + VmEditionHeader.SeriesCD_MW + ") ----")
+                Debug.Print(VgDBCommand.CommandText)
+                Debug.Print(VpEx.Message + vbCrLf + VpEx.StackTrace)
+                Return False
+            #End If
             Call mdlToolbox.ShowWarning("Impossible d'ajouter l'en-tête à la base de données..." + vbCrLf + "Peut-être ce nom d'édition existe-t-il déjà ? Vérifier les informations saisies et recommencer.")
             Return False
         End Try
@@ -562,6 +568,7 @@ Public Partial Class frmNewEdition
     Dim VpInfos() As String
     Dim VpMulti As Boolean
         Me.cmdAutoNext.Enabled = False
+        Me.chkNewEditionAuto.Enabled = False
         VpMulti = ( Me.chkNewEditionAuto.CheckedItems.Count > 1 )
         For Each VpToAdd As Object In Me.chkNewEditionAuto.CheckedItems
             For Each VpLine As String In Me.chkNewEditionAuto.Tag
@@ -580,6 +587,7 @@ Public Partial Class frmNewEdition
         Me.grpAssist.Visible = True
         Me.grpAuto.Visible = False
         Me.chkAllNone.Checked = False
+        Me.chkNewEditionAuto.Enabled = True
         Me.cmdAutoNext.Enabled = True
     End Sub
     Sub CmdAutoPreviousClick(sender As Object, e As EventArgs)
