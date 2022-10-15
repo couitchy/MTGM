@@ -94,7 +94,7 @@ Public Partial Class frmAddCards
     Dim VpSource As String = If(Me.mnuDropToCollection.Checked, mdlConstGlob.CgSCollection, mdlConstGlob.CgSDecks)
     Dim VpO As Object
     Dim VpStr As String = "0"
-        If Not IsNumeric(VpEncNbr) Then Return mdlConstGlob.CgStock
+        If Not IsNumeric(VpEncNbr) OrElse Me.cboSerie.SelectedIndex < 0 Then Return mdlConstGlob.CgStock
         'Quantité dans l'édition courante
         VgDBCommand.CommandText = "Select Items From " + VpSource + " Where EncNbr = " + VpEncNbr + " And Foil = " + VpFoil.ToString + If(Me.mnuDropToCollection.Checked = False, " And Reserve = " + VpReserve.ToString + " And GameID = " + Me.cmdDestination.Tag.ToString + ";", ";")
         VpO = VgDBCommand.ExecuteScalar

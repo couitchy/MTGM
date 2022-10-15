@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DG","DH","DI","DJ","DK","DL","DM","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","MM","MP","MR","MS","MT","MU","MV","MW","MX","MY","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TO","TP","TS","TX","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BF","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD",,"DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","MM","MP","MR","MS","MT","MU","MV","MW","MX","MY","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TO","TP","TS","TX","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -56,7 +56,8 @@ series['IH'] = new Array('MID','Innistrad: Midnight Hunt','Innistrad : Chasse de
 series['IW'] = new Array('VOW','Innistrad: Crimson Vow','Innistrad : Noce Écarlate','277','2021');
 series['ND'] = new Array('NEO','Kamigawa: Neon Dynasty','Kamigawa : La Dynastie Néon','302','2022');
 series['SA'] = new Array('SNC','Streets of New Capenna','Les rues de la Nouvelle-Capenna','281','2022');
-var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA');
+series['DN'] = new Array('DMU','Dominaria United','Dominaria Uni','281','2022');
+var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
 series['AC'] = new Array('ALL','Alliances','Alliances','199','1996');
@@ -219,7 +220,8 @@ series['MX'] = new Array('MB1','Mystery Booster','','1 694','2019');
 series['X2'] = new Array('2XM','Double Masters','','332','2020');
 series['SR'] = new Array('SLU','Secret Lair: Ultimate Edition','','5','2020');
 series['MJ'] = new Array('MH2','Modern Horizons 2','Horizons du Modern 2','303','2021');
-var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH','MX','X2','SR','MJ');
+series['X3'] = new Array('2X2','Double Masters 2022','','332','2022');
+var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH','MX','X2','SR','MJ','X3');
 
 // Masterpiece Series
 series['ZX'] = new Array('EXP','Zendikar Expeditions','','45','2016');
@@ -310,7 +312,9 @@ series['ID'] = new Array('MIC','Innistrad: Midnight Hunt Commander','Commander :
 series['IE'] = new Array('VOC','Innistrad: Crimson Vow Commander','Commander : Innistrad : Noce Écarlate','2x100','2021');
 series['NB'] = new Array('NEC','Kamigawa: Neon Dynasty Commander','Commander : Kamigawa : La Dynastie Néon','2x100','2022');
 series['SB'] = new Array('NCC','Streets of New Capenna Commander','Commander : Les rues de la Nouvelle-Capenna','5x100','2022');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB');
+series['BF'] = new Array('CLB','Commander Legends: Battle for Baldur\'s Gate','Commander Légendes : La Bataille de la Porte de Baldur','4x100','2022');
+series['DF'] = new Array('DMC','Dominaria United Commander','Commander : Dominaria Uni','2x100','2022');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF');
 
 // Introductory Sets
 series['IS'] = new Array('ITP','Introductory Two-Player Set','','4x30','1996');

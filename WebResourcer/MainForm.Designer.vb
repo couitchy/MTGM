@@ -61,6 +61,7 @@ Partial Class MainForm
         Me.mnuListSubtypes = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCompareTitles = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsTradTitles = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCardsTradTitlesFilter = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsAut = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsAutAll = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCardsAutListe = New System.Windows.Forms.ToolStripMenuItem()
@@ -257,7 +258,7 @@ Partial Class MainForm
         '
         'mnuTrad
         '
-        Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad, Me.mnuListSubtypes, Me.mnuCompareTitles, Me.mnuCardsTradTitles})
+        Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad, Me.mnuListSubtypes, Me.mnuCompareTitles, Me.mnuCardsTradTitles, Me.mnuCardsTradTitlesFilter})
         Me.mnuTrad.Image = CType(resources.GetObject("mnuTrad.Image"),System.Drawing.Image)
         Me.mnuTrad.Name = "mnuTrad"
         Me.mnuTrad.Size = New System.Drawing.Size(278, 22)
@@ -325,6 +326,13 @@ Partial Class MainForm
         Me.mnuCardsTradTitles.Size = New System.Drawing.Size(398, 22)
         Me.mnuCardsTradTitles.Text = "Traductions de titres VF"
         AddHandler Me.mnuCardsTradTitles.Click, AddressOf Me.MnuCardsTradTitlesClick
+        '
+        'mnuCardsTradTitlesFilter
+        '
+        Me.mnuCardsTradTitlesFilter.Name = "mnuCardsTradTitlesFilter"
+        Me.mnuCardsTradTitlesFilter.Size = New System.Drawing.Size(398, 22)
+        Me.mnuCardsTradTitlesFilter.Text = "Filtrer un fichier de traductions (suppression des titres VO/VF identiques)"
+        AddHandler Me.mnuCardsTradTitlesFilter.Click, AddressOf Me.MnuCardsTradTitlesFilterClick
         '
         'mnuCardsAut
         '
@@ -919,6 +927,7 @@ Partial Class MainForm
     Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuCheckTrad As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsTradTitles As System.Windows.Forms.ToolStripMenuItem
+    Private mnuCardsTradTitlesFilter As System.Windows.Forms.ToolStripMenuItem
     Private mnuCompareTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuListSubtypes As System.Windows.Forms.ToolStripMenuItem
     Private mnuCompareTrad As System.Windows.Forms.ToolStripMenuItem

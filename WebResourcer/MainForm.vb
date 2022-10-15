@@ -2009,6 +2009,14 @@ Public Partial Class MainForm
                 Return "newcapennacommander#" + VpStr
             Case "SE"
                 Return "streetsofnewcapennapromos#" + VpStr
+            Case "BF"
+                Return "commanderlegendsbattleforbaldursgate#" + VpStr
+            Case "X3"
+                Return "doublemasters2022#" + VpStr
+            Case "DN"
+                Return "dominariaunited#" + VpStr
+            Case "DF"
+                Return "dominariaunitedcommander#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2603,6 +2611,14 @@ Public Partial Class MainForm
                 Return "SB"
             Case "streetsofnewcapennapromos"
                 Return "SE"
+            Case "commanderlegendsbattleforbaldursgate"
+                Return "BF"
+            Case "doublemasters2022"
+                Return "X3"
+            Case "dominariaunited"
+                Return "DN"
+            Case "dominariaunitedcommander"
+                Return "DF"
             Case Else
                 Return ""
         End Select
@@ -4114,7 +4130,8 @@ Public Partial Class MainForm
     End Sub
     Sub MnuCardsExtractDiff2Click(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
-            Call Me.ExtractCards("Select Distinct Card.Title From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where Card.Title = CardFR.TitleFR And Not Card.Series In ('UG', 'UH', 'V1', 'V2', 'V3', 'D1', 'D2', 'D3','D4', 'D5', 'D6', 'TD', 'CH', 'AL', 'BE', 'UN', 'AN', 'AQ', 'LE', 'DK', 'FE');")
+            'Select Distinct Card.Title, Series.SeriesCD_MO, Series.Release From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = CardFR.TitleFR And Series.SeriesNM <> Series.SeriesNM_FR And Card.Type <> 'K' Order By Series.Release Desc, Series.SeriesCD_MO, Card.Title;
+            Call Me.ExtractCards("Select Distinct Card.Title From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD Where Card.Title = CardFR.TitleFR And Series.SeriesNM <> Series.SeriesNM_FR And Card.Type <> 'K';")
         End If
     End Sub
     Sub MnuCardsExtractDiff3Click(sender As Object, e As EventArgs)
@@ -4244,11 +4261,36 @@ Public Partial Class MainForm
     End Sub
     Sub MnuCardsTradTitlesClick(sender As Object, e As EventArgs)
     Dim VpCardFR As String
-        For Each VpCard As String In ("liste des cartes à traduire à séparer par un #").Split("#")
-            VpCardFR = Me.GetTitleVF(VpCard)
-            Call Me.AddToLog("La traduction de " + VpCard + " est " + VpCardFR, eLogType.Information)
-            Debug.Print(VpCard + "#" + VpCardFR)
-        Next VpCard
+    Dim VpListe As String
+        VpListe = InputBox("Entrer la liste des cartes à traduire" + vbCrLf + "ATTENTION : sortie console uniquement", "Traduction automatique", "liste des cartes à traduire à séparer par un #")
+        If VpListe <> "" Then
+            For Each VpCard As String In VpListe.Split("#")
+                VpCardFR = Me.GetTitleVF(VpCard)
+                Call Me.AddToLog("La traduction de " + VpCard + " est " + VpCardFR, eLogType.Information)
+                Debug.Print(VpCard + "#" + VpCardFR)
+            Next VpCard
+        End If
+    End Sub
+    Sub MnuCardsTradTitlesFilterClick(sender As Object, e As EventArgs)
+    Dim VpTrad As StreamReader
+    Dim VpLine As String
+    Dim VpVOVF() As String
+        Me.dlgOpen4.FileName = ""
+        Me.dlgOpen4.ShowDialog
+        If Me.dlgOpen4.FileName <> "" Then
+            Call Me.AddToLog("Filtrage des traductions...", eLogType.Information)
+            VpTrad = New StreamReader(Me.dlgOpen4.FileName, Encoding.Default)
+            While Not VpTrad.EndOfStream
+                VpLine = VpTrad.ReadLine
+                If VpLine.Contains("#") Then
+                    VpVOVF = VpLine.Split("#")
+                    If VpVOVF(0) <> VpVOVF(1) Then
+                        Debug.Print(VpVOVF(0) + "#" + VpVOVF(1))
+                    End If
+                End If
+            End While
+            Call Me.AddToLog("Le filtrage des traductions est terminé.", eLogType.Information)
+        End If
     End Sub
     Sub MnuBuildStampsClick(sender As Object, e As EventArgs)
         Call Me.BuildStamps

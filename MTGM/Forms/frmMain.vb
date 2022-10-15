@@ -636,6 +636,8 @@ Public Partial Class MainForm
                 VpStrs = VpLog.ReadLine.Split("#")
                 VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "'"
                 If Not ( VpStrs(0).Contains("//") OrElse VpStrs.Length > 2 ) Then
+                    'Par défaut, on ne fait le changement de libellé que s'il existe déjà une traduction VF préalable (cela évite de toucher aux éditions n'existant qu'en VO)
+                    'Mais quand la ligne de MD_Trad.log se termine par #1 (ou qu'il s'agit d'une double carte), on force le changement de libellé
                     VgDBCommand.CommandText += " And CardFR.TitleFR <> Card.Title"
                 End If
                 VgDBCommand.CommandText += ";"
