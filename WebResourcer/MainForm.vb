@@ -649,7 +649,9 @@ Public Partial Class MainForm
     '---------------------------------------------------------------------------
     Dim VpMissingPicts As StreamReader
     Dim VpNewPicts As DirectoryInfo
-    Dim VpTagger As Hashtable
+    Dim VpTagger As SortedDictionary(Of String, Boolean)
+    Dim VpRenamer As Dictionary(Of String, String)
+    Dim VpTitle As String
     Dim VpMissing As String
         Me.dlgBrowse.SelectedPath = ""
         Me.dlgBrowse.ShowDialog
@@ -659,16 +661,21 @@ Public Partial Class MainForm
             Me.dlgOpen4.ShowDialog
             If Me.dlgOpen4.FileName <> "" Then
                 Call Me.AddToLog("La suppression des images doublons a commencé...", eLogType.Information, True)
-                VpTagger = New Hashtable
+                VpTagger = New SortedDictionary(Of String, Boolean)
+                VpRenamer = New Dictionary(Of String, String)
                 For Each VpNew As FileInfo In VpNewPicts.GetFiles("*.jpg")
                     VpTagger.Add(VpNew.Name.Replace(".jpg", ""), False)
                 Next VpNew
                 VpMissingPicts = New StreamReader(Me.dlgOpen4.FileName)
                 While Not VpMissingPicts.EndOfStream
                     Application.DoEvents
-                    VpMissing = VpMissingPicts.ReadLine
-                    If VpTagger.Contains(VpMissing) Then
+                    VpTitle = VpMissingPicts.ReadLine
+                    VpMissing = VpTitle.Replace(" // ", "")
+                    If VpTagger.ContainsKey(VpMissing) Then
                         VpTagger.Item(VpMissing) = True
+                        If VpTitle <> VpMissing Then
+                            VpRenamer.Add(VpMissing, VpTitle.Replace("//", ""))
+                        End If
                     End If
                 End While
                 For Each VpChecker As String In VpTagger.Keys
@@ -677,6 +684,9 @@ Public Partial Class MainForm
                         File.Delete(Me.dlgBrowse.SelectedPath + "\" + VpChecker + ".jpg")
                         Call Me.AddToLog("Doublon supprimé : " + VpChecker + ".jpg", eLogType.Warning)
                         Application.DoEvents
+                    ElseIf VpRenamer.ContainsKey(VpChecker) Then
+                        File.Move(Me.dlgBrowse.SelectedPath + "\" + VpChecker + ".jpg", Me.dlgBrowse.SelectedPath + "\" + VpRenamer.Item(VpChecker) + ".jpg")
+                        Call Me.AddToLog("Fichier renommé : " + VpChecker + ".jpg -> " + VpRenamer.Item(VpChecker) + ".jpg", eLogType.Information)
                     End If
                 Next VpChecker
             End If
