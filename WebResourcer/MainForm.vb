@@ -873,7 +873,7 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
-    Sub FilterRulings
+    Private Sub FilterRulings
     '----------------------------------------------------------------------------------------------------------------
     'Remplace les références à des URLs de symboles dans le fichier des règles spécifiques par les symboles effectifs
     '----------------------------------------------------------------------------------------------------------------
@@ -920,7 +920,7 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
-    Sub ExtractCardsMultiverseId
+    Private Sub ExtractCardsMultiverseId
     '-----------------------------------------------------------------------------------------------------------------
     'Listing des identifiants Multiverse, des numéros de cartes au sein des éditions et des identifiants Urza Gatherer
     '-----------------------------------------------------------------------------------------------------------------
@@ -1194,7 +1194,7 @@ Public Partial Class MainForm
             Application.DoEvents
         End While
     End Sub
-    Public Function GetAutorisations(VpCard As String) As String
+    Private Function GetAutorisations(VpCard As String) As String
     '------------------------------------------------------------
     'Retourne les autorisations pour la carte passée en paramètre
     '------------------------------------------------------------
@@ -1227,12 +1227,12 @@ Public Partial Class MainForm
             Next VpElement
             For Each VpElement In Me.wbMV.Document.All
                 If VpElement.InnerText = "Autorisations en Tournois" Then
-                    Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml + VpElement.NextSibling.NextSibling.NextSibling.InnerHtml)
+                    Return Me.TournoiFormat(VpElement.NextSibling.InnerHtml + VpElement.NextSibling.NextSibling.FirstChild.InnerHtml + VpElement.NextSibling.NextSibling.FirstChild.NextSibling.InnerHtml)
                 End If
             Next VpElement
         Catch
         End Try
-        Thread.Sleep(2000)
+        Thread.Sleep(1000)
         Return ""
     End Function
     Private Function TournoiFormat(VpStr As String) As String
@@ -1246,8 +1246,7 @@ Public Partial Class MainForm
                         VpAut = VpAut + VpA.Substring(VpA.LastIndexOf("/") + 1) + "#"
                     End If
                 Next VpA
-                VpAut = VpAut.Replace("#1vs1", "#blocdk#1vs1")
-                Return VpAut.Substring(0, VpAut.Length - 1)
+                Return VpAut.Replace("#1vs1", "#blocdk#1vs1").Replace("#div>#", "")
             End If
         Catch
         End Try
@@ -4288,7 +4287,7 @@ Public Partial Class MainForm
         Me.dlgOpen4.FileName = ""
         Me.dlgOpen4.ShowDialog
         If Me.dlgOpen4.FileName <> "" Then
-            Call Me.AddToLog("Filtrage des traductions...", eLogType.Information)
+            Call Me.AddToLog("Filtrage des traductions..." + vbCrLf + "ATTENTION : sortie console uniquement", eLogType.Information)
             VpTrad = New StreamReader(Me.dlgOpen4.FileName, Encoding.Default)
             While Not VpTrad.EndOfStream
                 VpLine = VpTrad.ReadLine
