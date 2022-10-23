@@ -138,8 +138,14 @@ Public Module mdlToolbox
                                                                 'Si on est ici, BDD version 21
                                                                 VpDBVersion = eDBVersion.BDD_v21
                                                             Else
-                                                                'Si on est ici, BDD version 22
-                                                                VpDBVersion = eDBVersion.BDD_v22
+                                                                VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "Autorisations", Nothing})
+                                                                If VpSchemaTable.Rows(1)!COLUMN_NAME.ToString.StartsWith("Bloc") Then
+                                                                    'Si on est ici, BDD version 22
+                                                                    VpDBVersion = eDBVersion.BDD_v22
+                                                                Else
+                                                                    'Si on est ici, BDD version 23
+                                                                    VpDBVersion = eDBVersion.BDD_v23
+                                                                End If
                                                             End If
                                                         End If
                                                     End If
@@ -160,10 +166,10 @@ Public Module mdlToolbox
         'Actions à effectuer en conséquence
         If VpDBVersion = eDBVersion.Unknown Then        'Version inconnue
             Return False
-        ElseIf VpDBVersion = eDBVersion.BDD_v22 Then    'Dernière version
+        ElseIf VpDBVersion = eDBVersion.BDD_v23 Then    'Dernière version
             Return True
         Else                                            'Versions intermédiaires
-            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v22)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v23)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
                 Try
                     'Passage version 1 à 2
                     If CInt(VpDBVersion) < 2 Then
@@ -350,6 +356,30 @@ Public Module mdlToolbox
                         VgDBCommand.ExecuteNonQuery
                         VgDBCommand.CommandText = "Alter Table Autorisations Add Historic Bit;"
                         VgDBCommand.ExecuteNonQuery
+                    End If
+                    'Passage version 22 à 23
+                    If CInt(VpDBVersion) < 23 Then
+                        VgDBCommand.CommandText = "Alter Table Autorisations Drop Column Bloc;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Drop Column MTGO;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Add Explorer Bit;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Add Alchemy Bit;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Drop Column Blocoff;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Drop Column MTGOoff;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Add Commanderoff Bit;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Alter Table Autorisations Add Arenaoff Bit;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Update Autorisations Set Commanderoff = 0;"
+                        VgDBCommand.ExecuteNonQuery
+                        VgDBCommand.CommandText = "Update Autorisations Set Arenaoff = 1;"
+                        VgDBCommand.ExecuteNonQuery
+                        Call ShowInformation("MTGM fête ses 15 ans !!")
                     End If
                 Catch
                     Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")

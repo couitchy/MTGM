@@ -1246,7 +1246,7 @@ Public Partial Class MainForm
                         VpAut = VpAut + VpA.Substring(VpA.LastIndexOf("/") + 1) + "#"
                     End If
                 Next VpA
-                Return VpAut.Replace("#1vs1", "#blocdk#1vs1").Replace("#div>#", "")
+                Return VpAut.Replace("#div>#", "")
             End If
         Catch
         End Try
@@ -1344,9 +1344,6 @@ Public Partial Class MainForm
             If VpStr.Contains("#") Then
                 VpName = VpStr.Substring(0, VpStr.IndexOf("#"))
                 VpAut = VpStr.Substring(VpStr.IndexOf("#"))
-                If Not VpAut.Contains("#mtgo") Then
-                    VpAut += "#mtgodk"
-                End If
                 VpData.Add(VpName, VpAut)
             End If
         End While
@@ -1387,16 +1384,6 @@ Public Partial Class MainForm
                     ReDim VpKeysOld(0 To VpDataOld.Keys.Count - 1)
                     Call VpDataCur.Keys.CopyTo(VpKeysCur, 0)
                     Call VpDataOld.Keys.CopyTo(VpKeysOld, 0)
-                    Call Me.AddToLog("*** Reprise des anciennes autorisations 'bloc' :", eLogType.Information)
-                    For Each VpCard As String In VpKeysCur
-                        If VpDataOld.ContainsKey(VpCard) AndAlso VpDataCur.Item(VpCard).Contains("#blocdk#") AndAlso Not VpDataOld.Item(VpCard).Contains("#blocdk#") Then
-                            VpDataCur.Item(VpCard) = VpDataCur.Item(VpCard).Replace("#blocdk#", If(VpDataOld.Item(VpCard).Contains("#blocno"), "#blocno#", "#bloc#"))
-                        Else
-                            Call Me.AddToLog("Pas de correspondance trouvée pour : " + VpCard, eLogType.Information)
-                            Application.DoEvents
-                        End If
-                    Next VpCard
-                    Call Me.AddToLog("*** Autorisations de cartes manquantes reprises :", eLogType.Information)
                     For Each VpCard As String In VpKeysOld
                         If Not VpDataCur.ContainsKey(VpCard) Then
                             VpDataCur.Add(VpCard, VpDataOld.Item(VpCard))
