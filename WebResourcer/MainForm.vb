@@ -873,6 +873,29 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
+    Private Sub ExtractModImSP
+    '-------------------------------------------------------------
+    'Liste les cartes dont l'image a subi au moins une mise à jour
+    '-------------------------------------------------------------
+    Me.dlgBrowse.SelectedPath = "D:\Documents\Personnel\Loisirs\Magic, The Gathering\Archivage\Images des cartes"
+    Dim VpCards As New List(Of String)
+    Dim VpLogFiles() As FileInfo = (New DirectoryInfo(Me.dlgBrowse.SelectedPath)).GetFiles("SP*.log")
+        Array.Sort(VpLogFiles, New clsPriceFilesComparer)
+        Call Me.AddToLog("Liste les images ayant subi une mise à jour...", eLogType.Information)
+        For Each VpLogFile As FileInfo In VpLogFiles
+            For Each VpItem As String In (New StreamReader(VpLogFile.FullName)).ReadToEnd.Replace(".jpg", "").Replace(vbCrLf, "#").Split("#")
+                If VpItem <> "" And Not IsNumeric(VpItem) Then
+                    If VpCards.Contains(VpItem) Then
+                        Call Me.AddToLog(VpItem + " a subi une mise à jour dans " + VpLogFile.Name.Replace(".log", ""), eLogType.Warning)
+                    Else
+                        VpCards.Add(VpItem)
+                    End If
+                End If
+                Application.DoEvents
+            Next VpITem
+        Next VpLogFile
+        Call Me.AddToLog("Terminé.", eLogType.Information)
+    End Sub
     Private Sub FilterRulings
     '----------------------------------------------------------------------------------------------------------------
     'Remplace les références à des URLs de symboles dans le fichier des règles spécifiques par les symboles effectifs
@@ -4105,8 +4128,16 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuPicturesDeltaClick(sender As Object, e As EventArgs)
-        If Not VmDB Is Nothing Then
-            Call Me.ExtractModIm
+        If MessageBox.Show("Extraire les images modifiées entre Service Packs ?" + vbCrLf + "Cliquer sur 'Non' pour faire la recherche au sein de la base de données.", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+            Me.dlgBrowse.SelectedPath = ""
+            Me.dlgBrowse.ShowDialog
+            If Me.dlgBrowse.SelectedPath <> "" Then
+                Call Me.ExtractModImSP
+            End If
+        Else
+            If Not VmDB Is Nothing Then
+                Call Me.ExtractModIm
+            End If
         End If
     End Sub
     Sub MnuCardsTradTxtClick(sender As Object, e As EventArgs)

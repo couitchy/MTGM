@@ -1090,8 +1090,7 @@ Public Module mdlToolbox
         VpAnswer = VpResponse.GetResponseStream
         'Lecture du fichier sur Internet
         ReDim VpBuf(0 To VpResponse.ContentLength - 1)
-        VpAnswer.Read(VpBuf, 0, VpBuf.Length)
-        VpStamp = New ASCIIEncoding().GetString(VpBuf)
+        VpStamp = (New StreamReader(VpAnswer, Encoding.UTF8)).ReadToEnd
         VpRequest.Abort
         Return VpStamp
     End Function

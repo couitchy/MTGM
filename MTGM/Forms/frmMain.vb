@@ -375,7 +375,6 @@ Public Partial Class MainForm
             VpOutB.Flush
             VpOutB.Close
             'Mise à jour des index (seulement si CardPictures est obsolète)
-            VgDBCommand.CommandText = "Select Max([End]) From CardPictures;"
             While Not VpLog.EndOfStream
                 VpStrs = VpLog.ReadLine.Split("#")
                 VpCurOffset = VpOffsetBase + CLng(VpStrs(1))
