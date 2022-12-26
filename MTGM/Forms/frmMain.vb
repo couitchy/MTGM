@@ -1003,18 +1003,18 @@ Public Partial Class MainForm
         If Me.dlgOpen4.FileName <> "" Then
             VpFile = New StreamReader(Me.dlgOpen4.FileName)
             Do While Not VpFile.EndOfStream
-                VpStr = VpFile.ReadLine
+                VpStr = VpFile.ReadLine.Replace(","""","""",""""", "")
                 If VpStr.Contains(""",") Then
                     VpStrSub = VpStr.Substring(VpStr.LastIndexOf(""",") + 2)
                     VpStrs = VpStrSub.Split(",")
-                    If VpStrs.Length = 9 AndAlso VpStrs(1) <> "0" Then
+                    If VpStrs.Length = 6 AndAlso VpStrs(1) <> "0" Then
                         VgDBCommand.CommandText = "Update Card Set UrzaId = " + VpStrs(0) + " Where MultiverseId = " + VpStrs(1) + ";"
                         VgDBCommand.ExecuteNonQuery
                     ElseIf VpStrs(1) = "0" Then
-                        VpStrSub = VpStr.Replace(", ", "¤").Replace("""", "")
+                        VpStrSub = VpStr.Replace(", ", "¤").Replace("0,000", "0k").Replace("""", "")
                         VpStrs = VpStrSub.Split(",")
-                        If VpStrs.Length = 19 Then
-                            VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.UrzaId = " + VpStrs(15) + " Where Card.Title = '" + VpStrs(0).Replace("¤", ", ").Replace("'", "''") + "' And Series.SeriesNM = '" + VpStrs(14).Replace(":", "").Replace("¤", ", ").Replace("'", "''") + "';"
+                        If VpStrs.Length = 22 Then
+                            VgDBCommand.CommandText = "Update Card Inner Join Series On Card.Series = Series.SeriesCD Set Card.UrzaId = " + VpStrs(16) + " Where Card.Title = '" + VpStrs(0).Replace("¤", ", ").Replace("0k", "0,000").Replace("'", "''") + "' And Series.SeriesNM_UG = '" + VpStrs(15).Replace(":", "").Replace("¤", ", ").Replace("0k", "0,000").Replace("'", "''") + "';"
                             VgDBCommand.ExecuteNonQuery
                         End If
                     End If

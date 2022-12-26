@@ -74,7 +74,7 @@ Partial Class MainForm
         Me.mnuSeriesVirtualAdd = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGen = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeriesGenR14 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuSeriesGenR20 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuSeriesGenR21 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBuildStamps = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBuildDouble = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFixTxtVO = New System.Windows.Forms.ToolStripMenuItem()
@@ -408,7 +408,7 @@ Partial Class MainForm
         '
         'mnuSeriesGen
         '
-        Me.mnuSeriesGen.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGenR14, Me.mnuSeriesGenR20})
+        Me.mnuSeriesGen.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSeriesGenR14, Me.mnuSeriesGenR21})
         Me.mnuSeriesGen.Image = CType(resources.GetObject("mnuSeriesGen.Image"),System.Drawing.Image)
         Me.mnuSeriesGen.Name = "mnuSeriesGen"
         Me.mnuSeriesGen.Size = New System.Drawing.Size(432, 22)
@@ -421,12 +421,12 @@ Partial Class MainForm
         Me.mnuSeriesGenR14.Text = "R14"
         AddHandler Me.mnuSeriesGenR14.Click, AddressOf Me.MnuSeriesGenR14Click
         '
-        'mnuSeriesGenR20
+        'mnuSeriesGenR21
         '
-        Me.mnuSeriesGenR20.Name = "mnuSeriesGenR20"
-        Me.mnuSeriesGenR20.Size = New System.Drawing.Size(93, 22)
-        Me.mnuSeriesGenR20.Text = "R20"
-        AddHandler Me.mnuSeriesGenR20.Click, AddressOf Me.MnuSeriesGenR20Click
+        Me.mnuSeriesGenR21.Name = "mnuSeriesGenR21"
+        Me.mnuSeriesGenR21.Size = New System.Drawing.Size(93, 22)
+        Me.mnuSeriesGenR21.Text = "R21"
+        AddHandler Me.mnuSeriesGenR21.Click, AddressOf Me.MnuSeriesGenR21Click
         '
         'mnuBuildStamps
         '
@@ -909,7 +909,7 @@ Partial Class MainForm
     Private mnuSeriesSpoilers As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeriesVirtualAdd As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeriesMerge As System.Windows.Forms.ToolStripMenuItem
-    Private mnuSeriesGenR20 As System.Windows.Forms.ToolStripMenuItem
+    Private mnuSeriesGenR21 As System.Windows.Forms.ToolStripMenuItem
     Private mnuSeriesGenR14 As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsExtractDiff5 As System.Windows.Forms.ToolStripMenuItem
     Private mnuPricesUpdateListe As System.Windows.Forms.ToolStripMenuItem

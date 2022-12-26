@@ -11,6 +11,7 @@ Public Class clsEditionHeader
     Private VmSeriesNM As String = "Magic Edition"
     Private VmSeriesNM_FR As String = "Édition Magic"
     Private VmSeriesNM_MtG As String = "Magic Ed..."
+    Private VmSeriesNM_UG As String = "Magic Edition"
     Private VmBorder As eBorder = eBorder.White
     Private VmRelease As Date = Date.Now.ToShortDateString
     Private VmTotCards As Integer = 175
@@ -72,6 +73,15 @@ Public Class clsEditionHeader
         End Get
         Set (VpSeriesNM_MtG As String)
             VmSeriesNM_MtG = VpSeriesNM_MtG
+        End Set
+    End Property
+    <Category("Identification"), Description("Nom de l'édition sur urzagatherer.app")> _
+    Public Property SeriesNM_UG As String
+        Get
+            Return VmSeriesNM_UG
+        End Get
+        Set (VpSeriesNM_UG As String)
+            VmSeriesNM_UG = VpSeriesNM_UG
         End Set
     End Property
     <Category("Détails"), Description("Nombre de cartes de l'édition")> _

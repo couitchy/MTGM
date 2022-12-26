@@ -2652,13 +2652,13 @@ Public Partial Class MainForm
         If Me.dlgSave.FileName <> "" Then
             VpTxt = New StreamWriter(Me.dlgSave.FileName)
             Call Me.AddToLog("La construction du fichier d'en-têtes a commencé...", eLogType.Information, True)
-            VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR, SeriesCD_MO, SeriesCD_MW From Series Order By Release;"
+            VmDBCommand.CommandText = "Select SeriesCD, SeriesNM, SeriesNM_MtG, MIESetID, Cycle, LegalE, LegalS, Border, Release, RunSize, TotCards, UqCards, UqRare, UqUncom, UqComm, UqBLand, Foils, StartRare, StartUncom, StartComm, StartLand, BoostRare, BoostUncom, BoostComm, BoostLand, Decks, Starters, Boosters, Boxes, Notes, SeriesNM_FR, SeriesCD_MO, SeriesCD_MW, SeriesNM_UG From Series Order By Release;"
             VmDBReader = VmDBCommand.ExecuteReader
             With VmDBReader
                 While .Read
                     Application.DoEvents
                     VpStr = ""
-                    For VpI As Integer = 0 To If(VpR14, 30, 32)
+                    For VpI As Integer = 0 To If(VpR14, 30, 33)
                         VpStr = VpStr + Me.Matching(.GetValue(VpI).ToString) + "#"
                     Next VpI
                     VpStr = Me.SerieShortcut(VpStr.Substring(0, VpStr.Length - 1))
@@ -4207,7 +4207,7 @@ Public Partial Class MainForm
             Call Me.BuildHeaders(True)
         End If
     End Sub
-    Sub MnuSeriesGenR20Click(sender As Object, e As EventArgs)
+    Sub MnuSeriesGenR21Click(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             Call Me.BuildHeaders(False)
         End If
