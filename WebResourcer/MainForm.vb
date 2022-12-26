@@ -877,7 +877,6 @@ Public Partial Class MainForm
     '-------------------------------------------------------------
     'Liste les cartes dont l'image a subi au moins une mise à jour
     '-------------------------------------------------------------
-    Me.dlgBrowse.SelectedPath = "D:\Documents\Personnel\Loisirs\Magic, The Gathering\Archivage\Images des cartes"
     Dim VpCards As New List(Of String)
     Dim VpLogFiles() As FileInfo = (New DirectoryInfo(Me.dlgBrowse.SelectedPath)).GetFiles("SP*.log")
         Array.Sort(VpLogFiles, New clsPriceFilesComparer)
@@ -3964,9 +3963,9 @@ Public Partial Class MainForm
         End If
     End Sub
     Private Sub RevertSP
-    '-----------------------------------------------------
-    'Reconstruit la base des images dans un état antérieur
-    '-----------------------------------------------------
+    '---------------------------------------------------
+    'Reconstruit la base d'images dans un état antérieur
+    '---------------------------------------------------
     Dim VpOut As FileStream
     Dim VpOutB As BinaryWriter
     Dim VpIn As StreamReader
@@ -4208,7 +4207,7 @@ Public Partial Class MainForm
             Call Me.BuildHeaders(True)
         End If
     End Sub
-    Sub MnuSeriesGenR16Click(sender As Object, e As EventArgs)
+    Sub MnuSeriesGenR20Click(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             Call Me.BuildHeaders(False)
         End If

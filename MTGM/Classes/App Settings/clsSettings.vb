@@ -245,7 +245,7 @@ Public Class clsSettings
             VmShowAllSeries = VpShowAllSeries
         End Set
     End Property
-    <DisplayName("Base des images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(ucFilenameEditor), GetType(Drawing.Design.UITypeEditor)), ucFilenameEditor.FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
+    <DisplayName("Base d'images"), Category("Emplacements des fichiers"), Description("Fichier des images numérisées des cartes"), Editor(GetType(ucFilenameEditor), GetType(Drawing.Design.UITypeEditor)), ucFilenameEditor.FileDialogFilter("Fichiers de données d'images (*.dat)|*.dat")> _
     Public Property PicturesFile As String
         Get
             Return VmPicturesFile
