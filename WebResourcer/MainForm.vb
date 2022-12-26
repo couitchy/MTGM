@@ -3996,6 +3996,35 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
+    Private Sub ExtractPointers
+    '--------------------------------------------------------------------
+    'Extrait les adresses de début et de fin des images du fichier agrégé
+    '--------------------------------------------------------------------
+    Dim VpTxt As StreamWriter
+        Me.dlgSave.FileName = ""
+        Me.dlgSave.ShowDialog
+        If Me.dlgSave.FileName <> "" Then
+            VpTxt = New StreamWriter(Me.dlgSave.FileName)
+            Call Me.AddToLog("L'extraction des informations de pointage vers les images a commencé...", eLogType.Information, True)
+            VmDBCommand.CommandText = "Select Title, Offset, [End] From CardPictures;"
+            VmDBReader = VmDBCommand.ExecuteReader
+            With VmDBReader
+                While .Read
+                    Application.DoEvents
+                    VpTxt.WriteLine(.GetString(0) + "#" + .GetValue(1).ToString + "#" + .GetValue(2).ToString)
+                    If Me.btCancel.Tag Then Exit While
+                End While
+                .Close
+            End With
+            VpTxt.Flush
+            VpTxt.Close
+            If Me.btCancel.Tag Then
+                Call Me.AddToLog("L'extraction des informations de pointage vers les images a été annulée.", eLogType.Warning, , True)
+            Else
+                Call Me.AddToLog("L'extraction des informations de pointage vers les images est terminée.", eLogType.Information, , True)
+            End If
+        End If
+    End Sub
     Private Sub FindHoles
     Dim VpEncNbrs() As Long
     Dim VpMin As Long
@@ -4261,6 +4290,11 @@ Public Partial Class MainForm
     End Sub
     Sub MnuPicturesRevertSPClick(sender As Object, e As EventArgs)
         Call Me.RevertSP
+    End Sub
+    Sub MnuPicturesExtractPointersClick(sender As Object, e As EventArgs)
+        If Not VmDB Is Nothing Then
+            Call Me.ExtractPointers
+        End If
     End Sub
     Sub MnuBuildTitlesClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then

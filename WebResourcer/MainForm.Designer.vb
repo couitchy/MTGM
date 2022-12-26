@@ -94,6 +94,7 @@ Partial Class MainForm
         Me.mnuPicturesDelta = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPicturesNewSP = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPicturesRevertSP = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuPicturesExtractPointers = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.toolStrip = New System.Windows.Forms.ToolStrip()
@@ -504,7 +505,7 @@ Partial Class MainForm
         '
         'mnuPictures
         '
-        Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesSymbols, Me.mnuPicturesThumbs, Me.mnuPicturesUpdate, Me.mnuPicturesRemove, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP})
+        Me.mnuPictures.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuPicturesSymbols, Me.mnuPicturesThumbs, Me.mnuPicturesUpdate, Me.mnuPicturesRemove, Me.mnuPicturesFix, Me.mnuPicturesDelta, Me.mnuPicturesNewSP, Me.mnuPicturesRevertSP, Me.mnuPicturesExtractPointers})
         Me.mnuPictures.Name = "mnuPictures"
         Me.mnuPictures.Size = New System.Drawing.Size(152, 22)
         Me.mnuPictures.Text = "Images"
@@ -568,6 +569,13 @@ Partial Class MainForm
         Me.mnuPicturesRevertSP.Size = New System.Drawing.Size(316, 22)
         Me.mnuPicturesRevertSP.Text = "Reconstruire jusqu'à un Service Pack antérieur"
         AddHandler Me.mnuPicturesRevertSP.Click, AddressOf Me.MnuPicturesRevertSPClick
+        '
+        'mnuPicturesExtractPointers
+        '
+        Me.mnuPicturesExtractPointers.Name = "mnuPicturesExtractPointers"
+        Me.mnuPicturesExtractPointers.Size = New System.Drawing.Size(316, 22)
+        Me.mnuPicturesExtractPointers.Text = "Extraire les informations de pointage vers les images"
+        AddHandler Me.mnuPicturesExtractPointers.Click, AddressOf Me.MnuPicturesExtractPointersClick
         '
         'mnuHelp
         '
@@ -918,6 +926,7 @@ Partial Class MainForm
     Private mnuCardsAutListe As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsAutAll As System.Windows.Forms.ToolStripMenuItem
     Private mnuPicturesRevertSP As System.Windows.Forms.ToolStripMenuItem
+    Private mnuPicturesExtractPointers As System.Windows.Forms.ToolStripMenuItem
     Private btReplaceTitle As System.Windows.Forms.ToolStripButton
     Private mnuCardReplaceTitle As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixTxtVO As System.Windows.Forms.ToolStripMenuItem

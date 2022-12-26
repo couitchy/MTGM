@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 39412
+    Public Const CgCodeLines As Integer             = 39499
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -70,6 +70,7 @@ Public Module mdlConstGlob
     Public Const CgMdSubTypesVF As String           = "\MD_SubTypesVF.log"
     Public Const CgMdMultiverse As String           = "\MD_Multiverse.log"
     Public Const CgMdShippingCosts As String        = "\MD_ShippingCosts.log"
+    Public Const CgMdPicturesPointers As String     = "\MD_PicturesPointers.log"
     Public Const CgShell As String                  = "explorer.exe"
     Public Const CgDefaultServer As String          = "http://couitchy.free.fr/upload/MTGM"
     Public Const CgURL0 As String                   = "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=#&type=card"
@@ -106,6 +107,7 @@ Public Module mdlConstGlob
     Public Const CgURL25 As String                  = "https://api.cardmarket.com/ws/v1.1/output.json/articles/"
     Public Const CgURL26 As String                  = "https://www.magic-ville.com/fr/"
     Public Const CgURL27 As String                  = "/Updates/MD_ShippingCosts r21.log"
+    Public Const CgURL28 As String                  = "/Updates/MD_PicturesPointers.log"
     Public Const CgDL1 As String                    = "Vérification des mises à jour..."
     Public Const CgDL2 As String                    = "Téléchargement en cours"
     Public Const CgDL2b As String                   = "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."

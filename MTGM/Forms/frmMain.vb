@@ -463,6 +463,30 @@ Public Partial Class MainForm
         End If
         Return True
     End Function
+    Public Function FixCorruptedPictures As Boolean
+    '---------------------------------------------------------------------
+    'Télécharge et met à jour les informations de pointage vers les images
+    '---------------------------------------------------------------------
+    Dim VpPointersData As StreamReader
+    Dim VpStr As String
+    Dim VpInfos() As String
+        Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL28), mdlConstGlob.CgMdPicturesPointers)
+        If File.Exists(Application.StartupPath + mdlConstGlob.CgMdPicturesPointers) Then
+            VpPointersData = New StreamReader(Application.StartupPath + mdlConstGlob.CgMdPicturesPointers)
+            While Not VpPointersData.EndOfStream
+                VpStr = VpPointersData.ReadLine
+                If VpStr.Contains("#") Then
+                    VpInfos = VpStr.Split("#")
+                    If VpInfos.Length = 3 Then
+                        VgDBCommand.CommandText = "Update CardPictures Set Offset = " + VpInfos(1) + ", [End] = " + VpInfos(2) + " Where Title = '" + VpInfos(0).Replace("'", "''") + "';"
+                        VgDBCommand.ExecuteNonQuery
+                    End If
+                End If
+            End While
+            VpPointersData.Close
+            Call mdlToolbox.SecureDelete(Application.StartupPath + CgMdPicturesPointers)
+        End If
+    End Function
     Private Sub FixCreatures(VpPattern As String)
     '----------------------------------------------
     'Enlève les parenthèses sur l'attaque / défense
@@ -3387,6 +3411,14 @@ Public Partial Class MainForm
             VpNewEdition = New frmNewEdition
             VpNewEdition.ShowDialog
             Call mdlMain.LoadIcons(Me.imglstTvw)    'recharge les icônes au cas où de nouveaux logos auraient été ajoutés lors de la procédure
+        End If
+    End Sub
+    Sub MnuFixPicturesActivate(ByVal sender As Object, ByVal e As EventArgs)
+        If mdlToolbox.DBOK And File.Exists(VgOptions.VgSettings.PicturesFile) Then
+            If mdlToolbox.ShowQuestion("Se connecter à Internet pour récupérer le correctif ?") = System.Windows.Forms.DialogResult.Yes Then
+                Call Me.FixCorruptedPictures
+                Call mdlToolbox.ShowInformation("Terminé !")
+            End If
         End If
     End Sub
     Sub MnuFixTxtVFActivate(ByVal sender As Object, ByVal e As EventArgs)
