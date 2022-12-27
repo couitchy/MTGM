@@ -1305,9 +1305,9 @@ Public Partial Class MainForm
             End If
             VpOut = New StreamWriter(Me.dlgSave.FileName, VpAppend)
             If VpAppend Then
-                Call Me.AddToLog("La récupération des autorisations de tournois se poursuit...", eLogType.Information, True)
+                Call Me.AddToLog("La récupération des autorisations en tournois se poursuit...", eLogType.Information, True)
             Else
-                Call Me.AddToLog("La récupération des autorisations de tournois a commencé...", eLogType.Information, True)
+                Call Me.AddToLog("La récupération des autorisations en tournois a commencé...", eLogType.Information, True)
                 'Inscription de la date
                 VpOut.WriteLine(Now.ToShortDateString)
             End If
@@ -1339,7 +1339,7 @@ Public Partial Class MainForm
                 If VpAut <> "" Then
                     VpOut.WriteLine(VpCard + "#" + VpAut)
                 Else
-                    Call Me.AddToLog("Impossible de récupérer les autorisations de tournois pour la carte : " + VpCard, eLogType.Warning)
+                    Call Me.AddToLog("Impossible de récupérer les autorisations en tournois pour la carte : " + VpCard, eLogType.Warning)
                 End If
                 Me.prgAvance.Increment(1)
                 Call Me.ETA
@@ -1348,9 +1348,9 @@ Public Partial Class MainForm
             VpOut.Flush
             VpOut.Close
             If Me.btCancel.Tag Then
-                Call Me.AddToLog("La récupération des autorisations de tournois a été annulée.", eLogType.Warning, , True)
+                Call Me.AddToLog("La récupération des autorisations en tournois a été annulée.", eLogType.Warning, , True)
             Else
-                Call Me.AddToLog("La récupération des autorisations de tournois est terminée.", eLogType.Information, , True)
+                Call Me.AddToLog("La récupération des autorisations en tournois est terminée.", eLogType.Information, , True)
             End If
         End If
     End Sub
@@ -1398,7 +1398,7 @@ Public Partial Class MainForm
                 Me.dlgSave.FileName = ""
                 Me.dlgSave.ShowDialog
                 If Me.dlgSave.FileName <> "" Then
-                    Call Me.AddToLog("La fusion des autorisations de tournois a commencé...", eLogType.Information, True)
+                    Call Me.AddToLog("La fusion des autorisations en tournois a commencé...", eLogType.Information, True)
                     Application.DoEvents
                     VpDataCur = Me.ReadAutorisations(VpPathCur)
                     VpDataOld = Me.ReadAutorisations(VpPathOld)
@@ -1422,8 +1422,109 @@ Public Partial Class MainForm
                     Next VpCard
                     VpMerge.Flush
                     VpMerge.Close
-                    Call Me.AddToLog("La fusion des autorisations de tournois est terminée.", eLogType.Information, , True)
+                    Call Me.AddToLog("La fusion des autorisations en tournois est terminée.", eLogType.Information, , True)
                 End If
+            End If
+        End If
+    End Sub
+    Private Sub GuessAutorisations
+    '---------------------------------------------------------------------------------------------
+    'Devine les autorisations manquantes à partir des autorisations des autres cartes de l'édition
+    '---------------------------------------------------------------------------------------------
+    Dim VpIn As StreamReader
+    Dim VpOut As StreamWriter
+    Dim VpStr As String
+    Dim VpTitle As String
+    Dim VpEdition As String
+    Dim VpO As Object
+    Dim VpOn(0 To 10) As Integer
+    Dim VpOff(0 To 10) As Integer
+    Dim VpT1 As Boolean
+    Dim VpT1r As Boolean
+    Dim VpT15 As Boolean
+    Dim VpM As Boolean
+    Dim VpPioneer As Boolean
+    Dim VpExplorer As Boolean
+    Dim VpT2 As Boolean
+    Dim Vp1V1 As Boolean
+    Dim VpMulti As Boolean
+    Dim VpHistoric As Boolean
+    Dim VpAlchemy As Boolean
+        Call Me.AddToLog("Attente saisie listing...", eLogType.Information)
+        Application.DoEvents
+        Me.dlgOpen4.FileName = ""
+        Me.dlgOpen4.ShowDialog
+        If Me.dlgOpen4.FileName <> "" Then
+            Me.dlgSave.FileName = ""
+            Me.dlgSave.ShowDialog
+            If Me.dlgSave.FileName <> "" Then
+                Call Me.AddToLog("La déduction des autorisations en tournois a commencé...", eLogType.Information, True)
+                VpIn = New StreamReader(Me.dlgOpen4.FileName)
+                VpOut = New StreamWriter(Me.dlgSave.FileName)
+                While Not VpIn.EndOfStream
+                    VpTitle = VpIn.ReadLine
+                    For VpI As Integer = 0 To 10
+                        VpOn(VpI) = 0
+                        VpOff(VpI) = 0
+                    Next VpI
+                    'Cherche l'édition la plus récente
+                    VmDBCommand.CommandText = "Select Top 1 Card.Series From Card Inner Join Series On Card.Series = Series.SeriesCD Where Title = '" + VpTitle.Replace("'", "''") + "' Order By Release Desc;"
+                    VpO = VmDBCommand.ExecuteScalar
+                    If Not VpO Is Nothing
+                        VpEdition = VpO.ToString
+                        'Comptabilise dans cette édition le nombre de cartes autorisées et le nombre de cartes interdites pour chaque format
+                        VmDBCommand.CommandText = "Select T1, T1r, T15, M, Pioneer, Explorer, T2, [1V1], Multi, Historic, Alchemy From Autorisations Inner Join Card On Autorisations.Title = Card.Title Where Card.Series = '" + VpEdition + "';"
+                        VmDBReader = VmDBCommand.ExecuteReader
+                        With VmDBReader
+                            While .Read
+                                For VpI As Integer = 0 To 10
+                                    If .GetBoolean(VpI) Then
+                                        VpOn(VpI) += 1
+                                    Else
+                                        VpOff(VpI) += 1
+                                    End If
+                                Next VpI
+                                Application.DoEvents
+                            End While
+                            .Close
+                        End With
+                        'S'il y a plus de cartes autorisées que de cartes interdites pour un format donné, on va considérer que la carte pour laquelle il manque l'information sera autorisée
+                        VpT1 = ( VpOn(0) > VpOff(0) )
+                        VpT1r = ( VpOn(1) > VpOff(1) )
+                        VpT15 = ( VpOn(2) > VpOff(2) )
+                        VpM = ( VpOn(3) > VpOff(3) )
+                        VpPioneer = ( VpOn(4) > VpOff(4) )
+                        VpExplorer = ( VpOn(5) > VpOff(5) )
+                        VpT2 = ( VpOn(6) > VpOff(6) )
+                        Vp1V1 = ( VpOn(7) > VpOff(7) )
+                        VpMulti = ( VpOn(8) > VpOff(8) )
+                        VpHistoric = ( VpOn(9) > VpOff(9) )
+                        VpAlchemy = ( VpOn(10) > VpOff(10) )
+                        'Construction de la chaîne de description
+                        VpStr = VpTitle + "#"
+                        If VpT1r Then
+                            VpStr += "t1r#"
+                        ElseIf VpT1 Then
+                            VpStr += "t1#"
+                        Else
+                            VpStr += "t1no#"
+                        End If
+                        VpStr += If(VpT15, "t15#", "t15no#")
+                        VpStr += If(VpM, "tm#", "tmno#")
+                        VpStr += If(VpPioneer, "tp#", "tpno#")
+                        VpStr += If(VpExplorer, "explorer#", "explorerno#")
+                        VpStr += If(VpT2, "t2#", "t2no#")
+                        VpStr += If(Vp1V1, "1vs1#", "1vs1no#")
+                        VpStr += If(VpMulti, "multi#", "multino#")
+                        VpStr += If(VpHistoric, "th#", "thno#")
+                        VpStr += If(VpAlchemy, "alchemy", "alchemyno")
+                        VpOut.WriteLine(VpStr)
+                    End If
+                End While
+                VpOut.Flush
+                VpOut.Close
+                VpIn.Close
+                Call Me.AddToLog("La déduction des autorisations en tournois est terminée.", eLogType.Information, , True)
             End If
         End If
     End Sub
@@ -4224,6 +4325,11 @@ Public Partial Class MainForm
     End Sub
     Sub MnuCardsAutMergeClick(sender As Object, e As EventArgs)
         Call Me.MergeAutorisations
+    End Sub
+    Sub MnuCardsAutGuessClick(sender As Object, e As EventArgs)
+        If Not VmDB Is Nothing Then
+            Call Me.GuessAutorisations
+        End If
     End Sub
     Sub WbMVDocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
         VmIsComplete = True

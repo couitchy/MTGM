@@ -272,7 +272,7 @@ Public Partial Class frmUpdateContent
     'Regarde s'il existe des mises à jour disponibles pour :
     '- les prix (bdd)
     '- les images (taille fichier)
-    '- les autorisations de tournoi (.xml)
+    '- les autorisations en tournois (.xml)
     '- les modèles et historiques (.xml)
     '- le texte des cartes en vf (.xml)
     '- les régles spécifiques des cartes en vo (.xml)

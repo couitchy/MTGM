@@ -2185,7 +2185,7 @@ Public Partial Class MainForm
     End Sub
     Private Sub LoadAutorisations(VpCard As String)
     '-----------------------------------------------------------------------
-    'Affiche les autorisations de tournois pour la carte passée en paramètre
+    'Affiche les autorisations en tournois pour la carte passée en paramètre
     '-----------------------------------------------------------------------
         If VpCard = "" Or Me.IsMainReaderBusy Then
             'Autorisations vierges

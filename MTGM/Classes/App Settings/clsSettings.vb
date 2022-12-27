@@ -290,7 +290,7 @@ Public Class clsSettings
             VmPicturesSource = VpPicturesSource
         End Set
     End Property
-    <Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des autorisations de tournoi")> _
+    <Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des autorisations en tournois")> _
     Public Property LastUpdateAut As String
         Get
             Return VmLastUpdateAut
