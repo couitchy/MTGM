@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 39614
+    Public Const CgCodeLines As Integer             = 39657
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -280,29 +280,30 @@ Public Module mdlConstGlob
     End Enum
     Public Enum eDBVersion
         Unknown = 0 'version inconnue (base corrompue)
-        BDD_v1      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
-        BDD_v2      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
-        BDD_v3      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
-        BDD_v4      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
-        BDD_v5      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
-        BDD_v6      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
-        BDD_v7      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
-        BDD_v8      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
-        BDD_v9      'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
-        BDD_v10     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
-        BDD_v11     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
-        BDD_v12     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
-        BDD_v13     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
-        BDD_v14     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
-        BDD_v15     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
-        BDD_v16     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi
-        BDD_v17     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks
-        BDD_v18     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId
-        BDD_v19     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO
-        BDD_v20     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId
-        BDD_v21     'manque tournois Explorer&Alchemy, tournois Pioneer&Historic
-        BDD_v22     'manque tournois Explorer&Alchemy
-        BDD_v23     'à jour
+        BDD_v1      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et MyScores (+ éventuellement CardPictures, mais non géré, réinstallation par l'utilisateur nécessaire)
+        BDD_v2      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID et les versions dans MyScores
+        BDD_v3      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses, MyGamesID
+        BDD_v4      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR, jeux indépendants dans MyScores, SpecialUse et MySpecialUses
+        BDD_v5      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations, TextesFR
+        BDD_v6      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix, Autorisations
+        BDD_v7      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires, manque Historique prix
+        BDD_v8      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques, manque Adversaires
+        BDD_v9      'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M, ajustement types numériques
+        BDD_v10     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble, tournois M
+        BDD_v11     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes, CardDouble
+        BDD_v12     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID, SubTypes
+        BDD_v13     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve, MyGamesID
+        BDD_v14     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions, infos Réserve
+        BDD_v15     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi, codes éditions
+        BDD_v16     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks, tournois 1V1&Multi
+        BDD_v17     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId, dossiers decks
+        BDD_v18     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO, MultiverseId
+        BDD_v19     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId, tournois MTGO
+        BDD_v20     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic, UrzaId
+        BDD_v21     'manque date confrontation dans MyScores, tournois Explorer&Alchemy, tournois Pioneer&Historic
+        BDD_v22     'manque date confrontation dans MyScores, tournois Explorer&Alchemy
+        BDD_v23     'manque date confrontation dans MyScores
+        BDD_v24     'à jour
     End Enum
     Public Enum eDBProvider
         Jet = 0

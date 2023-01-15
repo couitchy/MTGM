@@ -528,9 +528,9 @@ Public Partial Class frmPerfs
     '-----------------------------------
     Dim VpStr As String
         VgDBCommand.CommandText = "Select Count(*) From MyScores;"
-        VpStr = VgDBCommand.ExecuteScalar.ToString + " parties enregistrées (dont "
+        VpStr = "| " + VgDBCommand.ExecuteScalar.ToString + " parties ("
         VgDBCommand.CommandText = "Select Count(*) From MyScores Where JeuLocal Not In (Select GameName From MyGamesID) Or JeuAdverse Not In (Select GameName From MyGamesID);"
-        Me.lblAllPlayed.Text = VpStr + VgDBCommand.ExecuteScalar.ToString + " indépendantes)."
+        Me.lblAllPlayed.Text = VpStr + VgDBCommand.ExecuteScalar.ToString + " indépendantes)"
     End Sub
     #End Region
     #Region "Evènements"
@@ -542,13 +542,13 @@ Public Partial Class frmPerfs
             Me.cboJeuAdv.Items.Add(sender.Text)
         End If
     End Sub
-    Private Sub AddResult(VpJeuLocal As String, VpJeuAdv As String, VpVictoire As Boolean)
+    Private Sub AddResult(VpJeuLocal As String, VpJeuAdv As String, VpDate As Date, VpVictoire As Boolean)
         If VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) Then Exit Sub
         If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
             If Me.dropGamesVersions.Checked Then
-                VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboLocalVersion) + ", '" + VpJeuAdv.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboAdvVersion) + ", " + If(VpVictoire, "True", "False") + ");"
+                VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, DuelDate, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboLocalVersion) + ", '" + VpJeuAdv.Replace("'", "''") + "', " + Me.ValidateVersion(Me.cboAdvVersion) + ", ', Null, '" + VpDate.ToShortDateString + "', " + If(VpVictoire, "True", "False") + ");"
             Else
-                VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', Null, '" + VpJeuAdv.Replace("'", "''") + "', Null, " + If(VpVictoire, "True", "False") + ");"
+                VgDBCommand.CommandText = "Insert Into MyScores(JeuLocal, JeuLocalVersion, JeuAdverse, JeuAdverseVersion, DuelDate, Victoire) Values ('" + VpJeuLocal.Replace("'", "''") + "', Null, '" + VpJeuAdv.Replace("'", "''") + "', Null, '" + VpDate.ToShortDateString + "', " + If(VpVictoire, "True", "False") + ");"
             End If
             VgDBCommand.ExecuteNonQuery
             Call Me.UpdateGraph
@@ -561,9 +561,9 @@ Public Partial Class frmPerfs
         If VpJeuLocal.StartsWith(mdlConstGlob.CgPerfsTotal) Or VpJeuAdv.StartsWith(mdlConstGlob.CgPerfsTotal) Then Exit Sub
         If Me.cboJeuLocal.Items.Contains(VpJeuLocal) And Me.cboJeuAdv.Items.Contains(VpJeuAdv) Then
             If Me.dropGamesVersions.Checked Then
-                VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuLocalVersion = " + Me.ValidateVersion(Me.cboLocalVersion) + " And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And JeuAdverseVersion = " + Me.ValidateVersion(Me.cboAdvVersion) + " And Victoire = " + If(VpVictoire, "True", "False") + ");"
+                VgDBCommand.CommandText = "Delete * From (Select Top 1 * From (Select * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuLocalVersion = " + Me.ValidateVersion(Me.cboLocalVersion) + " And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And JeuAdverseVersion = " + Me.ValidateVersion(Me.cboAdvVersion) + " And Victoire = " + If(VpVictoire, "True", "False") + " Order By DuelDate Desc));"
             Else
-                VgDBCommand.CommandText = "Delete * From (Select Top 1 * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And Victoire = " + If(VpVictoire, "True", "False") + ");"
+                VgDBCommand.CommandText = "Delete * From (Select Top 1 * From (Select * From MyScores Where JeuLocal = '" + VpJeuLocal.Replace("'", "''") + "' And JeuAdverse = '" + VpJeuAdv.Replace("'", "''") + "' And Victoire = " + If(VpVictoire, "True", "False") + " Order By DuelDate Desc));"
             End If
             Try
                 VgDBCommand.ExecuteNonQuery
@@ -588,10 +588,10 @@ Public Partial Class frmPerfs
         End If
     End Sub
     Sub BtVicOkActivate(ByVal sender As Object, ByVal e As EventArgs)
-        Call Me.AddResult(Me.cboJeuLocal.ComboBox.Text, Me.cboJeuAdv.ComboBox.Text, True)
+        Call Me.AddResult(Me.cboJeuLocal.ComboBox.Text, Me.cboJeuAdv.ComboBox.Text, Me.calGames.Value, True)
     End Sub
     Sub BtDefOkActivate(ByVal sender As Object, ByVal e As EventArgs)
-        Call Me.AddResult(Me.cboJeuLocal.ComboBox.Text, Me.cboJeuAdv.ComboBox.Text, False)
+        Call Me.AddResult(Me.cboJeuLocal.ComboBox.Text, Me.cboJeuAdv.ComboBox.Text, Me.calGames.Value, False)
     End Sub
     Sub MySelectedIndexChanged(VpCbo1 As TD.SandBar.ComboBoxItem, VpCbo2 As TD.SandBar.ComboBoxItem)
     Dim VpPickDate As New frmCalendar
@@ -650,9 +650,12 @@ Public Partial Class frmPerfs
     Sub FrmPerfsLoad(ByVal sender As Object, ByVal e As EventArgs)
         Call Me.GetAllPlayed
         'Astuce horrible pour contourner un bug de mise à l'échelle automatique en fonction de la densité de pixels
-        Me.Width = 448 * Me.CreateGraphics().DpiX / 96
+        Me.Width = 461 * Me.CreateGraphics().DpiX / 96
         Me.cboJeuAdv.MinimumControlWidth = 130 * Me.CreateGraphics().DpiX / 96
         Me.cboJeuLocal.MinimumControlWidth = 130 * Me.CreateGraphics().DpiX / 96
+    End Sub
+    Sub FrmPerfsResize(sender As Object, e As EventArgs)
+        Me.calGames.Top = Me.strStatus.Top + 3
     End Sub
     Sub BtEfficiencyActivate(ByVal sender As Object, ByVal e As EventArgs)
         If mdlToolbox.ShowQuestion("Générer un rapport complet sous Excel ?" + vbCrLf + "Ceci peut prendre plusieurs secondes...")= System.Windows.Forms.DialogResult.Yes Then

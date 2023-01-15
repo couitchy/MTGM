@@ -57,6 +57,9 @@ Partial Class frmPerfs
         Me.dropAddGame = New System.Windows.Forms.ToolStripMenuItem
         Me.dropAddGameOther = New System.Windows.Forms.ToolStripMenuItem
         Me.lblAllPlayed = New System.Windows.Forms.ToolStripStatusLabel
+        Me.lblSeparator = New System.Windows.Forms.ToolStripStatusLabel
+        Me.lblDuelDate = New System.Windows.Forms.ToolStripStatusLabel
+        Me.calGames = New System.Windows.Forms.DateTimePicker
         Me.pnlGraph.SuspendLayout
         Me.cmnuChart.SuspendLayout
         Me.cbarGraph.SuspendLayout
@@ -175,7 +178,7 @@ Partial Class frmPerfs
         '
         'strStatus
         '
-        Me.strStatus.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.dropAddGames, Me.lblAllPlayed})
+        Me.strStatus.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.dropAddGames, Me.lblAllPlayed, Me.lblSeparator, Me.lblDuelDate})
         Me.strStatus.Location = New System.Drawing.Point(0, 253)
         Me.strStatus.Name = "strStatus"
         Me.strStatus.Size = New System.Drawing.Size(448, 22)
@@ -223,11 +226,32 @@ Partial Class frmPerfs
         Me.lblAllPlayed.Name = "lblAllPlayed"
         Me.lblAllPlayed.Size = New System.Drawing.Size(0, 17)
         '
+        'lblSeparator
+        '
+        Me.lblSeparator.Name = "lblSeparator"
+        Me.lblSeparator.Size = New System.Drawing.Size(10, 17)
+        Me.lblSeparator.Text = "|"
+        '
+        'lblDuelDate
+        '
+        Me.lblDuelDate.Name = "lblDuelDate"
+        Me.lblDuelDate.Size = New System.Drawing.Size(68, 17)
+        Me.lblDuelDate.Text = "Date duels :"
+        '
+        'calGames
+        '
+        Me.calGames.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.calGames.Location = New System.Drawing.Point(344, 256)
+        Me.calGames.Name = "calGames"
+        Me.calGames.Size = New System.Drawing.Size(100, 20)
+        Me.calGames.TabIndex = 4
+        '
         'frmPerfs
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(448, 275)
+        Me.ClientSize = New System.Drawing.Size(461, 275)
+        Me.Controls.Add(Me.calGames)
         Me.Controls.Add(Me.strStatus)
         Me.Controls.Add(Me.cbarGraph)
         Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
@@ -236,6 +260,7 @@ Partial Class frmPerfs
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Victoires & Défaites"
         AddHandler Load, AddressOf Me.FrmPerfsLoad
+        AddHandler Resize, AddressOf Me.FrmPerfsResize
         Me.pnlGraph.ResumeLayout(false)
         Me.cmnuChart.ResumeLayout(false)
         Me.cbarGraph.ResumeLayout(false)
@@ -244,6 +269,9 @@ Partial Class frmPerfs
         Me.ResumeLayout(false)
         Me.PerformLayout
     End Sub
+    Private calGames As System.Windows.Forms.DateTimePicker
+    Private lblDuelDate As System.Windows.Forms.ToolStripStatusLabel
+    Private lblSeparator As System.Windows.Forms.ToolStripStatusLabel
     Private dropAddGame As System.Windows.Forms.ToolStripMenuItem
     Private dropAddGameOther As System.Windows.Forms.ToolStripMenuItem
     Private lblAllPlayed As System.Windows.Forms.ToolStripStatusLabel

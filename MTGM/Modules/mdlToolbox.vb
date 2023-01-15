@@ -143,8 +143,14 @@ Public Module mdlToolbox
                                                                     'Si on est ici, BDD version 22
                                                                     VpDBVersion = eDBVersion.BDD_v22
                                                                 Else
-                                                                    'Si on est ici, BDD version 23
-                                                                    VpDBVersion = eDBVersion.BDD_v23
+                                                                    VpSchemaTable = VgDB.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, New Object() {Nothing, Nothing, "MyScores", Nothing})
+                                                                    If VpSchemaTable.Rows.Count <> 6 Then
+                                                                        'Si on est ici, BDD version 23
+                                                                        VpDBVersion = eDBVersion.BDD_v23
+                                                                    Else
+                                                                        'Si on est ici, BDD version 24
+                                                                        VpDBVersion = eDBVersion.BDD_v24
+                                                                    End If
                                                                 End If
                                                             End If
                                                         End If
@@ -166,10 +172,10 @@ Public Module mdlToolbox
         'Actions à effectuer en conséquence
         If VpDBVersion = eDBVersion.Unknown Then        'Version inconnue
             Return False
-        ElseIf VpDBVersion = eDBVersion.BDD_v23 Then    'Dernière version
+        ElseIf VpDBVersion = eDBVersion.BDD_v24 Then    'Dernière version
             Return True
         Else                                            'Versions intermédiaires
-            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v23)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
+            If ShowQuestion("La base de données (v" + CInt(VpDBVersion).ToString + ") doit être mise à jour pour devenir compatible avec la nouvelle version du logiciel (v24)..." + vbCrlf + "Continuer ?") = DialogResult.Yes Then
                 Try
                     'Passage version 1 à 2
                     If CInt(VpDBVersion) < 2 Then
@@ -380,6 +386,11 @@ Public Module mdlToolbox
                         VgDBCommand.CommandText = "Update Autorisations Set Arenaoff = 1;"
                         VgDBCommand.ExecuteNonQuery
                         Call ShowInformation("MTGM fête ses 15 ans !!")
+                    End If
+                    'Passage version 23 à 24
+                    If CInt(VpDBVersion) < 24 Then
+                        VgDBCommand.CommandText = "Alter Table MyScores Add DuelDate Date;"
+                        VgDBCommand.ExecuteNonQuery
                     End If
                 Catch
                     Call ShowWarning("Un problème est survenu pendant la mise à jour de la base de données...")
