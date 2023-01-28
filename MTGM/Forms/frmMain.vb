@@ -543,6 +543,29 @@ Public Partial Class MainForm
             End If
         Next VpSerie
     End Sub
+    Private Sub FixSubTypesDuplicates
+    '-------------------------------------
+    'Suppression des sous-types en doublon
+    '-------------------------------------
+    Dim VpSubTypes As New Dictionary(Of String, String)
+        'Récupère uniquement les enregistrements distincts
+        VgDBCommand.CommandText = "Select Distinct SubTypeVO, SubTypeVF From SubTypes;"
+        VgDBReader = VgDBCommand.ExecuteReader
+        With VgDBReader
+            While .Read
+                VpSubTypes.Add(.GetString(0), .GetString(1))
+            End While
+            .Close
+        End With
+        'Nettoyage
+        VgDBCommand.CommandText = "Delete * From SubTypes;"
+        VgDBCommand.ExecuteNonQuery
+        'Réinsertion
+        For Each VpSubType As String In VpSubTypes.Keys
+            VgDBCommand.CommandText = "Insert Into SubTypes(SubTypeVO, SubTypeVF) Values ('" + VpSubType.Replace("'", "''") + "', '" + VpSubTypes.Item(VpSubType).Replace("'", "''") + "');"
+            VgDBCommand.ExecuteNonQuery
+        Next VpSubType
+    End Sub
     Private Sub FixSubTypesDB(VpFull As Boolean)
     '--------------------------------------------
     'Correction des sous-types et des super-types
@@ -3432,8 +3455,12 @@ Public Partial Class MainForm
     Sub MnuFixSubTypesActivate(ByVal sender As Object, ByVal e As EventArgs)
     Dim VpFull As Boolean
         If mdlToolbox.DBOK Then
-            VpFull = ( MessageBox.Show("Corriger également les super-types (cette opération peut prendre beaucoup de temps et utiliser jusqu'à 1 Go de RAM) ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes )
-            Call Me.FixSubTypesDB(VpFull)
+            If MessageBox.Show("Supprimer simplement les doublons ?" + vbCrLf + "Choisir 'Non' pour la correction avancée.", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                Call Me.FixSubTypesDuplicates
+            Else
+                VpFull = ( MessageBox.Show("Corriger également les super-types (cette opération peut prendre beaucoup de temps et utiliser jusqu'à 1 Go de RAM) ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes )
+                Call Me.FixSubTypesDB(VpFull)
+            End If
             Call mdlToolbox.ShowInformation("Terminé !")
         End If
     End Sub
@@ -3576,7 +3603,7 @@ Public Partial Class MainForm
         End If
     End Sub
     Sub MnuClipTitleClick(sender As Object, e As EventArgs)
-        Clipboard.SetDataObject(Me.tvwExplore.SelectedNode.Text)
+        Clipboard.SetDataObject(Me.tvwExplore.SelectedNode.Text, True)
     End Sub
     Sub MnuMoveACardActivate(ByVal sender As Object, ByVal e As EventArgs)
         Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Move, sender.Text)

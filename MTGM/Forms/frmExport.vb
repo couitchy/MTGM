@@ -724,7 +724,7 @@ Public Partial Class frmExport
                         End If
                     Next VpSource
                     If VmFormat = mdlConstGlob.eFormat.MTGArena AndAlso Me.lstchkSources.CheckedItems.Count = 1 AndAlso File.Exists(VpPath) Then
-                        Clipboard.SetDataObject((New StreamReader(VpPath)).ReadToEnd)
+                        Clipboard.SetDataObject((New StreamReader(VpPath)).ReadToEnd, True)
                         VpInfo += "La liste a été copiée dans le presse-papier." + vbCrLf + vbCrLf
                     End If
                 End If
