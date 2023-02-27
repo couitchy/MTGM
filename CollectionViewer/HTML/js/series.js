@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BE","BF","BG","BK","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD",,"DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","MM","MP","MR","MS","MT","MU","MV","MW","MX","MY","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TO","TP","TS","TX","UB","UC","UD","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BB","BC","BD","BE","BF","BG","BK","BO","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","MM","MP","MR","MS","MT","MU","MV","MW","MX","MY","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PN","PO","PQ","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SO","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TO","TP","TS","TX","UB","UC","UD","UF","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WD","WE","WL","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -57,7 +57,10 @@ series['IW'] = new Array('VOW','Innistrad: Crimson Vow','Innistrad : Noce Écarl
 series['ND'] = new Array('NEO','Kamigawa: Neon Dynasty','Kamigawa : La Dynastie Néon','302','2022');
 series['SA'] = new Array('SNC','Streets of New Capenna','Les rues de la Nouvelle-Capenna','281','2022');
 series['DN'] = new Array('DMU','Dominaria United','Dominaria Uni','281','2022');
-var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN');
+series['BO'] = new Array('BRO','The Brothers\' War','La Guerre Fratricide','287','2022');
+series['DE'] = new Array('DMR','Dominaria Remastered','','261','2023');
+series['PO'] = new Array('ONE','Phyrexia: All Will Be One','Tous Phyrexians','271','2023');
+var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN','BO','DE','PO');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
 series['AC'] = new Array('ALL','Alliances','Alliances','199','1996');
@@ -314,7 +317,9 @@ series['NB'] = new Array('NEC','Kamigawa: Neon Dynasty Commander','Commander : K
 series['SB'] = new Array('NCC','Streets of New Capenna Commander','Commander : Les rues de la Nouvelle-Capenna','5x100','2022');
 series['BF'] = new Array('CLB','Commander Legends: Battle for Baldur\'s Gate','Commander Légendes : La Bataille de la Porte de Baldur','4x100','2022');
 series['DF'] = new Array('DMC','Dominaria United Commander','Commander : Dominaria Uni','2x100','2022');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF');
+series['BC'] = new Array('BRC','The Brothers\' War Commander','Commander : La Guerre Fratricide','2x100','2022');
+series['PQ'] = new Array('ONC','Phyrexia: All Will Be One Commander','Commander : Tous Phyrexians','2x100','2023');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF','BC','PQ');
 
 // Introductory Sets
 series['IS'] = new Array('ITP','Introductory Two-Player Set','','4x30','1996');
@@ -334,7 +339,8 @@ series['UG'] = new Array('UGL','Unglued','','88','1998');
 series['UH'] = new Array('UNH','Unhinged','','141','2004');
 series['UB'] = new Array('UST','Unstable','','216','2017');
 series['UC'] = new Array('UND','Unsanctioned','','96','2020');
-var nonlegal = new Array('UG','UH','UB','UC');
+series['UF'] = new Array('UNF','Unfinity','','281','2022');
+var nonlegal = new Array('UG','UH','UB','UC','UF');
 
 // Online Exclusive Sets
 series['ME'] = new Array('MED','Masters Edition','','195','2007');
@@ -395,4 +401,7 @@ series['VP'] = new Array('PVO','Innistrad: Crimson Vow Promos','','100','2021');
 series['CI'] = new Array('CC2','Commander Collection: Black','','8','2021');
 series['NC'] = new Array('PNE','Kamigawa: Neon Dynasty Promos','','100','2022');
 series['SE'] = new Array('PSN','Streets of New Capenna Promos','','80','2022');
-var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE');
+series['BD'] = new Array('PBR','The Brothers\' War Promos','','90','2022');
+series['PN'] = new Array('PON','Phyrexia: All Will Be One Promos','','80','2023');
+series['SO'] = new Array('SLP','Secret Lair Showdown','','6','2023');
+var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE','BD','PN','SO');

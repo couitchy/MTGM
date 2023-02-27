@@ -2136,6 +2136,24 @@ Public Partial Class MainForm
                 Return "dominariaunited#" + VpStr
             Case "DF"
                 Return "dominariaunitedcommander#" + VpStr
+            Case "SO"
+                Return "secretlairshowdown#" + VpStr
+            Case "UF"
+                Return "unfinity#" + VpStr
+            Case "BO"
+                Return "thebrotherswar#" + VpStr
+            Case "BC"
+                Return "thebrotherswarcommander#" + VpStr
+            Case "BD"
+                Return "thebrotherswarpromos#" + VpStr
+            Case "DE"
+                Return "dominariaremastered#" + VpStr
+            Case "PO"
+                Return "phyrexiaallwillbeone#" + VpStr
+            Case "PQ"
+                Return "phyrexiaallwillbeonecommander#" + VpStr
+            Case "PN"
+                Return "phyrexiaallwillbeonepromos#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2738,6 +2756,24 @@ Public Partial Class MainForm
                 Return "DN"
             Case "dominariaunitedcommander"
                 Return "DF"
+            Case "secretlairshowdown"
+                Return "SO"
+            Case "unfinity"
+                Return "UF"
+            Case "thebrotherswar"
+                Return "BO"
+            Case "thebrotherswarcommander"
+                Return "BC"
+            Case "thebrotherswarpromos"
+                Return "BD"
+            Case "dominariaremastered"
+                Return "DE"
+            Case "phyrexiaallwillbeone"
+                Return "PO"
+            Case "phyrexiaallwillbeonecommander"
+                Return "PQ"
+            Case "phyrexiaallwillbeonepromos"
+                Return "PN"
             Case Else
                 Return ""
         End Select
