@@ -669,13 +669,15 @@ Public Partial Class MainForm
                 VpMissingPicts = New StreamReader(Me.dlgOpen4.FileName)
                 While Not VpMissingPicts.EndOfStream
                     Application.DoEvents
-                    VpTitle = VpMissingPicts.ReadLine
+                    VpTitle = VpMissingPicts.ReadLine.Replace("""", "")
                     VpMissing = VpTitle.Replace(" // ", "")
                     If VpTagger.ContainsKey(VpMissing) Then
                         VpTagger.Item(VpMissing) = True
                         If VpTitle <> VpMissing Then
                             VpRenamer.Add(VpMissing, VpTitle.Replace("//", ""))
                         End If
+                    Else
+                        Call Me.AddToLog("Fichier non trouvé : " + VpMissing + ".jpg", eLogType.Warning)
                     End If
                 End While
                 For Each VpChecker As String In VpTagger.Keys
