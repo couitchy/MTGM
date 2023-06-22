@@ -664,6 +664,8 @@ Public Module mdlToolbox
                         Return "Ephémères"
                     Case "A"
                         Return "Artefacts"
+                    Case "B"
+                        Return "Batailles"
                     Case "E"
                         Return "Auras"
                     Case "L"

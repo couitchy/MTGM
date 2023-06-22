@@ -2542,6 +2542,8 @@ Public Partial Class MainForm
                 Return 52
             Case "W"
                 Return 0
+            Case "B"
+                Return 0
             Case "K"
                 Return 0
             Case Else

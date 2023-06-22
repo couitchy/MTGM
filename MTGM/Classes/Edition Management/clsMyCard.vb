@@ -45,7 +45,7 @@
         Return mdlToolbox.MyCost(VmCost).ToString
     End Function
     Public Function MyType As String
-        '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy, Z = scheme, W = dungeon)
+        '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy, Z = scheme, W = dungeon, B = battle)
         If VmType.Contains("Artifact") And Not VmType.Contains("Token") Then
             Return "A"
         ElseIf VmType.Contains("Instant") Then
@@ -82,6 +82,8 @@
             Return "Z"
         ElseIf VmType.Contains("Dungeon") Then
             Return "W"
+        ElseIf VmType.Contains("Battle") Then
+            Return "B"
         Else
             Return ""
         End If

@@ -36,6 +36,7 @@ Public Class clsFullInfos
             Public colorIndicator As List(Of String)
             Public colors As List(Of String)
             Public convertedManaCost As Single
+            Public defense As Object
             Public edhrecRank As Integer
             Public faceConvertedManaCost As Single
             Public faceManaValue As Single

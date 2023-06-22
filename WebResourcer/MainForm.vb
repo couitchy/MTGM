@@ -2156,6 +2156,20 @@ Public Partial Class MainForm
                 Return "phyrexiaallwillbeonecommander#" + VpStr
             Case "PN"
                 Return "phyrexiaallwillbeonepromos#" + VpStr
+            Case "FC"
+                Return "fromcutetobrute#" + VpStr
+            Case "MO"
+                Return "marchofthemachine#" + VpStr
+            Case "MN"
+                Return "marchofthemachinecommander#" + VpStr
+            Case "ML"
+                Return "marchofthemachinepromos#" + VpStr
+            Case "MQ"
+                Return "marchofthemachinetheaftermath#" + VpStr
+            Case "MZ"
+                Return "multiverselegends#" + VpStr
+            Case "BA"
+                Return "thebrotherswarretroartifacts#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2776,6 +2790,20 @@ Public Partial Class MainForm
                 Return "PQ"
             Case "phyrexiaallwillbeonepromos"
                 Return "PN"
+            Case "fromcutetobrute"
+                Return "FC"
+            Case "marchofthemachine"
+                Return "MO"
+            Case "marchofthemachinecommander"
+                Return "MN"
+            Case "marchofthemachinepromos"
+                Return "ML"
+            Case "marchofthemachinetheaftermath"
+                Return "MQ"
+            Case "multiverselegends"
+                Return "MZ"
+            Case "thebrotherswarretroartifacts"
+                Return "BA"
             Case Else
                 Return ""
         End Select
@@ -3143,6 +3171,8 @@ Public Partial Class MainForm
                             VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
                         ElseIf .types.Contains("Planeswalker") AndAlso .loyalty IsNot Nothing Then
                             VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
+                        ElseIf .types.Contains("Battle") AndAlso .defense IsNot Nothing Then
+                            VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .defense.ToString +")")
                         Else
                             VpOut.WriteLine("Pow/Tgh: " + vbTab)
                         End If
@@ -3182,6 +3212,8 @@ Public Partial Class MainForm
                     VpOut.WriteLine("Pow/Tgh: " + vbTab + "(" + .power + "/" + .toughness +")")
                 ElseIf .types.Contains("Planeswalker") Then
                     VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .loyalty.ToString +")")
+                ElseIf .types.Contains("Battle") AndAlso .defense IsNot Nothing Then
+                    VpOut.WriteLine("Pow/Tgh: " + vbTab + "(0/" + .defense.ToString +")")
                 Else
                     VpOut.WriteLine("Pow/Tgh: " + vbTab)
                 End If
@@ -4652,6 +4684,7 @@ Public Partial Class MainForm
                 Public colorIndicator As List(Of String)
                 Public colors As List(Of String)
                 Public convertedManaCost As Single
+                Public defense As Object
                 Public edhrecRank As Integer
                 Public faceConvertedManaCost As Single
                 Public faceManaValue As Single
@@ -4848,7 +4881,7 @@ Public Partial Class MainForm
             Return Me.MyCost(VmCost).ToString
         End Function
         Public Function MyType As String
-            '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy, Z = scheme, W = dungeon)
+            '(C = creature, I = instant, A = artefact, E = enchant-creature, K = token, L = land, N = interruption, S = sorcery, T = enchantment, U = abilited creature, P = planeswalker, Q = plane, H = phenomenon, Y = conspiracy, Z = scheme, W = dungeon, B = battle)
             If VmType.Contains("Artifact") Then
                 Return "A"
             ElseIf VmType.Contains("Instant") Then
@@ -4885,6 +4918,8 @@ Public Partial Class MainForm
                 Return "Z"
             ElseIf VmType.Contains("Dungeon") Then
                 Return "W"
+            ElseIf VmType.Contains("Battle") Then
+                Return "B"
             Else
                 Return ""
             End If
