@@ -103,7 +103,7 @@ Partial Class frmAbout
         Me.label1.Name = "label1"
         Me.label1.Size = New System.Drawing.Size(336, 22)
         Me.label1.TabIndex = 13
-        Me.label1.Text = "Copyright 2008-2023 Couitchy Corporation. Tous droits réservés."
+        Me.label1.Text = "Copyright 2008-2024 Couitchy Corporation. Tous droits réservés."
         Me.label1.UseCompatibleTextRendering = true
         '
         'button1
