@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 39764
+    Public Const CgCodeLines As Integer             = 39869
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -91,7 +91,7 @@ Public Module mdlConstGlob
     Public Const CgURL9 As String                   = "/Updates/LastPrices.txt"
     Public Const CgURL10 As String                  = "/Images%20des%20cartes/"
     Public Const CgURL11 As String                  = "/Updates/TextesVF.txt"
-    Public Const CgURL12 As String                  = "/Updates/Series r22.txt"
+    Public Const CgURL12 As String                  = "/Updates/Series r23.txt"
     Public Const CgURL13 As String                  = "/Updates/MTGM.pdf"
     Public Const CgURL14 As String                  = "/Updates/MD_Trad.log"
     Public Const CgURL15 As String                  = "/Updates/Tournois r24.txt"

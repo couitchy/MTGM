@@ -205,7 +205,7 @@ Public Partial Class frmNewEdition
     '-------------------------------------------------------------------------------------------------------------------------------------------------------------
     Dim VpFile As StreamReader
     Dim VpLine As String
-    Dim VpFLine As String
+    Dim VpCols() As String
     Dim VpComplement As List(Of String)
     Dim VpMyCard As clsMyCard
     Dim VpSerieCD As String
@@ -242,19 +242,29 @@ Public Partial Class frmNewEdition
         'Parcours de la checklist
         Do While Not VpFile.EndOfStream
             VpLine = VpFile.ReadLine.Trim
-            VpFLine = VpLine.Replace(vbTab, " ")
-            'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
-            If VpFLine.Contains(" " + VpCarac(0) + " ") Then
-                VpIndex = VpLine.IndexOf(VpCarac(0))
-                VpLen = VpCarac(0).Length
-                VpFound = True
-            '(évite les erreurs dues au caractère apostrophe dans des charsets exotiques !)
-            ElseIf VpFLine.Contains(" " + VpCarac(0).Replace("'", "") + " ") Then
-                VpIndex = VpLine.IndexOf(VpCarac(0).Replace("'", ""))
-                VpLen = VpCarac(0).Length - 1
-                VpFound = True
+            If VpLine.Contains(vbTab) Then
+                VpCols = VpLine.Split(vbTab)
+                If VpCols(1).Trim = VpCarac(0) Then
+                    VpIndex = VpLine.IndexOf(VpCarac(0))
+                    VpLen = VpCarac(0).Length
+                    VpFound = True
+                Else
+                    VpFound = False
+                End If
             Else
-                VpFound = False
+                'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
+                If VpLine.Contains(" " + VpCarac(0) + " ") Then
+                    VpIndex = VpLine.IndexOf(VpCarac(0))
+                    VpLen = VpCarac(0).Length
+                    VpFound = True
+                '(évite les erreurs dues au caractère apostrophe dans des charsets exotiques !)
+                ElseIf VpLine.Contains(" " + VpCarac(0).Replace("'", "") + " ") Then
+                    VpIndex = VpLine.IndexOf(VpCarac(0).Replace("'", ""))
+                    VpLen = VpCarac(0).Length - 1
+                    VpFound = True
+                Else
+                    VpFound = False
+                End If
             End If
             If VpFound Then
                 'à la recherche du nom de l'auteur, de la couleur et de la rareté de la carte (attention, remplacement des tabulations)

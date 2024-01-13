@@ -673,7 +673,7 @@ Public Partial Class MainForm
                     VpMissing = VpTitle.Replace(" // ", "")
                     If VpTagger.ContainsKey(VpMissing) Then
                         VpTagger.Item(VpMissing) = True
-                        If VpTitle <> VpMissing Then
+                        If VpTitle <> VpMissing And Not VpRenamer.ContainsKey(VpMissing) Then
                             VpRenamer.Add(VpMissing, VpTitle.Replace("//", ""))
                         End If
                     Else
@@ -935,6 +935,7 @@ Public Partial Class MainForm
                 VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=1&amp;type=symbol"" alt=""1"" align=""absbottom"" />", "{1}")
                 VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=0&amp;type=symbol"" alt=""0"" align=""absbottom"" />", "{0}")
                 VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol"" alt=""Tap"" align=""absbottom"" />", "{T}")
+                VpStr = VpStr.Replace("<img src=""/Handlers/Image.ashx?size=small&amp;name=ticket&amp;type=symbol"" alt=""Ticket"" align=""absbottom"" />", "")
                 VpStr = VpStr.Replace("<tr class=""post oddItem"" style=""background-color: rgba(255,255,366, 0.08);"">", "")
                 VpOut.Write(VpStr)
                 VpOut.Flush
@@ -2172,6 +2173,34 @@ Public Partial Class MainForm
                 Return "thebrotherswarretroartifacts#" + VpStr
             Case "WH"
                 Return "warhammer40,000commander#" + VpStr
+            Case "JW"
+                Return "jurassicworldcollection#" + VpStr
+            Case "SP"
+                Return "specialguests#" + VpStr
+            Case "LA"
+                Return "thelostcavernsofixalan#" + VpStr
+            Case "LB"
+                Return "thelostcavernsofixalancommander#" + VpStr
+            Case "LC"
+                Return "thelostcavernsofixalanpromos#" + VpStr
+            Case "WO"
+                Return "doctorwho#" + VpStr
+            Case "WA"
+                Return "wildsofeldraine#" + VpStr
+            Case "WB"
+                Return "wildsofeldrainecommander#" + VpStr
+            Case "WC"
+                Return "wildsofeldrainepromos#" + VpStr
+            Case "AG"
+                Return "angelstheyrejustlikeusbutcoolerandwithwings#" + VpStr
+            Case "CJ"
+                Return "commandermasters#" + VpStr
+            Case "TI"
+                Return "thelordoftheringstalesofmiddleearth#" + VpStr
+            Case "TJ"
+                Return "talesofmiddleearthcommander#" + VpStr
+            Case "TK"
+                Return "talesofmiddleearthpromos#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2808,6 +2837,34 @@ Public Partial Class MainForm
                 Return "BA"
             Case "warhammer40,000commander"
                 Return "WH"
+            Case "jurassicworldcollection"
+                Return "JW"
+            Case "specialguests"
+                Return "SP"
+            Case "thelostcavernsofixalan"
+                Return "LA"
+            Case "thelostcavernsofixalancommander"
+                Return "LB"
+            Case "thelostcavernsofixalanpromos"
+                Return "LC"
+            Case "doctorwho"
+                Return "WO"
+            Case "wildsofeldraine"
+                Return "WA"
+            Case "wildsofeldrainecommander"
+                Return "WB"
+            Case "wildsofeldrainepromos"
+                Return "WC"
+            Case "angelstheyrejustlikeusbutcoolerandwithwings"
+                Return "AG"
+            Case "commandermasters"
+                Return "CJ"
+            Case "thelordoftheringstalesofmiddleearth"
+                Return "TI"
+            Case "talesofmiddleearthcommander"
+                Return "TJ"
+            Case "talesofmiddleearthpromos"
+                Return "TK"
             Case Else
                 Return ""
         End Select
@@ -3333,10 +3390,14 @@ Public Partial Class MainForm
     'Ajoute à la base de données l'ensemble des cartes présentes dans les fichiers spécifiés
     '---------------------------------------------------------------------------------------
     Dim VpFile As StreamReader
-    Dim VpCounter As Integer = 0
+    Dim VpCounterOK As Integer = 0
+    Dim VpCounterKO As Integer = 0
     Dim VpStrs() As String
     Dim VpSet As String = ""
     Dim VpConfusion As Boolean = False
+    Dim VpMyCard As clsMyCard = Nothing
+    Dim VpAllCards As New List(Of clsMyCard)
+    Dim VpAllCardsTitle As New List(Of String)
         If Not File.Exists(VpEditionPath.Replace("#", "_spoiler_en")) Then
             Call Me.AddToLog("Le fichier spoiler n'existe pas...", eLogType.Warning)
             Return
@@ -3344,8 +3405,21 @@ Public Partial Class MainForm
         VpFile = New StreamReader(VpEditionPath.Replace("#", "_spoiler_en"), Encoding.Default)
         'Ajout des cartes
         Do While Not VpFile.EndOfStream
-            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpEditionPath, VpFile, VpSet, VpConfusion), VpSet, VpConfusion) Then
-                VpCounter = VpCounter + 1
+            If Me.AddNewCard(VpEditionPath, Me.ParseNewCard(VpEditionPath, VpFile, VpSet, VpConfusion), VpSet, VpConfusion, VpMyCard) Then
+                If Not VpAllCardsTitle.Contains(VpMyCard.Title) Then
+                    VpAllCardsTitle.Add(VpMyCard.Title)
+                    VpAllCards.Add(VpMyCard)
+                    VpCounterOK += 1
+                Else
+                    If clsMyCard.AreAlike(VpMyCard, VpAllCards.Item(VpAllCardsTitle.IndexOf(VpMyCard.Title))) Then
+                        Call Me.AddToLog("Carte en doublon " + VpMyCard.Title, eLogType.Warning)
+                    Else
+                        Call Me.AddToLog("Titre en doublon " + VpMyCard.Title, eLogType.Warning)
+                    End If
+                    VpCounterKO += 1
+                End If
+            Else
+                VpCounterKO += 1
             End If
         Loop
         VpFile.Close
@@ -3356,6 +3430,7 @@ Public Partial Class MainForm
                 VpStrs = VpFile.ReadLine.Split("#")
                 If VpStrs.Length <> 2 OrElse VpStrs(1).EndsWith(vbTab) OrElse VpStrs(1).EndsWith(" ") Then
                     Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpStrs(0) + "(_titles_)...", eLogType.Warning)
+                    VpCounterKO += 1
                 End If
                 'VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And CardFR.EncNbr >= " + VmEncNbr0.ToString + ";"
                 'VgDBCommand.ExecuteNonQuery
@@ -3369,6 +3444,7 @@ Public Partial Class MainForm
                 VpStrs = VpFile.ReadLine.Split("#")
                 If VpStrs.Length <> 2 OrElse VpStrs(1).EndsWith(vbTab) OrElse VpStrs(1).EndsWith(" ") Then
                     Call Me.AddToLog("Erreur lors de la vérification de la carte " + VpStrs(0) + "(_doubles_)...", eLogType.Warning)
+                    VpCounterKO += 1
                 End If
                 'VpEncNbrDown = mdlToolbox.GetEncNbr(VpStrs(0), VpSerieCD)
                 'VpEncNbrTop = mdlToolbox.GetEncNbr(VpStrs(1), VpSerieCD)
@@ -3381,14 +3457,16 @@ Public Partial Class MainForm
             End While
             VpFile.Close
         End If
-        Call Me.AddToLog(VpCounter.ToString + " carte(s) ont été vérifiée(s) avec succès...", eLogType.Information)
+        If VpCounterKO > 0 Then
+            Call Me.AddToLog(VpCounterKO.ToString + " carte(s) nécessite(nt) une vérification manuelle.", eLogType.Information)
+        End If
+        Call Me.AddToLog(VpCounterOK.ToString + " carte(s) ont été vérifiée(s) avec succès.", eLogType.Information)
     End Sub
-    Private Function AddNewCard(VpEditionPath As String, VpCarac() As String, VpSet As String, ByRef VpConfusion As Boolean) As Boolean
+    Private Function AddNewCard(VpEditionPath As String, VpCarac() As String, VpSet As String, ByRef VpConfusion As Boolean, ByRef VpMyCard As clsMyCard) As Boolean
     Dim VpFile As StreamReader
     Dim VpLine As String
-    Dim VpFLine As String
+    Dim VpCols() As String
     Dim VpComplement As List(Of String)
-    Dim VpMyCard As clsMyCard
     Dim VpType As String
     Dim VpFound As Boolean
     Dim VpIndex As Integer
@@ -3402,19 +3480,29 @@ Public Partial Class MainForm
             If VpLine.EndsWith(vbTab) Then
                 Call Me.AddToLog("Le fichier " + VpEditionPath + " contient des tabulations superflues...", eLogType.Warning)
             End If
-            VpFLine = VpLine.Replace(vbTab, " ")
-            'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
-            If VpFLine.Contains(" " + VpCarac(0) + " ") Then
-                VpIndex = VpLine.IndexOf(VpCarac(0))
-                VpLen = VpCarac(0).Length
-                VpFound = True
-            '(évite les erreurs dues au caractère apostrophe dans des charsets exotiques !)
-            ElseIf VpFLine.Contains(" " + VpCarac(0).Replace("'", "") + " ") Then
-                VpIndex = VpLine.IndexOf(VpCarac(0).Replace("'", ""))
-                VpLen = VpCarac(0).Length - 1
-                VpFound = True
+            If VpLine.Contains(vbTab) Then
+                VpCols = VpLine.Split(vbTab)
+                If VpCols(1).Trim = VpCarac(0) Then
+                    VpIndex = VpLine.IndexOf(VpCarac(0))
+                    VpLen = VpCarac(0).Length
+                    VpFound = True
+                Else
+                    VpFound = False
+                End If
             Else
-                VpFound = False
+                'S'assure que l'on fait bien une recherche sur le mot entier (et pas une sous-chaîne) en ayant préalablement supprimé les tabulations pour la comparaison
+                If VpLine.Contains(" " + VpCarac(0) + " ") Then
+                    VpIndex = VpLine.IndexOf(VpCarac(0))
+                    VpLen = VpCarac(0).Length
+                    VpFound = True
+                '(évite les erreurs dues au caractère apostrophe dans des charsets exotiques !)
+                ElseIf VpLine.Contains(" " + VpCarac(0).Replace("'", "") + " ") Then
+                    VpIndex = VpLine.IndexOf(VpCarac(0).Replace("'", ""))
+                    VpLen = VpCarac(0).Length - 1
+                    VpFound = True
+                Else
+                    VpFound = False
+                End If
             End If
             If VpFound Then
                 'à la recherche du nom de l'auteur, de la couleur et de la rareté de la carte (attention, remplacement des tabulations)
@@ -4416,7 +4504,7 @@ Public Partial Class MainForm
             Call Me.BuildHeaders(True)
         End If
     End Sub
-    Sub MnuSeriesGenR21Click(sender As Object, e As EventArgs)
+    Sub MnuSeriesGenR23Click(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
             Call Me.BuildHeaders(False)
         End If
@@ -5075,6 +5163,9 @@ Public Partial Class MainForm
                 End If
             Next VpI
             Return VpCounter
+        End Function
+        Public Shared Function AreAlike(Vp1 As clsMyCard, Vp2 As clsMyCard) As Boolean
+            Return ( Vp1.Author = Vp2.Author AndAlso Vp1.CardText = Vp2.CardText AndAlso Vp1.Cost = Vp2.Cost AndAlso Vp1.Power = Vp2.Power AndAlso Vp1.Rarity = Vp2.Rarity AndAlso Vp1.SubType = Vp2.SubType AndAlso Vp1.Title = Vp2.Title AndAlso Vp1.Tough = Vp2.Tough AndAlso Vp1.Type = Vp2.Type )
         End Function
     End Class
 End Class
