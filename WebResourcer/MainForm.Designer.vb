@@ -38,6 +38,7 @@ Partial Class MainForm
         Me.menuStrip = New System.Windows.Forms.MenuStrip()
         Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuDBOpen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuGEOpen = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuDBReady = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuINIReady = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSeparator = New System.Windows.Forms.ToolStripSeparator()
@@ -128,6 +129,7 @@ Partial Class MainForm
         Me.dlgOpen4 = New System.Windows.Forms.OpenFileDialog()
         Me.dlgOpen5 = New System.Windows.Forms.OpenFileDialog()
         Me.dlgOpen6 = New System.Windows.Forms.OpenFileDialog()
+        Me.dlgOpen7 = New System.Windows.Forms.OpenFileDialog()
         Me.dlgSave2 = New System.Windows.Forms.SaveFileDialog()
         Me.dlgSave3 = New System.Windows.Forms.SaveFileDialog()
         Me.mnuPricesHistoryRebuild = New System.Windows.Forms.ToolStripMenuItem()
@@ -152,7 +154,7 @@ Partial Class MainForm
         '
         'mnuFile
         '
-        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBOpen, Me.mnuDBReady, Me.mnuINIReady, Me.mnuBuildStamps, Me.mnuSeparator, Me.mnuExit})
+        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuDBOpen, Me.mnuGEOpen, Me.mnuDBReady, Me.mnuINIReady, Me.mnuBuildStamps, Me.mnuSeparator, Me.mnuExit})
         Me.mnuFile.Name = "mnuFile"
         Me.mnuFile.Size = New System.Drawing.Size(54, 20)
         Me.mnuFile.Text = "Fichier"
@@ -164,6 +166,14 @@ Partial Class MainForm
         Me.mnuDBOpen.Size = New System.Drawing.Size(239, 22)
         Me.mnuDBOpen.Text = "Base de données source"
         AddHandler Me.mnuDBOpen.Click, AddressOf Me.MnuDBOpenClick
+        '
+        'mnuGEOpen
+        '
+        Me.mnuGEOpen.Image = CType(resources.GetObject("mnuGEOpen.Image"),System.Drawing.Image)
+        Me.mnuGEOpen.Name = "mnuGEOpen"
+        Me.mnuGEOpen.Size = New System.Drawing.Size(239, 22)
+        Me.mnuGEOpen.Text = "Base de données Gatherer Extractor"
+        AddHandler Me.mnuGEOpen.Click, AddressOf Me.MnuGEOpenClick
         '
         'mnuDBReady
         '
@@ -855,6 +865,12 @@ Partial Class MainForm
         Me.dlgOpen6.Filter = "Fichiers XML (*.xml)|*.xml"
         Me.dlgOpen6.Title = "Sélection du fichier à préparer"
         '
+        'dlgOpen7
+        '
+        Me.dlgOpen7.DefaultExt = "csv"
+        Me.dlgOpen7.Filter = "Fichiers Gatherer Extractor (*.csv)|*.csv"
+        Me.dlgOpen7.Title = "Sélection de la base de données"
+        '
         'dlgSave2
         '
         Me.dlgSave2.DefaultExt = "dat"
@@ -958,6 +974,8 @@ Partial Class MainForm
     Private mnuFilterTitles As System.Windows.Forms.ToolStripMenuItem
     Private dlgOpen5 As System.Windows.Forms.OpenFileDialog
     Private dlgOpen6 As System.Windows.Forms.OpenFileDialog
+    Private dlgOpen7 As System.Windows.Forms.OpenFileDialog
+    Private mnuGEOpen As System.Windows.Forms.ToolStripMenuItem
     Private mnuINIReady As System.Windows.Forms.ToolStripMenuItem
     Private mnuDBReady As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildPatch As System.Windows.Forms.ToolStripMenuItem

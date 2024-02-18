@@ -3067,7 +3067,7 @@ Public Partial Class MainForm
         Call Me.BuildDoubles(VpJSONInfos, "_doubles_en.txt")
         'Listings alternatifs (éventuellement)
         If VpJSONInfos.data.special Then
-            If MessageBox.Show("L'édition semble contenir au moins une carte spéciale [double carte, double sens (haut-bas), double face (recto-verso), aventure]." + vbCrLf + "Voulez-vous générer les listings alternatifs ?" + vbCrLf + vbCrLf + vbCrLf + "RAPPEL :" + vbCrLf + vbCrLf + " - les doubles cartes et les aventures possèdent une entrée unique Nom 1 // Nom 2 (le fichier _doubles_ ne doit pas les mentionner)" + vbCrLf + vbCrLf + " - les doubles sens et les doubles faces possèdent deux entrées distinctes Nom 1 et Nom 2 (elles sont liées par le fichier _doubles_)", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+            If MessageBox.Show("L'édition semble contenir au moins une carte spéciale [double carte, double sens (haut-bas), double face (recto-verso), aventure]." + vbCrLf + "Voulez-vous générer les listings alternatifs ?" + vbCrLf + vbCrLf + vbCrLf + "RAPPEL :" + vbCrLf + vbCrLf + " - les doubles cartes et les aventures possèdent une entrée unique Nom 1 // Nom 2 (le fichier _doubles_ ne doit pas les mentionner et le fichier _spoiler_ doit mentionner les deux coûts d'invocation Coût 1 // Coût 2)" + vbCrLf + vbCrLf + " - les doubles sens et les doubles faces possèdent deux entrées distinctes Nom 1 et Nom 2 (elles sont liées par le fichier _doubles_)", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
                 Call Me.AddToLog("Construction des listings alternatifs...", eLogType.Information)
                 Application.DoEvents
                 Call Me.BuildAllTitles(VpJSONInfos, "_titles_fr_special.txt")
@@ -4356,6 +4356,145 @@ Public Partial Class MainForm
             Catch
                 Call Me.AddToLog("Impossible d'ouvrir la base de données...", eLogType.Warning)
             End Try
+        End If
+    End Sub
+    Sub MnuGEOpenClick(sender As Object, e As EventArgs)
+    Dim VpGE As StreamReader
+    Dim VpLine As String
+    Dim VpData() As String
+    Dim VpToCheck As New Dictionary(Of String, String)
+    Dim VpChecked As String
+    Dim VpCost As String
+    Dim VpSubCosts() As String
+    Dim VpTxt As String = ""
+        Me.dlgOpen7.FileName = ""
+        Me.dlgOpen7.ShowDialog
+        If Me.dlgOpen7.FileName <> "" Then
+            If Not VmDB Is Nothing Then
+                If MessageBox.Show("Voulez-vous lancer une vérification des coûts d'invocation des doubles cartes ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                    Call Me.AddToLog("Recherche les cartes ayant un coût incomplet...", eLogType.Information)
+                    VmDBCommand.CommandText = "Select Distinct Card.Title, Spell.Cost From Card Inner Join Spell On Card.Title = Spell.Title Where InStr(Card.Title, '//') > 0 And Not InStr(Spell.Cost, '//') > 0;"
+                    VmDBReader = VmDBCommand.ExecuteReader
+                    With VmDBReader
+                        While .Read
+                            VpToCheck.Add(.GetString(0), .GetString(1))
+                        End While
+                        .Close
+                    End With
+                    VpGE = New StreamReader(Me.dlgOpen7.FileName, Encoding.Default)
+                    While Not VpGE.EndOfStream
+                        VpLine = VpGE.ReadLine
+                        If VpLine.Contains("||") Then
+                            VpData = VpLine.Split(New String() {"||"}, StringSplitOptions.None)
+                            If VpData.Length = 88 Then
+                                VpChecked = ""
+                                For Each VpTitle As String In VpToCheck.Keys
+                                    If VpTitle = VpData(0) Then
+                                        VpCost = VpData(9).Replace(" // ", "#")
+                                        VpCost = VpCost.Replace("}", "{")
+                                        VpSubCosts = VpCost.Split(New String() {"{"}, StringSplitOptions.RemoveEmptyEntries)
+                                        VpCost = ""
+                                        For Each VpSubCost As String In VpSubCosts
+                                            VpCost += If(VpSubCost.Length = 1, VpSubCost, "(" + VpSubCost.Substring(0, 1) + "/" + VpSubCost.Substring(1, 1) + ")")
+                                        Next VpSubCost
+                                        VpCost = VpCost.Replace("#", " // ")
+                                        VpTxt += VpTitle + "#" + VpCost + vbCrLf
+                                        VpChecked = VpTitle
+                                        Exit For
+                                    End If
+                                Next VpTitle
+                                If VpChecked <> "" Then
+                                    VpToCheck.Remove(VpChecked)
+                                End If
+                            End If
+                        End If
+                    End While
+                    VpGE.Close
+                    Debug.Print(VpTxt)
+                    For Each VpTitle As String In VpToCheck.Keys
+                        Call Me.AddToLog("Correction non disponible pour : " + VpTitle + " (" + VpToCheck.Item(VpTitle) + ")", eLogType.Warning)
+                    Next VpTitle
+                    Call Me.AddToLog("La vérification est terminée.", eLogType.Information, , True)
+                ElseIf MessageBox.Show("Voulez-vous lancer une vérification des textes VO des doubles cartes ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                    Call Me.AddToLog("Recherche les cartes ayant un texte incomplet...", eLogType.Information)
+                    VmDBCommand.CommandText = "Select Distinct Title, CardText From Card Where InStr(Title, '//') > 0 And Not InStr(CardText, '----') > 0;"
+                    VmDBReader = VmDBCommand.ExecuteReader
+                    With VmDBReader
+                        While .Read
+                            If Not VpToCheck.ContainsKey(.GetString(0)) Then
+                                VpToCheck.Add(.GetString(0), .GetString(1))
+                            End If
+                        End While
+                        .Close
+                    End With
+                    VpGE = New StreamReader(Me.dlgOpen7.FileName, Encoding.Default)
+                    While Not VpGE.EndOfStream
+                        VpLine = VpGE.ReadLine
+                        If VpLine.Contains("||") Then
+                            VpData = VpLine.Split(New String() {"||"}, StringSplitOptions.None)
+                            If VpData.Length = 88 Then
+                                VpChecked = ""
+                                For Each VpTitle As String In VpToCheck.Keys
+                                    If VpTitle = VpData(0) Then
+                                        VpTxt += "##" + VpTitle + "^^" + VpData(21)
+                                        VpChecked = VpTitle
+                                        Exit For
+                                    End If
+                                Next VpTitle
+                                If VpChecked <> "" Then
+                                    VpToCheck.Remove(VpChecked)
+                                End If
+                            End If
+                        End If
+                    End While
+                    VpGE.Close
+                    VpTxt = VpTxt.Replace("£ // £", vbCrLf + vbCrLf + "----" + vbCrLf + vbCrLf).Replace(" // £", vbCrLf + vbCrLf + "----" + vbCrLf + vbCrLf).Replace("£", vbCrLf)
+                    VpTxt = Regex.Replace(VpTxt, " #\(.*\)#", "")
+                    Debug.Print(VpTxt)
+                    For Each VpTitle As String In VpToCheck.Keys
+                        Call Me.AddToLog("Correction non disponible pour : " + VpTitle, eLogType.Warning)
+                    Next VpTitle
+                    Call Me.AddToLog("La vérification est terminée.", eLogType.Information, , True)
+                ElseIf MessageBox.Show("Voulez-vous lancer une vérification des titres VF des doubles cartes ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = System.Windows.Forms.DialogResult.Yes Then
+                    Call Me.AddToLog("Recherche les cartes ayant un libellé non traduit...", eLogType.Information)
+                    VmDBCommand.CommandText = "Select Distinct Card.Title, Series.SeriesNM From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD Where InStr(Card.Title, '//') > 0 And Card.Title = CardFR.TitleFR;"
+                    VmDBReader = VmDBCommand.ExecuteReader
+                    With VmDBReader
+                        While .Read
+                            If Not VpToCheck.ContainsKey(.GetString(0)) Then
+                                VpToCheck.Add(.GetString(0), .GetString(1))
+                            End If
+                        End While
+                        .Close
+                    End With
+                    VpGE = New StreamReader(Me.dlgOpen7.FileName, Encoding.Default)
+                    While Not VpGE.EndOfStream
+                        VpLine = VpGE.ReadLine
+                        If VpLine.Contains("||") Then
+                            VpData = VpLine.Split(New String() {"||"}, StringSplitOptions.None)
+                            If VpData.Length = 88 Then
+                                VpChecked = ""
+                                For Each VpTitle As String In VpToCheck.Keys
+                                    If VpTitle = VpData(0) And VpData(32) <> "" Then
+                                        VpTxt += VpTitle + "#" + VpData(32) + vbCrLf
+                                        VpChecked = VpTitle
+                                        Exit For
+                                    End If
+                                Next VpTitle
+                                If VpChecked <> "" Then
+                                    VpToCheck.Remove(VpChecked)
+                                End If
+                            End If
+                        End If
+                    End While
+                    VpGE.Close
+                    Debug.Print(VpTxt)
+                    For Each VpTitle As String In VpToCheck.Keys
+                        Call Me.AddToLog("Correction non disponible pour : " + VpTitle, eLogType.Warning)
+                    Next VpTitle
+                    Call Me.AddToLog("La vérification est terminée.", eLogType.Information, , True)
+                End If
+            End If
         End If
     End Sub
     Sub MainFormFormClosing(sender As Object, e As FormClosingEventArgs)
