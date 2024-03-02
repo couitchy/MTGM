@@ -17,16 +17,16 @@ Public Partial Class frmUpdateContent
     '----------------------------
     'Récupération des horodatages
     '----------------------------
-    Dim VpStamps(0 To 12) As String     '0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = patch multiverse id, 11 = series, 12 = trad
+    Dim VpStamps(0 To 13) As String     '0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = patch invocations, 11 = patch multiverse id, 12 = series, 13 = trad
     Dim VpRequest As HttpWebRequest
     Dim VpAnswer As Stream
-    Dim VpBuf(0 To 117) As Byte
+    Dim VpBuf(0 To 129) As Byte         '(10 + 2) * nb lignes - 3 = 12 * 11 - 3 = 129
     Dim VpLength As Integer
         VpRequest = Nothing
         Try
             'Gestion cas 0
             VpStamps(0) = mdlToolbox.GetPictSP
-            'Gestion cas 1 à 10
+            'Gestion cas 1 à 11
             VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1D)
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
@@ -34,13 +34,13 @@ Public Partial Class frmUpdateContent
             VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             VpAnswer.Read(VpBuf, 0, VpBuf.Length)
-            VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)  'gestion cr ou cr+lf
-            For VpI As Integer = 0 To 9
-                VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 10)
+            VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 11, 12)                                  'gestion cr (11 octets par ligne) ou cr+lf (12 octets par ligne)
+            For VpI As Integer = 0 To 10                                                        '0 à nb lignes - 1
+                VpStamps(VpI + 1) = New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 10)    'seuls les 10 premiers octets sont ceux de la date
             Next VpI
-            'Gestion cas 11
-
             'Gestion cas 12
+
+            'Gestion cas 13
 
             Return VpStamps
         Catch
@@ -56,13 +56,14 @@ Public Partial Class frmUpdateContent
     '------------------------------------
     'Récupération des tailles des patches
     '------------------------------------
-    Dim VpSizes(0 To 12) As Integer     '0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = patch multiverse id, 11 = series, 12 = trad
+    Dim VpSizes(0 To 13) As Integer     '0 = images, 1 = prix, 2 = aut. tournois, 3 = modèles, 4 = textes vf, 5 = rulings, 6 = patch images, 7 = patch trad, 8 = patch sous-types, 9 = patch sous-types vf, 10 = patch invocations, 11 = patch multiverse id, 12 = series, 13 = trad
     Dim VpRequest As HttpWebRequest
     Dim VpAnswer As Stream
-    Dim VpBuf(0 To 74) As Byte
+    Dim VpBuf(0 To 81) As Byte          '(5 + 2) * nb lignes - 3 = 7 * 12 - 3 = 81
     Dim VpLength As Integer
         VpRequest = Nothing
         Try
+            'Gestion cas 0 à 11
             VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1E)
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
@@ -70,14 +71,13 @@ Public Partial Class frmUpdateContent
             VpRequest.ServicePoint.MaxIdleTime = 5000
             VpAnswer = VpRequest.GetResponse.GetResponseStream
             VpAnswer.Read(VpBuf, 0, VpBuf.Length)
-            VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)
-            'Gestion cas 0 à 10
-            For VpI As Integer = 0 To 10
-                VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 5))
+            VpLength = If(VpBuf(VpBuf.Length - 1) = 0, 6, 7)                                'gestion cr (6 octets par ligne) ou cr+lf (7 octets par ligne)
+            For VpI As Integer = 0 To 11                                                    '0 à nb lignes
+                VpSizes(VpI) = Val(New ASCIIEncoding().GetString(VpBuf, VpI * VpLength, 5)) 'seuls les 5 premiers octets sont ceux de la taille
             Next VpI
-            'Gestion cas 11
-
             'Gestion cas 12
+
+            'Gestion cas 13
 
             Return VpSizes
         Catch
@@ -111,6 +111,8 @@ Public Partial Class frmUpdateContent
                 VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateSubTypesPatch, VpStamp, VpSize)
             Case clsUpdateContent.EgMAJContenu.PatchSubTypesVF
                 VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateSubTypesVFPatch, VpStamp, VpSize)
+            Case clsUpdateContent.EgMAJContenu.PatchCosts
+                VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateCostsPatch, VpStamp, VpSize)
             Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
                 VpMAJContenu = New clsUpdateContent(VpType, VgOptions.VgSettings.LastUpdateMultiverseIdPatch, VpStamp, VpSize)
             Case clsUpdateContent.EgMAJContenu.NewTxtVF
@@ -202,6 +204,13 @@ Public Partial Class frmUpdateContent
                 Else
                     Return False
                 End If
+            Case clsUpdateContent.EgMAJContenu.PatchCosts
+                'Appel silencieux pour correctif des coûts d'invocation des cartes
+                If MainForm.VgMe.FixCosts Then
+                    VgOptions.VgSettings.LastUpdateCostsPatch = VpElement.Serveur
+                Else
+                    Return False
+                End If
             Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
                 'Appel silencieux pour mise à jour des identifiants des cartes
                 If MainForm.VgMe.FixMultiverse2 Then
@@ -282,6 +291,8 @@ Public Partial Class frmUpdateContent
     '- les corrections sur les titres des cartes (.xml)
     '- les corrections sur les sous-types des cartes (.xml)
     '- les corrections sur les traductions des sous-types des cartes (.xml)
+    '- les corrections sur les coûts d'invocation des cartes (.xml)
+    '- les corrections sur les identifiants multiverse (.xml)
     '----------------------------------------------------------------------
     Dim VpStamps() As String = Me.GetStamps
     Dim VpSizes() As Integer = Me.GetSizes

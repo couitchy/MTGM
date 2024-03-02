@@ -767,6 +767,28 @@ Public Partial Class MainForm
         End If
         Return True
     End Function
+    Public Function FixCosts As Boolean
+    '-------------------------------------------------------------------------
+    'Télécharge et installe un correctif pour les coûts d'invocation en défaut
+    '-------------------------------------------------------------------------
+    Dim VpLog As StreamReader
+    Dim VpStrs() As String
+        Call mdlToolbox.DownloadNow(New Uri(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL29), mdlConstGlob.CgMdCosts)
+        If File.Exists(Application.StartupPath + mdlConstGlob.CgMdCosts) Then
+            VpLog = New StreamReader(Application.StartupPath + mdlConstGlob.CgMdCosts, Encoding.Default)
+            While Not VpLog.EndOfStream
+                VpStrs = VpLog.ReadLine.Split("#")
+                VgDBCommand.CommandText = "Update Spell Set Cost = '" + VpStrs(1) + "' Where Title = '" + VpStrs(0).Replace("'", "''") + "';"
+                VgDBCommand.ExecuteNonQuery
+            End While
+            VpLog.Close
+            Call mdlToolbox.SecureDelete(Application.StartupPath + mdlConstGlob.CgMdCosts)
+            Call Me.FixCost
+        Else
+            Return False
+        End If
+        Return True
+    End Function
     Private Sub FixSerie(VpSerie As String)
     '-----------------------------------------------------------------------------------------------------------------------------------------------------
     'Correction a posteriori d'un bug initial lors de l'ajout dans la base de nouvelles cartes de créatures-artefacts dont le sous-type n'est pas Creature
@@ -871,7 +893,10 @@ Public Partial Class MainForm
         VgDBReader = VgDBCommand.ExecuteReader
         With VgDBReader
             While .Read
-                VpCosts.Add(.GetString(0), mdlToolbox.MyCost(.GetString(1)))
+                Try
+                    VpCosts.Add(.GetString(0), mdlToolbox.MyCost(.GetString(1)))
+                Catch
+                End Try
             End While
             .Close
         End With

@@ -3885,7 +3885,7 @@ Public Partial Class MainForm
     End Sub
     Private Sub BuildStamps
     '-------------------------------------------------------------------
-    'Construit les fichiers ContenuStamp r20.txt et ContenuSizes r20.txt
+    'Construit les fichiers ContenuStamp r21.txt et ContenuSizes r21.txt
     '-------------------------------------------------------------------
     Dim VpPath As String
     Dim VpFiles() As String
@@ -3923,17 +3923,19 @@ Public Partial Class MainForm
             Call Me.BuildStamp2("\..\Archivage\Base", "MD_SubTypes r19.log", VpStamps, VpSizes)
             'patch subtypes vf
             Call Me.BuildStamp2("\..\Archivage\Base", "MD_SubTypesVF r19.log", VpStamps, VpSizes)
+            'patch invocation
+            Call Me.BuildStamp2("\..\Archivage\Base", "MD_Costs r24.log", VpStamps, VpSizes)
             'patch multiverse id
             Call Me.BuildStamp2("\..\Archivage\Base", "MD_Multiverse r22.log", VpStamps, VpSizes)
-            '==> ContenuStamp r20.txt
-            VpOut = New StreamWriter(Path.Combine(Me.dlgBrowse.SelectedPath, "ContenuStamp r20.txt"))
+            '==> ContenuStamp r21.txt
+            VpOut = New StreamWriter(Path.Combine(Me.dlgBrowse.SelectedPath, "ContenuStamp r21.txt"))
             For Each VpStamp As Date In VpStamps
                 VpOut.WriteLine(VpStamp.ToString("dd/MM/yyyy"))
             Next VpStamp
             VpOut.Flush
             VpOut.Close
-            '==> ContenuSizes r20.txt
-            VpOut = New StreamWriter(Path.Combine(Me.dlgBrowse.SelectedPath, "ContenuSizes r20.txt"))
+            '==> ContenuSizes r21.txt
+            VpOut = New StreamWriter(Path.Combine(Me.dlgBrowse.SelectedPath, "ContenuSizes r21.txt"))
             For Each VpSize As Integer In VpSizes
                 VpOut.WriteLine(Format(VpSize, "00000"))
             Next VpSize

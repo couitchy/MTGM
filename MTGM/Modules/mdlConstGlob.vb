@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 40026
+    Public Const CgCodeLines As Integer             = 40080
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -10,6 +10,7 @@ Public Module mdlConstGlob
     Public Const CgLastUpdateTradPatch As String    = "15/12/2019"
     Public Const CgLastUpdateSubsPatch As String    = "04/04/2015"
     Public Const CgLastUpdateSubsVFPatch As String  = "10/05/2018"
+    Public Const CgLastUpdateCostsPatch As String   = "19/02/2024"
     Public Const CgLastUpdateMultiIdPatch As String = "26/10/2019"
     Public Const CgProject As String                = "Magic_The_Gathering_Manager.MainForm"
     Public Const CgMe As String                     = "Moi"
@@ -68,6 +69,7 @@ Public Module mdlConstGlob
     Public Const CgMdTrad As String                 = "\MD_Trad.log"
     Public Const CgMdSubTypes As String             = "\MD_SubTypes.log"
     Public Const CgMdSubTypesVF As String           = "\MD_SubTypesVF.log"
+    Public Const CgMdCosts As String                = "\MD_Costs.log"
     Public Const CgMdMultiverse As String           = "\MD_Multiverse.log"
     Public Const CgMdShippingCosts As String        = "\MD_ShippingCosts.log"
     Public Const CgMdPicturesPointers As String     = "\MD_PicturesPointers.log"
@@ -77,8 +79,8 @@ Public Module mdlConstGlob
     Public Const CgURL1 As String                   = "/Updates/TimeStamp r4.txt"
     Public Const CgURL1B As String                  = "/Updates/Beta/TimeStamp.txt"
     Public Const CgURL1C As String                  = "/Updates/PicturesStamp.txt"
-    Public Const CgURL1D As String                  = "/Updates/ContenuStamp r20.txt"
-    Public Const CgURL1E As String                  = "/Updates/ContenuSizes r20.txt"
+    Public Const CgURL1D As String                  = "/Updates/ContenuStamp r21.txt"
+    Public Const CgURL1E As String                  = "/Updates/ContenuSizes r21.txt"
     Public Const CgURL2 As String                   = "/Updates/Magic The Gathering Manager r4.new"
     Public Const CgURL2B As String                  = "/Updates/Beta/Magic The Gathering Manager.new"
     Public Const CgURL3 As String                   = "/Updates/Images DB.mdb"
@@ -108,6 +110,7 @@ Public Module mdlConstGlob
     Public Const CgURL26 As String                  = "https://www.magic-ville.com/fr/"
     Public Const CgURL27 As String                  = "/Updates/MD_ShippingCosts r21.log"
     Public Const CgURL28 As String                  = "/Updates/MD_PicturesPointers.log"
+    Public Const CgURL29 As String                  = "/Updates/MD_Costs r24.log"
     Public Const CgDL1 As String                    = "Vérification des mises à jour..."
     Public Const CgDL2 As String                    = "Téléchargement en cours"
     Public Const CgDL2b As String                   = "Un téléchargement est déjà en cours..." + vbCrLf + "Veuillez attendre qu'il se termine avant de réessayer."

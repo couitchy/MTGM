@@ -15,6 +15,7 @@ Public Class clsUpdateContent
         PatchTrad
         PatchSubTypes
         PatchSubTypesVF
+        PatchCosts
         PatchMultiverseId
         NewSerie
         NewTrad
@@ -65,6 +66,8 @@ Public Class clsUpdateContent
                     Return "Correctif des sous-types de cartes"
                 Case clsUpdateContent.EgMAJContenu.PatchSubTypesVF
                     Return "Correctif des traductions des sous-types"
+                Case clsUpdateContent.EgMAJContenu.PatchCosts
+                    Return "Correctif des coûts d'invocation"
                 Case clsUpdateContent.EgMAJContenu.PatchMultiverseId
                     Return "Mise à jour des identifiants Multiverse"
                 Case clsUpdateContent.EgMAJContenu.NewPict

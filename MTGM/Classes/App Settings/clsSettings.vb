@@ -31,6 +31,7 @@ Public Class clsSettings
     Private VmLastUpdateTradPatch As String = mdlConstGlob.CgLastUpdateTradPatch
     Private VmLastUpdateSubTypesPatch As String = mdlConstGlob.CgLastUpdateSubsPatch
     Private VmLastUpdateSubTypesVFPatch As String = mdlConstGlob.CgLastUpdateSubsVFPatch
+    Private VmLastUpdateCostsPatch As String = mdlConstGlob.CgLastUpdateCostsPatch
     Private VmLastUpdateMultiverseIdPatch As String = mdlConstGlob.CgLastUpdateMultiIdPatch
     Private VmShowUpdateMenus As Boolean = False
     Private VmPrevSearches As String = ""
@@ -360,6 +361,15 @@ Public Class clsSettings
         End Get
         Set (VpLastUpdateSubTypesVFPatch As String)
             VmLastUpdateSubTypesVFPatch = VpLastUpdateSubTypesVFPatch
+        End Set
+    End Property
+    <Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour du correctif des coûts d'invocation")> _
+    Public Property LastUpdateCostsPatch As String
+        Get
+            Return VmLastUpdateCostsPatch
+        End Get
+        Set (VpLastUpdateCostsPatch As String)
+            VmLastUpdateCostsPatch = VpLastUpdateCostsPatch
         End Set
     End Property
     <Browsable(False), Category("Mises à jour"), Description("Date de dernière mise à jour des identifiants Multiverse")> _
