@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AG","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BA","BB","BC","BD","BE","BF","BG","BK","BO","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CJ","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FC","FD","FE","FM","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","JW","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LA","LB","LC","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","ML","MM","MN","MO","MP","MQ","MR","MS","MT","MU","MV","MW","MX","MY","MZ","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","ON","OR","P1","P2","P3","PC","PD","PG","PH","PI","PN","PO","PQ","PR","PS","PT","PY","R1","R2","R3","RA","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SO","SP","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TI","TJ","TK","TO","TP","TS","TX","UB","UC","UD","UF","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WA","WB","WC","WD","WE","WH","WL","WO","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AG","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BA","BB","BC","BD","BE","BF","BG","BI","BK","BN","BO","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CJ","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FC","FD","FE","FM","FO","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","JW","KA","KB","KC","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LA","LB","LC","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","ML","MM","MN","MO","MP","MQ","MR","MS","MT","MU","MV","MW","MX","MY","MZ","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","OL","OM","ON","OP","OR","P1","P2","P3","PC","PD","PG","PH","PI","PN","PO","PQ","PR","PS","PT","PY","R1","R2","R3","RA","RB","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SO","SP","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TI","TJ","TK","TO","TP","TS","TX","UB","UC","UD","UF","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WA","WB","WC","WD","WE","WH","WL","WO","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -65,7 +65,10 @@ series['MQ'] = new Array('MAT','March of the Machine: The Aftermath','L\'invasio
 series['TI'] = new Array('LTR','Tales of Middle-earth','Chroniques de la Terre du Milieu','281','2023');
 series['WA'] = new Array('WOE','Wilds of Eldraine','Les Friches d\'Eldraine','266','2023');
 series['LA'] = new Array('LCI','The Lost Caverns of Ixalan','Les Cavernes Oubliées d\'Ixalan','291','2023');
-var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN','BO','DE','PO','MO','MQ','TI','WA','LA');
+series['KA'] = new Array('MKM','Murders at Karlov Manor','Meurtres au manoir Karlov','286','2024');
+series['OL'] = new Array('OTJ','Outlaws of Thunder Junction','Les hors-la-loi de Croisetonnerre','276','2024');
+series['BI'] = new Array('BIG','The Big Score','Le casse du siècle','30','2024');
+var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN','BO','DE','PO','MO','MQ','TI','WA','LA','KA','OL','BI');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
 series['AC'] = new Array('ALL','Alliances','Alliances','199','1996');
@@ -120,7 +123,8 @@ var kamigawa = new Array('Bloc Kamigawa','CK','BK','SK');
 series['RA'] = new Array('RAV','Ravnica: City of Guilds','Ravnica : La Cité des Guildes','306','2005');
 series['GP'] = new Array('GPT','Guildpact','Le Pacte des Guildes','165','2006');
 series['DI'] = new Array('DIS','Dissension','Discorde','180','2006');
-var ravnica = new Array('Bloc Ravnica','RA','GP','DI');
+series['RB'] = new Array('RVR','Ravnica Remastered','Ravnica Remastered','291','2024');
+var ravnica = new Array('Bloc Ravnica','RA','GP','DI','RB');
 // Time Spiral Block
 series['TS'] = new Array('TSP','Time Spiral','Spirale Temporelle','301','2006');
 series['TD'] = new Array('TSB','Time Spiral','Spirale Temporelle','121','2006');
@@ -242,7 +246,8 @@ series['BA'] = new Array('BRR','The Brothers\' War Retro Artifacts','','63','202
 series['MZ'] = new Array('MUL','March of the Machine Multiverse Legends','','65','2023');
 series['JW'] = new Array('REX','Jurassic World Collection','','26','2023');
 series['SP'] = new Array('SPG','Special Guests','','10','2023');
-var masterpieceSeries = new Array('ZX','KI','AJ','ZY','SY','BA','MZ','JW','SP');
+series['BN'] = new Array('OTP','Breaking News','','70','2024');
+var masterpieceSeries = new Array('ZX','KI','AJ','ZY','SY','BA','MZ','JW','SP','BN');
 
 // Duel Decks
 series['D3'] = new Array('EVG','Duel Decks: Elves vs. Goblins','','2x60','2007');
@@ -307,7 +312,7 @@ var globalseries = new Array('GS');
 series['PH'] = new Array('HOP','Planechase','','4x60+40','2009');
 series['CD'] = new Array('CMD','Commander','','5x100','2011');
 series['PI'] = new Array('PC2','Planechase 2012','','4x60+40','2012');
-series['C1'] = new Array('CM1','Commander\'s Arsenal','','28','2012');
+series['C1'] = new Array('CM1','Commander\'s Arsenal','','18+10','2012');
 series['C3'] = new Array('C13','Commander 2013','','5x100','2013');
 series['C4'] = new Array('C14','Commander 2014','','5x100','2014');
 series['C5'] = new Array('C15','Commander 2015','','5x100','2015');
@@ -333,11 +338,14 @@ series['PQ'] = new Array('ONC','Phyrexia: All Will Be One Commander','Commander 
 series['MN'] = new Array('MOC','March of the Machine Commander','Commander : L\'invasion des machines','5x100','2023');
 series['TJ'] = new Array('LTC','Tales of Middle-earth Commander','Commander : Chroniques de la Terre du Milieu','4x100','2023');
 series['CJ'] = new Array('CMM','Commander Masters','','436','2023');
-series['AG'] = new Array('AGL','Secret Lair: Angels: They\'re Just Like Us but Cooler and with Wings','','100','2023');
+series['AG'] = new Array('AGL','Secret Lair: Angels: They\'re Just Like Us but Cooler and with Wings','','1x100','2023');
 series['WB'] = new Array('WOC','Wilds of Eldraine Commander','Commander : Les Friches d\'Eldraine','2x100','2023');
 series['LB'] = new Array('LCC','The Lost Caverns of Ixalan Commander','Commander : Les Cavernes Oubliées d\'Ixalan','4x100','2023');
-series['WO'] = new Array('WHO','Doctor Who','','189','2023');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF','WH','BC','PQ','MN','TJ','CJ','AG','WB','LB','WO');
+series['WO'] = new Array('WHO','Doctor Who','','4x100','2023');
+series['KC'] = new Array('MKC','Murders at Karlov Manor Commander','Commander : Meurtres au manoir Karlov','4x100','2024');
+series['OM'] = new Array('OTC','Outlaws of Thunder Junction Commander','Commander : Les hors-la-loi de Croisetonnerre','4x100','2024');
+series['FO'] = new Array('PIP','Fallout','','4x100','2024');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF','WH','BC','PQ','MN','TJ','CJ','AG','WB','LB','WO','KC','OM','FO');
 
 // Introductory Sets
 series['IS'] = new Array('ITP','Introductory Two-Player Set','','4x30','1996');
@@ -426,4 +434,6 @@ series['ML'] = new Array('PMO','March of the Machine Promos','','106','2023');
 series['TK'] = new Array('PLT','Tales of Middle-earth Promos','','84','2023');
 series['WC'] = new Array('PWO','Wilds of Eldraine Promos','','80','2023');
 series['LC'] = new Array('PLI','The Lost Caverns of Ixalan Promos','','104','2023');
-var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE','BD','PN','SO','ML','TK','WC','LC');
+series['KB'] = new Array('PMK','Murders at Karlov Manor Promos','','90','2024');
+series['OP'] = new Array('POT','Outlaws of Thunder Junction Promos','','80','2024');
+var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE','BD','PN','SO','ML','TK','WC','LC','KB','OP');

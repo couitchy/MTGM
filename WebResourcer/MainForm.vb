@@ -2201,6 +2201,26 @@ Public Partial Class MainForm
                 Return "talesofmiddleearthcommander#" + VpStr
             Case "TK"
                 Return "talesofmiddleearthpromos#" + VpStr
+            Case "BN"
+                Return "breakingnews#" + VpStr
+            Case "FO"
+                Return "fallout#" + VpStr
+            Case "KA"
+                Return "murdersatkarlovmanor#" + VpStr
+            Case "KC"
+                Return "murdersatkarlovmanorcommander#" + VpStr
+            Case "KB"
+                Return "murdersatkarlovmanorpromos#" + VpStr
+            Case "OL"
+                Return "outlawsofthunderjunction#" + VpStr
+            Case "OM"
+                Return "outlawsofthunderjunctioncommander#" + VpStr
+            Case "OP"
+                Return "outlawsofthunderjunctionpromos#" + VpStr
+            Case "RB"
+                Return "ravnicaremastered#" + VpStr
+            Case "BI"
+                Return "thebigscore#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2865,6 +2885,26 @@ Public Partial Class MainForm
                 Return "TJ"
             Case "talesofmiddleearthpromos"
                 Return "TK"
+            Case "breakingnews"
+                Return "BN"
+            Case "fallout"
+                Return "FO"
+            Case "murdersatkarlovmanor"
+                Return "KA"
+            Case "murdersatkarlovmanorcommander"
+                Return "KC"
+            Case "murdersatkarlovmanorpromos"
+                Return "KB"
+            Case "outlawsofthunderjunction"
+                Return "OL"
+            Case "outlawsofthunderjunctioncommander"
+                Return "OM"
+            Case "outlawsofthunderjunctionpromos"
+                Return "OP"
+            Case "ravnicaremastered"
+                Return "RB"
+            Case "thebigscore"
+                Return "BI"
             Case Else
                 Return ""
         End Select
