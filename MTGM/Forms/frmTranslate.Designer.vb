@@ -47,6 +47,7 @@ Partial Class frmTranslate
         Me.lblCount = New System.Windows.Forms.Label
         Me.lblFR = New System.Windows.Forms.Label
         Me.lblEN = New System.Windows.Forms.Label
+        Me.dlgOpen = New System.Windows.Forms.OpenFileDialog
         Me.grpSerie.SuspendLayout
         CType(Me.picSerie,System.ComponentModel.ISupportInitialize).BeginInit
         Me.grpTranslate.SuspendLayout
@@ -184,6 +185,12 @@ Partial Class frmTranslate
         Me.lblEN.TabIndex = 0
         Me.lblEN.Text = "Nom anglais :"
         '
+        'dlgOpen
+        '
+        Me.dlgOpen.DefaultExt = "txt"
+        Me.dlgOpen.Filter = "Fichiers texte (*.txt)|*.txt"
+        Me.dlgOpen.Title = "Sélection du fichier de traductions"
+        '
         'frmTranslate
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -206,6 +213,7 @@ Partial Class frmTranslate
         Me.grpTranslate.PerformLayout
         Me.ResumeLayout(false)
     End Sub
+    Private dlgOpen As System.Windows.Forms.OpenFileDialog
     Private chkAlert As System.Windows.Forms.CheckBox
     Private lblEN As System.Windows.Forms.Label
     Private lblFR As System.Windows.Forms.Label

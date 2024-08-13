@@ -93,11 +93,29 @@ Public Partial Class frmTranslate
         MainForm.VgMe.IsMainReaderBusy = False
         Call mdlToolbox.ShowInformation("Traduction terminée !")
     End Sub
+    Private Sub LaunchLocal(VpSerie As String, VpPath As String)
+    Dim VpFile As New StreamReader(VpPath, Encoding.Default)
+    Dim VpStrs() As String
+        While Not VpFile.EndOfStream
+            VpStrs = VpFile.ReadLine.Split("#")
+            VgDBCommand.CommandText = "Update CardFR Inner Join Card On CardFR.EncNbr = Card.EncNbr Set CardFR.TitleFR = '" + VpStrs(1).Replace("'", "''") + "' Where Card.Title = '" + VpStrs(0).Replace("'", "''") + "' And Card.Series = '" + VpSerie + "';"
+            VgDBCommand.ExecuteNonQuery
+            Me.txtCount.Text = (Val(Me.txtCount.Text) + 1).ToString
+            Application.DoEvents
+        End While
+        VpFile.Close
+        Call mdlToolbox.ShowInformation("Traduction terminée !")
+    End Sub
     Sub CmdGoClick(ByVal sender As Object, ByVal e As EventArgs)
+    Dim VpSerie As String = Me.cboSerie.Text.Substring(1, 2)
         If Not Me.cboSerie.SelectedItem Is Nothing Then
             Me.txtCount.Text = "0"
             Me.cmdGo.Enabled = False
-            Call Me.Launch(Me.cboSerie.Text.Substring(1, 2))
+            If mdlToolbox.ShowQuestion("Se connecter à Internet pour récupérer les traductions ?" + vbCrLf + "Cliquer sur 'Non' pour mettre à jour depuis un fichier sur le disque dur...") = DialogResult.Yes Then
+                Call Me.Launch(VpSerie)
+            ElseIf Me.dlgOpen.ShowDialog <> DialogResult.Cancel Then
+                Call Me.LaunchLocal(VpSerie, Me.dlgOpen.FileName)
+            End If
             Me.cmdGo.Enabled = True
         Else
             Call mdlToolbox.ShowWarning("Aucune édition n'a été sélectionnée...")

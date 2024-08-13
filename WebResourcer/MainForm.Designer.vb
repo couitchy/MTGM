@@ -308,7 +308,7 @@ Partial Class MainForm
         '
         Me.mnuCheckTrad.Name = "mnuCheckTrad"
         Me.mnuCheckTrad.Size = New System.Drawing.Size(398, 22)
-        Me.mnuCheckTrad.Text = "Vérifier la cohérence d'un fichier de traduction"
+        Me.mnuCheckTrad.Text = "Vérifier la cohérence d'un fichier de traductions"
         AddHandler Me.mnuCheckTrad.Click, AddressOf Me.MnuCheckTradClick
         '
         'mnuCompareTrad
