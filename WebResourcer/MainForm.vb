@@ -2221,6 +2221,14 @@ Public Partial Class MainForm
                 Return "ravnicaremastered#" + VpStr
             Case "BI"
                 Return "thebigscore#" + VpStr
+            Case "BL"
+                Return "bloomburrow#" + VpStr
+            Case "BM"
+                Return "bloomburrowcommander#" + VpStr
+            Case "BP"
+                Return "bloomburrowpromos#" + VpStr
+            Case "WF"
+                Return "wildsofeldraineenchantingtales#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2905,6 +2913,14 @@ Public Partial Class MainForm
                 Return "RB"
             Case "thebigscore"
                 Return "BI"
+            Case "bloomburrow"
+                Return "BL"
+            Case "bloomburrowcommander"
+                Return "BM"
+            Case "bloomburrowpromos"
+                Return "BP"
+            Case "wildsofeldraineenchantingtales"
+                Return "WF"
             Case Else
                 Return ""
         End Select
