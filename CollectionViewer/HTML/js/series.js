@@ -3,7 +3,7 @@ var arrayClassementEdition = new Array('bases','extensions','compilations','mast
 var arrayLibelleClassementEdition = new Array('Editions de base','Extensions','Compilations','Masterpiece Series','Duel Decks','From The Vault','Premium & Event Decks','Two-Headed Giant','Signature Spellbook','Global Series','Non Standard Legal Sets','Introductory Sets','Non Legal For Tournament Sets','Online Exclusive Sets','Promotionnal Sets');
 
 // List of MTGM codes
-var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AC","AD","AE","AG","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BA","BB","BC","BD","BE","BF","BG","BI","BK","BL","BM","BN","BO","BP","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CJ","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DX","DZ","EM","ER","ET","EX","FC","FD","FE","FM","FO","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","JW","KA","KB","KC","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LA","LB","LC","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MG","MH","MI","MJ","ML","MM","MN","MO","MP","MQ","MR","MS","MT","MU","MV","MW","MX","MY","MZ","N1","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","OL","OM","ON","OP","OR","P1","P2","P3","PC","PD","PG","PH","PI","PN","PO","PQ","PR","PS","PT","PY","R1","R2","R3","RA","RB","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SO","SP","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TI","TJ","TK","TO","TP","TS","TX","UB","UC","UD","UF","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WA","WB","WC","WD","WE","WF","WH","WL","WO","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
+var codes_mtgm=["1E","3B","3W","4B","4E","5E","6E","7E","8E","9E","A2","AB","AC","AD","AE","AG","AH","AJ","AK","AL","AN","AP","AQ","AT","AR","BA","BB","BC","BD","BE","BF","BG","BI","BK","BL","BM","BN","BO","BP","BR","BT","BZ","C0","C1","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","CG","CH","CI","CJ","CK","CL","CM","CR","CS","CT","CX","CY","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF","DG","DH","DI","DJ","DK","DL","DM","DN","DO","DP","DQ","DR","DS","DT","DU","DV","DW","DX","DY","DZ","EA","EM","ER","ET","EX","FC","FD","FE","FM","FO","FR","FS","GB","GC","GK","GN","GP","GR","GS","GW","GX","HD","HH","HM","HP","IA","IC","ID","IE","IH","IK","IM","IN","IP","IS","IV","IW","JG","JN","JP","JR","JU","JW","KA","KB","KC","KD","KF","KH","KI","KT","L1","L2","L3","L4","L5","L6","L7","L8","L9","LA","LB","LC","LE","LG","LP","LW","M1","M2","M3","M4","M5","M6","M9","M0","MA","MB","MC","MD","ME","MF","MG","MH","MI","MJ","MK","ML","MM","MN","MO","MP","MQ","MR","MS","MT","MU","MV","MW","MX","MY","MZ","N0","N1","N2","NB","NC","ND","NE","NP","O2","O3","O4","OD","OG","OL","OM","ON","OP","OR","P1","P2","P3","PC","PD","PG","PH","PI","PN","PO","PQ","PR","PS","PT","PY","R1","R2","R3","RA","RB","RE","RG","RI","RR","RT","RV","RX","S1","S2","SA","SB","SC","SD","SE","SG","SH","SI","SK","SL","SM","SO","SP","SR","SS","ST","SU","SV","SX","SY","T0","TB","TC","TD","TE","TH","TI","TJ","TK","TO","TP","TS","TX","UB","UC","UD","UF","UG","UH","UL","UM","UN","US","UT","V1","V2","V3","V4","V5","V6","V7","V8","V9","VA","VG","VP","VS","W0","W1","W2","W3","W4","W5","W6","W7","W8","WA","WB","WC","WD","WE","WF","WH","WL","WO","WP","WS","WW","X2","X3","XL","XP","YR","ZC","ZK","ZR","ZX","ZY"];
 
 // Structure of array
 // series['MTGM_EDITION_CODE'] = new Array('EDITION_CODE','NAME_ENG','NAME_FR','NB CARDS','YEAR');
@@ -69,7 +69,8 @@ series['KA'] = new Array('MKM','Murders at Karlov Manor','Meurtres au manoir Kar
 series['OL'] = new Array('OTJ','Outlaws of Thunder Junction','Les hors-la-loi de Croisetonnerre','276','2024');
 series['BI'] = new Array('BIG','The Big Score','Le casse du siècle','30','2024');
 series['BL'] = new Array('BLB','Bloomburrow','Bloomburrow','281','2024');
-var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN','BO','DE','PO','MO','MQ','TI','WA','LA','KA','OL','BI','BL');
+series['DW'] = new Array('DSK','Duskmourn: House of Horror','Mornebrune : la Maison de l\'horreur','276','2024');
+var horsbloc = new Array('Extensions Hors Bloc','AN','AQ','LE','DK','FE','HM','TE','TB','IK','ZR','KH','SX','AD','IH','IW','ND','SA','DN','BO','DE','PO','MO','MQ','TI','WA','LA','KA','OL','BI','BL','DW');
 // Ice Age Block
 series['IA'] = new Array('ICE','Ice Age','Ere Glaciaire','383','1995');
 series['AC'] = new Array('ALL','Alliances','Alliances','199','1996');
@@ -235,7 +236,9 @@ series['SR'] = new Array('SLU','Secret Lair: Ultimate Edition','','5','2020');
 series['MJ'] = new Array('MH2','Modern Horizons 2','Horizons du Modern 2','303','2021');
 series['X3'] = new Array('2X2','Double Masters 2022','','332','2022');
 series['FC'] = new Array('SLD','Secret Lair: From Cute to Brute','','100','2023');
-var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH','MX','X2','SR','MJ','X3','FC');
+series['N2'] = new Array('H2R','Modern Horizons 2 Timeshifts','','16','2024');
+series['MF'] = new Array('MH3','Modern Horizons 3','Horizons du Modern 3','261','2024');
+var compilations = new Array('CH','RE','AT','BR','BT','DM','PG','CT','AH','DP','SV','MS','CY','MU','MA','TC','MW','CA','IM','A2','CB','UM','UT','MH','MX','X2','SR','MJ','X3','FC','N2','MF');
 
 // Masterpiece Series
 series['ZX'] = new Array('EXP','Zendikar Expeditions','','45','2016');
@@ -347,8 +350,11 @@ series['WO'] = new Array('WHO','Doctor Who','','4x100','2023');
 series['KC'] = new Array('MKC','Murders at Karlov Manor Commander','Commander : Meurtres au manoir Karlov','4x100','2024');
 series['OM'] = new Array('OTC','Outlaws of Thunder Junction Commander','Commander : Les hors-la-loi de Croisetonnerre','4x100','2024');
 series['FO'] = new Array('PIP','Fallout','','4x100','2024');
+series['MK'] = new Array('M3C','Modern Horizons 3 Commander','Commander : Horizons du Modern 3','4x100','2024');
+series['AB'] = new Array('ACR','Assassin\'s Creed','','1x100','2024');
 series['BM'] = new Array('BLC','Bloomburrow Commander','Commander : Bloomburrow','4x100','2024');
-var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF','WH','BC','PQ','MN','TJ','CJ','AG','WB','WF','LB','WO','KC','OM','FO','BM');
+series['DY'] = new Array('DSC','Duskmourn: House of Horror Commander','Commander : Mornebrune : la Maison de l\'horreur','4x100','2024');
+var nonStandard = new Array('PH','CD','PI','C1','C3','C4','C5','C6','C7','C8','C9','C0','ZC','CC','KF','CX','CR','ID','IE','SB','BF','DF','WH','BC','PQ','MN','TJ','CJ','AG','WB','WF','LB','WO','KC','OM','FO','MK','AB','BM','DY');
 
 // Introductory Sets
 series['IS'] = new Array('ITP','Introductory Two-Player Set','','4x30','1996');
@@ -439,5 +445,7 @@ series['WC'] = new Array('PWO','Wilds of Eldraine Promos','','80','2023');
 series['LC'] = new Array('PLI','The Lost Caverns of Ixalan Promos','','104','2023');
 series['KB'] = new Array('PMK','Murders at Karlov Manor Promos','','90','2024');
 series['OP'] = new Array('POT','Outlaws of Thunder Junction Promos','','80','2024');
+series['N0'] = new Array('PMH','Modern Horizons 3 Promos','','85','2024');
 series['BP'] = new Array('PBL','Bloomburrow Promos','','80','2024');
-var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE','BD','PN','SO','ML','TK','WC','LC','KB','OP','BP');
+series['EA'] = new Array('PDS','Duskmourn: House of Horror Promos','','80','2024');
+var promo = new Array('CE','IC','PD','HP','MI','LP','PT','L1','CL','GB','MC','VG','W1','PR','W2','L2','W3','W0','JR','W4','L3','L4','W5','MP','L5','W6','FM','RT','L6','W7','L7','W8','L8','L9','CM','HH','GX','MG','GW','JG','MY','GK','WP','T0','CG','AE','IP','VP','CI','NC','SE','BD','PN','SO','ML','TK','WC','LC','KB','OP','N0','BP','EA');

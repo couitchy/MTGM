@@ -2229,6 +2229,22 @@ Public Partial Class MainForm
                 Return "bloomburrowpromos#" + VpStr
             Case "WF"
                 Return "wildsofeldraineenchantingtales#" + VpStr
+            Case "DW"
+                Return "duskmournhouseofhorror#" + VpStr
+            Case "DY"
+                Return "duskmournhouseofhorrorcommander#" + VpStr
+            Case "EA"
+                Return "duskmournhouseofhorrorpromos#" + VpStr
+            Case "AB"
+                Return "assassinscreed#" + VpStr
+            Case "MF"
+                Return "modernhorizons3#" + VpStr
+            Case "MK"
+                Return "modernhorizons3commander#" + VpStr
+            Case "N0"
+                Return "modernhorizons3promos#" + VpStr
+            Case "N2"
+                Return "modernhorizons2timeshifts#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2921,6 +2937,22 @@ Public Partial Class MainForm
                 Return "BP"
             Case "wildsofeldraineenchantingtales"
                 Return "WF"
+            Case "duskmournhouseofhorror"
+                Return "DW"
+            Case "duskmournhouseofhorrorcommander"
+                Return "DY"
+            Case "duskmournhouseofhorrorpromos"
+                Return "EA"
+            Case "assassinscreed"
+                Return "AB"
+            Case "modernhorizons3"
+                Return "MF"
+            Case "modernhorizons3commander"
+                Return "MK"
+            Case "modernhorizons3promos"
+                Return "N0"
+            Case "modernhorizons2timeshifts"
+                Return "N2"
             Case Else
                 Return ""
         End Select
@@ -3151,10 +3183,10 @@ Public Partial Class MainForm
             With VpCard
                 If Not VpAlready.Contains(.name) AndAlso .foreignData IsNot Nothing AndAlso .foreignData.Count > 0 Then
                     VpSkip = True
-                    If .linkedTo IsNot Nothing Then
+                    If .linkedTo IsNot Nothing AndAlso Not .name.Contains(" // ") Then
                         VpOut.WriteLine(.name + " // " + .linkedTo.name + "#" + .getForeignName("French") + " // " + .linkedTo.getForeignName("French"))
                         VpSkip = False
-                    ElseIf .linkedFrom Is Nothing Then
+                    ElseIf .linkedFrom Is Nothing OrElse (.linkedTo IsNot Nothing AndAlso .name.Contains(" // ")) Then
                         VpOut.WriteLine(.name + "#" + .getForeignName("French"))
                         VpSkip = False
                     End If
@@ -3189,6 +3221,9 @@ Public Partial Class MainForm
             With VpCard
                 If Not VpDone.Contains(.name) Then
                     If .colors Is Nothing OrElse .colors.Count = 0 Then
+                        If .name = "Plains" OrElse .name = "Island" OrElse .name = "Swamp" OrElse .name = "Mountain" OrElse .name = "Forest" Then
+                            .rarity = "basic land"
+                        End If
                         If .type <> "Land" AndAlso Not .type.StartsWith("Basic Land") Then
                             If Not VpSuffix.Contains("special") Then
                                 Call Me.AddToLog("Vérifier la couleur de la carte : " + .name, eLogType.Warning)
@@ -3215,10 +3250,10 @@ Public Partial Class MainForm
                         Next VpColor
                     End If
                     VpSkip = True
-                    If .linkedTo IsNot Nothing Then
+                    If .linkedTo IsNot Nothing AndAlso Not .name.Contains(" // ") Then
                         VpOut.WriteLine(Me.RemoveLetters(.number.ToString) + vbTab + .name + " // " + .linkedTo.name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.data.name)
                         VpSkip = False
-                    ElseIf .linkedFrom Is Nothing Then
+                    ElseIf .linkedFrom Is Nothing OrElse (.linkedTo IsNot Nothing AndAlso .name.Contains(" // ")) Then
                         VpOut.WriteLine(Me.RemoveLetters(.number.ToString) + vbTab + .name + vbTab + .artist + vbTab + VpColors.Substring(1) + vbTab + .rarity.Substring(0, 1).ToUpper.Replace("B", "L") + vbTab + VpJSONInfos.data.name)
                         VpSkip = False
                     End If
@@ -3274,7 +3309,7 @@ Public Partial Class MainForm
                 If Not VpDone.Contains(.name) Then
                     VpSkip = True
                     If .linkedTo IsNot Nothing Then
-                        VpOut.WriteLine("Name: " + vbTab + .name + " // " + .linkedTo.name)
+                        VpOut.WriteLine("Name: " + vbTab + .name + If(.name.Contains(" // "), "", " // " + .linkedTo.name))
                         VpOut.WriteLine("Cost: " + vbTab + .getCost + " // " + .linkedTo.getCost)
                         VpSkip = False
                     ElseIf .linkedFrom Is Nothing Then
@@ -3347,21 +3382,33 @@ Public Partial Class MainForm
     Dim VpDone As New List(Of String)
         For Each VpCard As clsFullInfos.clsFullDataInfos.clsFullCardInfos In VpJSONInfos.data.cards
             With VpCard
-                If Not VpDone.Contains(.name) Then
-                    If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then
+                If .names IsNot Nothing AndAlso .names.Count = 2 AndAlso .names.Item(0) = .name Then
+                    If Not VpDone.Contains(.name) Then
                         VpOut.WriteLine(.names.Item(1) + "#" + .names.Item(0))
-                        'association croisée
-                        For Each VpMate As clsFullInfos.clsFullDataInfos.clsFullCardInfos In VpJSONInfos.data.cards
-                            If VpMate.name = .names.Item(1) Then
-                                VpCard.linkedTo = VpMate
-                                VpMate.linkedFrom = VpCard
-                                Exit For
-                            End If
-                        Next VpMate
-                        VpJSONInfos.data.special = True
                     End If
-                    VpDone.Add(.name)
+                    'association croisée
+                    For Each VpMate As clsFullInfos.clsFullDataInfos.clsFullCardInfos In VpJSONInfos.data.cards
+                        If VpMate.name = .names.Item(1) Then
+                            VpCard.linkedTo = VpMate
+                            VpMate.linkedFrom = VpCard
+                            Exit For
+                        End If
+                    Next VpMate
+                    VpJSONInfos.data.special = True
+                ElseIf .side IsNot Nothing Then
+                    'association croisée
+                    For Each VpMate As clsFullInfos.clsFullDataInfos.clsFullCardInfos In VpJSONInfos.data.cards
+                        If VpMate.name = .name AndAlso .side = "a" AndAlso VpMate.side IsNot Nothing AndAlso VpMate.side = "b" Then
+                            VpCard.linkedTo = VpMate
+                            VpMate.linkedFrom = VpCard
+                        ElseIf VpMate.name = .name AndAlso .side = "b" AndAlso VpMate.side IsNot Nothing AndAlso VpMate.side = "a" Then
+                            VpMate.linkedTo = VpCard
+                            VpCard.linkedFrom = VpMate
+                        End If
+                    Next VpMate
+                    VpJSONInfos.data.special = True
                 End If
+                VpDone.Add(.name)
             End With
         Next VpCard
         VpOut.Flush
