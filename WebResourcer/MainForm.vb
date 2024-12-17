@@ -194,12 +194,13 @@ Public Partial Class MainForm
                 Application.DoEvents
             End While
         Catch
-            Call Me.AddToLog("Erreur de connexion. Recherche du HTML source pour " + VpURL + "...", eLogType.Warning)
-            Me.dlgOpen4.FileName = ""
-            Me.dlgOpen4.ShowDialog
-            If Me.dlgOpen4.FileName <> "" Then
-                VpStr = (New StreamReader(Me.dlgOpen4.FileName)).ReadToEnd
-            End If
+            Call Me.AddToLog("Erreur de connexion.", eLogType.Warning)
+            'Call Me.AddToLog("Erreur de connexion. Recherche du HTML source pour " + VpURL + "...", eLogType.Warning)
+            'Me.dlgOpen4.FileName = ""
+            'Me.dlgOpen4.ShowDialog
+            'If Me.dlgOpen4.FileName <> "" Then
+            '    VpStr = (New StreamReader(Me.dlgOpen4.FileName)).ReadToEnd
+            'End If
         End Try
         VpRequest.Abort
         Return VpStr
