@@ -1,12 +1,28 @@
 Magic The Gathering Manager v.1.0.8751.
 
-Copyright 2008-2024 Couitchy Corporation. Tous droits réservés.
+MIT License (MIT)
+Copyright 2008-2024 Couitchy Corporation.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 Magic The Gathering Manager est destiné aux passionnés des cartes Magic l'Assemblée ayant beaucoup de cartes et désirant gérer leur collection. Il permet de saisir toutes les cartes (en anglais ou en français) dans des groupes différents. La base de données fournit avec le logiciel contient la plupart des références jusqu'à l'édition Throne of Eldraine, mais un module permet de compléter la base de données avec les éditions futures, via le site de Wizards of the Coast. Les cartes saisies peuvent ensuite être recherchées, affichées et triées selon des critères entièrement paramétrables. Il est possible d'obtenir une estimation du prix de ses cartes, ceux-ci pouvant être mis à jour via les sites de MagicCorportation ou MagicCardMarket. D'autres statistiques très intéressantes sont également disponibles, permettant d'optimiser le choix des cartes de ses decks. Un module permet également l'achat de cartes à d'autres joueurs à prix optimal via les sites de Magic-Ville ou MagicCardMarket. Un logiciel à tester d'urgence pour les fans de Magic !
 
-Ce logiciel est protégé par la loi relative au droit d'auteur et par les conventions internationales. Toute décompilation, modification, altération, partielle ou totale du logiciel, par quelque moyen que ce soit, est strictement interdite. Toute personne ne respectant pas ces dispositions se rendra coupable du délit de contrefaçon et sera passible des sanctions pénales prévues par la loi. 
-
-Vous êtes en revanche libre d'utiliser ce logiciel gratuitement, de le recommander et/ou de le diffuser à vos proches si vous en êtes satisfait. Pour une diffusion hors d'un cadre restreint (site Web par exemple), il conviendra de contacter l'auteur.
+Vous êtes libre d'utiliser ce logiciel gratuitement, de le recommander et/ou de le diffuser à vos proches si vous en êtes satisfait.
 
 Tous les textes et les visuels des cartes, les logos des éditions et des symboles Magic: the Gathering © sont des marques déposées et la propriété de Wizards of the Coast (WoC), Hasbro, LLC. Magic the Gathering Manager n'est ni approuvé, ni supporté, ni affilié d'aucune manière que ce soit à WoC.
 

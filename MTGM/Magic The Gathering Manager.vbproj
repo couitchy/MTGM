@@ -45,26 +45,26 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.Targets" />
   <ItemGroup>
     <Reference Include="ChartFX.Lite, Version=6.0.839.0, Culture=neutral, PublicKeyToken=a1878e2052c08dce">
-      <HintPath>..\..\__LIBRAIRIES\ChartFX.Lite.dll</HintPath>
+      <HintPath>..\Libs\ChartFX.Lite.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\__LIBRAIRIES\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\Libs\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="NPlot">
-      <HintPath>..\..\__LIBRAIRIES\NPlot.dll</HintPath>
+      <HintPath>..\Libs\NPlot.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SandBar">
-      <HintPath>..\..\__LIBRAIRIES\SandBar.dll</HintPath>
+      <HintPath>..\Libs\SandBar.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SourceGrid2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=ad929b4064585aea">
-      <HintPath>..\..\__LIBRAIRIES\SourceGrid2.dll</HintPath>
+      <HintPath>..\Libs\SourceGrid2.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SourceLibrary">
-      <HintPath>..\..\__LIBRAIRIES\SourceLibrary.dll</HintPath>
+      <HintPath>..\Libs\SourceLibrary.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
@@ -86,7 +86,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="TreeViewMS">
-      <HintPath>..\..\__LIBRAIRIES\TreeViewMS.dll</HintPath>
+      <HintPath>..\Libs\TreeViewMS.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
@@ -384,5 +384,11 @@
     <Folder Include="Modules" />
     <Folder Include="Forms" />
     <Folder Include="Controls" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Ressources\Magic Back 0.jpg">
+      <Link>Ressources\Magic Back.jpg</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
