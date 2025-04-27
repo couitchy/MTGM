@@ -51,7 +51,7 @@ Public Partial Class frmExport
                 VpOut.WriteLine("")
             Case Else
         End Select
-        VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Series.SeriesCD_MW, Foil, Series.SeriesCD_MW, Card.CardNbr" + If(VpIsCollection, "", ", Reserve") + " From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join " + If(VpIsCollection, "MyCollection On MyCollection.EncNbr = Card.EncNbr;", "MyGames On MyGames.EncNbr = Card.EncNbr Where GameID = " + mdlToolbox.GetDeckIdFromName(VpSource) + " Order By Reserve Desc;")
+        VgDBCommand.CommandText = "Select Card.EncNbr, Items, Card.Title, Card.Series, Series.SeriesCD_MW, Foil, Series.SeriesCD_MO, Card.CardNbr" + If(VpIsCollection, "", ", Reserve") + " From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join " + If(VpIsCollection, "MyCollection On MyCollection.EncNbr = Card.EncNbr;", "MyGames On MyGames.EncNbr = Card.EncNbr Where GameID = " + mdlToolbox.GetDeckIdFromName(VpSource) + " Order By Reserve Desc;")
         VgDBReader = VgDBCommand.ExecuteReader
         'Corps
         With VgDBReader
@@ -64,7 +64,7 @@ Public Partial Class frmExport
                         End If
                         VpOut.WriteLine("        " + .GetValue(1).ToString + " " + .GetString(2))
                     Case mdlConstGlob.eFormat.MTGArena
-                        VpOut.WriteLine(.GetValue(1).ToString + " " + .GetString(2) + " (" + .GetString(6) + ") " + .GetValue(7).ToString)
+                        VpOut.WriteLine(.GetValue(1).ToString + " " + .GetString(2) + " (" + .GetString(6) + ")" + (" " + .GetValue(7).ToString).Replace(" 0", ""))
                     Case mdlConstGlob.eFormat.MTGM
                         VpOut.WriteLine(.GetValue(0).ToString + "#" + .GetValue(1).ToString)
                     Case mdlConstGlob.eFormat.MTGMv2
@@ -620,7 +620,49 @@ Public Partial Class frmExport
                                 End If
                             End If
                         End If
-                    'Cas 2 : Magic Arena
+                    'Cas 2 : Magic Arena / Archidekt
+                    ElseIf VpStr.Contains("x ") Then
+                        VpStrs = VpStr.Split(" ")
+                        If VpStrs.Length >= 3 Then
+                            VpQte = CInt(Val(VpStrs(0)))
+                            VpEdition = VpStrs(VpStrs.Length - 1).Replace("(", "").Replace(")", "")
+                            VpName = ""
+                            For VpI As Integer = 1 To VpStrs.Length - 2
+                                VpName += VpStrs(VpI) + " "
+                            Next VpI
+                            VpName = VpName.Trim
+                            VpFoil = False  'à gérer ultérieurement
+                            'Exact match
+                            VgDBCommand.CommandText = "Select Card.EncNbr From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where (Title = '" + VpName.Replace("'", "''") + "' Or TitleFR = '" + VpName.Replace("'", "''") + "') And SeriesCD_MO = '" + VpEdition + "';"
+                            VpO = VgDBCommand.ExecuteScalar
+                            If VpO Is Nothing Then
+                                VgDBCommand.CommandText = "Select Card.EncNbr From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where (Title = '" + VpName.Replace("'", "''") + "' Or TitleFR = '" + VpName.Replace("'", "''") + "') And SeriesCD_MW = '" + VpEdition + "';"
+                                VpO = VgDBCommand.ExecuteScalar
+                            End If
+                            If Not VpO Is Nothing Then
+                                VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+                            Else
+                                VpNeedLog = True
+                                'Partial match
+                                VgDBCommand.CommandText = "Select Card.EncNbr From (Card Inner Join Series On Card.Series = Series.SeriesCD) Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where ('" + VpName.Replace("'", "''") + "' Like '%' + Title + '%' Or Title Like '%" + mdlToolbox.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%' Or '" + VpName.Replace("'", "''") + "' Like '%' + TitleFR + '%' Or TitleFR Like '%" + mdlToolbox.StrDiacriticInsensitize(VpName.Replace("'", "''")) + "%') And ( SeriesCD_MO = '" + VpEdition + "' Or SeriesCD_MW = '" + VpEdition + "' );"
+                                VpO = VgDBCommand.ExecuteScalar
+                                If Not VpO Is Nothing Then
+                                    VpLog.WriteLine("Partial match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+                                    VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+                                Else
+                                    'Weak match
+                                    VgDBCommand.CommandText = "Select Card.EncNbr From Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr Where (Title = '" + VpName.Replace("'", "''") + "' Or TitleFR = '" + VpName.Replace("'", "''") + "');"
+                                    VpO = VgDBCommand.ExecuteScalar
+                                    If Not VpO Is Nothing Then
+                                        VpLog.WriteLine("Weak match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+                                        VpConverted.WriteLine(VpO.ToString + "#" + VpQte.ToString + "##" + VpFoil.ToString + "#" + VpReserve.ToString)
+                                    Else
+                                        VpLog.WriteLine("No match for card: " + VpName.ToString + " - " + VpEdition.ToString)
+                                    End If
+                                End If
+                            End If
+                        End If
+                    'Cas 3 : Magic Arena
                     ElseIf VpStr.Contains(" ") Then
                         VpStrs = VpStr.Split(" ")
                         If VpStrs.Length >= 4 AndAlso IsNumeric(VpStrs(0)) Then

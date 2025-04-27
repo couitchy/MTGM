@@ -2246,6 +2246,18 @@ Public Partial Class MainForm
                 Return "modernhorizons3promos#" + VpStr
             Case "N2"
                 Return "modernhorizons2timeshifts#" + VpStr
+            Case "FU"
+                Return "foundations#" + VpStr
+            Case "IR"
+                Return "innistradremastered#" + VpStr
+            Case "AU"
+                Return "aetherdrift#" + VpStr
+            Case "AV"
+                Return "aetherdriftcommander#" + VpStr
+            Case "AW"
+                Return "aetherdriftpromos#" + VpStr
+            Case "3A"
+                Return "30thanniversaryedition#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2954,6 +2966,18 @@ Public Partial Class MainForm
                 Return "N0"
             Case "modernhorizons2timeshifts"
                 Return "N2"
+            Case "foundations"
+                Return "FU"
+            Case "innistradremastered"
+                Return "IR"
+            Case "aetherdrift"
+                Return "AU"
+            Case "aetherdriftcommander"
+                Return "AV"
+            Case "aetherdriftpromos"
+                Return "AW"
+            Case "30thanniversaryedition"
+                Return "3A"
             Case Else
                 Return ""
         End Select
