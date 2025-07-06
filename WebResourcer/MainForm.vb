@@ -2258,6 +2258,20 @@ Public Partial Class MainForm
                 Return "aetherdriftpromos#" + VpStr
             Case "3A"
                 Return "30thanniversaryedition#" + VpStr
+            Case "TL"
+                Return "tarkirdragonstorm#" + VpStr
+            Case "TM"
+                Return "tarkirdragonstormcommander#" + VpStr
+            Case "TN"
+                Return "tarkirdragonstormpromos#" + VpStr
+            Case "FF"
+                Return "finalfantasy#" + VpStr
+            Case "FG"
+                Return "finalfantasycommander#" + VpStr
+            Case "FH"
+                Return "finalfantasypromos#" + VpStr
+            Case "FI"
+                Return "finalfantasythroughtheages#" + VpStr
             Case Else
                 Return "#" + VpStr
         End Select
@@ -2978,6 +2992,20 @@ Public Partial Class MainForm
                 Return "AW"
             Case "30thanniversaryedition"
                 Return "3A"
+            Case "tarkirdragonstorm"
+                Return "TL"
+            Case "tarkirdragonstormcommander"
+                Return "TM"
+            Case "tarkirdragonstormpromos"
+                Return "TN"
+            Case "finalfantasy"
+                Return "FF"
+            Case "finalfantasycommander"
+                Return "FG"
+            Case "finalfantasypromos"
+                Return "FH"
+            Case "finalfantasythroughtheages"
+                Return "FI"
             Case Else
                 Return ""
         End Select
