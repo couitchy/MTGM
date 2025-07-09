@@ -3192,6 +3192,7 @@ Public Partial Class MainForm
             'Copie
             Me.mnuCopyACard.Enabled = VpNode IsNot Nothing
             Me.mnuClipTitle.Enabled = VpNode IsNot Nothing
+            Me.mnuClipPicture.Enabled = VpNode IsNot Nothing
             'Achat
             If Not VpNode Is Nothing Then
                 Me.mnuBuy.Enabled = VpEn Or ( VpNode.Parent Is Nothing And Not Me.IsInAdvSearch )
@@ -3631,6 +3632,9 @@ Public Partial Class MainForm
     End Sub
     Sub MnuClipTitleClick(sender As Object, e As EventArgs)
         Clipboard.SetDataObject(Me.tvwExplore.SelectedNode.Text, True)
+    End Sub
+    Sub MnuClipPictureClick(sender As Object, e As EventArgs)
+        Clipboard.SetDataObject(Me.picScanCard.Image, True)
     End Sub
     Sub MnuMoveACardActivate(ByVal sender As Object, ByVal e As EventArgs)
         Call Me.ManageMultipleTransferts(clsTransferResult.EgTransfertType.Move, sender.Text)

@@ -218,6 +218,7 @@ Partial Class MainForm
         Me.btHistPricesFoil = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuUpdateMultiverseId = New System.Windows.Forms.ToolStripMenuItem
         Me.mnuClipTitle = New System.Windows.Forms.ToolStripMenuItem
+        Me.mnuClipPicture = New System.Windows.Forms.ToolStripMenuItem
         Me.statusStrip.SuspendLayout
         Me.cmnuTvw.SuspendLayout
         Me.mnu.SuspendLayout
@@ -455,7 +456,7 @@ Partial Class MainForm
         '
         'cmnuTvw
         '
-        Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuClipTitle, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
+        Me.cmnuTvw.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsFR, Me.mnuSort, Me.mnuSearchCard, Me.mnucAddCards, Me.mnuSeparator1, Me.mnuTransform, Me.mnuMoveACard, Me.mnuCopyACard, Me.mnuClipTitle, Me.mnuClipPicture, Me.mnuSwapSerie, Me.mnuDeleteACard, Me.mnuSeparator2, Me.mnuBuy})
         Me.cmnuTvw.Name = "cmnuTvw"
         Me.cmnuTvw.Size = New System.Drawing.Size(234, 236)
         '
@@ -2057,6 +2058,15 @@ Partial Class MainForm
         Me.mnuClipTitle.Text = "Copier le titre"
         AddHandler Me.mnuClipTitle.Click, AddressOf Me.MnuClipTitleClick
         '
+        'mnuClipPicture
+        '
+        Me.mnuClipPicture.Enabled = false
+        Me.mnuClipPicture.Image = CType(resources.GetObject("mnuClipTitle.Image"),System.Drawing.Image)
+        Me.mnuClipPicture.Name = "mnuClipPicture"
+        Me.mnuClipPicture.Size = New System.Drawing.Size(233, 22)
+        Me.mnuClipPicture.Text = "Copier l'image"
+        AddHandler Me.mnuClipPicture.Click, AddressOf Me.MnuClipPictureClick
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
@@ -2139,6 +2149,7 @@ Partial Class MainForm
     Private mnuFixMultiverseIdNew As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseIdOne As System.Windows.Forms.ToolStripMenuItem
     Private mnuFixMultiverseIdAll As System.Windows.Forms.ToolStripMenuItem
+    Private mnuClipPicture As System.Windows.Forms.ToolStripMenuItem
     Private mnuClipTitle As System.Windows.Forms.ToolStripMenuItem
     Private mnuUpdateMultiverseId As System.Windows.Forms.ToolStripMenuItem
     Private picAutMulti As System.Windows.Forms.PictureBox
