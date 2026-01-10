@@ -57,7 +57,8 @@ Partial Class MainForm
         Me.mnuExtractTexts = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFilterTitles = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBuildTitles = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuCheckTrad = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCheckTradTexts = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCheckTradTitles = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCompareTrad = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuListSubtypes = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCompareTitles = New System.Windows.Forms.ToolStripMenuItem()
@@ -270,7 +271,7 @@ Partial Class MainForm
         '
         'mnuTrad
         '
-        Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTrad, Me.mnuCompareTrad, Me.mnuListSubtypes, Me.mnuCompareTitles, Me.mnuCardsTradTitles, Me.mnuCardsTradTitlesFilter})
+        Me.mnuTrad.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCardsTradTxt, Me.mnuExtractTexts, Me.mnuFilterTitles, Me.mnuBuildTitles, Me.mnuCheckTradTexts, Me.mnuCheckTradTitles, Me.mnuCompareTrad, Me.mnuListSubtypes, Me.mnuCompareTitles, Me.mnuCardsTradTitles, Me.mnuCardsTradTitlesFilter})
         Me.mnuTrad.Image = CType(resources.GetObject("mnuTrad.Image"),System.Drawing.Image)
         Me.mnuTrad.Name = "mnuTrad"
         Me.mnuTrad.Size = New System.Drawing.Size(278, 22)
@@ -304,12 +305,19 @@ Partial Class MainForm
         Me.mnuBuildTitles.Text = "Construire un fichier de titres VF pour une édition depuis la base"
         AddHandler Me.mnuBuildTitles.Click, AddressOf Me.MnuBuildTitlesClick
         '
-        'mnuCheckTrad
+        'mnuCheckTradTexts
         '
-        Me.mnuCheckTrad.Name = "mnuCheckTrad"
-        Me.mnuCheckTrad.Size = New System.Drawing.Size(398, 22)
-        Me.mnuCheckTrad.Text = "Vérifier la cohérence d'un fichier de traductions"
-        AddHandler Me.mnuCheckTrad.Click, AddressOf Me.MnuCheckTradClick
+        Me.mnuCheckTradTexts.Name = "mnuCheckTradTexts"
+        Me.mnuCheckTradTexts.Size = New System.Drawing.Size(398, 22)
+        Me.mnuCheckTradTexts.Text = "Vérifier la cohérence d'un fichier de traductions (textes)"
+        AddHandler Me.mnuCheckTradTexts.Click, AddressOf Me.MnuCheckTradTextsClick
+        '
+        'mnuCheckTradTitles
+        '
+        Me.mnuCheckTradTitles.Name = "mnuCheckTradTitles"
+        Me.mnuCheckTradTitles.Size = New System.Drawing.Size(398, 22)
+        Me.mnuCheckTradTitles.Text = "Vérifier la cohérence d'un fichier de traductions (titres)"
+        AddHandler Me.mnuCheckTradTitles.Click, AddressOf Me.MnuCheckTradTitlesClick
         '
         'mnuCompareTrad
         '
@@ -959,7 +967,8 @@ Partial Class MainForm
     Private mnuBuildStamps As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildDouble As System.Windows.Forms.ToolStripMenuItem
     Private mnuBuildTitles As System.Windows.Forms.ToolStripMenuItem
-    Private mnuCheckTrad As System.Windows.Forms.ToolStripMenuItem
+    Private mnuCheckTradTitles As System.Windows.Forms.ToolStripMenuItem
+    Private mnuCheckTradTexts As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsTradTitles As System.Windows.Forms.ToolStripMenuItem
     Private mnuCardsTradTitlesFilter As System.Windows.Forms.ToolStripMenuItem
     Private mnuCompareTitles As System.Windows.Forms.ToolStripMenuItem

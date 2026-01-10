@@ -3999,6 +3999,50 @@ Public Partial Class MainForm
             End If
         End If
     End Sub
+    Private Sub CheckTitles
+    '------------------------------------------------------------------
+    'Vérifie la cohérence d'un fichier de titres des cartes en français
+    '------------------------------------------------------------------
+    Dim VpTxt As StreamReader
+    Dim VpStrs() As String
+    Dim VpTrad As New SortedList(Of String, String)
+    Dim VpOut As StreamWriter
+        Me.dlgOpen2.FileName = ""
+        Me.dlgOpen2.ShowDialog
+        If Me.dlgOpen2.FileName <> "" Then
+            Me.dlgSave.FileName = ""
+            Me.dlgSave.ShowDialog
+            If Me.dlgSave.FileName <> "" Then
+                Call Me.AddToLog("La vérification du fichier des traductions a commencé...", eLogType.Information, True)
+                VpTxt = New StreamReader(Me.dlgOpen2.FileName)
+                While Not VpTxt.EndOfStream
+                    VpStrs = VpTxt.ReadLine.Split("#")
+                    If VpStrs.Length = 2 AndAlso VpStrs(1).Length > 1 AndAlso Not ( VpStrs(0) = VpStrs(1) OrElse VpStrs(1).Contains("_") ) AndAlso ( VpStrs(1).Contains("//") OrElse Not VpStrs(1).Contains("/") ) Then
+                        'S'il y a au moins un titre de carte non traduit dans une édition récente, on conserve le besoin de la traduction
+                        VmDBCommand.CommandText = "Select Count(*) From (Card Inner Join CardFR On Card.EncNbr = CardFR.EncNbr) Inner Join Series On Card.Series = Series.SeriesCD Where CardFR.TitleFR = '" + VpStrs(0).Replace("'", "''") + "' And Year(Series.Release) > 2022;"
+                        If CInt(VmDBCommand.ExecuteScalar) >= 1 Then
+                            Call Me.AddToLog("La traduction de " + VpStrs(0) + " est " + VpStrs(1), eLogType.Information)
+                            VpTrad.Add(VpStrs(0), VpStrs(1))
+                        End If
+                    End If
+                    If Me.btCancel.Tag Then Exit While
+                    Application.DoEvents
+                End While
+                'Reconstruit le fichier corrigé
+                VpOut = New StreamWriter(Me.dlgSave.FileName)
+                For Each VpTitle In VpTrad.Keys
+                    VpOut.WriteLine(VpTitle + "#" + VpTrad.Item(VpTitle) + "#1")    'prêt pour intégration à MD_Trad.log (avec #1 pour forcer le changement)
+                Next VpTitle
+                VpOut.Flush
+                VpOut.Close
+                If Me.btCancel.Tag Then
+                    Call Me.AddToLog("La vérification du fichier des traductions a été annulée.", eLogType.Warning, , True)
+                Else
+                    Call Me.AddToLog("La vérification du fichier des traductions est terminée.", eLogType.Information, , True)
+                End If
+            End If
+        End If
+    End Sub
     Private Sub BuildTitles
     '---------------------------------------------------------------------------------------------------------------
     'Construit un fichier de titres des cartes en français pour l'édition demandée, avec les infos déjà dans la base
@@ -4866,8 +4910,13 @@ Public Partial Class MainForm
             Call Me.BuildTitles
         End If
     End Sub
-    Sub MnuCheckTradClick(sender As Object, e As EventArgs)
+    Sub MnuCheckTradTextsClick(sender As Object, e As EventArgs)
         Call Me.CheckTexts
+    End Sub
+    Sub MnuCheckTradTitlesClick(sender As Object, e As EventArgs)
+        If Not VmDB Is Nothing Then
+            Call Me.CheckTitles
+        End If
     End Sub
     Sub MnuCompareTradClick(sender As Object, e As EventArgs)
         If Not VmDB Is Nothing Then
