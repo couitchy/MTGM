@@ -242,6 +242,7 @@ Public Partial Class frmBuyCards
         VpURL = VpURL.Replace("'", "%27")                   'cas non gérés par EscapeUriString
         VpSerializer.MaxJsonLength = Integer.MaxValue
         VpRequest = HttpWebRequest.Create(VpURL)
+        VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
         VpRequest.KeepAlive = False
         VpRequest.Timeout = 5000
         VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000

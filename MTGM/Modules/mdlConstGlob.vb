@@ -1,6 +1,6 @@
 Imports System.Data.OleDb
 Public Module mdlConstGlob
-    Public Const CgCodeLines As Integer             = 40377
+    Public Const CgCodeLines As Integer             = 40393
     Public Const CGNClasses As Integer              = 93
     Public Const CgLastUpdateAut As String          = "26/10/2019"
     Public Const CgLastUpdateSimu As String         = "26/10/2019"
@@ -207,6 +207,7 @@ Public Module mdlConstGlob
     End Enum
     Public Enum eServer
         FreePagesPerso
+        FreePagesPersoSecure
         ChromeLightStudio
     End Enum
     Public Enum eMarketServer

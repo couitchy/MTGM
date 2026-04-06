@@ -1094,7 +1094,9 @@ Public Module mdlToolbox
     Dim VpAnswer As Stream
     Dim VpBuf() As Byte
     Dim VpStamp As String
+        ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
         VpRequest = WebRequest.Create(VgOptions.VgSettings.DownloadServer + CgURL1C)
+        VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
         VpRequest.KeepAlive = False
         VpRequest.Timeout = 5000
         VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
@@ -1167,7 +1169,9 @@ Public Module mdlToolbox
         'Vérification horodatage
         VpRequest = Nothing
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             VpRequest = WebRequest.Create(If(VpBeta, VgOptions.VgSettings.DownloadServer + CgURL1B, VgOptions.VgSettings.DownloadServer + CgURL1))
+            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
             VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000

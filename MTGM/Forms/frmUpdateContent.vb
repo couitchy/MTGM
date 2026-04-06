@@ -24,10 +24,12 @@ Public Partial Class frmUpdateContent
     Dim VpLength As Integer
         VpRequest = Nothing
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             'Gestion cas 0
             VpStamps(0) = mdlToolbox.GetPictSP
             'Gestion cas 1 à 11
             VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1D)
+            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
             VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
@@ -63,8 +65,10 @@ Public Partial Class frmUpdateContent
     Dim VpLength As Integer
         VpRequest = Nothing
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             'Gestion cas 0 à 11
             VpRequest = WebRequest.Create(mdlConstGlob.VgOptions.VgSettings.DownloadServer + CgURL1E)
+            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
             VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000

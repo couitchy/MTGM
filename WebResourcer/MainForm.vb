@@ -181,7 +181,7 @@ Public Partial Class MainForm
         VpRequest = WebRequest.Create(VpURL)
         Try
             ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
-            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0"
+            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
             VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
@@ -1065,7 +1065,9 @@ Public Partial Class MainForm
     Dim VpCurByte As Integer
         VpRequest = Nothing
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             VpRequest = WebRequest.Create(CmURL9.Replace(CmId1, VpIn.Replace(" ", "+")))
+            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
             VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000

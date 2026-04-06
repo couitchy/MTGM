@@ -423,6 +423,8 @@ Public Class clsSettings
             Select Case VmDownloadServerEnum
                 Case mdlConstGlob.eServer.FreePagesPerso
                     Return mdlConstGlob.CgDefaultServer
+                Case mdlConstGlob.eServer.FreePagesPersoSecure
+                    Return "https://couitchy.pages-perso.free.fr/upload/MTGM"
                 Case mdlConstGlob.eServer.ChromeLightStudio
                     Return "http://chromelight.brutin.fr/MTGM"
                 Case Else

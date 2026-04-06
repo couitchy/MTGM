@@ -27,7 +27,9 @@ Public Partial Class frmTranslate
     Dim VpCurByte As Integer            'Octet courant
         VpRequest = Nothing
         Try
+            ServicePointManager.SecurityProtocol = &H00000C00   'TLS 1.2
             VpRequest = WebRequest.Create(CmURL.Replace(CmId, VpIn.Replace(" ", "+")))
+            VpRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
             VpRequest.KeepAlive = False
             VpRequest.Timeout = 5000
             VpRequest.ServicePoint.ConnectionLeaseTimeout = 5000
